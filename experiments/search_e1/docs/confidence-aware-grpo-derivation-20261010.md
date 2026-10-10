@@ -1,0 +1,142 @@
+# Derivation Package
+
+## Target
+
+设计不新增模型前向的 Search-G1/GRPO 轨迹熟悉度加权方案。复用采样时已经保存的 token log probability，得到每条轨迹的平均 NLL；用过去轮次的 EMA 统计计算平滑分数，再衰减该轨迹的策略梯度项。本文是设计和数学边界说明，未启动训练或修改现有作业。
+
+## Status
+
+**COHERENT AFTER REFRAMING / EXTRA ASSUMPTION**。
+
+用户所说的 GAP 在此改为“行为策略对已生成轨迹的平均 surprisal”。它是熟悉度代理，不能直接等同于优化难度、事实正确性或真实泛化 GAP。高斯 CDF 是平滑评分；仅当历史分布近似高斯时，才近似经验百分位。
+
+## Invariant Object
+
+冻结一个采样批次、行为概率、原奖励和组优势后，各轨迹在原 PPO/GRPO surrogate 中的策略梯度贡献。模型效果仍以独立同条件 EM 评测为目标；NLL 不是新的效果指标。
+
+## Assumptions
+
+- 每个外层轮次先用当时冻结的 student 采样，再对该批次做内层更新。当前核对的 Search-G1 实现保存 `sampling_log_probs`，并将其复制为 `old_log_probs`；没有额外的旧策略 HF 前向。
+- 概率是实际采样分布 \(\mu_k\) 的记录，包含原采样处理器作用；它不一定等于未经处理的模型 \(\pi_{\theta_k}\)。方案明确使用行为 NLL，不重评分来冒充 raw-policy NLL。
+- \(M_{it}\) 沿用已审计的有效模型生成 token mask，排除 padding、环境 observation 和作为输入插入的文字。当前代码以 `info_mask` 的 response 切片作为 `loss_mask`，并核对 `sampling_mask` 与其一致。模型自己生成的文字按真实 mask 处理，不按标签名另行删除。
+- 每个批次所有题和轨迹共用同一份更新前 EMA。评分和权重在整个内层更新期间冻结、detach。空有效 mask 明确记录并跳过，不能填 NLL=0。
+- 主方案保持原奖励、损失分母、clip、reference KL、学习率和优化器设置；仅对 policy-gradient 项加权。所有消融组必须使用相同 rollout 数。
+
+## Notation
+
+- \(k\)：外层采样/更新轮次；\(q\)：题；\(i\)：该题的一条轨迹；\(t\)：有效生成位置。
+- \(a_{it},H_{it}\)：实际生成 token 及当时上下文；\(N_i=\sum_tM_{it}\)：有效 token 数。
+- \(\ell_i\)：轨迹平均行为 NLL；\(m_k,v_k\)：仅包含本轮之前历史的 EMA 均值、总体方差。
+- \(R_i\)：原 Search-G1 reward；\(\bar R_q,s_q\)：原题组均值及样本标准差；\(A_i\)：原标准化优势。
+- \(D_i\in[0,1]\)：高斯 CDF 评分；\(w_i=e^{-hD_i}\)：衰减权重；\(h\ge0\)：强度。
+- \(\rho_{it}\)：原实现的 token 概率比。当前实现计算 `exp(new_log_probs-old_log_probs)`；本文不把已有采样/HF 概率差异重新定义为新方案效果。
+
+## Derivation Strategy
+
+已有 log probability → 轨迹 NLL → 历史标准化评分 → 冻结正权重 → 加权原优势。分别解释数学恒等式、代理假设和固定批次上的局部性质。
+
+## Derivation Map
+
+1. 直接对已有 log probability 求有效 token 负均值，不新增模型前向。
+2. 用历史 EMA 给本轮评分；本轮结束后统一更新统计，避免逐条顺序依赖。
+3. 将高斯 CDF 作为启发式熟悉度分数，不把它宣称为真实学习难度概率。
+4. 优势归一化之后乘权重，避免再次归一化抵消衰减或创造原零组的排序。
+5. 给出固定批次 PG 项的缩放性质，并区分真实 Adam 参数步和 EM 效果。
+
+## Main Derivation
+
+### Step 1. 轨迹 NLL：定义与恒等式
+
+\[
+\ell_i=-\frac{\sum_t M_{it}\log\mu_k(a_{it}\mid H_{it})}{N_i},\qquad N_i>0.
+\]
+
+\(e^{-\ell_i}\) 是有效 token 概率的几何平均，不是整条序列概率。实现只需对已有 `old_log_probs` 和 mask 做 reduction，输出每轨迹一个标量。它与最终 GRPO loss 不同：后者已包含带正负号的优势、概率比和 clip，可为负或因零优势而为零，不能据此推断自信度。
+
+训练已有 `new_log_probs` 也能计算 NLL，但后续 minibatch 的 student 已经过前面的 Adam 更新；不同轨迹不再共享同一个更新前策略。因此主方案用采样时的 `old_log_probs`，每轮重新采样时自然换成最新 student，内层不重算分数。
+
+### Step 2. 历史 EMA：定义及精确混合方差
+
+以一整个外层批次为单位，先用旧 \(m_k,v_k\) 评分，再更新统计。设本轮有效轨迹集合为 \(B_k\)，其均值 \(m_B\)、总体方差 \(v_B\)。
+
+\[
+m_{k+1}=(1-\alpha)m_k+\alpha m_B,
+\]
+\[
+v_{k+1}=(1-\alpha)v_k+\alpha v_B+\alpha(1-\alpha)(m_B-m_k)^2.
+\]
+
+这是两个分布混合后的方差恒等式；最后的均值位移项不能省略。也可维护 EMA 一阶矩和二阶矩，再用 \(v=E[\ell^2]-m^2\)；数值统计用 FP64，截断极小负舍入误差。
+
+初始提案采用 50 个外层轮次半衰期，\(\alpha=1-2^{-1/50}\approx0.0137673\)，尚未验证最优。第一整个采样批次只初始化历史，\(w=1\)，随后每轮先评分后更新；不从零初始化后未经纠偏就评分。\(\sigma_{\min}=10^{-3}\) nats/token 是拟议数值下限，需记录触发比例。不同 rollout 数的实验分别维持自己的历史，不共享测试集或未来数据。
+
+### Step 3. CDF 和衰减：启发式代理
+
+\[
+z_i=\frac{\ell_i-m_k}{\sqrt{\max(v_k,\sigma_{\min}^2)}},\qquad
+D_i=\Phi(z_i),\qquad w_i=\exp(-hD_i).
+\]
+
+固定历史时，\(D_i\) 随 \(\ell_i\) 单调增加，\(w_i\) 单调下降。历史分布可能偏态，也随策略变化，故这是平滑熟悉度评分，不是已校准难度百分位。EMA 不使用本題的四条轨迹拟合高斯；应另用远端汇总的经验分位诊断偏差。
+
+| h | 权重范围 | 历史均值处 D=0.5 的权重 |
+| --- | --- | --- |
+| 0（对照） | 1 | 1 |
+| 0.1 | [0.9048, 1] | 0.9512 |
+| 0.5 | [0.6065, 1] | 0.7788 |
+| 1.0 | [0.3679, 1] | 0.6065 |
+
+### Step 4. 插入位置：归一化之后加权
+
+\[
+A_i=\frac{R_i-\bar R_q}{s_q+\epsilon},\qquad
+\widetilde A_i=\operatorname{stopgrad}(w_i)A_i.
+\]
+
+用 \(\widetilde A_i\) 替换原 policy surrogate 中的 \(A_i\)，保持已有 token mask 和原 loss 分母；**不再次组内中心化/标准化，也不除以 \(\sum_iw_i\)**。加权后组均值一般不再为0、样本方差不再接近1，这正是保留衰减而非重新放大的选择。reference KL 和 entropy 保持原协议，不顺带加权。
+
+**固定批次上的命题：** 因 \(0<w_i\le1\)，原优势符号保持，\(|\widetilde A_i|\le|A_i|\)。PPO 的 min/clip 项（包括当前 Dual-Clip）对优势的正缩放具有一次齐次性，因此在相同模型参数、概率比、mask 和固定权重下，该轨迹的 PG 项及其梯度均乘以 \(w_i\)。这只保证相对其自身原 PG 项衰减；不能说所有高 NLL 轨迹最终系数都比所有低 NLL 轨迹小。
+
+多个轨迹梯度可相互抵消；Adam、全局 grad clip 和未加权 KL 又影响最终参数步。因此上述命题不保证总梯度范数下降、实际参数步变小或 EM 提升。轨迹依赖权重也使目标发生偏移，它不是原 EM 目标的无偏策略梯度估计。
+
+### Step 5. 为什么直接乘 reward 不是同一个策略
+
+用户判断正确：归一化不能消除所有改变。不同轨迹使用不同 \(w_i\) 会改变奖励排序、组中心和优势方向。
+
+若全组同一 \(w>0\)，忽略 \(\epsilon\) 时：
+\[
+\frac{wR_i-w\bar R_q}{ws_q}=\frac{R_i-\bar R_q}{s_q}\approx A_i.
+\]
+若不同 \(w_i\)，则 \((w_iR_i-\overline{wR})/(s_{wR}+\epsilon)\) 一般不等于 \(w_iA_i\)。四条全为合法错误、奖励均为 0.05 时，本来零优势，却会因不同 \(w\) 产生正负优势；全为非法且奖励为 −0.1 时，高 NLL 的小 \(w\) 反而让奖励较大。故 reward 乘法确实有作用，但不能保证“难的少学”。
+
+若需要保留 reward 表达，可用原组均值作固定锚：
+\[
+\widetilde R_i=\bar R_q+w_i(R_i-\bar R_q),\qquad
+\widetilde A_i=\frac{\widetilde R_i-\bar R_q}{s_q+\epsilon}=w_iA_i.
+\]
+这里中心与标准差必须仍取原组值，不重算。这是主方案的代数表达，不是通常的“修改 reward 后重新标准化”。
+
+## Remarks and Interpretation
+
+- 所需 token 概率 GRPO 已有，不需要新增采样、teacher、HF forward 或 full-vocabulary 分布。增加的是几个 tensor reduction、每轨迹 CDF/exp 和两个历史标量的更新；不承诺 CPU/GPU 统计操作字面零成本，实际时间仍需测量。
+- 当前已核 Search-G1 使用 512 题×5 条轨迹、global mini128、4 rank/local mini32、physical micro2。每个 mini 有 16 次 micro forward/backward 累积；通常一外层有 20 个 Adam 更新机会，安全检查可能拒绝部分写入。训练前向在给定完整轨迹上做 causal teacher forcing，不是再逐词采样。
+- 当前 PG reduction 是每个 physical micro 内 token mean，再累积平均，并非每条轨迹等权 mean。本方案 NLL 按每轨迹 token mean 计算，但不顺带改变现有 PG reduction；否则成为第二个实验变量。
+- 用户拟议每题4条：所有 h 对照均用 G=4。512×4=2048、mini128 时是每外层16个更新机会，不能与旧 G=5 的20机会宣称只有 h 不同。
+- 原零 reward 方差组保持零；但 Search-G1 的全错组可能同时包含 −0.1 的非法与 0.05 的合法错误，原本并非零优势。不能把“全错”一概当成“原零组”。
+- 高 NLL 的错误轨迹，其负向 PG 惩罚也会衰减。这是本方案的实际取舍，不是仅降低正向学习压力。
+
+## Boundaries and Non-Claims
+
+- 不把 NLL 称为最终 GRPO loss；不把熟悉度、正确性、优化难度和泛化 GAP 等同。
+- 不把高 NLL 推理视为不应学习的数学结论。罕见正确解和新检索行动也可能高 NLL；模板化错误可低 NLL。
+- 不宣称当前方案已解释旧后期退化，也不宣称 h=0.1/0.5/1 已有训练收益。
+- 同题原奖励 C/R 的事后优势统计，只提供机制证据；不是原4卡 Search-E1 实际梯度对照。
+- 本地仅保存代码、该设计及小型审计摘要。完整 rollout、概率、token、checkpoint 和新训练输出均留远端；不自动启动新训练。
+
+## Open Risks
+
+1. 最小实验为 h=0/0.1/0.5/1，统一同一个已验收起始 checkpoint、G=4、数据顺序、seed、优化/评测设置；只变 h。EMA 半衰期先固定，不同时调参。
+2. 新增一个等常数衰减对照（采用候选组批均值权重），区分总体 PG 收缩/相对 KL 压力与轨迹熟悉度选择效应；这是额外诊断组，不混入 h-only 比较。
+3. 远端按正确/合法错误/非法、搜索/直接、数据集和长度分层，记录 NLL、D、w、原 A 与 wA、零组/clip、\(\sum(wA)^2/\sum A^2\)、实际 Adam、KL/entropy/gradnorm 和时间增量。NLL 下降不等于 EM 提升。
+4. 固定同条件 native512 保存点，检查新增/丢失正确题，尤其高 NLL 的罕见正确轨迹；稀疏保存点不插值精确退化时刻。
+5. Gaussian CDF 在非高斯或非平稳历史中可能饱和，需核经验分位覆盖和 sigma floor；若改为经验 CDF，单列后续消融，不静默替换。
