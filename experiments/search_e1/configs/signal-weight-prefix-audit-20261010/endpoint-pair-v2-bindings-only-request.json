@@ -1,0 +1,96 @@
+{
+  "analysis_run_id": "endpoint-bindings-851c99fee2cf40e3805eee4faa2a6234",
+  "analysis_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/analysis-235e376/opsd_signal_weight_analysis_v1",
+    "publication": {
+      "bytes": 3904,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/analysis-publication-235e376.json",
+      "sha256": "b19c57ec5867e02317006f573ea4bfa70c74db504e8de6c42c4ef61d6f58344d"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/analysis-235e376/opsd_signal_weight_analysis_v1/source-manifest.json",
+      "sha256": "649472b2312cd3c9225b2b5ea1e8c1ad8e70d20ca6591d51fdcbe0194dd3e4de"
+    }
+  },
+  "completion_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1",
+    "publication": {
+      "bytes": 2343,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/completion-publication-7d9fea2.json",
+      "sha256": "0dc1375d0d760fd57d98bbf09e05ca512c78edd094f6281bb44af91515dee0d7"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/completion-7d9fea2/opsd_signal_weight_completion_v1/source-manifest.json",
+      "sha256": "b36aff538310bbd92c947e790e32254ce3267e9f1f62531aa4729a74bc719163"
+    }
+  },
+  "configs": {
+    "G_NEG": {
+      "bytes": 11364,
+      "ctime_ns": 1791567689308260331,
+      "device": 2081,
+      "inode": 48112415,
+      "mtime_ns": 1791567689308260331,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+    },
+    "G_POS": {
+      "bytes": 11363,
+      "ctime_ns": 1791567687412215119,
+      "device": 2081,
+      "inode": 48112408,
+      "mtime_ns": 1791567687412215119,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    },
+    "H_NEG": {
+      "bytes": 11373,
+      "ctime_ns": 1791567693372357005,
+      "device": 2081,
+      "inode": 48112429,
+      "mtime_ns": 1791567693372357005,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+      "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+    },
+    "H_POS": {
+      "bytes": 11372,
+      "ctime_ns": 1791567691332308518,
+      "device": 2081,
+      "inode": 48112422,
+      "mtime_ns": 1791567691332308518,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+      "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+    }
+  },
+  "intent": "Published v2 binding-only preflight; no target/common_zero provided; not endpoint or EM acceptance",
+  "original_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1",
+    "publication": {
+      "bytes": 9082,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-publication.json",
+      "sha256": "e0ba3954d8d8c8b749ec04523dff64cb834649e0574609ad64444bd887a0aef7"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1/source-manifest.json",
+      "sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+    }
+  },
+  "reader_source": {
+    "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2",
+    "publication": {
+      "bytes": 2684,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/endpoint-pair-v2-publication-a53f9a6.json",
+      "sha256": "de30df596d3bce7ce58767470a4d71fe9960025b08677750fa8db7dc893b4b4d"
+    },
+    "source_manifest": {
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/source-manifest.json",
+      "sha256": "582b8869d11654b433fcac40ede4a230910b69f78bcc4f14bc1dbabdea27d337"
+    }
+  },
+  "schema": "opsd-signal-single-endpoint-pair-request-v1",
+  "study_manifest": {
+    "bytes": 3766,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  }
+}
