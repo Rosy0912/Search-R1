@@ -5,6 +5,22 @@ from types import SimpleNamespace
 B=Path('/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-20261010');ref=B/'receipts/training-config.json';cfg=json.loads(ref.read_text());sys.path.insert(0,cfg['paths']['helper_root'])
 from controller import *
 class Recovery(Controller):
+    def verify_merge_identity(self,identity,index,previous,updates):
+        require(identity['checkpoint']==previous and identity['optimizer_updates']==updates
+                and identity['source_model_identity']==self.config['source_model_manifest']['sha256']
+                and identity['common_initial_adapter']==self.config['common_initial_adapter_manifest']
+                and identity['variant']==self.config['variant'] and identity['precision']==self.config['precision'],
+                'Merged sampling identity differs from current outer-start raw adapter')
+        expected=(checked_json(previous)[0]['all_rank_adapter_sha256'][0] if previous else self.config['common_initial_adapter_tensor_sha256'])
+        require(identity['adapter_tensor_sha256']==expected,'Merged raw adapter digest mismatch')
+        proof=identity['device_proof']
+        require(all(proof[k]==dict(cuda_initialized=False,visible_cuda_devices=0,cuda_visible_devices='') for k in ('before','after')),
+                'CPU merge CUDA-free proof missing')
+        require(proof['peft_parameters']['all_cpu'] is True and proof['merged_parameters']['all_cpu'] is True
+                and proof['merge_calls']==1 and proof['cast_after_merge_count']==(1 if self.config['precision']['mode']=='fp32_master_fp16' else 0),
+                'CPU merge actual parameter device/method differs')
+        bind_model_files(self.config,identity)
+
     def sample(self,outer,questions,identity):
         if outer.name!='outer-00000':return super().sample(outer,questions,identity)
         attempt=outer/'sampling-attempt-00000'
