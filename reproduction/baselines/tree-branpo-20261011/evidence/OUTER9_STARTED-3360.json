@@ -1,0 +1,10 @@
+{
+  "epoch": 1791664112.596627,
+  "job": 3360,
+  "last_step_starts": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 8",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 9"
+  ],
+  "log_mtime": 1791664106.2948182,
+  "log_bytes": 138548
+}
