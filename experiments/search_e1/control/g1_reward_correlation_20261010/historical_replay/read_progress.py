@@ -21,7 +21,7 @@ result=dict(observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(
 for name in ['status.json','inputs.json']:
     p=out/name
     if p.is_file():result[name]=json.loads(p.read_bytes())
-for p in sorted(out.glob('loaded-version-*.json')):
+for p in sorted(out.glob('probe-loaded-*.json')):
     result.setdefault('loaded_versions',[]).append(json.loads(p.read_bytes()))
 memory=out/'memory.jsonl'
 if memory.is_file():

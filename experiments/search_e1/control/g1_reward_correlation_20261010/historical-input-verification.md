@@ -4,7 +4,11 @@
 
 2026-10-10 12:24 CST，原 Search-G1 节点只读核验完成：TRAIN 1–146 共373760条（512题×5轨迹×146）；146原始trace共27651749707字节已全量流式SHA匹配对应成功attempt、原生门禁和run身份。原训练数据169028行新SHA匹配；74752个实际上游index hash全部唯一关联原gold，缺失0、歧义0。
 
-原0/50/100探针manifest及b/d头SHA通过，大encoder权重仍待新读完整SHA。原trace没有逐条C/R/b/d字段，但完整input IDs、attention/info mask、prompt width仍保留。独立CPU C重构与按历史版本重放R准备中；不能用当前学生/最新探针替代旧版本。原线上R不可从均值反推，之后值均标R_reconstructed。当前full trajectory Pearson仍NOT_COMPUTED。
+原0/50/100探针manifest、b/d头及33378861188字节encoder成员均已在原节点完整重新读SHA通过。原trace没有逐条C/R/b/d字段，但完整input IDs、attention/info mask、prompt width仍保留。独立CPU C重构与按历史版本重放R已实际运行；不能用当前学生/最新探针替代旧版本。原线上R不可从均值反推，之后值均标R_reconstructed。当前完整1–150范围的trajectory Pearson仍NOT_COMPUTED。
+
+2026-10-10 13:02:58 CST实际快照：C已完成85轮、217600条；R已完成3轮、7680条，三个完整轮次各2560行且均通过原生全精度FP32 reward均值及打印统计门禁。第一轮均值差0，后续每轮仍须独立验收。R使用独立自有GPU5，实测余量51478MiB，原训练和生产探针未更改。前三轮完整评分各约165–172秒，完整150轮预计还需6–8小时；这是耗时估计，不是完成承诺。
+
+“重构”具体是从旧轨迹严格答案评分得到C，并对同一旧输入用当时冻结的探针重新前向得到b/d及设计奖励R。不生成新轨迹、不更新模型、不重新训练。历史数值环境的未保存细节仍存在，因此逐条重算值不能称当时线上逐条bitwise原记录；原均值吻合只是必要一致性检查。
 
 正确统计单位为每条轨迹，以(run,step,attempt,trajectory_id)一对一对齐。每轮2560对和所选完整范围的所有配对展平分别计算：
 

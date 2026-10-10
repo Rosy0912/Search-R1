@@ -8,7 +8,7 @@ r_all = [N·Σ(XY)−ΣX·ΣY] / sqrt([N·ΣX²−(ΣX)²]·[N·ΣY²−(ΣY)²]
 
 当前run源代码规定512题×5轨迹=2560条/轮；100完整轮次应有256000对。先按实际run/保存行数核查，不静默丢弃无效输出或缺失reward的条目。原始reward采用同一条G1轨迹的原始严格EM，不能拿另一个archive run的轨迹来对齐。
 
-历史原始R未直接入已知trace schema，但trace保留完整input token与mask，正在进一步核查是否可用当时冻结encoder/head及题目gold完整恢复。尚未实施模型重算，也没有全量TRAIN系数；不因字段名缺失就断言永远不可恢复。
+历史原始R未直接入已知trace schema，但trace保留完整input token与mask。2026-10-10已核验当时冻结encoder/head及题目gold并实际开始独立重算：13:02:58 CST已完成前三个完整TRAIN轮次共7680条C/R配对，各轮均通过原生FP32 reward均值门禁。仍未完成用户指定全范围的TRAIN系数；不能把局部完成称全量完成。所有值标为R_reconstructed，而非当时线上逐条记录；模型仅前向评分，无新轨迹生成或优化。
 
 这里原始 reward 明确定义为严格答题正确性 C∈{0,1}；R 为 Search-G1 设计奖励，尚未做 GRPO 组内归一化。critic/rewards 本身保存的就是 R，不能把它当另一套独立原始奖励。
 
