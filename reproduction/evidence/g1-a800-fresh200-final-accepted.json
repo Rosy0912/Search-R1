@@ -1,0 +1,111 @@
+{
+  "checked_unix": 1791671812.4371285,
+  "acceptance_sha256": "9aad55bcd23345eacb57acfbbc03d88a4fb19b666d8cd37ee534717070a251bc",
+  "keys": [
+    "run_id",
+    "contract_kind",
+    "structural_accepted",
+    "actual_outer_updates",
+    "optimizer_completion_rule",
+    "per_rank_optimizer_opportunities",
+    "per_rank_actual_optimizer_writes",
+    "final_saved_tensor_count",
+    "shared_data",
+    "checkpoint_proofs",
+    "final_counts",
+    "behavior_probability_gates",
+    "scheduler_receipts",
+    "formal_config",
+    "policy_safety_mode",
+    "formal_inline_plan_sha256",
+    "formal_inline_first_five",
+    "formal_inline_all_attempts",
+    "paired_development",
+    "final_correct",
+    "final_weighted_em",
+    "final_source_em",
+    "final_source_f1",
+    "final_weighted_f1",
+    "semantics",
+    "checked_unix",
+    "initial_probe_adoption"
+  ],
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "final_saved_tensor_count": 435,
+  "final_counts": {
+    "nq": 3610,
+    "triviaqa": 11313,
+    "popqa": 14267,
+    "hotpotqa": 7405,
+    "2wikimultihopqa": 12576,
+    "musique": 2417,
+    "bamboogle": 125
+  },
+  "final_correct": {
+    "nq": 1614.0,
+    "triviaqa": 6746.0,
+    "popqa": 6484.0,
+    "hotpotqa": 2387.0,
+    "2wikimultihopqa": 3870.0,
+    "musique": 167.0,
+    "bamboogle": 18.0
+  },
+  "final_weighted_em": 0.41161796840252934,
+  "final_source_em": {
+    "nq": 0.4470914127423823,
+    "triviaqa": 0.5963051356846106,
+    "popqa": 0.45447536272517,
+    "hotpotqa": 0.3223497636731938,
+    "2wikimultihopqa": 0.3077290076335878,
+    "musique": 0.06909391808026479,
+    "bamboogle": 0.144
+  },
+  "final_source_f1": {
+    "nq": 0.5276388250721412,
+    "triviaqa": 0.672765111707508,
+    "popqa": 0.49724255713601756,
+    "hotpotqa": 0.4240896511490045,
+    "2wikimultihopqa": 0.36565437497078995,
+    "musique": 0.14833394472873765,
+    "bamboogle": 0.2266857142857143
+  },
+  "final_weighted_f1": 0.47832536451188556,
+  "cleanup": {
+    "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+    "execution_backend": "ssh_local",
+    "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+    "slurm_job_id": null,
+    "cleaned": true,
+    "checked_unix": 1791670416.4692225,
+    "scope": "only recorded project PID births and private local corpus cache"
+  },
+  "old_trainer_present": false,
+  "old_pipeline_present": false,
+  "real_cleanup_verification": {
+    "structural_accepted": true,
+    "actual_outer_updates": 200,
+    "per_rank_optimizer_opportunities": 4000,
+    "per_rank_actual_optimizer_writes": {
+      "0": 4000,
+      "1": 4000,
+      "2": 4000,
+      "3": 4000
+    },
+    "final_saved_tensor_count": 435,
+    "recorded_live": [],
+    "cache_exists": false,
+    "cleanup": {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "execution_backend": "ssh_local",
+      "execution_id": "bdee8bbc9e49487a93858b3d4ebc43fc",
+      "slurm_job_id": null,
+      "cleaned": true,
+      "checked_unix": 1791670416.4692225,
+      "scope": "only recorded project PID births and private local corpus cache"
+    },
+    "checked_unix": 1791672004.8629515
+  },
+  "verifier_repair_source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "original_runtime_source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "original_pipeline_status_preserved": "FAILED; subsequent CPU-only acceptance repair passed"
+}
