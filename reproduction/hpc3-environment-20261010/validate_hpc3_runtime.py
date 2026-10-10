@@ -43,6 +43,11 @@ result = subprocess.run([sys.executable, '-m', 'verl.trainer.main_ppo', '--confi
 (OUT / 'hydra-composed-config.log').write_text(result.stdout + result.stderr)
 if result.returncode: raise RuntimeError('Training CLI configuration failed: ' + result.stderr[-3000:])
 save('trainer-cli-validation.json', {'status': 'ACTUAL_TRAINING_CLI_COMPOSITION_PASS_NO_TRAINING', 'returncode': result.returncode})
+from hydra import initialize_config_dir, compose
+from omegaconf import OmegaConf
+with initialize_config_dir(config_dir=str(pathlib.Path(c['candidate']) / 'verl/trainer/config'), version_base=None):
+    resolved = compose(config_name='ppo_baselines', overrides=c['training_overrides'])
+(OUT / 'resolved-training-config.yaml').write_text(OmegaConf.to_yaml(resolved))
 from compiler_headers import verify
 save('compiler-header-validation.json', verify(c['compiler_headers']))
 from transformers import AutoConfig, AutoTokenizer
@@ -51,6 +56,17 @@ for p in [c['base_model'], c['teacher_path']]:
     t = AutoTokenizer.from_pretrained(p, local_files_only=True)
     assert t.encode('Question: What is the capital of France? <search>France</search>')
 save('offline-model-loading-validation.json', {'status': 'STUDENT_TEACHER_CONFIG_TOKENIZER_OFFLINE_PASS'})
+from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
+from verl import DataProto
+tokenizer = AutoTokenizer.from_pretrained(c['base_model'], local_files_only=True)
+dataset = RLHFDataset(c['val_file'], tokenizer, prompt_key=resolved.data.prompt_key,
+                     max_prompt_length=resolved.data.max_prompt_length, filter_prompts=True,
+                     return_raw_chat=resolved.data.get('return_raw_chat', False), truncation='error',
+                     cache_dir=str(BASE / 'environment/cache/verl'))
+batch = DataProto.from_single_dict(collate_fn([dataset[0], dataset[1]]))
+assert len(batch) == 2 and batch.batch['input_ids'].shape[0] == 2
+save('training-dataset-cpu-validation.json', {'status': 'ACTUAL_DATASET_TOKENIZE_COLLATE_DATAPROTO_PASS',
+      'validation_rows_after_filter': len(dataset), 'batch_shape': list(batch.batch['input_ids'].shape)})
 import ray
 from allocator_policy import worker_environment
 temp = BASE / 'environment/ray-validation'
