@@ -1,0 +1,84 @@
+{
+  "status": "STATIC_REVIEW_PASSED_NO_REMAINING_BLOCKERS",
+  "review_scope": "Independent local static review only; no remote access, weights, model execution, CPU/GPU tests, job submission or training modification.",
+  "actual_cpu_model_reload_executed": false,
+  "actual_final_acceptance_established": false,
+  "inputs": {
+    "work/tree-branpo-final-hf-20261011/verify_final_hf_3360.py": "ad263ce31eb938542dd5f63d3f70b178605876576356b6fc9a3a21cb404e4ee7",
+    "work/tree-branpo-package-8b6f99d/source/repo/reproduction/baselines/tree-validation-20261002/evidence/runtime/check_real_checkpoint.py": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97",
+    "work/tree-branpo-package-8b6f99d/manifest.json": "e2503977c8746edbc83b722d8224548f060909df9fc25d91a9cb88a947a79a21",
+    "work/tree-branpo-final-hf-20261011/EXECUTION_PLAN.md": "918ce5ff8cd7945c2137f782e5bf2d7142b8352e292eaffd3adf79ea3cc6abf2"
+  },
+  "verified_static_facts": [
+    "Pinned local package and frozen verifier hashes match wrapper constants.",
+    "Frozen verifier performs actual CPU float32 HF reload, checks loading errors and every official saved tensor shape/finiteness/delta, checks extra state keys share tensor storage, and executes a short CPU forward.",
+    "Wrapper does not restore optimizer or trainer and contains no transfer of weights to Mac.",
+    "HF and base inventories plus native/terminal JSON are compared before and after; output refusal preserves prior evidence."
+  ],
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P1",
+      "blocking": false,
+      "file": "work/tree-branpo-final-hf-20261011/verify_final_hf_3360.py",
+      "lines": [
+        48,
+        49
+      ],
+      "title": "Terminal success is not bound to job3360",
+      "problem": "The terminal predicate checks status, exit, counter and source but omits terminal.job_id. A complete result from a different job of the same source can satisfy this predicate if copied/stale at this path, while the correct3360 native step200 may already exist before3360 final evaluation/cleanup is finished. Native job_id binding does not establish the identity of the terminal result used to authorize this load.",
+      "minimal_fix": "Require terminal[\"job_id\"] == \"3360\"; verify terminal[\"terminal_evidence_sha256\"] against run/output/train200-terminal.json and validate its own job/run/source/config fields if present. Snapshot/recheck the added terminal evidence before/after. Do not require absent native.identity.run_id: the frozen native publisher does not emit it.",
+      "resolution": "FIXED_STATICALLY_CONFIRMED",
+      "resolution_evidence": "Terminal job_id is required; actual train200-terminal JSON is hash-bound to run-result and inspected for completed200/final51713/own final-report path. Checked frozen train_monitor and validation_reports: the new expected status/fields match emitted schema."
+    },
+    {
+      "id": "R2",
+      "priority": "P1",
+      "blocking": false,
+      "file": "work/tree-branpo-final-hf-20261011/verify_final_hf_3360.py",
+      "lines": [
+        50,
+        83
+      ],
+      "title": "Bound config/package/verifier bytes lack post-verification immutability checks",
+      "problem": "resolved.yaml is hashed only before the long reload. Package manifest and frozen verifier are also only checked before execution. The final receipt nevertheless presents their fixed hashes as identity bindings. A persistent config change during reload is accepted by current post checks, which cover only base, checkpoint, native and run-result.",
+      "minimal_fix": "Snapshot actual wrapper, resolved config, package manifest and verifier hashes before starting; immediately before issuing success require the same actual hashes, including CONFIG/PACKAGE_SHA/VERIFIER_SHA, and put the pre/post evidence hashes in the receipt. This retains the frozen original verifier unchanged.",
+      "resolution": "FIXED_STATICALLY_CONFIRMED",
+      "resolution_evidence": "wrapper/config/package/verifier/native/terminal receipt/terminal evidence are snapshotted, compared after reload, and retained as pre/post hash maps. Fixed pins are checked again before success."
+    },
+    {
+      "id": "R3",
+      "priority": "P1",
+      "blocking": false,
+      "file": "work/tree-branpo-final-hf-20261011/verify_final_hf_3360.py",
+      "lines": [
+        74,
+        80
+      ],
+      "title": "Tokenizer semantic identity is inferred from partial properties and three probes",
+      "problem": "Equal vocabulary, special IDs and chat_template do not ensure equivalent tokenization. tokenizer.json can differ in normalizer/pre-tokenizer/post-processor/decoder or AddedToken behavior on unprobed inputs while these checks and the three probes pass. The plan requires tokenizer semantic identity and describes full-special identity; special roles such as additional_special_tokens grouping and runtime tokenization options are not compared.",
+      "minimal_fix": "For an unchanged official tokenizer, compare canonical parsed tokenizer.json backend structures (or exact tokenizer.json bytes) and normalized relevant tokenizer configuration/special-token mappings, explicitly including AddedToken properties and special-token roles. Retain current encode/decode probes and add actual apply_chat_template checks. Account for expected serialization-only path fields rather than blindly equating tokenizer_config bytes.",
+      "resolution": "FIXED_STATICALLY_CONFIRMED",
+      "resolution_evidence": "Full actual fast-tokenizer backend, normalized config, AddedToken attributes, special-token roles and runtime options are compared; actual chat rendering/token IDs are checked in four combinations."
+    }
+  ],
+  "nonblocking_notes": [
+    "Actual model/tokenizer cold reload has not been executed. Static pass is approval of the reviewed code structure only, not successful model acceptance.",
+    "Before execution verify deployed wrapper SHA ad263ce31eb938542dd5f63d3f70b178605876576356b6fc9a3a21cb404e4ee7 and actual3360 final terminal exit0. Preserve training unchanged while it is active.",
+    "Strict normalized tokenizer_config comparison may reject legitimate serialization-added default keys. This is fail-closed: if it occurs, preserve failed evidence and inspect the exact small config diff; do not weaken backend/special-token identity or automatically retry.",
+    "Optional strengthening: verify terminal_evidence.milestones[\"200\"] equals native_manifest_sha256 and hash-check final.path against final.sha256. Current own job/path/pinned-source/config/native/HF checks address the reported R1-R3 blockers; these extra links improve the audit trail.",
+    "Two real progress observations and final remote output review remain required for eventual execution. No weights/tensors/full evaluation output may be returned to Mac."
+  ],
+  "local_static_validation": {
+    "ast_parse": true,
+    "frozen_verifier_hash_matches": true,
+    "package_hash_matches": true,
+    "reviewed_wrapper_sha_matches": true,
+    "terminal_schema_checked_against_frozen_publishers": true
+  },
+  "previous_status": "STATIC_REVIEW_BLOCKED_PENDING_MINIMAL_FIXES",
+  "reviewed_publication_commit": "289718c39ab8649e2ab44fdcca94de954a9f30e2",
+  "commit_remote_publication_verified": false,
+  "remaining_blocking_findings": [],
+  "re_review_scope": "Local source/plan/frozen publisher static reads plus AST/hash checks only; no remote access, transformers import, model load, CPU/GPU tests, job actions or source changes."
+}
