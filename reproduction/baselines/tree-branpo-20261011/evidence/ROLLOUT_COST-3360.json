@@ -1,5 +1,5 @@
 {
-  "epoch": 1791662031.154248,
+  "epoch": 1791662650.6044598,
   "job": 3360,
   "rollout_rows": [
     {
@@ -106,6 +106,30 @@
         "semantic_prefix_scan_cpu_seconds": 30.178685116989527,
         "semantic_prefix_scan_wall_seconds": 30.063275948166847
       }
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 6,
+      "candidate_outer": 6,
+      "start_epoch": 1791661820.6595063,
+      "end_epoch": 1791662144.8562992,
+      "wall_seconds": 324.1967930980027,
+      "costs": {
+        "generated_tokens": 615774,
+        "prefill_tokens": 2524652,
+        "retrieval_calls": 1731,
+        "trajectories": 2560,
+        "padded_rows": 32,
+        "context_mismatches": 0,
+        "raw_slots": 2180000,
+        "raw_emitted_tokens": 615774,
+        "raw_retained_tokens": 310266,
+        "raw_discarded_tail_tokens": 305508,
+        "raw_inherited_leaf_tokens": 110866,
+        "semantic_prefix_scan_cpu_seconds": 30.81571420600858,
+        "semantic_prefix_scan_wall_seconds": 30.705225061625242
+      },
+      "error": null
     }
   ],
   "rank_keys": [
@@ -148,5 +172,6 @@
     "returned_optimizer_calls": 20,
     "skipped_empty_minibatches": 0,
     "zero_lr_optimizer_calls_are_real": true
-  }
+  },
+  "scope": "completed rollout costs through attempt6; next attempt7 in flight excluded"
 }

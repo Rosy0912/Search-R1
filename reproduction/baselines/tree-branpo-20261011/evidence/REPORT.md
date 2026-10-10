@@ -1,6 +1,6 @@
 # Tree-GRPO BranPO sampling：执行准备与证据
 
-最新实际进展：3360已完成5/200轮，第6轮真实继续并在两次独立只读及根后续日志中确认。8rank各累计100次成功Adam、100机会、0skip，scheduler5；40份直接rank数值有限、源码8b6/configc941一致。初期五轮流程独审通过，仅表示进展，完整200轮/51713/HF冷重载与最终清理仍未验收。第5轮dev完整512=NQ256+Hotpot256，F1 24.475422%、EM 18.1640625%；生成与HTTP失败均0。Checkpoint5 manifest与driver/8worker路径已核，HF目录存在不等于冷重载成功。第五轮纯intra总体方差0.076497142471，与真实叶奖励独立复算一致。第5轮总1460.424475秒（24.340分钟），其中正常dev658.406949秒、milestone保存102.032733秒；普通第1—4轮730.258/731.303/744.609/751.794秒。未重训初始前缀、未额外评测、未停止当前实例。
+最新实际进展：3360已完成6/200轮，第7轮真实开始（measured_task pid4011013 epoch0 step7）。8rank各累计120次成功Adam、120机会、0skip，scheduler6；48份直接rank记录与6份credited attempt一致。第6轮732.061420秒（12.201分钟），纯intra总体方差0.079426817415，mixed题26.953125%；rolling global_step_5/6已保存。周期评分未更新，仍为第5轮dev512 F1 24.475422%、EM 18.1640625%。五轮初期流程独审通过，完整200/51713/HF冷重载及自身清理仍未验收。
 
 第1轮记录：8rank各20次成功Adam、20机会、0skip，scheduler0→1；首轮LR0所以参数delta为0，随后第2轮使用非零warmup LR。完整第一轮730.257855秒（12.171分钟），含rolling存档；单独采样322.530420秒，生成618857 token、1720检索调用。
 
@@ -23,3 +23,5 @@ H10018/h100-10/10.33.0.18只读探测：epoch1791656672.9163759，队列空、8�
 原30分钟automation实际状态为PAUSED，未擅自恢复；当前新goal执行继续。历史3341监控指令不能覆盖本次新授权，活动身份以本STATUS及当前真实job为准。
 
 证据：PLAN.md、MATH_REVIEW.md、CODE_REVIEW.md、INDEPENDENT_RELEASE_BINDING.json、RESOURCE_PROBE_20261011.json及STATUS.json。执行前接受不代表训练、评分或最终HF重载验收。
+
+成本观察截至epoch1791662068：已完成五轮实际3153412生成token、12690908 prefill token、8672检索调用、12800逻辑叶及136 padding rows；全卡967个5秒样本最高50208768000字节（46.76GiB），外来显存/SM最大0。Slurm运行4914秒、预约8GPU累计10.92 GPU小时，独占allocated192 CPU累计262.08 core小时（task请求32 CPU为43.68 core小时）；这是预约量而非实测CPU时间，均非最终成本。第6轮在两次根新只读epoch1791662017/2139间采样日志继续增长，未终态。
