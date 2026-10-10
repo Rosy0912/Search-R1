@@ -150,6 +150,19 @@ def collect(trainer, manager, stream, attempt_identity):
         manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
             initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
+        # Save the actual post-generation sampling boundary as well as the
+        # pre-generation one. A later backward failure must not require replay
+        # of an already completed candidate group to reconstruct its RNG.
+        from search_g1.training_state import atomic_save, driver_rng
+        after_workers = trainer.actor_rollout_wg.capture_mixed_state(
+            str(pool/(str(ordinals[0])+'-after-generation-worker-rng')))
+        after_stream = stream.state()
+        pending = after_stream['pending_source']
+        if pending is not None and after_stream['pending_offset'] == len(pending):
+            after_stream = dict(after_stream,pending_source=None,pending_offset=0)
+        atomic_save(pool/(str(ordinals[0])+'-after-generation.pt'),
+                    dict(stream=after_stream,worker_files=after_workers,
+                         driver_rng=driver_rng(),identity=identity))
         raw_policy_tokens += int(output.batch["sampling_mask"].sum().item())
         raw_retrieval_calls += sum(output.meta_info["actual_retrieval_stats"])
         for key, value in manager.timing_raw.items():

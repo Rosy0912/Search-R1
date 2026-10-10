@@ -125,7 +125,9 @@ class DataParallelPPOActor(BasePPOActor):
                 log_probs = response_log_probs.new_zeros(logits_rmpad.size(0)).masked_scatter(
                     response_positions, response_log_probs)
                 if compute_entropy:
-                    response_entropy = self.compute_entropy_from_logits(response_logits)
+                    from search_g1.entropy_memory import entropy_metric
+                    response_entropy = entropy_metric(response_logits,self.config.entropy_coeff,
+                                                      self.compute_entropy_from_logits)
                     entropy_rmpad = response_entropy.new_zeros(logits_rmpad.size(0)).masked_scatter(
                         response_positions, response_entropy)
 
@@ -164,7 +166,11 @@ class DataParallelPPOActor(BasePPOActor):
                 logits = output.logits[:, -response_length - 1:-1].float()  # (bsz, response_length, vocab)
                 logits.div_(temperature)
                 log_probs = logprobs_of_labels_v2(logits, micro_batch['responses'])
-                entropy = verl_F.entropy_from_logits(logits) if compute_entropy else None
+                if compute_entropy:
+                    from search_g1.entropy_memory import entropy_metric
+                    entropy = entropy_metric(logits,self.config.entropy_coeff,verl_F.entropy_from_logits)
+                else:
+                    entropy = None
 
             if (os.environ.get('SEARCH_G1_PROFILE') == 'common8'
                     and self.compute_precision.compute_dtype == 'bfloat16'
