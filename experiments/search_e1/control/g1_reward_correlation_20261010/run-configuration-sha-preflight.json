@@ -1,0 +1,7 @@
+{
+  "observed_utc": "2026-10-10T04:32:04.913928+00:00",
+  "rc": 0,
+  "stdout": "943e31dcfec0023a38ee4bb5f906d0cb06af578d81a9ba928c1cc73d62af2b25  /data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/run-manifest.json\n7269d3ca6c9efc337c08ce20c0516d2424a00e64eea0d068a6668901b32e4f12  /data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/resolved-training-config.json\n",
+  "stderr": "client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\r\n",
+  "readonly": true
+}
