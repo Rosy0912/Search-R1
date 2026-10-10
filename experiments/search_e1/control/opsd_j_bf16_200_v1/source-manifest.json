@@ -1,0 +1,101 @@
+{
+  "schema": "opsd-ablation-helper-source-v1",
+  "files": {
+    "__init__.py": {
+      "bytes": 70,
+      "sha256": "c4c8136e2c34a5ffa9c60e74c1b68fdc5c499372cc4ee2564ed019faaddc8438"
+    },
+    "audit_state.py": {
+      "bytes": 4048,
+      "sha256": "7bfde1c08c421ba50fafa936c39a53305bc0966c06fdb8a58514708630bafe8a"
+    },
+    "checkpoint.py": {
+      "bytes": 16150,
+      "sha256": "41afd86049348ce0330d7ab0e491b507f1aea9ce97d324d9de7a4209f0f227de"
+    },
+    "cohort_v1.py": {
+      "bytes": 6162,
+      "sha256": "b442bace9ba73396f0f0ae1ead4100a11217d026958f79166ce5b0aa29abd250"
+    },
+    "controller.py": {
+      "bytes": 42658,
+      "sha256": "39e6a8bef5c246fae2e58718cf4664c1ad552d5471ab9436682a824c8865e626"
+    },
+    "gates.py": {
+      "bytes": 25269,
+      "sha256": "f26168d0eb84f5af7e61aff60e429d3d7e4bf7431bb5f752bbba613512059039"
+    },
+    "launch_continuation.py": {
+      "bytes": 6966,
+      "sha256": "4004f20bdea66ad5e89c10355bda2678b517a4ee24d1b01282509215829a89cd"
+    },
+    "memory_observer.py": {
+      "bytes": 4843,
+      "sha256": "e4dc1d824a6a6739c814ca7b981c38e626a953a66d9540ad82017a6a149601ae"
+    },
+    "miner_v1.py": {
+      "bytes": 10701,
+      "sha256": "b66909664f58c7a481ac102115a54a95da0c2799ecc84adb6b94cf1a1056f55a"
+    },
+    "objective.py": {
+      "bytes": 11607,
+      "sha256": "b54324db304a34a3be02d8d5269d1f6bb6968207ede386d0e86138e0fa787892"
+    },
+    "owned_process_audit.py": {
+      "bytes": 13495,
+      "sha256": "2a66a863f7170035daea3d9a5f1d7a34106b12d12799f337021bf63747991e26"
+    },
+    "precision.py": {
+      "bytes": 7657,
+      "sha256": "7dd23d6378c91cb33c730241fe5cd63618768aa95eea6136bf571a7cb64358bc"
+    },
+    "prepare.py": {
+      "bytes": 13872,
+      "sha256": "f8996e32f90da966d717c30e3bfd1c7cbdf0611479747b8d003710ce744aa9bb"
+    },
+    "prepare_bundle.py": {
+      "bytes": 5374,
+      "sha256": "48baf76ad27fcb94db76b08be403b1a2c6377ceb4bd66a4402f716ab9b19c5e4"
+    },
+    "retry_state.py": {
+      "bytes": 3380,
+      "sha256": "f3b4abe482b1dbc430959d4a189f282cdfeeca7372e57b78a9492c14e836c8fe"
+    },
+    "sampling.py": {
+      "bytes": 21573,
+      "sha256": "0b2a0729df26da44a7d339a3d8dd283fc3428e82265c4624fa34923f71aa6889"
+    },
+    "scoring.py": {
+      "bytes": 4488,
+      "sha256": "77bcc0e1f2d86bca3fd9c4911240f32727ad9219fd95cfcc2084ec5672fb29e3"
+    },
+    "state_storage.py": {
+      "bytes": 2111,
+      "sha256": "0277bb1acd4fef9e3fc973d1697b1b5afcfd4b0a6418105dae4e560af9527dbd"
+    },
+    "stop_delete_old_pr.py": {
+      "bytes": 3352,
+      "sha256": "087be5adb9cfacd56ee986b68a75966563d237067d281d3f2f809c77abdd77da"
+    },
+    "targets.py": {
+      "bytes": 4918,
+      "sha256": "f0a6e4d7d08d443c01e553ade88d38a8f5a6bb8d1f1f0be5d687b38df95afb74"
+    },
+    "teacher_diag.py": {
+      "bytes": 11030,
+      "sha256": "ec3ae56c11477ef530ad5fb243151e6f980d3e75583d0b806a8ed8916ec46c07"
+    },
+    "trainer.py": {
+      "bytes": 54300,
+      "sha256": "4c2e380a776654572fded2caad032e5ba201a0f34631183b6a769505dd41c9ef"
+    },
+    "vocabulary_dump.py": {
+      "bytes": 3631,
+      "sha256": "f42fee77297897b1e58c066d12510422ea639eaabf1b2d359ddd0c692b923e7b"
+    },
+    "weights_v1.py": {
+      "bytes": 1147,
+      "sha256": "324960d485b53ad3171f4e727278f5d1bcefc125f7513cce20a7daad018637a1"
+    }
+  }
+}

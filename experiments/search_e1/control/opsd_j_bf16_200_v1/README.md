@@ -1,0 +1,5 @@
+# BF16 J-minus-P total200 continuation
+
+Human 2026-10-10 correction: five rounds are initial acceptance, not total budget. Continue original run d040ebac9fa24ec28d43976299fd4f71 at outer5/index5 (sixth actual round), with the accepted CP50 weights/full Adam/RNG/cursor. Total200 includes the preserved original first5. No512 evaluation, repeated tests, optimizer reset or prefix regeneration. BF16 R/W/M science is unchanged.
+
+New immutable config/source/cohort extends budget to200. Only the exact original CP50 path+SHA can cross the config revision; its original eight saved states remain unmodified and are restored by native trainer. New checkpoints use the new config SHA. Original first ten cohorts must equal the seed42 prefix. Existing first5 output/checkpoints/logs remain at the original root; continuation root contains outer indices5–199. Independent CPU memory observer cannot be a controller descendant. Correct BF16 merge receipt check uses precision, not legacy variant J cast expectation.
