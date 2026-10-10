@@ -1,0 +1,9 @@
+# 四组消融先续训，补测不再阻塞
+
+2026-10-10最新人工要求直接继续训练。原512题补测采用4卡、每卡一个HF进程逐题greedy，两批各256题；训练使用vLLM批量生成。这种实现让评测明显更慢。补测第一批256题完成后，读取退出worker的/proc/environ发生PermissionError，实际控制器退出1；256题不是完整512评测，也没有新Adam更新。
+
+从G_POS已完成15个outer、Adam150的完整checkpoint续第16轮，原四组配置和训练代码不改。4rank、micro1、每rank梯度累积8、global32以及FP32 outer-old恢复照旧。新入口只调整CPU执行顺序：共同zero评测复用已验收结果，每组raw15/25权重保留，写明evaluation_pending=true且accepted=false；四组训练依次继续，不让补测阻断后续组。
+
+新调度源码ed7f9769564436b115e1a58812f7f893f7dce8e2；HKUST4入口与配置见configs/signal-weight-training-priority-20261010。启动时已确认上一失败进程退出、仅原检索占用自有GPU7；原失败输出和状态保留。新supervisor1861244/controller1861436。后台启动不算训练完成，后续继续核实采样和真实更新。
+
+八次完整512测试及最终结果仍待完成，不能用256题补测、训练EM或四组训练完成状态代替效果验收。原239/512共同zero仅适用于原HF协议；今后若改为vLLM批量评测，须统一端点条件并说明协议差异，不能混用指标。

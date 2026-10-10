@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+export CUDA_VISIBLE_DEVICES="" E1_RUN_ID=signal-study-training-priority-4b8d40b5cdab45d7b9f984d8f63f30db PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+exec /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python /weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-priority-ed7f976/opsd_signal_weight_train_priority_v1/entry.py --mode study --recovery-ref /weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/training-priority-input-ed7f976.json --recovery-sha256 1e8f2d5155f0be4ed78ed2dda0f9fe9ab879979afa32362d828906aee1756557 -- --study-manifest /weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json --study-manifest-sha256 86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e --resume
