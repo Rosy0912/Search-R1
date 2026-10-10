@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import threading
 from hpc3_owned_processes import OwnedProcesses, members, identity
 
 row = next(x.split(':', 2) for x in pathlib.Path('/proc/self/cgroup').read_text().splitlines()
@@ -22,7 +23,21 @@ try:
     resistant = owner.spawn([sys.executable, '-c',
                              'import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(60)'], log.with_name('resistant.log'))
     time.sleep(1)
-    owner.cleanup()
+    stop = threading.Event()
+    errors = []
+    def poll_concurrently():
+        while not stop.is_set():
+            resistant.poll()
+            stop.wait(.01)
+    def guardian_cleanup():
+        try: owner.cleanup()
+        except BaseException as e: errors.append(repr(e))
+    poller = threading.Thread(target=poll_concurrently)
+    guardian = threading.Thread(target=guardian_cleanup)
+    poller.start(); guardian.start()
+    guardian.join(45)
+    stop.set(); poller.join(10)
+    assert not guardian.is_alive() and not poller.is_alive() and not errors, errors
     assert baseline.poll() is None, 'Protected baseline was signalled'
     assert resistant.returncode is not None
     assert not (members(scope) - owner.baseline)
@@ -67,6 +82,7 @@ try:
             os.waitpid(protected_child, 0)
     print(json.dumps({'status': 'OWN_CHILD_TREE_CLEANUP_PASS_BASELINE_PROTECTED',
                       'job': os.environ['SLURM_JOB_ID'], 'unknown_ancestry_refused_and_owned_resumed': True,
+                      'guardian_thread_cleanup_with_concurrent_poll_pass': True,
                       'cleanup': owner.cleanup_record}))
 finally:
     baseline.terminate()

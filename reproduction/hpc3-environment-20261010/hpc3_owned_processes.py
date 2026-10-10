@@ -12,6 +12,33 @@ import subprocess
 import threading
 import time
 
+REAP_LOCK = threading.RLock()
+_installed = False
+
+def protect_controller_lifecycle():
+    """Serialize Python child creation/reaping against identity-based signalling.
+
+    Popen._internal_poll captures waitpid in a default argument, so guarding only
+    os.waitpid is insufficient. Guard its complete poll/wait paths as well.
+    This controller runs no Ray/multiprocessing or foreign SIGCHLD handler.
+    """
+    global _installed
+    if _installed:
+        return
+    if signal.getsignal(signal.SIGCHLD) != signal.SIG_DFL:
+        raise RuntimeError('Unexpected controller SIGCHLD handler')
+    def guarded(function):
+        def call(*args, **kwargs):
+            with REAP_LOCK:
+                return function(*args, **kwargs)
+        return call
+    for name in ('__init__', '_internal_poll', '_wait'):
+        setattr(subprocess.Popen, name, guarded(getattr(subprocess.Popen, name)))
+    for name in ('waitpid', 'wait', 'wait3', 'wait4'):
+        if hasattr(os, name):
+            setattr(os, name, guarded(getattr(os, name)))
+    _installed = True
+
 
 def identity(pid):
     p = pathlib.Path('/proc') / str(pid)
@@ -27,6 +54,7 @@ def members(scope):
 
 class OwnedProcesses:
     def __init__(self, scope, relative, cwd=None):
+        protect_controller_lifecycle()
         libc = ctypes.CDLL(None, use_errno=True)
         if libc.prctl(36, 1, 0, 0, 0) != 0:
             raise OSError(ctypes.get_errno(), 'Cannot enable child subreaper')
@@ -64,7 +92,7 @@ class OwnedProcesses:
                     continue
                 if not self._owned(row):
                     raise RuntimeError('Refuse to signal a process outside own Slurm step')
-                # Parent is this single-threaded subreaper or a stopped parent.
+                # Controller Python reaping is locked, or parent is stopped.
                 # Neither can reap the target while its identity is checked.
                 again = identity(pid)
                 if (again['ppid'], again['starttime_ticks']) != (row['ppid'], row['starttime_ticks']):
@@ -83,10 +111,12 @@ class OwnedProcesses:
         return frozen
 
     def cleanup(self):
-        if len(threading.enumerate()) != 1:
-            raise RuntimeError('Drain controller threads before child cleanup')
+        with REAP_LOCK:
+            return self._cleanup_locked()
+
+    def _cleanup_locked(self):
         began = time.monotonic()
-        self.cleanup_record = {'backend': 'SUBREAPER_STOPPED_PARENT_IDENTITY',
+        self.cleanup_record = {'backend': 'SUBREAPER_REAP_LOCK_STOPPED_PARENT_IDENTITY',
                                'signals': [], 'remaining': [], 'actual_cgroup_empty': False}
         frozen = {}
         self._frozen = frozen
