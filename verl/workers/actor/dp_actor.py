@@ -237,6 +237,8 @@ class DataParallelPPOActor(BasePPOActor):
         use_dynamic_bsz = data.meta_info['use_dynamic_bsz']
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids']
+        if 'selection_fallback' in data.batch:
+            select_keys.append('selection_fallback')
         batch = data.select(batch_keys=select_keys).batch
 
         if use_dynamic_bsz:
@@ -400,6 +402,8 @@ class DataParallelPPOActor(BasePPOActor):
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:
             select_keys.append('ref_log_prob')
+        if 'selection_fallback' in data.batch:
+            select_keys.append('selection_fallback')
         batch = data.select(batch_keys=select_keys).batch
 
         # Split to make minibatch iterator for updating the actor
@@ -550,6 +554,11 @@ class DataParallelPPOActor(BasePPOActor):
             pg_loss,clipfrac,ppo_kl=core_algos.compute_policy_loss(old_log_prob=old,log_prob=new,
                 advantages=advantages,eos_mask=mask,cliprange=self.config.clip_ratio,
                 dual_clip=float(safety.dual_clip) if safety_enabled else None)
+            if 'selection_fallback' in micro:
+                from search_g1.source_loss_audit import contributions
+                append_to_dict(metrics,contributions(old,new,advantages,mask,
+                    micro['selection_fallback'],self.config.clip_ratio,
+                    float(safety.dual_clip) if safety_enabled else None))
             entropy_loss=verl_F.masked_mean(entropy,mask)
             policy_loss=pg_loss-entropy_loss*self.config.entropy_coeff
             numerical_fields=dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,

@@ -711,6 +711,20 @@ class RayPPOTrainer(object):
         actor_remote_path = None if self.config.trainer.default_hdfs_dir is None else os.path.join(
             self.config.trainer.default_hdfs_dir, 'actor')
         self.actor_rollout_wg.save_checkpoint(actor_local_path, actor_remote_path)
+        stream = getattr(self, 'mixed_stream', None)
+        if stream is not None:
+            from pathlib import Path
+            from search_g1.training_state import atomic_save, driver_rng
+            state_dir = Path(actor_local_path)/'training_state'
+            proofs = self.actor_rollout_wg.capture_mixed_state(str(state_dir), checkpoint=True)
+            driver = atomic_save(state_dir/'driver.pt', dict(completed_outer=self.global_steps,
+                candidate_stream=stream.state(), rng=driver_rng(),
+                probe_version=self.reward_fn.expected_probe_version))
+            import json
+            with (state_dir/'manifest.json').open('x') as f:
+                json.dump(dict(completed_outer=self.global_steps,worker_files=proofs,driver_file=driver,
+                    scope='actual optimizer/scheduler/RNG/candidate stream; model in sibling HF files; reload acceptance pending'),f,indent=2)
+                f.flush();os.fsync(f.fileno())
 
         if self.use_critic:
             critic_local_path = os.path.join(self.config.trainer.default_local_dir, 'critic',
@@ -800,6 +814,7 @@ class RayPPOTrainer(object):
         if self.config.data.get("mixed_first_selection", False):
             from search_g1.mixed_runtime import CandidateStream
             mixed_stream = CandidateStream(self.train_dataloader)
+            self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
 
         # start training loop
@@ -968,7 +983,8 @@ class RayPPOTrainer(object):
                     if mixed_stream is not None:
                         sources = batch.non_tensor_batch['selection_source']
                         response_width = batch.batch['responses'].shape[-1]
-                        response_mask = batch.batch['attention_mask'][:, -response_width:].bool()
+                        response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
+                            else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
                         for source in ('mixed', 'all_correct_fallback'):
                             rows = torch.as_tensor(sources == source, device=rewards.device)

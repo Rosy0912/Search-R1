@@ -129,9 +129,11 @@ def collect(trainer, manager, stream, attempt_identity):
         repeated = parent.repeat(repeat_times=5,interleave=True)
         gen = repeated.pop(batch_keys=['input_ids','attention_mask','position_ids'])
         attach_generation_identity(gen, identity, do_sample=True)
+        worker_proofs = trainer.actor_rollout_wg.capture_mixed_state(
+            str(pool/(str(ordinals[0])+'-worker-rng')))
         torch.save({'stream':stream.state(),'reserved':selector.reserved,
                     'identity':identity,'torch_rng':torch.get_rng_state(),
-                    'numpy_rng':np.random.get_state(),'worker_sampling_rng_status':'requires actual worker evidence'},
+                    'numpy_rng':np.random.get_state(),'worker_sampling_state_files':worker_proofs},
                    pool/(str(ordinals[0])+'-before-generation.pt'))
         manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
@@ -191,4 +193,6 @@ def collect(trainer, manager, stream, attempt_identity):
         json.dump(audit,f);f.flush();os.fsync(f.fileno())
     parents = parents.repeat(repeat_times=5,interleave=True)
     parents.pop(batch_keys=['input_ids','attention_mask','position_ids'])
+    parents.batch['selection_fallback'] = torch.as_tensor(
+        parents.non_tensor_batch['selection_source'] == 'all_correct_fallback')
     return parents, output, identity, audit

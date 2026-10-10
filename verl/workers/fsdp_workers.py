@@ -626,6 +626,12 @@ class ActorRolloutRefWorker(Worker):
         return output
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def capture_mixed_state(self, directory, checkpoint=False):
+        assert self._is_actor and self._is_rollout
+        from search_g1.training_state import capture_worker
+        return capture_worker(self,directory,checkpoint=checkpoint)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
         assert self._is_actor
         import torch
