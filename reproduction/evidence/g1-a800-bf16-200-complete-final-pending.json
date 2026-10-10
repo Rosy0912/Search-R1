@@ -1,0 +1,32 @@
+{
+  "checked_unix": 1791656215.779678,
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "completed_outers": 200,
+  "successful_adam_writes": 4000,
+  "processed_opportunities": 4000,
+  "reward_window": {
+    "steps": [
+      86,
+      200
+    ],
+    "count": 115,
+    "mean": 0.6248600389646447,
+    "min": 0.500469446182251,
+    "max": 0.7357940673828125,
+    "latest": 0.7357940673828125
+  },
+  "logged_final_scoring_batches": 62,
+  "final_identity_exists": false,
+  "errors": {
+    "Traceback (most recent call last)": 0,
+    "CUDA out of memory": 0
+  },
+  "latest_dev512": {
+    "step": 200,
+    "correct": 212,
+    "count": 512,
+    "em": 0.4140625,
+    "f1": 0.49615730406746034
+  },
+  "gpu_scope": "No new GPU sample in this report; prior bounded tail is not full run cumulative peak"
+}
