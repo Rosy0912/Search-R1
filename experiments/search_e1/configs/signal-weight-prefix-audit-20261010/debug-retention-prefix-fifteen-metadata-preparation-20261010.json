@@ -1,0 +1,133 @@
+{
+  "collector": {
+    "bytes": 13476,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix-fifteen-metadata-collector-20261010.py",
+    "sha256": "8ebaa76f9aeedeeca0536c5c7961b195b83939ad73901ce2c569a9084219ae4e"
+  },
+  "collector_executed": false,
+  "known_new_entries": [
+    {
+      "end_checkpoint": {
+        "bytes": 28980,
+        "ctime_ns": 1791589735716123776,
+        "device": 2081,
+        "inode": 48174387,
+        "mtime_ns": 1791589735692123403,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000140-outer-00013/manifest.json",
+        "sha256": "1e2d572bad8baa0f814020550600d7ad52562691c776c368cb43c49761590b97"
+      },
+      "outer_complete": {
+        "bytes": 4166,
+        "ctime_ns": 1791589736460135305,
+        "device": 2081,
+        "inode": 48174392,
+        "mtime_ns": 1791589736432134872,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/training/outer-complete.json",
+        "sha256": "ab5a24a2a6aaf9b0f932e7528a9ccfaa10f476e8a2d66d5299558a7e6f37779c"
+      },
+      "outer_index": 13,
+      "outer_manifest": {
+        "bytes": 59677,
+        "ctime_ns": 1791589329941682393,
+        "device": 2081,
+        "inode": 48173575,
+        "mtime_ns": 1791589329941682393,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/outer-manifest.json",
+        "sha256": "f6b63fbc19704f028c1c7f1a3701c582c07ff37ada51205ec1135680b08a2a68"
+      },
+      "sampling_complete": {
+        "bytes": 1420303,
+        "ctime_ns": 1791589329885681477,
+        "device": 2081,
+        "inode": 48173574,
+        "mtime_ns": 1791589329885681477,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/sampling-complete.json",
+        "sha256": "56d8ef8d0c34b20ec89966da8956f46d7565c84b95c1fcaa68527845480ef7a0"
+      },
+      "variant": "G_POS"
+    },
+    {
+      "end_checkpoint": {
+        "bytes": 28980,
+        "ctime_ns": 1791590780710904427,
+        "device": 2081,
+        "inode": 48175279,
+        "mtime_ns": 1791590780678904044,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000150-outer-00014/manifest.json",
+        "sha256": "fda38c2a8a60fc13512c8a3b29ae2a2c5b4ba02aa732104a02257cc478ba4050"
+      },
+      "outer_complete": {
+        "bytes": 4166,
+        "ctime_ns": 1791590781598915052,
+        "device": 2081,
+        "inode": 48175284,
+        "mtime_ns": 1791590781574914765,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/training/outer-complete.json",
+        "sha256": "d01eb7bae2c3b7d28e82c67e4f14e9aeb8ae0d848a807dd99b4e64996b9bc7eb"
+      },
+      "outer_index": 14,
+      "outer_manifest": {
+        "bytes": 59677,
+        "ctime_ns": 1791590316141837852,
+        "device": 2081,
+        "inode": 48174480,
+        "mtime_ns": 1791590316141837852,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/outer-manifest.json",
+        "sha256": "c09ad4f494136b0c3ec557588cf02d09d0095b271fa60b94342d93364478c20e"
+      },
+      "sampling_complete": {
+        "bytes": 1480017,
+        "ctime_ns": 1791590316101837473,
+        "device": 2081,
+        "inode": 48174479,
+        "mtime_ns": 1791590316101837473,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/sampling-complete.json",
+        "sha256": "4a9e9d374ae912b4975257ac1da9e280f9608804d53148190255ae88d51624aa"
+      },
+      "variant": "G_POS"
+    }
+  ],
+  "missing_refs": [
+    {
+      "outer_index": 13,
+      "teacher_parent_actual_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/teacher-diagnostics/complete.json",
+      "trainer_exit_actual_glob": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00013/trainer-logs/attempt-*-exit.json",
+      "trainer_exit_selection": "Exactly one actual accepted original native verify_exit training-running/count1/wait0/full-release receipt; never infer actualwait from absence or guessed attempt number."
+    },
+    {
+      "outer_index": 14,
+      "teacher_parent_actual_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/teacher-diagnostics/complete.json",
+      "trainer_exit_actual_glob": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00014/trainer-logs/attempt-*-exit.json",
+      "trainer_exit_selection": "Exactly one actual accepted original native verify_exit training-running/count1/wait0/full-release receipt; never infer actualwait from absence or guessed attempt number."
+    }
+  ],
+  "no_new_scientific_or_gpu_interface": true,
+  "node_queried": false,
+  "original_rich13_request": {
+    "bytes": 27278,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/work/opsd-signal-weight-plan-20261009/experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix-thirteen-rich-v2-request.json",
+    "sha256": "9698920e42925cbb0ad37aafce360d0cf1ffee8f7004c95506c734107cb123da"
+  },
+  "prepared": true,
+  "previous_native_rich_checkpoint": {
+    "bytes": 28980,
+    "ctime_ns": 1791588799792372155,
+    "device": 2081,
+    "inode": 48173491,
+    "mtime_ns": 1791588799768371693,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000130-outer-00012/manifest.json",
+    "sha256": "97fbeec28a87e30f5376dc955aafc6cac2755267b2e775c2a3aa3961710f031f"
+  },
+  "prior13_entries_and_headers_unchanged": true,
+  "publication_pending": true,
+  "ready_for_retention_cli": false,
+  "require_root_publication_before_collection": true,
+  "schema": "opsd-signal-retention-prefix15-static-preparation-v1",
+  "scope": "Local metadata/static preparation only; final immutable prefix15 request awaits four actual refs, then original9e audit.",
+  "source_pins": {
+    "bytes": 46432,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/train-input-bridge-fifteen-source-pins-v2-20261010.json",
+    "sha256": "801907aeb32ab550636ea09e106f1fd6f792ab6a4232cfd254897a7f7e5d3f2e"
+  },
+  "static_parse_only": true
+}
