@@ -16,7 +16,7 @@ Inputs remain remote: officialaa8e725 base, run/checkpoints/actor/global_step_20
 
 ## Exact execution entry (after independent context-free review and terminal3360 exit0)
 
-Standalone wrapper file: `verify_final_hf_3360.py`, SHA256 `f74282095f406c5c7dc9941dc7d61207cc30c0eae5ed2e0968ce88abdba7d70c`. Only this small reviewed code file may be copied through the existing management route into `/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/final-acceptance-tools-3360/verify_final_hf_3360.py`. Do not add it to or alter the frozen candidate package. Record code publication commit and independent review SHA in the external final audit.
+Standalone wrapper file: `verify_final_hf_3360.py`, SHA256 `ad263ce31eb938542dd5f63d3f70b178605876576356b6fc9a3a21cb404e4ee7`. Only this small reviewed code file may be copied through the existing management route into `/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/final-acceptance-tools-3360/verify_final_hf_3360.py`. Do not add it to or alter the frozen candidate package. Record code publication commit and independent review SHA in the external final audit.
 
 Remote CPU command, invoked through the existing `ssh_retained18.route(command)` after the file's actual deployed SHA is verified:
 
@@ -34,3 +34,13 @@ Use existing same-node authorized CPU execution boundary after terminal training
 Wrapper outputs only a small final bound JSON to stdout. Save that receipt to local `outputs/tree-branpo/FINAL-HF-3360.json` only after successful actual completion and two real verifier progress observations (log/file byte advance and terminal return). Detailed full-HF and tokenizer reports remain under remote run/output/final-hf-acceptance. No model parameter, optimizer tensor or logit data crosses the management route.
 
 Static preparation checks passed: AST; ordinary file/full directory identity helper; exact JSON hash pin; refused overwrite/hash drift. These are small synthetic metadata checks, not claims of actual model reload. Final HF acceptance has not executed. Root must perform independent source review, deploy-code SHA verification, terminal prerequisites, actual CPU execution and final result review.
+
+## Independent review R1–R3 minimal corrections
+
+R1: run-result.job_id must equal3360; its terminal_evidence_sha256 is bound to actual output/train200-terminal.json, which must report completed200/final51713 and own final-validation path. Present job/run/source/config fields are validated; no absent native.identity.run_id is invented. Terminal evidence is part of pre/post file checks.
+
+R2: actual wrapper, resolved.yaml, package manifest, frozen verifier, native manifest, run-result and terminal-evidence hashes are captured before cold loading and compared again immediately before success. Receipt retains both complete hash maps; CONFIG/PACKAGE_SHA/VERIFIER_SHA remain explicit expected pins.
+
+R3: canonical actual fast-tokenizer backend JSON (normalizer/pre-tokenizer/post-processor/decoder/AddedToken backend included), normalized tokenizer config, complete AddedToken content/single_word/lstrip/rstrip/normalized/special properties, complete special-token role mapping and runtime tokenization options are compared. Only known serialization locations/revision fields name_or_path/_name_or_path/tokenizer_file/_commit_hash are ignored in raw config; no tokenizer behavior field is ignored. Actual apply_chat_template rendered text and token IDs compare with/without generation prompt; existing encode/decode probes retained.
+
+Revalidation performed only on AST and small synthetic metadata/AddedToken-like objects, including equivalent serialization paths and detected behavioral normalized-flag drift; no transformers import/model/remote/CPU job executed. Root's existing independent reviewer must re-review corrected version before actual final HF execution.

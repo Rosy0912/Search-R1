@@ -36,6 +36,30 @@ def identity(path):
  return dict(files=files,sha256=hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest())
 def write_once(path,value):
  with path.open('x') as out:json.dump(value,out,indent=2,allow_nan=False);out.flush();os.fsync(out.fileno())
+def normalize_tokenizer_value(value):
+ # AddedToken behavior must be retained, not reduced to its string content.
+ fields=('content','single_word','lstrip','rstrip','normalized','special')
+ if all(hasattr(value,key) for key in fields):return {key:getattr(value,key) for key in fields}
+ if isinstance(value,dict):return {str(key):normalize_tokenizer_value(item) for key,item in value.items()}
+ if isinstance(value,(list,tuple)):return [normalize_tokenizer_value(item) for item in value]
+ require(value is None or isinstance(value,(str,int,float,bool)),'Unexpected tokenizer property type')
+ return value
+
+def normalized_tokenizer_config(path):
+ value,_=read_json(path/'tokenizer_config.json')
+ # These fields locate serialized files/revisions; they do not alter tokenization.
+ ignored=('name_or_path','_name_or_path','tokenizer_file','_commit_hash')
+ return normalize_tokenizer_value({key:item for key,item in value.items() if key not in ignored})
+
+def tokenizer_semantics(tokenizer):
+ require(hasattr(tokenizer,'backend_tokenizer'),'Fast tokenizer backend unavailable')
+ options=('padding_side','truncation_side','model_max_length','clean_up_tokenization_spaces',
+          'split_special_tokens','add_bos_token','add_prefix_space','errors')
+ return dict(backend=json.loads(tokenizer.backend_tokenizer.to_str()),
+     full_special_roles=normalize_tokenizer_value(tokenizer.special_tokens_map_extended),
+     added_tokens=normalize_tokenizer_value(tokenizer.added_tokens_decoder),
+     runtime_options={key:normalize_tokenizer_value(getattr(tokenizer,key,None)) for key in options})
+
 def main():
  require(socket.gethostname().split('.')[0]=='h100-10','Only retained18 same-node verification')
  require(os.environ.get('CUDA_VISIBLE_DEVICES')=='','CPU acceptance must explicitly hide all GPUs')
@@ -46,9 +70,17 @@ def main():
  require(package['code_commit']==SOURCE and package['files'][VERIFIER_REL]==VERIFIER_SHA,'Frozen package/verifier differs')
  require(file_sha(PACKAGE/VERIFIER_REL)==VERIFIER_SHA,'Frozen full-HF verifier bytes changed')
  terminal,terminal_sha=read_json(RUN/'run-result.json')
- require(terminal['status']=='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE' and terminal['training_body_exit_code']==0 and terminal['actual_completed_outer']==200 and terminal['code_commit']==SOURCE,'Wait for exact3360 terminal200exit0; never stop or modify trainer')
- require(file_sha(RUN/'resolved.yaml')==CONFIG,'Actual3360 resolved config differs')
- native,native_sha=read_json(NATIVE);ids=native['identity']
+ require(terminal['job_id']=='3360' and terminal['status']=='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE' and terminal['training_body_exit_code']==0 and terminal['actual_completed_outer']==200 and terminal['code_commit']==SOURCE,'Wait for exact3360 terminal200exit0; never stop or modify trainer')
+ terminal_evidence_path=RUN/'output/train200-terminal.json'
+ terminal_evidence,terminal_evidence_sha=read_json(terminal_evidence_path,terminal['terminal_evidence_sha256'])
+ expected_terminal_identity=dict(job_id='3360',run_id=RUN.name,code_commit=SOURCE,source_commit=SOURCE,config_sha256=CONFIG)
+ require(all(terminal_evidence[key]==value for key,value in expected_terminal_identity.items() if key in terminal_evidence),'Terminal evidence present identity fields differ')
+ require(terminal_evidence['status']=='FRESH_BRANPO200_JSON_ACCOUNTING_COMPLETE_PENDING_INDEPENDENT_ACCEPTANCE' and terminal_evidence['rank_accounting']['completed_outer']==200 and terminal_evidence['final']['evaluated_rows']==51713 and terminal_evidence['final']['phase']=='final','Terminal evidence lacks completed200/final51713')
+ require(Path(terminal_evidence['final']['path']).resolve().is_relative_to((RUN/'output/validation-cost').resolve()),'Terminal final report outside own3360 run')
+ binding_paths=dict(wrapper=Path(__file__).resolve(),resolved_config=RUN/'resolved.yaml',package_manifest=PACKAGE/'manifest.json',frozen_verifier=PACKAGE/VERIFIER_REL,native_manifest=NATIVE,terminal_receipt=RUN/'run-result.json',terminal_evidence=terminal_evidence_path)
+ bindings_before={name:file_sha(path) for name,path in binding_paths.items()}
+ require(bindings_before['resolved_config']==CONFIG and bindings_before['package_manifest']==PACKAGE_SHA and bindings_before['frozen_verifier']==VERIFIER_SHA and bindings_before['terminal_receipt']==terminal_sha and bindings_before['terminal_evidence']==terminal_evidence_sha,'Actual3360 bound inputs differ')
+ native,native_sha=read_json(NATIVE,bindings_before['native_manifest']);ids=native['identity']
  require(native['status']=='COMPLETE_SAME_WORLD_STATE_SAVED' and ids['job_id']=='3360' and ids['code_commit']==SOURCE and ids['config_sha256']==CONFIG and ids['completed_step']==200 and ids['actual_update_limit']==200,'Native checkpoint200 source/config/counter mismatch')
  require(ids['data_identity']==package['common_data_identity'] and ids['model_identity']==package['model_identity']['sha256'],'Native split/official model differs')
  require(Path(native['hf_checkpoint']).resolve()==CHECKPOINT.resolve(),'Native HF path differs')
@@ -71,16 +103,25 @@ def main():
  from transformers import AutoTokenizer
  base_tok=AutoTokenizer.from_pretrained(BASE,local_files_only=True)
  tok=AutoTokenizer.from_pretrained(CHECKPOINT,local_files_only=True)
+ require(normalized_tokenizer_config(BASE)==normalized_tokenizer_config(CHECKPOINT),'Tokenizer semantic config differs (only serialization paths ignored)')
+ require(tokenizer_semantics(base_tok)==tokenizer_semantics(tok),'Full tokenizer backend/AddedToken/special-role/runtime behavior differs')
  special=lambda t:dict(bos=t.bos_token_id,eos=t.eos_token_id,pad=t.pad_token_id,unk=t.unk_token_id,all_special_tokens=t.all_special_tokens,all_special_ids=t.all_special_ids,chat_template=t.chat_template)
  require(base_tok.get_vocab()==tok.get_vocab() and special(base_tok)==special(tok),'Full tokenizer/special/PAD/chat identity differs')
  probes=['The capital of France is','你好，世界。','<|im_start|>user\nFind an answer.<|im_end|>']
  for text in probes:
   b=base_tok.encode(text,add_special_tokens=True);c=tok.encode(text,add_special_tokens=True)
   require(b==c and base_tok.decode(b)==tok.decode(c),'Actual cold tokenizer encode/decode differs')
- tokenizer=dict(status='ACTUAL_COLD_TOKENIZER_IDENTITY_VERIFIED',vocab_equal=True,special_pad_bos_eos_unk_equal=True,all_special_tokens_ids_equal=True,chat_template_equal=True,actual_encode_decode_probes=len(probes))
+ messages=[dict(role='system',content='Answer clearly.'),dict(role='user',content='你好，what is 2+2?')]
+ for add_generation_prompt in (False,True):
+  for tokenize in (False,True):
+   require(base_tok.apply_chat_template(messages,tokenize=tokenize,add_generation_prompt=add_generation_prompt)==tok.apply_chat_template(messages,tokenize=tokenize,add_generation_prompt=add_generation_prompt),'Actual chat rendering/token IDs differ')
+ tokenizer=dict(status='ACTUAL_COLD_TOKENIZER_IDENTITY_VERIFIED',vocab_equal=True,special_pad_bos_eos_unk_equal=True,all_special_tokens_ids_equal=True,chat_template_equal=True,actual_encode_decode_probes=len(probes),canonical_backend_equal=True,full_added_token_attributes_equal=True,full_special_roles_equal=True,normalized_semantic_config_equal=True,actual_chat_template_comparisons=4)
  write_once(out/'tokenizer-cold-reload.json',tokenizer)
  require(identity(BASE)==base_before and identity(CHECKPOINT)==before,'Base/checkpoint changed during cold verification')
- require(read_json(NATIVE)[1]==native_sha and read_json(RUN/'run-result.json')[1]==terminal_sha,'Native/terminal publication changed during verification')
- receipt=dict(status='JOB3360_FINAL_HF_COLD_RELOAD_IDENTITY_BOUND',job_id='3360',run_id=RUN.name,source_commit=SOURCE,config_sha256=CONFIG,package_manifest_sha256=package_sha,native_manifest_sha256=native_sha,terminal_receipt_sha256=terminal_sha,hf_identity_sha256=before['sha256'],full_hf_report_sha256=full_sha,tokenizer_report_sha256=file_sha(out/'tokenizer-cold-reload.json'),wrapper_sha256=file_sha(Path(__file__).resolve()),frozen_full_verifier_sha256=VERIFIER_SHA,all_parameters_finite=True,shape_keys_full_checked=True,actual_cpu_model_cold_reload=True,actual_tokenizer_cold_reload=True,total_parameters=full['total_parameters'],changed_parameters=full['changed_parameters'],max_abs_parameter_delta=full['max_abs_parameter_delta'],cpu_forward_logits_finite=True,wall_seconds=time.time()-started,weights_left_on_h100_10=True,training_or_optimizer_restored=False,independent_final_acceptance=False)
+ bindings_after={name:file_sha(path) for name,path in binding_paths.items()}
+ require(bindings_after==bindings_before,'Wrapper/config/package/verifier/native/terminal evidence changed during cold verification')
+ require(bindings_after['resolved_config']==CONFIG and bindings_after['package_manifest']==PACKAGE_SHA and bindings_after['frozen_verifier']==VERIFIER_SHA,'Pinned config/package/verifier changed')
+ require(read_json(out/'full-HF-cold-reload.json')[1]==full_sha,'Full cold report changed during final input checks')
+ receipt=dict(status='JOB3360_FINAL_HF_COLD_RELOAD_IDENTITY_BOUND',job_id='3360',run_id=RUN.name,source_commit=SOURCE,config_sha256=CONFIG,package_manifest_sha256=package_sha,native_manifest_sha256=native_sha,terminal_receipt_sha256=terminal_sha,terminal_evidence_sha256=terminal_evidence_sha,input_hashes_before=bindings_before,input_hashes_after=bindings_after,hf_identity_sha256=before['sha256'],full_hf_report_sha256=full_sha,tokenizer_report_sha256=file_sha(out/'tokenizer-cold-reload.json'),wrapper_sha256=bindings_before['wrapper'],frozen_full_verifier_sha256=VERIFIER_SHA,all_parameters_finite=True,shape_keys_full_checked=True,actual_cpu_model_cold_reload=True,actual_tokenizer_cold_reload=True,total_parameters=full['total_parameters'],changed_parameters=full['changed_parameters'],max_abs_parameter_delta=full['max_abs_parameter_delta'],cpu_forward_logits_finite=True,wall_seconds=time.time()-started,weights_left_on_h100_10=True,training_or_optimizer_restored=False,independent_final_acceptance=False)
  write_once(out/'identity-bound-final-hf.json',receipt);print(json.dumps(receipt,allow_nan=False))
 if __name__=='__main__':main()
