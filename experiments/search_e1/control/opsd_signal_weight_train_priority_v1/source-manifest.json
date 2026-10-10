@@ -1,0 +1,25 @@
+{
+  "files": {
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "a9321550784c00ff54da3d2a498af06c817067330e83d8f24b19f775834465fc"
+    },
+    "entry.py": {
+      "bytes": 22110,
+      "sha256": "9153b6db7bea9222e3b3c8ff5e147915ab322e7918dd0a2bc237469a39daaa1c"
+    },
+    "recovery_common.py": {
+      "bytes": 7795,
+      "sha256": "4a18f6674b40c6a766df8a5912e6557f987c98f2d56e60ffcdca66a708d82171"
+    },
+    "trainer_launcher.py": {
+      "bytes": 7056,
+      "sha256": "32cde05279516c5d474e38676870710b3d352146a971b3fd477c8d7bf05d7784"
+    },
+    "training_priority.py": {
+      "bytes": 5561,
+      "sha256": "6ff407a36d20eb858fafbde9aed34332808f5da0dc6eaa76587c9b9182749766"
+    }
+  },
+  "schema": "opsd-signal-training-priority-source-v1"
+}
