@@ -1,0 +1,25 @@
+{
+  "classification": "VERIFIED_WAIT_ON_ACTUAL_LIVE_JOB",
+  "job_id": 3360,
+  "observed_epochs": [
+    1791665557.1432936,
+    1791665624.3472812
+  ],
+  "queues": [
+    {
+      "returncode": 0,
+      "stdout": "3360|tree-branpo-fresh200|RUNNING|2:20:03|h100-10\n",
+      "stderr": ""
+    },
+    {
+      "returncode": 0,
+      "stdout": "3360|tree-branpo-fresh200|RUNNING|2:21:10|h100-10\n",
+      "stderr": ""
+    }
+  ],
+  "complete_outer_count": 10,
+  "direct_rank_count": 80,
+  "validation_report_count": 1,
+  "log_events_advanced": true,
+  "terminal": null
+}

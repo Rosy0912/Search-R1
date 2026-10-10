@@ -1,25 +1,25 @@
 {
-  "phase": "JOB3360_OUTER9_COMPLETE_OUTER10_RUNNING",
+  "phase": "JOB3360_OUTER10_COMPLETE_DEV10_PENDING",
   "new_training_submitted": true,
   "job_id": 3360,
   "run_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360",
-  "last_observed_epoch": 1791664774.7631507,
+  "last_observed_epoch": 1791665624.3472812,
   "slurm_state": "RUNNING",
   "iteration_progress_verified": true,
   "successful_adam_per_rank": {
-    "0": 180,
-    "1": 180,
-    "2": 180,
-    "3": 180,
-    "4": 180,
-    "5": 180,
-    "6": 180,
-    "7": 180
+    "0": 200,
+    "1": 200,
+    "2": 200,
+    "3": 200,
+    "4": 200,
+    "5": 200,
+    "6": 200,
+    "7": 200
   },
   "dev_score_updated": false,
   "guard_foreign_memory_sm": "all eight 0 at latest observation",
   "existing_30minute_automation_observed_status": "PAUSED; no implicit resume performed",
-  "new_completed_outer": 9,
+  "new_completed_outer": 10,
   "target_outer": 200,
   "initialization": "official Qwen/Qwen2.5-3B-Instruct revision aa8e72537993ba99e69dfaafa59ed015b17504d1; no inherited native/Adam/scheduler",
   "source_checkout": "work/tree-speed-repair-20261008/branpo-source",
@@ -130,11 +130,11 @@
       "tree_variance/empty_loss_row_count": 0.0
     }
   },
-  "rolling_completed_outer": 9,
+  "rolling_completed_outer": 10,
   "first_outer_parameter_delta": "zero at initial warmup LR0; outer2 nonzero sample proof recorded",
   "independent_first_real_outer_review": "JOB3360_FIRST_ROLLOUT_REVIEW.json",
   "nonzero_parameter_update": "outer2: all8 rank8192-entry samples finite with 61292/65536 nonzero deltas; full checkpoint reload remains pending",
-  "direct_rank_record_count": 72,
+  "direct_rank_record_count": 80,
   "latest_dev512": {
     "path": "validation-4011013-1.json",
     "status": "VALIDATION_COST_COMPLETE",
@@ -174,10 +174,10 @@
   "next_outer_started": true,
   "full_hf_cold_reload_accepted": false,
   "training_accepted": false,
-  "last_verified_queue": "3360|tree-branpo-fresh200|RUNNING|2:07:00|h100-10",
-  "last_verified_guard_age_seconds": 2.0444180965423584,
+  "last_verified_queue": "3360|tree-branpo-fresh200|RUNNING|2:21:10|h100-10",
+  "last_verified_guard_age_seconds": 1.2130703926086426,
   "cost_summary": "COST_SUMMARY-3360.json",
-  "latest_observation": "72 direct rank records/9 credited attempts; actual epoch0 step10 logged; latest reward leafmean.17148438",
+  "latest_observation": "Actualouter10 complete/80directrank/200Adam perrank; rollingnative10 saved. Dev10 logs advancing, completed report pending; samejob3360 live, no terminal.",
   "safety_summary": "SAFETY_SUMMARY-3360.json",
   "latest_live_snapshot": "CURRENT-3360.json",
   "last_progress_receipt": "OUTER10_STARTED-3360.json",
@@ -191,5 +191,6 @@
       "critic/rewards/max": 1.0,
       "critic/rewards/min": 0.0
     }
-  }
+  },
+  "last_verified_wait_receipt": "VERIFIED_WAIT-3360.json"
 }
