@@ -1,0 +1,5 @@
+# BF16 J-minus-P recovery
+
+Same run/config/source100, five real online outers. First sampler actual eight wait codes were zero and all 2560 trajectories completed. An accidentally parented CPU observer blocked strict release. The exact zero-Adam held controller and its observer were terminated; no GPU worker, oracle, foreign task or model state was signaled. Original wait evidence and outputs are retained. The independent memory observer now has its own tmux parent. The recovery entry revalidates existing first sampling without repeating generation and resumes original native training. Production science source remains immutable 8c2032; the external entry only fixes merge receipt validation to use actual precision rather than the legacy J name. BF16 merge has zero FP16 casts.
+
+The first operations-64d9082 wrapper is live until its next safe CPU boundary. operations-afa253a is separately published and deployed for the corrected receipt check; never overwrite a live entry. Initial recovery env failure before training is preserved. Controller old termination is technical recovery, not goal pause. Old PR output deletion is human authorized.
