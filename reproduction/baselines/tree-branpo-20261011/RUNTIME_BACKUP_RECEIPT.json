@@ -1,0 +1,150 @@
+{
+  "status": "WORK_TO_REPO_BYTES_EQUAL",
+  "runtime_work": "work/tree-branpo-runtime-20261011",
+  "runtime_repo": "reproduction/tree-branpo-runtime-20261011",
+  "code_only_files": [
+    {
+      "file": "LAUNCH_PLAN.md",
+      "sha256": "dbbe9d36af3cca35c6a3ecd815adfadd20b5731c1467885d36f8f959a0bb6fdc",
+      "bytes": 5378
+    },
+    {
+      "file": "attempt_accounting.py",
+      "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29",
+      "bytes": 11997
+    },
+    {
+      "file": "build_package.py",
+      "sha256": "ea5bafa23d2677932e521125b67e53d9298b2120ad09388f93a332bece546220",
+      "bytes": 3193
+    },
+    {
+      "file": "build_package_draft.py",
+      "sha256": "b07c9cab8c500dcc202a00eda3af724ae14fb27bad1e5a7fa4c9abf0dc27815a",
+      "bytes": 1297
+    },
+    {
+      "file": "calibration_contract.py",
+      "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0",
+      "bytes": 21362
+    },
+    {
+      "file": "deploy_package.py",
+      "sha256": "e6d23a7a926ddec16ab47f1f0ebaaf87408477e96a366e178a59a9f87cb0f3af",
+      "bytes": 1662
+    },
+    {
+      "file": "expected-gpu-uuids-retained18.json",
+      "sha256": "609e1a657db48b39d0548dd61dcbf3bcdfaf1b64d8a968a549f6d3cc71e361db",
+      "bytes": 371
+    },
+    {
+      "file": "guard_entry.py",
+      "sha256": "a1fe93075a42bdf9aeaa4284eabfd6eac3e845215628e0dce2184f54e1b09d3d",
+      "bytes": 3989
+    },
+    {
+      "file": "launch.sbatch",
+      "sha256": "6188bb541a92631859c0e4733f299652b5c784a7a771fbc51977735c5172c659",
+      "bytes": 3543
+    },
+    {
+      "file": "manifest.template.json",
+      "sha256": "4da63ddc0bc2ab811ca83ae0a7cae803eb3e2ba67e5305a71f2526d3c44dd53b",
+      "bytes": 8382
+    },
+    {
+      "file": "owned_lease_identity.py",
+      "sha256": "06a352383ae6564d07219a783d5c75687f4e14c085b1c4bcc49909215dd0df51",
+      "bytes": 5361
+    },
+    {
+      "file": "partial_raw_evidence.py",
+      "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06",
+      "bytes": 16589
+    },
+    {
+      "file": "production_contract.py",
+      "sha256": "cf90b07bd90733a81c059cc72d32e96ef5e06aca73817485951b5ba3b66c9dc4",
+      "bytes": 37914
+    },
+    {
+      "file": "render_dispatch.py",
+      "sha256": "a09d6e531880cb4898893ab6215ca8168e98d75414a492e2b04f8b55b1e40fb6",
+      "bytes": 2543
+    },
+    {
+      "file": "resource_guard_retained18.py",
+      "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
+      "bytes": 5782
+    },
+    {
+      "file": "rolling_training_state_hooks.py",
+      "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85",
+      "bytes": 6734
+    },
+    {
+      "file": "run_tree.sh",
+      "sha256": "426541e35cf85e82336acffa9859a8cbc278df962642b00eca189456a73ea3ce",
+      "bytes": 2916
+    },
+    {
+      "file": "sitecustomize.py",
+      "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6",
+      "bytes": 4172
+    },
+    {
+      "file": "slurm_identity.py",
+      "sha256": "7e66b29846b30b134d3542a931e03b2f3147591783b56bd220cb98064da6ff8e",
+      "bytes": 11307
+    },
+    {
+      "file": "ssh_retained18.py",
+      "sha256": "e69daf1d10dc112c20198e71449507b8dfbaddf3232d494dbbd71ada5ded9f7f",
+      "bytes": 2662
+    },
+    {
+      "file": "storage_guard.py",
+      "sha256": "5493afe3ae25c1b5a52ef6affa698378de5eac133ca4390c8a7425a2bfa69519",
+      "bytes": 1209
+    },
+    {
+      "file": "submit_once.py",
+      "sha256": "2b1e2d0b6aa00095eb4c4da49dcf1305f121fe2bd58e3d0a9e331790dfe4d38b",
+      "bytes": 6281
+    },
+    {
+      "file": "supervisor.py",
+      "sha256": "830ce5670a8487417bb73d8913985095dad70e61d65135dc466918eb023f7814",
+      "bytes": 24357
+    },
+    {
+      "file": "train_monitor.py",
+      "sha256": "d72aad8f8ee59dc4297dc70ea5f1bf5b7dd804c932602bf017428008c7f43f4b",
+      "bytes": 3801
+    },
+    {
+      "file": "training_cost_hooks.py",
+      "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b",
+      "bytes": 4418
+    },
+    {
+      "file": "validation_cost_entry.py",
+      "sha256": "fb993d920d7cab3ef77d63cb4f3eedef7a3e9260b588aec3eb37045567146572",
+      "bytes": 4516
+    },
+    {
+      "file": "validation_cost_hooks_instruct300.py",
+      "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3",
+      "bytes": 12866
+    }
+  ],
+  "not_included": [
+    "__pycache__",
+    "packages",
+    "weights",
+    "checkpoints",
+    "credentials"
+  ],
+  "total_bytes": 214602
+}
