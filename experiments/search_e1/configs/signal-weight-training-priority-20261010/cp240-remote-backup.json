@@ -1,0 +1,107 @@
+{
+  "accepted": true,
+  "actual_source_stream": {
+    "accepted": true,
+    "actual_source_peer": {
+      "cluster": "HKUST",
+      "hostname": "xielab5",
+      "node": "HKUST4",
+      "pid": 1965561,
+      "torch_imported": false,
+      "uid": 1001
+    },
+    "before_after_inventory_equal": true,
+    "inventory_sha256": "36ed1834724cedc26fffd662388762985e9471290309fa3fc0a28927a0ade6ae",
+    "member_bytes": 359785300,
+    "member_count": 9,
+    "no_signals_sent": true,
+    "schema": "opsd-signal-source-stream-terminal-v1",
+    "source_peer_sha256": "dc3cb1e44f379bcf4627109999da03cdfa2334cd298b606606c1ae2a91909aca",
+    "source_tar_actual_wait_returncode": 0
+  },
+  "actual_transport": {
+    "checked_unix": 1791612454.795289,
+    "connection_mode": "direct_no_proxy_no_multiplex",
+    "direct_ssh_options": [
+      "-B",
+      "en0",
+      "-o",
+      "ProxyCommand=none",
+      "-o",
+      "ProxyJump=none",
+      "-o",
+      "ControlMaster=no",
+      "-S",
+      "none",
+      "-o",
+      "BatchMode=yes",
+      "-o",
+      "ConnectTimeout=10"
+    ],
+    "large_output_target": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010",
+    "local_checkpoint_payload_files_created": 0,
+    "source_alias": "hkust4",
+    "source_ssh_actual_wait_returncode": 0,
+    "source_stderr": {
+      "bytes": 564,
+      "capture_complete": true,
+      "error_type": null,
+      "sha256": "828e295fe20ad96c161a31384cffa83bed1509c26f804f32ba8fa525a404413f"
+    },
+    "source_stderr_sha256": "828e295fe20ad96c161a31384cffa83bed1509c26f804f32ba8fa525a404413f",
+    "target_alias": "hkust1",
+    "target_ssh_actual_wait_returncode": 0,
+    "target_stderr": {
+      "bytes": 0,
+      "capture_complete": true,
+      "error_type": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "target_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target_stdout": {
+      "bytes": 676,
+      "capture_complete": true,
+      "error_type": null,
+      "sha256": "b206ccebe77dc373fd9f66e6db64d0bd7b585ccac00384ce88e036dac0923e0f"
+    },
+    "target_stdout_sha256": "b206ccebe77dc373fd9f66e6db64d0bd7b585ccac00384ce88e036dac0923e0f"
+  },
+  "already_complete": false,
+  "elapsed_seconds": 49.143394947052,
+  "inventory_actual_wait": {
+    "actual_ssh_wait_returncode": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "5fa8f18abf648df45f4665433b2a571ed66e102112bc27b10afd6718d46cb47d"
+  },
+  "inventory_sha256": "36ed1834724cedc26fffd662388762985e9471290309fa3fc0a28927a0ade6ae",
+  "local_checkpoint_payload_files_created": 0,
+  "no_gpu_or_training_started": true,
+  "no_signals_sent": true,
+  "remote_backup": {
+    "accepted": true,
+    "destination": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000240-outer-00023",
+    "member_bytes": 359785300,
+    "member_count": 9,
+    "receipt": {
+      "bytes": 28960,
+      "ctime_ns": 1791612457989574153,
+      "device": 2065,
+      "inode": 466757717,
+      "mtime_ns": 1791612457989574153,
+      "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000240-outer-00023/complete-sha-verified.json",
+      "sha256": "119ff296ff6781d88d86fa37a0f2a8af0ef50321cee669119ed644ae7466ba90"
+    },
+    "state": "COMPLETE_FRESH_SHA_READBACK"
+  },
+  "scope": "Pinned immutable checkpoint byte backup only; source/debug assets remain preserved, no optimizer numeric or standalone resume acceptance",
+  "target_commit_actual_wait": {
+    "actual_ssh_wait_returncode": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "bf34da0219d24450a7e07f2cad89bad5103e6e734da9a8a9c00af066c4f24359"
+  },
+  "target_probe_actual_wait": {
+    "actual_ssh_wait_returncode": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "991d1adfc50a38a351b2bf62be069af3ac323b0fa736d16b7aa80bf673e1798c"
+  }
+}
