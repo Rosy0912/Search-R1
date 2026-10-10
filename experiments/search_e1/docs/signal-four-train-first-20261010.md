@@ -23,3 +23,5 @@
 2026-10-10 13:05 CST推进：G_POS20/25完整outer、Adam200；第21轮SAMPLING实际生成trace约5.62MB、两原控制进程实读存活，无新错误。第20轮更新前TRAIN strict EM1146/2560=44.765625%，P=K296、10次新Adam、原torchrun实际wait0；该TRAIN题集不同，不能当作固定测试EM退化。CP200已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组待串行启动，八次正式512仍后置pending，继续当前训练。
 
 2026-10-10 13:20 CST推进：G_POS21/25完整outer、Adam210；第22轮SAMPLING实际生成trace约2.53MB、两原控制进程实读存活，无新错误。第21轮更新前TRAIN strict EM1187/2560=46.3671875%，P=K301、10次新Adam、原torchrun实际wait0。CP210已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组仍待串行启动，八次正式512后置pending，继续当前训练。
+
+2026-10-10 13:35 CST推进：G_POS22/25完整outer、Adam220；第23轮SAMPLING实际生成trace约1.25MB、两原控制进程实读存活，无新错误。第22轮更新前TRAIN strict EM1228/2560=47.96875%，P=K313、10次新Adam、原torchrun实际wait0。CP220已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组待串行启动，八次正式512后置pending，继续当前训练。
