@@ -1,0 +1,11 @@
+# 第11轮遗留10轮校验故障与原状态恢复
+
+实际完整10轮/Adam100/3012pairs后，原controller3129175在第11轮采样2560且八worker actual wait0后，因miner_v1.py的两处outer0..9上限退出；tmux $84/%84实际dead_status1，原生FAILED_OWNED_RELEASE_CONFIRMED。不是OOM，不把故障停工说成健康继续。
+
+未热改原helper/config、未停止他人或原oracle。独立repair来源5585c5a86b1195140ff621b817bfaa95b39c69c1，Node实际source/guard-recovery-5585c5a/opsd_j_bf16_guard200_recovery_v1。仅uniform_sibling和mine_pairs的上界10改200，随机SHA/rejection算法及B/W/M、objective、precision和Adam数学未改。bootstrap显式验证原miner文件SHA与repair所有Python SHA后加载独立guard模块；native trainer经child_entry执行原H/trainer.py并使用该guard模块。原科学source842fee6和configSHA3b3e632813271020d5674da06eecc797df94fd28e55d5c01a7279620734fee09保持，实际执行需要此额外已发布repair，不能误写成原841 source已含该修复。
+
+复用第11轮原完整采样、原CP100、完整八rankAdam/RNG/cursor，无重采样/新Adam/512评测。第一个repair f604354因canonical与sampling identity仅多一个load_identity_scope说明字段而保守拒绝，失败记录保留；current558修复仅补此说明，再要求其余全部identity精确相同，真实weights/path/digest/CP100没有差异。
+
+恢复后的第11轮已正常完整结束：306pair、10更新，实际Adam100→110、累计3318pairs；原生训练actual wait0/ownedrelease存在。CP110 manifest SHA b0e1541a83cce938274879636793ce723baef1fd84038acff4d843aec2d2fb3e。无新增独立数值复测，此处依据正常原生训练保存/校验和真实进展。生产owner3304656 UID1005/starttick939856136，tmux e1-j-bf16-guard200-recovery2-20261010/$87/%87，目标200仍ACTIVE。原第5轮是初期验收，不能再因此停训或关闭monitor。
+
+Node根目录 /data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010；恢复logs/guard200-recovery2.log、receipts/guard200-recovery-launch-5585c5a.json、receipts/guard200-repair-publication-5585c5a.json及source-manifest保持。当前automatic follow-up search-e1-bf16-rwm-200已更新实际source/失败/恢复范围。以后遇新故障，依据真实当前owner/状态和未提交游标独立恢复，不能盲目直接原controller.py或删除旧receipt重跑。

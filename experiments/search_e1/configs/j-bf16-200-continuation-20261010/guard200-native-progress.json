@@ -1,0 +1,46 @@
+{
+  "scope": "Native original training progress, no standalone evaluation or numerical retest",
+  "config_sha256": "3b3e632813271020d5674da06eecc797df94fd28e55d5c01a7279620734fee09",
+  "run_id": "d040ebac9fa24ec28d43976299fd4f71",
+  "owner": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "-B",
+      "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/source/guard-recovery-5585c5a/opsd_j_bf16_guard200_recovery_v1/entry.py",
+      "--publication",
+      "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/receipts/guard200-repair-publication-5585c5a.json"
+    ],
+    "euid": 1005,
+    "pgid": 3304653,
+    "pid": 3304656,
+    "ppid": 3304653,
+    "run_id": "d040ebac9fa24ec28d43976299fd4f71",
+    "starttick": 939856136,
+    "uid": 1005
+  },
+  "native_outer11": {
+    "accepted": true,
+    "outer_index": 10,
+    "optimizer_updates_delta": 10,
+    "optimizer_updates": 110,
+    "P": 306,
+    "K": 306,
+    "cumulative_pair_exposure": 3318,
+    "global_valid_tokens": 54227,
+    "checkpoint": {
+      "bytes": 31819,
+      "ctime_ns": 1791607023171519546,
+      "device": 2065,
+      "inode": 466754317,
+      "mtime_ns": 1791607023147520921,
+      "path": "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/runs/checkpoints/update-00000110-outer-00010/manifest.json",
+      "sha256": "b0e1541a83cce938274879636793ce723baef1fd84038acff4d843aec2d2fb3e"
+    }
+  },
+  "observed_unix": 1791607068.0829995,
+  "completed_outers_total": 11,
+  "guard_repair_source": "5585c5a86b1195140ff621b817bfaa95b39c69c1",
+  "goal_complete": false,
+  "total_budget": 200,
+  "local_snapshot_sha256": "2ece4673d9bcd2f0f69c187c40e196d262b2b513991a83b76a701fd6796df2ff"
+}
