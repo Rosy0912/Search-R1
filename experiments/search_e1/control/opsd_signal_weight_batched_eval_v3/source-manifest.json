@@ -5,8 +5,8 @@
       "sha256": "2fbf333578ffa086867e78087bbde00f7431b529bf627f8caee9b048a2585c0d"
     },
     "bank_adapter.py": {
-      "bytes": 7185,
-      "sha256": "1f9910bec2e9395edcb22bdc7ec8438955edc646a3b06034808defa9b8fbd0df"
+      "bytes": 7327,
+      "sha256": "1fbe0bd213c96123f1345623bc1abbd78ace0c0c4cc626f8337ab43c89a4ceaa"
     },
     "evaluate.py": {
       "bytes": 15326,

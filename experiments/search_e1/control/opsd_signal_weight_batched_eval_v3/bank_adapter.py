@@ -4,7 +4,7 @@ The build_bank body is unchanged from published analysis235e376. Actual
 student/teacher probabilities are NOT calculated here: these are posthoc input
 records, never training-forward or processed-generation scores.
 """
-import hashlib,json,time
+import hashlib,json,time,sys
 from pathlib import Path
 from metrics import require
 
@@ -93,6 +93,7 @@ def export_endpoint(root,directory,endpoint,data,results,summary_ref,request,pro
             common_initial_adapter=request.get('analysis_contract',{}).get('common_initial_adapter'),
             generation_protocol=output['generation_protocol'],fixed_before_eight_new_endpoint_outputs=True,
             frozen_before_all_group_15_25_outputs=True,frozen_unix=time.time(),
-            legacy_HF239_bank_not_reused=True,source_model='common source100 zero-LoRA',parent_torch_imported=False)
+            legacy_HF239_bank_not_reused=True,source_model='common source100 zero-LoRA',parent_torch_imported=('torch' in sys.modules),
+            parent_cuda_initialized=(sys.modules['torch'].cuda.is_initialized() if 'torch' in sys.modules else False))
         bankref=write(root/'fixed-common-zero-bank.json',bank)
     return inputref,bankref
