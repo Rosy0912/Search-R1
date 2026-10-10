@@ -27,6 +27,8 @@ def main():
                     assert len(self.train_dataset)==169028
                     assert len(self.val_dataset)==(51713 if args.phase=='final_eval' else 512)
                     assert self.total_training_steps==200
+                    from runtime_fixes import install_controller
+                    install_controller(self,original)
                     # Workers keep the200 horizon. Only this phase's stopping boundary changes.
                     if args.phase=='short5':self.total_training_steps=5
                     return super().fit()

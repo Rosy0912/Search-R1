@@ -29,6 +29,8 @@ class Data:
     def __len__(self):return 640
 module=types.ModuleType('verl.workers.fsdp_workers');module.ActorRolloutRefWorker=Worker
 sys.modules['verl.workers.fsdp_workers']=module
+fixes=types.ModuleType('runtime_fixes');fixes.install_worker=lambda:None
+sys.modules['runtime_fixes']=fixes
 audit.install();w=Worker();w.update_actor(Data());w.save_checkpoint(str(ROOT/'ckpt'))
 v=Worker();v.load_checkpoint(str(ROOT/'ckpt'));assert audit.state(w)==audit.state(v)
 bad=Data();bad.steps=19

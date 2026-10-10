@@ -88,3 +88,5 @@ def install():
         return result
     Worker.load_checkpoint=load
     Worker._cosearch_audit_installed=True
+    from runtime_fixes import install_worker
+    install_worker()
