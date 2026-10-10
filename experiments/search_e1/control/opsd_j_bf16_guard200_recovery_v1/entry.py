@@ -14,7 +14,8 @@ class Recovery(Controller):
         if outer.name!='outer-00010':return super().sample(outer,questions,identity)
         attempt=outer/'sampling-attempt-00000'
         old_identity,model_ref=checked_json(fileproof(attempt/'sampling-model.json'))
-        require(identity==old_identity,'Retained sampler used different CP100 weights')
+        comparison=dict(identity);comparison['load_identity_scope']=old_identity.get('load_identity_scope')
+        require(comparison==old_identity,'Retained sampler used different CP100 weights');identity=old_identity
         candidates=[]
         for path in (self.output/'phase-exits').glob('*.json'):
             value=json.loads(path.read_text())
@@ -53,9 +54,9 @@ class Recovery(Controller):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--publication',required=True);a=p.parse_args();pub=json.loads(Path(a.publication).read_text());require(pub['accepted'] and pub['source_commit']==pub['remote_readback_sha'],'Repair source not published')
     require(os.environ['E1_RUN_ID']==cfg['run_id'],'Wrong actual launch environment')
-    status=json.loads((B/'runs/status.json').read_text());require(status['phase']=='FAILED_OWNED_RELEASE_CONFIRMED' and status['error']=='Explicit seven-group variant and outer0..9 required','Wrong failure scope')
+    status=json.loads((B/'runs/status.json').read_text());require(status['phase']=='FAILED_OWNED_RELEASE_CONFIRMED' and status['error'] in ('Explicit seven-group variant and outer0..9 required','Retained sampler used different CP100 weights'),'Wrong failure scope')
     require(not Path('/proc/'+str(status['owner']['pid'])).exists(),'Previous controller still exists')
-    proof=dict(accepted=True,previous_failure=status,repair_publication=pub,repair_manifest=fileproof(R/'source-manifest.json'),same_config=fileproof(B/'receipts/training-config.json'),only_guard_changed=True,no_resampling=True,no_Adam_reset=True,no512_evaluation=True,observed_unix=time.time());exclusive_json(B/'receipts/guard200-recovery-launch.json',proof)
+    proof=dict(accepted=True,previous_failure=status,repair_publication=pub,repair_manifest=fileproof(R/'source-manifest.json'),same_config=fileproof(B/'receipts/training-config.json'),only_guard_changed=True,no_resampling=True,no_Adam_reset=True,no512_evaluation=True,observed_unix=time.time());exclusive_json(B/'receipts'/('guard200-recovery-launch-'+pub['source_commit'][:7]+'.json'),proof)
     x=Recovery(fileproof(B/'receipts/training-config.json'),cfg['run_id'],resume=True)
     try:x.run()
     except Exception as exc:

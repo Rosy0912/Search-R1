@@ -10,8 +10,8 @@
       "sha256": "30cf4db39efcc3daf049d69944844cfc06b360849b60a9837e24c5b780091542"
     },
     "entry.py": {
-      "bytes": 5470,
-      "sha256": "01c50c5c57c9945eef763a91be2792561d8f19bb9df276f1d76a959620cdf96a"
+      "bytes": 5687,
+      "sha256": "f2485d03f3d2175003a2272e6d8f816f37767fbfb63923e0e5575a8dff9eaa65"
     },
     "miner_v1.py": {
       "bytes": 10707,
