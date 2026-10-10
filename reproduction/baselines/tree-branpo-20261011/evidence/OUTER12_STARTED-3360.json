@@ -1,0 +1,7 @@
+{
+  "job": 3360,
+  "observed_epoch": 1791666769.4320219,
+  "real_stage_line": "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 12",
+  "complete_outer": 11,
+  "rolling_manifest_saved_line": "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_11/manifest.json"
+}
