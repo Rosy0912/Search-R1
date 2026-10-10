@@ -2,7 +2,7 @@
 import argparse,base64,importlib.util,json,subprocess
 from pathlib import Path
 REMOTE=r'''
-import json,os,pathlib,re,subprocess,time
+import json,os,pathlib,re,subprocess,time,math
 JOB=JOB_VALUE
 root=pathlib.Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
 run=root/'runs'/('tree-branpo-fresh200-'+JOB)
@@ -34,12 +34,42 @@ for name,path in [('stage',run/'stage.log'),('guard',run/'guard.log'),('retrieve
 result['logs']=logs
 state=run/'checkpoints/training_state'
 attempts=sorted((state/'attempt-results').glob('attempt-*.json'))
-result['attempts']=dict(record_count=len(attempts),latest=[])
-for path in attempts[-8:]:
- v=small_json(path);row=dict(path=path.name,**selected(v,['status','attempt_id','accepted_outer','actual_completed_optimizer_calls_per_rank','error']))
- ranks=v.get('all_rank_result',{}).get('ranks',[])
- row['ranks']=[selected(x,['rank','optimizer_calls','opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after']) for x in ranks]
- result['attempts']['latest'].append(row)
+result['attempts']=dict(record_count=len(attempts),completed_outer_count=0,all_skipped_attempt_count=0,unknown_attempt_count=0,latest=[])
+complete_totals={str(r):dict(adam_writes=0,opportunities=0,skips=0) for r in range(8)}
+attempt_totals={str(r):dict(adam_writes=0,opportunities=0,skips=0) for r in range(8)}
+accounting_errors=[];credited={};complete_counter=0
+for path in attempts:
+ v=small_json(path);status=v.get('status');ranks=v.get('all_rank_result',{}).get('ranks',[])
+ if status=='COMPLETED_OPPORTUNITIES_OUTER_CREDITED':
+  result['attempts']['completed_outer_count']+=1
+  outer=v.get('accepted_outer');attempt=v.get('attempt_id');credited[outer]=attempt
+  if outer!=complete_counter+1:accounting_errors.append(dict(path=path.name,error='Completed outer sequence gap'))
+  complete_counter=outer if type(outer) is int else complete_counter
+ elif status=='ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT':
+  result['attempts']['all_skipped_attempt_count']+=1
+  evidence=v.get('partial_evidence',{});partial=pathlib.Path(evidence.get('path','/missing'))
+  if partial.resolve().is_relative_to(state.resolve()):
+   saved=small_json(partial);workers=saved.get('worker_outcome',{}).get('worker_states',[])
+   ranks=[dict(rank=w.get('rank'),optimizer_calls=w.get('committed_optimizer_calls'),opportunities_processed=len(w.get('optimizer_opportunity_ledger',[])),opportunities_skipped=sum(x.get('actual_writes')==0 for x in w.get('optimizer_opportunity_ledger',[]))) for w in workers]
+  else:accounting_errors.append(dict(path=path.name,error='All-skip evidence path outside own state'))
+ else:
+  result['attempts']['unknown_attempt_count']+=1;accounting_errors.append(dict(path=path.name,error=v.get('error',status or 'Missing status')))
+ if status in ('COMPLETED_OPPORTUNITIES_OUTER_CREDITED','ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT'):
+  if len(ranks)!=8 or any(type(x.get('rank')) is not int for x in ranks) or sorted(x['rank'] for x in ranks)!=list(range(8)):accounting_errors.append(dict(path=path.name,error='Eight rank totals unavailable'))
+  else:
+   for x in ranks:
+    vals=[x.get('optimizer_calls'),x.get('opportunities_processed'),x.get('opportunities_skipped')]
+    if any(type(v) is not int or v<0 for v in vals) or vals[0]+vals[2]!=vals[1]:accounting_errors.append(dict(path=path.name,rank=x['rank'],error='Actual rank opportunity/write/skip fields invalid'));continue
+    for name,num in zip(('adam_writes','opportunities','skips'),vals):
+     attempt_totals[str(x['rank'])][name]+=num
+     if status=='COMPLETED_OPPORTUNITIES_OUTER_CREDITED':complete_totals[str(x['rank'])][name]+=num
+ if path in attempts[-8:]:
+  row=dict(path=path.name,**selected(v,['status','attempt_id','accepted_outer','actual_completed_optimizer_calls_per_rank','error']))
+  row['ranks']=[selected(x,['rank','optimizer_calls','opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after']) for x in ranks];result['attempts']['latest'].append(row)
+result['cumulative_accounting']=dict(complete_outer_only_per_rank=complete_totals,all_finalized_attempts_per_rank=attempt_totals,
+ complete_outer_count=result['attempts']['completed_outer_count'],finalized_attempt_count=len(attempts),all_skipped_attempt_count=result['attempts']['all_skipped_attempt_count'],
+ accounting_errors=accounting_errors,complete_totals_valid=not accounting_errors,source='Every finalized small attempt JSON and all-skip worker ledger, not last8',
+ in_flight_or_unrecorded_partial_adam_writes=None,scope='Current attempt and unfinalized partial writes excluded and unknown; completed credits differ from consumed attempts')
 rankroot=run/'output/fresh-state'
 rankfiles=sorted(rankroot.glob('outer-*-attempt-*-rank*.json'))
 result['rank_records']=dict(count=len(rankfiles),latest=[])
@@ -51,7 +81,30 @@ validation=sorted((run/'output/validation-cost').glob('validation-*.json'),key=l
 result['validation']=dict(report_count=len(validation),latest=[])
 for path in validation[-3:]:
  v=small_json(path);result['validation']['latest'].append(dict(path=path.name,**selected(v,['status','phase','actual_completed_outer','evaluated_rows','dataset_rows','metrics','error'])))
-result['variance_lines']=[line[-6000:] for line in tail(run/'stage.log',1024*1024) if 'tree_variance/' in line][-3:]
+# Stream complete lines on retained18, extracting numbers before any truncation.
+number=r'[-+]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][-+]?[0-9]+)?'
+metric_pattern=re.compile(r'((?:tree_variance|tree_sampling|timing_s|training)/[A-Za-z0-9_./-]+):('+number+r')')
+metrics_rows=[];latest_complete_timing=None
+try:
+ with (run/'stage.log').open(errors='replace') as stream:
+  for line in stream:
+   if 'tree_variance/' not in line and 'tree_sampling/' not in line and 'timing_s/' not in line:continue
+   step_match=re.search(r'\bstep:([0-9]+)',line)
+   if not step_match:continue
+   numbers={key:float(value) for key,value in metric_pattern.findall(line)}
+   numbers={k:v for k,v in numbers.items() if math.isfinite(v)}
+   step=int(step_match.group(1));variances={k:v for k,v in numbers.items() if k.startswith(('tree_variance/','tree_sampling/'))}
+   timing={k:v for k,v in numbers.items() if k.startswith('timing_s/')}
+   row=dict(logger_step=step,completed_outer=numbers.get('training/actual_outer_updates'),attempt_id=numbers.get('training/attempt_id'),metrics=variances)
+   if variances:metrics_rows.append(row)
+   if 'timing_s/step' in timing and step in credited:
+    latest_complete_timing=dict(completed_outer=step,attempt_id=credited[step],timing_seconds=timing,scope='Original trainer completed step timer including validation/checkpoint when scheduled; joined to credited attempt')
+except FileNotFoundError:pass
+result['variance_by_logged_iteration']=metrics_rows
+result['latest_complete_outer_timing']=latest_complete_timing
+if latest_complete_timing:
+ cost=small_json(run/'output/training-rollout-cost'/('attempt-%06d.json'%latest_complete_timing['attempt_id']))
+ latest_complete_timing['rollout_cost']=selected(cost,['status','attempt_id','candidate_outer','start_epoch','end_epoch','wall_seconds','costs','error'])
 result['tree_audit']=dict(rollout_json_count=len(list((run/'output/tree-audit').glob('step_*_rollout_*.json'))))
 result['checkpoints']=dict(milestones=[p.name for p in sorted(state.glob('global_step_*')) if p.is_dir()],rolling=[p.name for p in sorted((state/'rolling-completed').glob('global_step_*')) if p.is_dir()],partial_attempts=[p.name for p in sorted(state.glob('partial_attempt_*')) if p.is_dir()][-8:])
 lines=tail(run/'resource-samples.jsonl')
