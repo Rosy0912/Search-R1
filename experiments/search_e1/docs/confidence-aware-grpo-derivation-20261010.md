@@ -93,7 +93,7 @@ A_i=\frac{R_i-\bar R_q}{s_q+\epsilon},\qquad
 \widetilde A_i=\operatorname{stopgrad}(w_i)A_i.
 \]
 
-用 \(\widetilde A_i\) 替换原 policy surrogate 中的 \(A_i\)，保持已有 token mask 和原 loss 分母；**不再次组内中心化/标准化，也不除以 \(\sum_iw_i\)**。加权后组均值一般不再为0、样本方差不再接近1，这正是保留衰减而非重新放大的选择。reference KL 和 entropy 保持原协议，不顺带加权。
+用 \(\widetilde A_i\) 替换原 policy surrogate 中的 \(A_i\)，保持已有 token mask 和原 loss 分母；**不再次组内中心化/标准化，也不除以 \(\sum_iw_i\)**。加权后组均值一般不再为0、样本方差不再接近1，这正是保留衰减而非重新放大的选择。reference KL 和 entropy 保持原协议，不顺带加权；当前已核 common8 recipe 的两个系数均为0。
 
 **固定批次上的命题：** 因 \(0<w_i\le1\)，原优势符号保持，\(|\widetilde A_i|\le|A_i|\)。PPO 的 min/clip 项（包括当前 Dual-Clip）对优势的正缩放具有一次齐次性，因此在相同模型参数、概率比、mask 和固定权重下，该轨迹的 PG 项及其梯度均乘以 \(w_i\)。这只保证相对其自身原 PG 项衰减；不能说所有高 NLL 轨迹最终系数都比所有低 NLL 轨迹小。
 
@@ -115,6 +115,32 @@ A_i=\frac{R_i-\bar R_q}{s_q+\epsilon},\qquad
 \widetilde A_i=\frac{\widetilde R_i-\bar R_q}{s_q+\epsilon}=w_iA_i.
 \]
 这里中心与标准差必须仍取原组值，不重算。这是主方案的代数表达，不是通常的“修改 reward 后重新标准化”。
+
+### Step 6. 全对组与混合组：微小奖励差异的归一化尺度
+
+对任意同组两条轨迹，精确有：
+\[
+A_i-A_j=\frac{R_i-R_j}{s_R+\epsilon}.
+\]
+
+因此重点是分母。若组中有 \(m\) 条正确、\(n\) 条错误/非法，\(G=m+n\)，正确与错误各自奖励均值为 \(\bar R_c,\bar R_w\)，则样本方差的精确分解为：
+\[
+s_R^2=\frac{mn}{G(G-1)}(\bar R_c-\bar R_w)^2+
+\frac{\sum_c(R_i-\bar R_c)^2+\sum_w(R_i-\bar R_w)^2}{G-1}.
+\]
+
+混合组具有正确/错误的类间奖励差异，该项给分母托底。已核八点中正确奖励不低于0.98，错误/非法不高于0.05；在这些区间及 G=5 下，混合组 \(s_R\ge0.93\sqrt{mn/[G(G-1)]}\ge0.4159\)。所以同为正确轨迹的微小奖励 gap 会放大，但其系数上限约2.404，不会因该组探针差异很小而无限增大。此边界依赖上述奖励间隔，不能推广到任意 shaping。
+
+全对组令 \(R_i=1+\delta_i\)，则：
+\[
+A_i=\frac{\delta_i-\bar\delta}{s_\delta+\epsilon}.
+\]
+
+若 \(s_\delta\gg\epsilon\)，把所有探针差异同比缩小，归一化优势基本不变；原二值正确性优势全为0，却新增接近单位尺度的正负优势。\(s_\delta\lesssim\epsilon\) 时幅度缩小，完全相同则仍为0。这里不是单条优势无界；G=5 时 \(|A_i|\le4/\sqrt5\)（忽略 epsilon 的上界）。
+
+本地已验收小摘要中，第100轮全对组/混合组样本标准差中位数为0.008421/0.678677，第120轮为0.009379/0.684737。第100轮263个奖励非平坦组中168个全对，第120轮251个中168个全对。这支持“全对组的小 shaping 差异更易转成较强优势”这一机制；奖励为历史重构，尚不能证明探针排序有害、实际梯度更大或后期性能因其下降。详见独立 group composition 报告。
+
+此机制与 NLL 是不同变量：前者由组内奖励归一化产生，后者描述单轨迹的行为熟悉度。只加 NLL 权重不必然消除全对组的 shaping 排序压力。最直接的独立消融是仅令全对组 PG 优势为0，混合组保持原样；它关闭全部全对组 shaping 信号，包括探针和搜索成本，不应称为只删除某一探针。此处仅提出对照，不启动新训练。
 
 ## Remarks and Interpretation
 
