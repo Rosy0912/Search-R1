@@ -83,3 +83,7 @@ CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅�
 22:38 CST实际进展：G_NEG17/25、CP168/index16 SHA090c7aed5ea319d6c839ff417de0be9e51a46615180ef65abc8a55b25a630393，trainer真实exit0；P=K311、累计曝光5166，TRAIN更新前1244/2560=48.59375%，四组42/100。第18轮已实际采样、后续trace继续增长；CP168远端备份9成员359785236bytes/两端exit0及逐SHA完成，无新增GPU测试或审核。
 
 评测保真待处理：原执行goal明确HF SDPA/BF16 base+未合并FP32 LoRA，已CPU准备的v4是vLLM合并BF16，二者数值条件不同。目前GPU测试0/8；不能凭改协议并重评baseline就称原native设置全部满足。下一步CPU检查原冻结SearchAgent的可批量实现，优先保持原LoRA/attention/generation设置完成提速；训练继续，保留v4为未运行候选，不隐藏精度差异、不重复已有更新。
+
+23:11 CST实际推进：G_NEG18/25 CP178/index17（P=K293，累计曝光5459，TRAIN更新前1210/2560=47.265625%）及19/25 CP188/index18（P=K295，累计曝光5754，1183/2560=46.2109375%）均真实trainerexit0；四组44/100完整记录。第20轮已真实采样，两个CP远端9成员备份均两端exit0/逐SHA完成，无Mac权重或新增GPU测试。
+
+原精度提速CPU核心0f226d21998ae70326b14be8587a83638b99f9ff已部署source/hf-batch-core-0f226d2：活跃题联合HF generate，原SearchAgent逐题独立终止/forced/context/HTTP单查询/480obs逻辑不改，原SDPA/BF16 base/未合并FP32 LoRA保留。左填充EOS不进入重复惩罚，结束题不延长有效生成；直接执行冻结原SearchAgent类作3场景对照，加原NodeTorch2.4/HF4.46CPU的2项padding/停止检查，5项全通过且CUDA未初始化。当前只是核心/fixture准备，没有完整controller/模型GPU加载/正式512，不能算效果验收；下一步接独立all100后置正式入口，训练继续，v4合并BF16保留为未运行候选不混用。
