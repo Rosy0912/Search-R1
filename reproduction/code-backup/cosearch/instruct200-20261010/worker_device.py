@@ -6,7 +6,7 @@ def select(assigned,mapping,visible):
     value=str(assigned[0])
     matches=[u for u,i in mapping.items() if value==u or value==str(i)]
     if len(matches)!=1:raise RuntimeError('Ray GPU is not uniquely leased')
-    if visible.count(matches[0])!=1:raise RuntimeError('Assigned GPU not uniquely visible to CUDA')
+    if visible.count(matches[0])!=1:raise RuntimeError('Assigned GPU not uniquely visible to CUDA: '+json.dumps({'assigned':assigned,'mapping':mapping,'visible':visible,'mask':os.environ.get('CUDA_VISIBLE_DEVICES')}))
     return visible.index(matches[0]),matches[0]
 
 def bind():

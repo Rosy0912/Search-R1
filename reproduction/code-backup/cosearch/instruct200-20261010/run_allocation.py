@@ -49,6 +49,8 @@ def main():
     for key in ('RAY_ADDRESS','RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES','RAY_EXPERIMENTAL_NOSET_ROCR_VISIBLE_DEVICES','ROCR_VISIBLE_DEVICES','HIP_VISIBLE_DEVICES','GPU_DEVICE_ORDINAL'):
         env.pop(key,None)
         os.environ.pop(key,None)
+    # Keep the verified four-device mask stable before any worker CUDA imports.
+    env['RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES']='1'
     scorer=BASE/'runtime/pytrec-eval-05-hpc-build'
     scorer_receipt=json.loads((scorer/'build-complete.json').read_text())
     extension=Path(scorer_receipt['extension'])

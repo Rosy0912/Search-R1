@@ -50,6 +50,18 @@ def install():
     if os.environ.get('COSEARCH_LEASED_UUIDS'):
         import gpu_identity
         gpu_identity.install()
+    from verl.single_controller.base.worker import Worker as BaseWorker
+    original_visibility=BaseWorker._setup_env_cuda_visible_devices
+    def stable_visibility(worker):
+        if os.environ.get('RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES')=='1':
+            if any(os.environ.get(k) for k in ('HIP_VISIBLE_DEVICES','ROCR_VISIBLE_DEVICES')):
+                raise RuntimeError('Conflicting GPU visibility variables')
+            from worker_device import bind
+            binding=bind()
+            os.environ['LOCAL_RANK']=str(binding['ordinal'])
+            return
+        return original_visibility(worker)
+    BaseWorker._setup_env_cuda_visible_devices=stable_visibility
     original_init=Worker.init_model
     @functools.wraps(original_init)
     def init(worker,*args,**kwargs):

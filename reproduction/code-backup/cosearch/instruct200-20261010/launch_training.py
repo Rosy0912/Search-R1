@@ -83,6 +83,7 @@ def main():
         'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1',
         # All four ranks run on one node; avoid unaddressed sysfs entries.
         'GLOO_SOCKET_IFNAME':'lo','NCCL_SOCKET_IFNAME':'lo',
+        'RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES':'1',
         'COSEARCH_LEASED_UUIDS':os.environ['COSEARCH_LEASED_UUIDS'],
         'COSEARCH_LEASED_UUID_TO_INDEX':os.environ['COSEARCH_LEASED_UUID_TO_INDEX']}}
     OmegaConf.update(config,'ray_kwargs.ray_init.runtime_env',env,force_add=True)
