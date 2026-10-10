@@ -9,3 +9,7 @@
 八次完整512测试及最终结果仍待完成，不能用256题补测、训练EM或四组训练完成状态代替效果验收。原239/512共同zero仅适用于原HF协议；今后若改为vLLM批量评测，须统一端点条件并说明协议差异，不能混用指标。
 
 2026-10-10 12:00 CST实测：同一G_POS第16轮完整结束，P=K307，10次新Adam（150→160），实际torchrun wait0。该轮更新前TRAIN严格EM1222/2560=47.734375%，累计pair曝光4875；末checkpoint160原生四rank adapter/optimizer摘要一致。这里只报告原生状态，不重复声称独立CPU全量tensor检查。control已创建第17轮目录，supervisor1861244仍运行，无补测启动。实际小型证明见first-resumed-outer-complete.json；全部轨迹、token和状态仍远端。
+
+2026-10-10 12:15 CST推进：G_POS已完成17/25outer、Adam170，进入第18轮SAMPLING。第17轮完整2560采样更新前strict EM1236/2560=48.28125%，P=K303、10次实际Adam；原训练子进程实际wait0。这个TRAIN批次不同，不能据此声称固定测试EM改善。CP160已HKUST4→HKUST1远端备份完整SHA验收、实际两端传输退出0，Mac payload文件0；CP170备份刚开始时仍是pending，不冒充已完成。
+
+后置四卡vLLM批量评测入口已发布70ef656635aa68c7ccdf7c1be8f3e5cbabbf9922，部署source/batched-eval-70ef656/opsd_signal_weight_batched_eval_v1，Mac与Node各7项CPU检查通过，尚未GPU启动/验收。它强制全部100outer完成和原supervisor真正exit0后才使用四张卡，不会卡住当前训练。复用原冻结executor、CPU PEFT/BF16合并、严格QA及固定512；greedy明确rep1.05与原EOS，8逻辑64题分片分两波。统一重新评共同zero，再评八个raw15/25端点，不拿旧HF239与新vLLM数直接相减；各保留实际生成ID/HTTP/512严格结果、总体/NQ/Hotpot和逐题新增丢失。运行后才能确认真实推理耗时与完整八次评测。
