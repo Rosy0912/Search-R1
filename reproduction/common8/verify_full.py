@@ -76,9 +76,15 @@ def verify_a800_adopted_initial_probe(base, run, live, archive_path):
     current=run['source_sha256']
     for name,sha in current.items():assert digest(adoption.artifacts._owned_file(base/'repo'/name,base))==sha
     changes=[]
+    reward_delta=False
+    if run.get('reward_schedule') is not None:
+        from reproduction.a800_common.reward_adoption_contract import verify_delta,ORIGIN_ARCHIVE
+        reward_delta=verify_delta(previous,current,run,old,source,base/'repo')
     for name in sorted(set(previous)|set(current)):
         if previous.get(name)==current.get(name):continue
-        if name==adoption.RAY_ENTRY:
+        if reward_delta:
+            pass  # Full exact reviewed delta was authenticated above.
+        elif name==adoption.RAY_ENTRY:
             before=adoption.artifacts._owned_file(source/'repo'/name,source).read_bytes()
             after=adoption.artifacts._owned_file(base/'repo'/name,base).read_bytes()
             assert adoption._outside_ray_bootstrap(before)==adoption._outside_ray_bootstrap(after)
@@ -86,6 +92,7 @@ def verify_a800_adopted_initial_probe(base, run, live, archive_path):
         changes.append(name)
     assert receipt['allowed_startup_source_changes']==changes
     original,original_archive,heads,dump,files,job,calibration_log=adoption._original_artifacts(source,old)
+    if reward_delta:assert digest(original_archive)==ORIGIN_ARCHIVE
     expected_origin=dict(run_id=old['run_id'],source_commit=old['source_commit'],execution_id=old['execution_id'],
         base=str(source),version=original['version'],run_manifest_sha256=digest(old_path),
         archive_sha256=digest(original_archive),calibration_job=adoption._calibration_job_projection(job),calibration_job_sha256=document_sha256(job),
