@@ -1,0 +1,18 @@
+{
+  "accepted": true,
+  "gpu_started": false,
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/batched-eval-v2-409dda7/opsd_signal_weight_batched_eval_v2",
+  "node_new_terminal_tests": {
+    "actual_returncode": 0,
+    "stderr": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+    "stdout": ""
+  },
+  "precondition": "all100 nativeTRAIN plus actualreplacement pane2297233 exit0 and boundsupervisor2297236",
+  "publication": {
+    "bytes": 313,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/batched-eval-v2-publication-409dda7.json",
+    "sha256": "57e1e6ad0f2aec3279876682a8a3417d40b940be9b8af8956dd66b617c299404"
+  },
+  "source_commit": "409dda73d05ee06edd035c6d66e3e2b5ae46342d",
+  "training_source_unchanged": true
+}

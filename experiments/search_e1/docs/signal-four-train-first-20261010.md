@@ -61,3 +61,9 @@
 20:35 CST新独立port-resume-0146350入口启动；源码0146350f7a77b87644d5639a3dac1802b6a54c79已发布与逐文件readback，仅通信启动改static c10d agent TCPStore/OS空闲本地端口；原四rank/累积8/global32/science/config原字节不变。新supervisor2297236/tick693190113、GNcontroller2300905/tick693209228、原GNrun不变、tmux%48/pane2297233。先读回已完成G_POS状态，无新增GP训练，然后复用第10轮原sampling/teacher文件SHA继续。旧5eac816候选仅CPU部署因audit嵌套字段未正确绑定而停止、没有GPU/训练启动，保留；0146350修正后实际运行。
 
 20:45–20:47 CST真实验收：第10轮P=K308、88→98共10新Adam；原failed attempt0=1，retry attempt1实际torchrun wait0，actual argv明确static/4rank。sampling-complete/teacher-complete原SHA完全不变，没有重做采样或已完成更新。本轮更新前TRAIN1263/2560=49.3359375%。CP98已HKUST1远端9成员逐SHA备份，两端实际exit0、Mac payload0。第11轮从CP98继续采样，实际trace增长；总TRAIN35/100，正式512仍0/8pending。恢复后完整一轮通过而非仅启动。后置a48评估原终态guard绑定旧失败supervisor1861244，全部100完成后必须在独立已发布副本绑定新真实终态，不能伪造旧exit0。
+
+2026-10-10 21:02 CST训练完成、21:08–21:09复核：同port-resume-0146350入口G_NEG11/25完整outer、累计Adam108；P=K308、10次新Adam（98→108），更新前TRAIN1216/2560=47.50%，原torchrun实际wait0。原生四rank adapter/Adam摘要一致，没有重复独立CPU全tensor实读。CP108已HKUST1远端9成员逐SHA备份，两端实际退出0、Mac payload0。第12轮从CP108采样，实际trace15.61→25.71MB增长，supervisor2297236/controller2300905活跃无新错误。总TRAIN36/100，正式512仍0/8pending。
+
+CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅修正旧失败driver的终态门禁，绑定新supervisor2297236/tick693190113/runmarker及foreground pane2297233真正exit0，并要求原生4组/100outer/100TRAIN行终态。原vLLM批量生成、CPUmerge、strictEM、八端点及共同新baseline协议不变；Mac/Node各3项针对性终态检查通过，旧7项metrics不重复审核。Node source/batched-eval-v2-409dda7已仅CPU部署，没有GPU开始，训练未热改。
+
+完整分析尚未完成：原HF239成功B bank和旧HF endpoint/replay接口保留为历史；新的vLLM结果不能混用其baseline指标。正式新共同zero生成后、看到其余八端点输出前，需按原计划冻结该次成功参考bank；随后做固定模型posthoc g/h/KL回放并适配新端点输入，明确NA、覆盖和constant-label情况。它不增加fresh参考/额外pass采样预算，不能拿TRAIN某轮s/5冒充heldout pass。当前CPU补测终态准备不等于以上分析已完成。
