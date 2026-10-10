@@ -70,14 +70,14 @@ axs[0,0].stackplot(x,y,[1-v for v in y],labels=['reward = 1','reward = 0'],color
 axs[0,0].set(title='Archive: every-iteration raw 0 / 1 mass',xlim=(0,150),ylim=(0,1),xlabel='Outer iteration')
 valid=[r for r in rows if not r['protocol_invalid_present']]
 missing=[r['iteration'] for r in rows if r['protocol_invalid_present']]
-axs[0,1].scatter([r['iteration'] for r in valid],[r['correct_fraction_console'] for r in valid],s=12,color=colors[0],label='correct: raw R in [0.98, 1.60]')
-axs[0,1].scatter([r['iteration'] for r in valid],[1-r['correct_fraction_console'] for r in valid],s=12,color=colors[1],label='valid wrong: raw R = 0.05')
+axs[0,1].scatter([r['iteration'] for r in valid],[r['correct_fraction_console'] for r in valid],s=12,color=colors[0],label='correct: shaped R in [0.98, 1.60]')
+axs[0,1].scatter([r['iteration'] for r in valid],[1-r['correct_fraction_console'] for r in valid],s=12,color=colors[1],label='valid wrong: shaped R = 0.05')
 axs[0,1].scatter(missing,[-.025]*len(missing),s=12,marker='x',color='#94a3b8',label='invalid present: split unavailable')
 axs[0,1].set(title=f'G1: recoverable coarse masses ({len(valid)}/{len(rows)} iterations)',xlim=(0,150),ylim=(-.055,1),xlabel='Outer iteration')
 categories=common[0]['categories'];pos=list(range(len(categories)))
 for j,r in enumerate(common):
     axs[1,0].bar([x+(j-1)*.25 for x in pos],[n/305 for n in r['counts']],width=.24,color=colors[j],label=f"calibration round{r['round']}")
-axs[1,0].set(title='Reconstructed CALIBRATION raw reward: SAME 61 questions',xticks=pos,xticklabels=categories,ylim=(0,.75),xlabel='Raw reward category (not uniform-width density)')
+axs[1,0].set(title='CALIBRATION shaped reward: SAME 61 questions',xticks=pos,xticklabels=categories,ylim=(0,.75),xlabel='Shaped R category (not uniform-width density)')
 axs[1,0].tick_params(axis='x',labelrotation=30)
 for j,r in enumerate(common):
     correct=r['correct_fraction']
