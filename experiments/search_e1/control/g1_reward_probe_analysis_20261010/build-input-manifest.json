@@ -1,0 +1,26 @@
+{
+  "inputs": [
+    {
+      "path": "observation-2.json",
+      "sha256": "4d8914547a5b82a2b488a35385f00e37050c88ea16545d49280614181452c91e"
+    },
+    {
+      "path": "calibration-distributions.json",
+      "sha256": "2b89b0bf9f891a4aa11324e93cf74807c87892dd728f8bff35ed6a4140a4b158"
+    },
+    {
+      "path": "archive/observation-second.json",
+      "sha256": "a5d896f3bfc16edfd5d096c52b4c87e712727400101622c35d693eec5524ba4e"
+    },
+    {
+      "path": "observation-4.json",
+      "sha256": "51b1018d2ce6fe7b885cc1f9abff049e989669a301aa26f68de1bc0c834c98c3"
+    },
+    {
+      "path": "archive/summary.json",
+      "sha256": "6320d94485cab91602a79727c00cdbbde48c94bf88c1e26dbd69e3048e9b7220"
+    }
+  ],
+  "script_sha256": "15e010188ce6880b5038016d47b85587e5e03ad394bb40804b537bcbbbd8a1af",
+  "assertions": "cohort identity; bin totals; finite bounded means; conditional counts; contiguous iteration history"
+}

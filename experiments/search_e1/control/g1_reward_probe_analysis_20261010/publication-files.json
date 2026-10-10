@@ -1,0 +1,215 @@
+{
+  "scope": "readonly analysis; display0–150; no model/NPZ/rollout/credentials; historicalTRAIN fine G1 reward vectors not recorded",
+  "files": [
+    {
+      "path": "read_compact_progress.py",
+      "bytes": 4560,
+      "sha256": "f10c1314a89c8ecb22357a1b3d0818661ca252bc6b42baefd0149ecd2b768368"
+    },
+    {
+      "path": "read_probe_evolution.py",
+      "bytes": 8664,
+      "sha256": "0d53d17d468f277942e7d1d578627e0f1524641984f0d24b63ba1e27c907e2c2"
+    },
+    {
+      "path": "read_calibration_distributions.py",
+      "bytes": 8265,
+      "sha256": "585f1539f211292a1fbfe5aa7765b0ff0002bdf0f4afb35cc3f6275d05bb5852"
+    },
+    {
+      "path": "read_dev_gold_identity.py",
+      "bytes": 2547,
+      "sha256": "a1c4d84d47c1e54eb2cbf9571cb49c3ddc566f88925a8556dff96234bcb150a9"
+    },
+    {
+      "path": "read_evaluation_protocol.py",
+      "bytes": 3250,
+      "sha256": "3ce1986adce3c1389112822ce4b34bc13112bb3c280137954850f164ea94e411"
+    },
+    {
+      "path": "read_boundary_cross_heads.py",
+      "bytes": 3728,
+      "sha256": "6efdcfa6a07d1e21dcdddae59018aaebd803daeee4a3ce0c62d96a84e72b05ab"
+    },
+    {
+      "path": "read_group_availability.py",
+      "bytes": 3215,
+      "sha256": "b54782cb0b9ae7aa091d920d4f5e958ece6f939155c874690bb7a5788f377451"
+    },
+    {
+      "path": "read_group_calibration.py",
+      "bytes": 9114,
+      "sha256": "b47d3891f514bfa318f466a884c239d253a7287db98ce09b1a76f31d5c3196ac"
+    },
+    {
+      "path": "read_reward_storage_and_predicates.py",
+      "bytes": 2380,
+      "sha256": "aa4496fac915df6d08fbbd15ac270f59dff97d1f5b226e6454be2ca0211003a1"
+    },
+    {
+      "path": "build_analysis.py",
+      "bytes": 9321,
+      "sha256": "15e010188ce6880b5038016d47b85587e5e03ad394bb40804b537bcbbbd8a1af"
+    },
+    {
+      "path": "build_raw_reward_analysis.py",
+      "bytes": 6907,
+      "sha256": "39bde4ce69f1467425a02cdc133c5c2c98e2d11b292d4256b5d9901e085ecb05"
+    },
+    {
+      "path": "build_canvas.py",
+      "bytes": 9831,
+      "sha256": "dcd71eb021563735ea1e2a416c1e5ddd612bd0df2a27cade4d12271e1a0ded2b"
+    },
+    {
+      "path": "observation-2.json",
+      "bytes": 1329920,
+      "sha256": "4d8914547a5b82a2b488a35385f00e37050c88ea16545d49280614181452c91e"
+    },
+    {
+      "path": "observation-4.json",
+      "bytes": 94403,
+      "sha256": "51b1018d2ce6fe7b885cc1f9abff049e989669a301aa26f68de1bc0c834c98c3"
+    },
+    {
+      "path": "observation-5.json",
+      "bytes": 95024,
+      "sha256": "e3a4047e833f161d6ea48b84f0db230ff75be4ee5e1b506438a3787259de1112"
+    },
+    {
+      "path": "calibration-distributions.json",
+      "bytes": 107487,
+      "sha256": "2b89b0bf9f891a4aa11324e93cf74807c87892dd728f8bff35ed6a4140a4b158"
+    },
+    {
+      "path": "boundary-cross-heads.json",
+      "bytes": 7854,
+      "sha256": "e3e88955054dd759446291b40c0c12e5c9b5412c5dcd63fc1905787334212e77"
+    },
+    {
+      "path": "evaluation-protocol.json",
+      "bytes": 13197,
+      "sha256": "8eca410cb588c7495a228afed8c4a2ad54bc52646acd716dc5b15272df7f0336"
+    },
+    {
+      "path": "group-availability.json",
+      "bytes": 22841,
+      "sha256": "18610514a88af73cd9bce31faf51d8ec1d3b91ba44c8bdbcdcd524ee28d56306"
+    },
+    {
+      "path": "group-calibration.json",
+      "bytes": 35176,
+      "sha256": "3678000382427ff93f6f5721726095213fb71f6ca56e2da602346d4f0605a7ed"
+    },
+    {
+      "path": "reward-storage-and-predicates.json",
+      "bytes": 82242,
+      "sha256": "9e8726b263db905908250da29657a3319b9f97d2a47364daefdeb2aa69520210"
+    },
+    {
+      "path": "chart-data.json",
+      "bytes": 71338,
+      "sha256": "bfcb16e76d343406709a65f05c43a67745a4132710c67a4ee7af516699d5bfa8"
+    },
+    {
+      "path": "raw-reward-distributions.json",
+      "bytes": 270122,
+      "sha256": "b6ade2eecb6e4c0023416fb4c63e66ce0fc5a4737e124e2b63581ada569ab529"
+    },
+    {
+      "path": "build-input-manifest.json",
+      "bytes": 914,
+      "sha256": "216eb8a8663be37357249aa79789d85f159bbd71cb743d38bbef00591748ff24"
+    },
+    {
+      "path": "probe-distributions.png",
+      "bytes": 140860,
+      "sha256": "e4959c4cb2aedaadf0ab545647c9a2891da7f762b98663c21ae8135ea177d286"
+    },
+    {
+      "path": "reward-and-behavior.png",
+      "bytes": 474462,
+      "sha256": "c2cc48bd3e7686dc9854a807d78424ebf592ff5b18fd7bb04396e423f4cdb2c9"
+    },
+    {
+      "path": "pre-normalization-rewards.png",
+      "bytes": 324679,
+      "sha256": "00d99c3ad5cc5f1818859a2570cab03726282e65119c4ef5799024af7a974d0c"
+    },
+    {
+      "path": "probe-reward-evolution.canvas.tsx",
+      "bytes": 40657,
+      "sha256": "23de9b1e1db333f71296158ea6a35d090f9ad9679e10c6ddf22063a62254ae76"
+    },
+    {
+      "path": "findings.md",
+      "bytes": 15415,
+      "sha256": "280aae2d89f97390d88197e07fa1e90e48d61ed658d11df4ab60e261e315962f"
+    },
+    {
+      "path": "archive/extract_archive_remote.py",
+      "bytes": 7991,
+      "sha256": "3d5a22a32f804991109e63ee2b426b78b460d37246a246d97b1e82712f398e45"
+    },
+    {
+      "path": "archive/summarize_archive.py",
+      "bytes": 7958,
+      "sha256": "c2366fe8e1a5757c94eee852e7cdded1f13735419d9be9fa7773bc222458a796"
+    },
+    {
+      "path": "archive/read_group_evidence_remote.py",
+      "bytes": 2562,
+      "sha256": "e583a8c9cb86bbca21bea3ba9ff622b2f26aad742b60c40cf5ac4dafd28d4b43"
+    },
+    {
+      "path": "archive/compare_eval_cohort_remote_v2.py",
+      "bytes": 2021,
+      "sha256": "d939f10ac07119b628c8470c7279b4089c840562dd54691fa3d0b6a4cea7465f"
+    },
+    {
+      "path": "archive/read_dev_gold_identity_remote.py",
+      "bytes": 2537,
+      "sha256": "a34e3c1caaab9ba3341aaf4ca38e0dc44c20674715b5d72ced57031c8b9e569a"
+    },
+    {
+      "path": "archive/derive_marginal_distribution.py",
+      "bytes": 6264,
+      "sha256": "295ce4b5ad9c136796bb0517d659855173b7d7a9c07cecf4deda23dadf640b80"
+    },
+    {
+      "path": "archive/observation-second.json",
+      "bytes": 324873,
+      "sha256": "a5d896f3bfc16edfd5d096c52b4c87e712727400101622c35d693eec5524ba4e"
+    },
+    {
+      "path": "archive/summary.json",
+      "bytes": 33295,
+      "sha256": "6320d94485cab91602a79727c00cdbbde48c94bf88c1e26dbd69e3048e9b7220"
+    },
+    {
+      "path": "archive/comparison-audit.json",
+      "bytes": 10010,
+      "sha256": "ea659d03b836c83c2f35578cb3bb86fa3a46d0f27ad97ee2b20903f04edcc3d2"
+    },
+    {
+      "path": "archive/cohort-gold-comparison-verified.json",
+      "bytes": 2701,
+      "sha256": "f2fb512e4b7c38dcf4b6ac65bc36b2702d0d2ae3fa2a88f9548cc8c43f283b62"
+    },
+    {
+      "path": "archive/within-group-0-150.json",
+      "bytes": 130089,
+      "sha256": "04bea8f3ad48d10549ba835c8112c28c073e096a650a61b81291497f2c4479b1"
+    },
+    {
+      "path": "archive/marginal-pre-normal-reward-distribution-0-150.json",
+      "bytes": 182883,
+      "sha256": "ff452064c39ceb5a2fca4f76d49b15f3c71d99d1910e38739637fd50f87b3f53"
+    },
+    {
+      "path": "archive/curve-1-199.json",
+      "bytes": 249434,
+      "sha256": "fc7ac6937ef1c652aefedcdcd6d4ac27ac683a4fd472255adcc8b6b4a6c355c7"
+    }
+  ]
+}

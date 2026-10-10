@@ -1,0 +1,52 @@
+{
+  "readonly": true,
+  "question_values_or_answers_exported": false,
+  "G1_actual_proof": {
+    "evaluation_protocol_path": "outputs/g1-probe-evolution-20261010/evaluation-protocol.json",
+    "evaluation_protocol_sha256": "8eca410cb588c7495a228afed8c4a2ad54bc52646acd716dc5b15272df7f0336",
+    "gold_path": "outputs/g1-probe-evolution-20261010/dev-gold-identity.json",
+    "gold_proof_sha256": "f8bb72e76f16a3d13c56dccf11790d12c6a83d4aadfea9a26ae281f67229b745"
+  },
+  "archive_actual_proof": {
+    "readonly": true,
+    "cpu_only": true,
+    "run_id": "f04fe593830c4831918ede872812c016",
+    "observed_utc": "2026-10-10T03:07:05.893184+00:00",
+    "validation_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.parquet",
+    "validation_file_sha256": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71",
+    "count": 512,
+    "question_id_normalization": "last Question: suffix; whitespace collapse; strip; casefold; SHA256 UTF-8",
+    "gold_alias_normalization": "NFKC; whitespace collapse; strip; casefold; sorted unique aliases; metadata identity not EM normalization",
+    "record_shape": "[question_sha256,data_source,sorted_gold_aliases]",
+    "hash_serialization": "json.dumps(...,ensure_ascii=False,separators=(comma,colon)).encode UTF-8",
+    "ordered_records_sha256": "b59bc0fed1409d04e9418e6a0a3f715005a8ba78325ece650bc28297b53910af",
+    "unordered_records_sha256": "4b6470a2ec00f580a5d7d06c94de65105f652ac758e94096ff90239a10023f72",
+    "alias_counts": {
+      "1": 489,
+      "5": 3,
+      "3": 5,
+      "2": 11,
+      "6": 1,
+      "9": 1,
+      "4": 2
+    }
+  },
+  "question_cohort_order_equal": true,
+  "question_cohort_set_equal": true,
+  "normalized_question_source_gold_order_equal": true,
+  "normalized_question_source_gold_set_equal": true,
+  "alias_count_histogram_equal": true,
+  "different_parquet_bytes": true,
+  "normalization_reference_sha256": "a1c4d84d47c1e54eb2cbf9571cb49c3ddc566f88925a8556dff96234bcb150a9",
+  "preserved_first_question_only_raw_expected_set_typo": {
+    "original_output_path": "outputs/g1-probe-evolution-20261010/archive/cohort-comparison.json",
+    "original_execution_path": "outputs/g1-probe-evolution-20261010/archive/cohort-comparison-execution.json",
+    "note": "parenttextSHA256b08...wasmisparsedaslabel; actualG1proof64hex begins256b08. This independentcomparisonusesactualG1output, nottruncatedliteral."
+  },
+  "question_comparison_v2": {
+    "path": "outputs/g1-probe-evolution-20261010/archive/cohort-comparison-v2.json",
+    "sha256": "e75ef3832ad412d4f34163a9d36d0879f22006da0db449f9633d72eca8b09c31",
+    "actual_observed_cst": "2026-10-10T11:07:58.183850+08:00",
+    "both_equal": true
+  }
+}
