@@ -1,0 +1,59 @@
+{
+  "epoch": 1791662068.0215774,
+  "sample_count": 967,
+  "first_sample_epoch": 1791657175.8291383,
+  "last_sample_epoch": 1791662064.9203205,
+  "whole_card_peaks": {
+    "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b": {
+      "max_total_used_memory_bytes": 49466245120,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5": {
+      "max_total_used_memory_bytes": 50208768000,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-db94211b-42d5-88d0-f626-60e777af3be6": {
+      "max_total_used_memory_bytes": 46790344704,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-308b13c1-44ea-47b7-7b33-01a928099618": {
+      "max_total_used_memory_bytes": 46599503872,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8": {
+      "max_total_used_memory_bytes": 46008107008,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-d61d94cd-3d24-fa07-8761-33961a14d995": {
+      "max_total_used_memory_bytes": 46603698176,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b": {
+      "max_total_used_memory_bytes": 46421245952,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    },
+    "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5": {
+      "max_total_used_memory_bytes": 46589018112,
+      "max_total_gpu_util": 100,
+      "max_foreign_memory_fraction": 0,
+      "max_foreign_sm_upper": 0
+    }
+  },
+  "scontrol_returncode": 0,
+  "scontrol": "JobId=3360 JobName=tree-branpo-fresh200\n   UserId=root(0) GroupId=root(0) MCS_label=N/A\n   Priority=4294898706 Nice=0 Account=(null) QOS=(null)\n   JobState=RUNNING Reason=None Dependency=(null)\n   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=01:21:54 TimeLimit=7-00:00:00 TimeMin=N/A\n   SubmitTime=2026-10-11T02:32:33 EligibleTime=2026-10-11T02:32:33\n   AccrueTime=2026-10-11T02:32:33\n   StartTime=2026-10-11T02:32:34 EndTime=2026-10-18T02:32:34 Deadline=N/A\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-11T02:32:34 Scheduler=Main\n   Partition=gpu AllocNode:Sid=h100-10:4006425\n   ReqNodeList=h100-10 ExcNodeList=(null)\n   NodeList=h100-10\n   BatchHost=h100-10\n   NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:*\n   TRES=cpu=192,mem=256G,node=1,billing=192\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null)\n   Command=(null)\n   WorkDir=/root\n   StdErr=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3360.err\n   StdIn=/dev/null\n   StdOut=/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/node-move-logs/3360.out\n   Power=\n   TresPerNode=gres:gpu:8\n   \n\n",
+  "scope": "all observed whole-card 5s samples; sampled peaks are lower bounds on true instantaneous peak; in-flight run, not final cost"
+}

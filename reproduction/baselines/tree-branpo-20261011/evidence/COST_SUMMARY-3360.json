@@ -1,0 +1,70 @@
+{
+  "observed_epoch": 1791662068.0215774,
+  "job_id": 3360,
+  "completed_outer": 5,
+  "completed_rollout_cost_rows": 5,
+  "completed_rollout_totals": {
+    "generated_tokens": 3153412,
+    "prefill_tokens": 12690908,
+    "retrieval_calls": 8672,
+    "trajectories": 12800,
+    "padded_rows": 136,
+    "raw_retained_tokens": 1649113,
+    "raw_discarded_tail_tokens": 1504299,
+    "raw_inherited_leaf_tokens": 552627
+  },
+  "sampling_wall_seconds": 1658.2098372802138,
+  "successful_adam_per_rank": {
+    "0": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "1": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "2": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "3": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "4": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "5": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "6": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    },
+    "7": {
+      "adam_writes": 100,
+      "opportunities": 100,
+      "skips": 0
+    }
+  },
+  "allocated_gpu_hours_to_observation": 10.92,
+  "allocated_cpu_core_hours_to_observation": 262.08,
+  "requested_task_cpu_core_hours_to_observation": 43.68,
+  "cpu_time_scope": "reservation core-hours, not measured process CPU seconds",
+  "resource_samples": 967,
+  "max_sampled_whole_card_memory_bytes": 50208768000,
+  "whole_card_peak_scope": "5-second sampled lower bound; not Torch allocated peak; final peak/cost pending",
+  "dev_reports": 1,
+  "all_foreign_memory_sm_samples_max": 0,
+  "phase": "IN_FLIGHT_PARTIAL_COST_NOT_FINAL",
+  "historical_runs_excluded": true
+}

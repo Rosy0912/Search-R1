@@ -1,5 +1,5 @@
 {
-  "epoch": 1791659903.6129441,
+  "epoch": 1791662031.154248,
   "job": 3360,
   "rollout_rows": [
     {
@@ -64,7 +64,89 @@
         "semantic_prefix_scan_cpu_seconds": 30.83106594499941,
         "semantic_prefix_scan_wall_seconds": 30.710211902856827
       }
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 4,
+      "candidate_outer": 4,
+      "wall_seconds": 337.9608701467514,
+      "costs": {
+        "generated_tokens": 640363,
+        "prefill_tokens": 2540948,
+        "retrieval_calls": 1751,
+        "trajectories": 2560,
+        "padded_rows": 16,
+        "context_mismatches": 0,
+        "raw_slots": 2184000,
+        "raw_emitted_tokens": 640363,
+        "raw_retained_tokens": 329210,
+        "raw_discarded_tail_tokens": 311153,
+        "raw_inherited_leaf_tokens": 111573,
+        "semantic_prefix_scan_cpu_seconds": 31.123291094001615,
+        "semantic_prefix_scan_wall_seconds": 31.009274769574404
+      }
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 5,
+      "candidate_outer": 5,
+      "wall_seconds": 331.21634051576257,
+      "costs": {
+        "generated_tokens": 624971,
+        "prefill_tokens": 2527561,
+        "retrieval_calls": 1730,
+        "trajectories": 2560,
+        "padded_rows": 25,
+        "context_mismatches": 0,
+        "raw_slots": 2180000,
+        "raw_emitted_tokens": 624971,
+        "raw_retained_tokens": 333205,
+        "raw_discarded_tail_tokens": 291766,
+        "raw_inherited_leaf_tokens": 110492,
+        "semantic_prefix_scan_cpu_seconds": 30.178685116989527,
+        "semantic_prefix_scan_wall_seconds": 30.063275948166847
+      }
     }
   ],
-  "scope": "sampling costs include in-flight outer if rollout completed; optimizer totals separate"
+  "rank_keys": [
+    "actual_optimizer_calls",
+    "all_rank_before_admitted",
+    "all_rank_scheduler_after_valid",
+    "attempt_id",
+    "code_commit",
+    "config_sha256",
+    "data_identity",
+    "direct_count_source",
+    "first_outer_lr_zero",
+    "job_id",
+    "learning_rates_after",
+    "learning_rates_before",
+    "local_before_error",
+    "local_scheduler_error",
+    "model_identity",
+    "observed_outer",
+    "opportunities_processed",
+    "opportunities_skipped",
+    "optimizer_opportunity_ledger",
+    "parameter_delta_verified_by_this_record",
+    "rank",
+    "returned_optimizer_calls",
+    "run_id",
+    "scheduler_step_after",
+    "scheduler_step_before",
+    "scheduler_step_invoked",
+    "scope",
+    "skipped_empty_minibatches",
+    "status",
+    "training_protocol",
+    "world_size",
+    "zero_lr_optimizer_calls_are_real"
+  ],
+  "latest_rank_safety": {
+    "actual_optimizer_calls": 20,
+    "opportunities_skipped": 0,
+    "returned_optimizer_calls": 20,
+    "skipped_empty_minibatches": 0,
+    "zero_lr_optimizer_calls_are_real": true
+  }
 }
