@@ -1,0 +1,215 @@
+{
+  "commands_originally_used_direct_current_account_ssh": true,
+  "lease_query_note": "Separate lease-only read was executed in an uncached tool literal. Its actual execution proof remains preserved; this list does not claim an unverified reconstruction of that original source byte string.",
+  "no_new_gpu_remote_state_or_Node_execution": true,
+  "records": [
+    {
+      "actual_readonly_execution": {
+        "bytes": 811,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/gpos15-current-native512-1791597618920380000-56879c.execution.json",
+        "sha256": "f92e3c365c0614f68f373e838869ce45fce3b4fb9a5d118d1c3c3127e26595db"
+      },
+      "actual_readonly_wait_returncode": 0,
+      "actual_ssh_argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=20",
+        "-o",
+        "ProxyCommand=none",
+        "-o",
+        "ProxyJump=none",
+        "-o",
+        "ControlMaster=no",
+        "-o",
+        "ControlPath=none",
+        "hkust4",
+        "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -"
+      ],
+      "exact_original_tool_command": {
+        "bytes": 9833,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/native512-progress.original-command.txt",
+        "sha256": "b8dc3f5b3d988e0406c79bf770c490727dc3f928d8e16b4cce29f906c3f8e883"
+      },
+      "label": "native512-progress",
+      "local_python_caller_stdin": {
+        "bytes": 9813,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/native512-progress.caller.py",
+        "sha256": "bd9ac42355a2e5a5f06f00beaaa931243d4b4c24974961b3d678c84ddecb2b84"
+      },
+      "original_source_query_sha256": "4ff72e9c5ebb4c2250a041994c582c884187f09990afde6dbdfde7f5bed02b5a",
+      "remote_environment_and_python_argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "-"
+      ],
+      "remote_python_stdin": {
+        "bytes": 7537,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/native512-progress.stdin.py",
+        "sha256": "4ff72e9c5ebb4c2250a041994c582c884187f09990afde6dbdfde7f5bed02b5a"
+      },
+      "source_provenance": "Exact retained functions store strings used by the original executed tool call; no history rewrite or remote re-execution"
+    },
+    {
+      "actual_readonly_execution": {
+        "bytes": 827,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/gpos15-parent-failure-1791597353188648000-9f5735.execution.json",
+        "sha256": "5796fbd9627b8c9a4ea0c204112971d81b2024a37200fe00dba18da8fc08265d"
+      },
+      "actual_readonly_wait_returncode": 0,
+      "actual_ssh_argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=20",
+        "-o",
+        "ProxyCommand=none",
+        "-o",
+        "ProxyJump=none",
+        "-o",
+        "ControlMaster=no",
+        "-o",
+        "ControlPath=none",
+        "hkust4",
+        "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -"
+      ],
+      "exact_original_tool_command": {
+        "bytes": 3877,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/parent-failure.original-command.txt",
+        "sha256": "0cca04c46cca82c1ba1b57778d530ae752743591681b11085be0f2dd5182be36"
+      },
+      "label": "parent-failure",
+      "local_python_caller_stdin": {
+        "bytes": 3857,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/parent-failure.caller.py",
+        "sha256": "21eee11beac818642f10ce755e38bf8e29d382aa78ac6079813961ef2d81d3ed"
+      },
+      "original_source_query_sha256": "3ace692f0e7c55ce98138784e1e7c18b28eafc9ef3c73bcc82076caa5d980ef3",
+      "remote_environment_and_python_argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "-"
+      ],
+      "remote_python_stdin": {
+        "bytes": 2042,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/parent-failure.stdin.py",
+        "sha256": "3ace692f0e7c55ce98138784e1e7c18b28eafc9ef3c73bcc82076caa5d980ef3"
+      },
+      "source_provenance": "Exact retained functions store strings used by the original executed tool call; no history rewrite or remote re-execution"
+    },
+    {
+      "actual_readonly_execution": {
+        "bytes": 846,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/gpos15-failed-terminal-resource-1791597752324021000-e4f58e.execution.json",
+        "sha256": "80967967995d7cc13b270c16eebe1877a3ca1f8779d964c13595a09b475cd3a8"
+      },
+      "actual_readonly_wait_returncode": 0,
+      "actual_ssh_argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=20",
+        "-o",
+        "ProxyCommand=none",
+        "-o",
+        "ProxyJump=none",
+        "-o",
+        "ControlMaster=no",
+        "-o",
+        "ControlPath=none",
+        "hkust4",
+        "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -"
+      ],
+      "exact_original_tool_command": {
+        "bytes": 7425,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/failed-terminal-resource.original-command.txt",
+        "sha256": "df8bc73ef93fbdf98fe3b49955d46d4bc3f75a5c4b610ce4977ca81113aed6be"
+      },
+      "label": "failed-terminal-resource",
+      "local_python_caller_stdin": {
+        "bytes": 7405,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/failed-terminal-resource.caller.py",
+        "sha256": "ab02b3a5e73d58268256a6a3e8e9ff75b1b90e81609d4846e35c5922548c8c45"
+      },
+      "original_source_query_sha256": "6ffea1792d26e95947caf930ef32b922371a87708f9fe17698e523d45e174ea0",
+      "remote_environment_and_python_argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "-"
+      ],
+      "remote_python_stdin": {
+        "bytes": 5582,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/failed-terminal-resource.stdin.py",
+        "sha256": "6ffea1792d26e95947caf930ef32b922371a87708f9fe17698e523d45e174ea0"
+      },
+      "source_provenance": "Exact retained functions store strings used by the original executed tool call; no history rewrite or remote re-execution"
+    },
+    {
+      "actual_readonly_execution": {
+        "bytes": 852,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/gpos15-strict-original-driver-terminal-1791597842379386000-afa893.execution.json",
+        "sha256": "47b1c13aa796e8e7f150d28e30959cb2ffbc64f9f0e00998ae0941e3af45d91e"
+      },
+      "actual_readonly_wait_returncode": 0,
+      "actual_ssh_argv": [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ConnectTimeout=20",
+        "-o",
+        "ProxyCommand=none",
+        "-o",
+        "ProxyJump=none",
+        "-o",
+        "ControlMaster=no",
+        "-o",
+        "ControlPath=none",
+        "hkust4",
+        "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 /weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -"
+      ],
+      "exact_original_tool_command": {
+        "bytes": 6782,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/strict-original-driver-terminal.original-command.txt",
+        "sha256": "7723f5938666cb7c0007d89a0a2e7746e3e515ff0b93355ed8d20736718d46de"
+      },
+      "label": "strict-original-driver-terminal",
+      "local_python_caller_stdin": {
+        "bytes": 6762,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/strict-original-driver-terminal.caller.py",
+        "sha256": "d12b60a46ea839b75ca17830175f7e94e56f47a09c7f9ecb4a64f9fddaf25cf5"
+      },
+      "original_source_query_sha256": "5fa2c8bec746af1be3586a2fdd7d6e02ffbce9d80935e266339d0afca35d2cad",
+      "remote_environment_and_python_argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-B",
+        "-"
+      ],
+      "remote_python_stdin": {
+        "bytes": 4880,
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/readonly-original-query-sources-1791597843/strict-original-driver-terminal.stdin.py",
+        "sha256": "5fa2c8bec746af1be3586a2fdd7d6e02ffbce9d80935e266339d0afca35d2cad"
+      },
+      "source_provenance": "Exact retained functions store strings used by the original executed tool call; no history rewrite or remote re-execution"
+    }
+  ],
+  "remote_execution_count_now": 0,
+  "schema": "opsd-signal-readonly-original-python-source-list-v1",
+  "source_capture_scope": "Four retained exact remote Python stdin queries and exact local callers/tool commands; no model/data/query payload copied",
+  "stored_by": "audit_endpoint_contract"
+}
