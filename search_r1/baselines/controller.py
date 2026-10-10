@@ -5,6 +5,7 @@ import random
 from collections import Counter
 from pathlib import Path
 import torch
+import numpy as np
 from . import advantages
 from .rollout import SearchRollout, select_rows
 from .bapo import BoundaryStage, BoundaryReward, decode_answers, ordinary_answer_f1, resample_rows
@@ -279,6 +280,10 @@ class Controller:
             self.ranker.validation = False
             self.ranker.events.clear()
         tree = self.config.tree if self.method == 'tree_grpo' else None
+        if tree is not None and option(tree, 'branch_sampling') == 'branpo_tail_v1':
+            def training_rewards(states):
+                return self.tree_training_rewards(engine, qa_batch, states)
+            engine.reward_callback = training_rewards
         audit_dir = os.environ.get('SEARCH_R1_TREE_AUDIT_DIR')
         if tree is not None and audit_dir:
             from .tree_audit import TreeAudit
@@ -309,7 +314,28 @@ class Controller:
                     costs[key] += value
                 output, sources = engine.compose(states)
         metrics.update({'rollout/' + k: v for k, v in costs.items()})
+        branches = [s.branch_metadata for s in engine.last_states if s.branch_metadata.get('continuation', 0)]
+        if branches:
+            for key in ('action_depth', 'backoff_actions', 'inherited_response_tokens', 'inherited_observation_tokens'):
+                metrics['tree_sampling/' + key + '_mean'] = float(np.mean([b[key] for b in branches]))
+            metrics['tree_sampling/continuations'] = len(branches)
+            metrics['tree_sampling/inherited_prefix_verified_fraction'] = sum(b['inherited_prefix_verified'] for b in branches)/len(branches)
+            metrics['tree_sampling/same_reward_branch_fraction'] = sum(b['same_reward_as_original'] for b in branches)/len(branches)
+            metrics['tree_sampling/same_reward_branch_count'] = sum(b['same_reward_as_original'] for b in branches)
+            metrics['tree_sampling/different_reward_branch_count'] = sum(not b['same_reward_as_original'] for b in branches)
+            for depth in range(self.trainer.config.max_turns+1):
+                metrics[f'tree_sampling/action_depth_{depth}_count'] = sum(b['action_depth'] == depth for b in branches)
+            metrics['tree_sampling/earliest_state_clamp_count'] = sum(b['backoff_clamped'] for b in branches)
         return output, sources
+
+    def tree_training_rewards(self, engine, qa_batch, states):
+        # Compose generated trajectories first; append only source metadata.
+        # No targets or rewards enter model generation contexts.
+        scored, sources = engine.compose(states)
+        for key, values in qa_batch.non_tensor_batch.items():
+            if key not in scored.non_tensor_batch:
+                scored.non_tensor_batch[key] = values[sources]
+        return self.trainer.reward_fn(scored).sum(-1).detach().cpu().tolist()
 
     def audit_actor_batch(self, batch):
         if self.method=='tree_grpo' and option(option(self.config.tree,'token_preservation',{}),'enabled',False):
@@ -366,6 +392,10 @@ class Controller:
             metrics['gigpo/shared_anchor_coverage'] = sum(n for n in counts.values() if n > 1) / max(1, total)
         elif self.method == 'tree_grpo':
             adv = advantages.tree_grpo(rewards, mask, uids, data.non_tensor_batch['tree_uid'])
+            metrics.update(advantages.tree_variance_metrics(outcome, uids,
+                data.non_tensor_batch['tree_uid'], data.non_tensor_batch.get('tree_branch_metadata'),
+                estimator_score=rewards.sum(-1)))
+            metrics['tree_variance/empty_loss_row_count'] = int((mask.sum(-1) == 0).sum())
             returns = adv.clone()
         elif self.method == 'topd':
             setting = self.config.distillation

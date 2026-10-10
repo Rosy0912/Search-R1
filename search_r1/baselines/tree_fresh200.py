@@ -31,6 +31,11 @@ def validate_fresh200_config(config):
     actor, rollout, ref = (config.actor_rollout_ref[k] for k in ('actor', 'rollout', 'ref'))
     tree, holdout, trainer = config.baselines.tree, config.baselines.holdout, config.trainer
     safety = actor.get('policy_safety', {})
+    if tree.get('branch_sampling') == 'branpo_tail_v1':
+        if tree.get('continuation_budget_per_question') != 3:
+            raise ValueError('BranPO-inspired sampling requires exactly three finite continuations per question')
+    elif tree.get('branch_sampling') is not None:
+        raise ValueError('Unknown Tree branch sampling protocol')
     correction = safety.get('sampling_probability_correction', {})
     from .tree_guard_continue import PROTOCOL as CONTINUE_PROTOCOL
     if actor.get('guard_continue_protocol') != CONTINUE_PROTOCOL or safety.get('target_old_policy_kl') != .2:

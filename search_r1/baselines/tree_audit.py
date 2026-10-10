@@ -107,6 +107,7 @@ class TreeAudit:
                 response_length=n, action_count=sum(state.model_mask), observation_count=n-sum(state.model_mask),
                 padding_count=width-n, anchor_count=len(state.anchors),
                 retained_pad_token_count=state.response.count(pad),
+                branch_sampling=dict(state.branch_metadata),
                 generation_prefix_hash=fingerprint(state.rolling), scoring_prefix_hash=fingerprint(state.prompt+state.response),
                 context_matches=state.rolling == state.prompt+state.response))
         self.report['question_groups'] = [dict(question_hash=q, roots=len(indices), leaves=sum(counts[i] for i in indices)) for q,indices in groups.items()]

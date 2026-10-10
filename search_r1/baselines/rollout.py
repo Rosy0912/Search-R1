@@ -49,6 +49,7 @@ class State:
     tree: str = field(default_factory=lambda: uuid.uuid4().hex)
     trajectory: str = field(default_factory=lambda: uuid.uuid4().hex)
     node: str = field(default_factory=lambda: uuid.uuid4().hex)
+    branch_metadata: dict = field(default_factory=dict)
 
     def branch(self):
         child = copy.deepcopy(self)
@@ -67,7 +68,7 @@ def padded(rows, pad, left=False):
 
 
 class SearchRollout:
-    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None, behavior_mu=None):
+    def __init__(self, manager, anchor_mode='observation', ranker=None, seed=42, context_alignment='report', token_preservation=None, behavior_mu=None, reward_callback=None):
         self.manager = manager
         self.tokenizer = manager.tokenizer
         self.config = manager.config
@@ -78,6 +79,7 @@ class SearchRollout:
             raise ValueError('context_alignment must be report or error')
         self.context_alignment = context_alignment
         self.ranker = ranker
+        self.reward_callback = reward_callback
         self.rng = random.Random(seed)
         self.audit = None
         self.token_preservation = token_preservation
@@ -317,6 +319,7 @@ class SearchRollout:
                            action_records=object_array([s.records for s in states]),
                            trajectory_uid=object_array([s.trajectory for s in states]),
                            tree_uid=object_array([s.tree for s in states]))
+        non_tensors['tree_branch_metadata'] = object_array([s.branch_metadata for s in states])
         if self.token_preservation is not None:
             from .tree_raw_tokens import FIELD, trajectory_projection, require
             validation_contexts={}
@@ -371,6 +374,13 @@ class SearchRollout:
         if tree is not None:
             from .tree_fresh200 import leaf_quotas, tree_option
             quotas = leaf_quotas(tree)
+            if tree_option(tree, 'branch_sampling') == 'branpo_tail_v1':
+                states = self._tail_branches(states, snapshots, quotas, tree, gen_batch.meta_info)
+                self.last_states = states
+                output, sources = self.compose(states)
+                if self.audit is not None:
+                    self.audit.finish(states, output, sources, roots, tree, self.tokenizer.pad_token_id)
+                return output, sources
             exact_quota = tree_option(tree, 'leaf_quotas') is not None
             if len(states) % tree.roots:
                 raise ValueError('Tree root rows do not contain complete question groups')
@@ -422,3 +432,76 @@ class SearchRollout:
         if self.audit is not None:
             self.audit.finish(states, output, sources, roots, tree, self.tokenizer.pad_token_id)
         return output, sources
+
+    def _tail_branches(self, roots, snapshots, quotas, tree, meta):
+        """Three finite continuations; keep every leaf and never sample for reward selection."""
+        if tree.roots != 2 or quotas != (3, 2) or len(roots) % tree.roots:
+            raise ValueError('BranPO-inspired sampling requires complete 2-root, 3/2 leaf groups')
+        if self.reward_callback is None:
+            raise ValueError('Tail backoff requires the actual training reward callback')
+        if any(not nodes for nodes in snapshots):
+            raise ValueError('Tail branching requires at least one original model-action state')
+        base_rewards = self.reward_callback(roots)
+        if len(base_rewards) != len(roots) or not np.isfinite(base_rewards).all():
+            raise ValueError('Nonfinite or misaligned original-root rewards')
+        leaves = [[root] for root in roots]
+        depths = [len(nodes)-1 for nodes in snapshots]
+        previous = base_rewards
+        for continuation in range(max(quotas)-1):
+            children, owners = [], []
+            for index, nodes in enumerate(snapshots):
+                if len(leaves[index]) >= quotas[index % tree.roots]:
+                    continue
+                same = continuation > 0 and previous[index] == base_rewards[index]
+                clamped = bool(same and depths[index] == 0)
+                if same:
+                    depths[index] = max(0, depths[index]-1)
+                parent = nodes[depths[index]]
+                child = parent.branch()
+                if self.audit is not None:
+                    self.audit.branch(parent, child)
+                from .tree_audit import state_signature, fingerprint
+                if state_signature(parent) != state_signature(child):
+                    raise ValueError('Tail branch changed inherited action/observation state')
+                child.branch_metadata = dict(protocol='branpo_tail_v1', root_slot=index % tree.roots,
+                    continuation=continuation+1, action_depth=depths[index],
+                    root_action_states=len(nodes), backoff_actions=len(nodes)-1-depths[index],
+                    reason=('same_reward_at_earliest' if clamped else 'same_reward_backoff' if same else
+                            'tail_first' if continuation == 0 else 'contrast_found_reuse_tail'),
+                    backoff_clamped=clamped,
+                    inherited_response_tokens=len(parent.response),
+                    inherited_observation_tokens=sum(1-m for m in parent.model_mask),
+                    inherited_prefix_sha256=hashlib.sha256(np.asarray(parent.rolling,dtype=np.int64).tobytes()).hexdigest(),
+                    inherited_raw_ledger_sha256=fingerprint(parent.raw_ledger),
+                    inherited_raw_ledger_actions=len(parent.raw_ledger),
+                    inherited_prefix_verified=True, finite_quota=quotas[index % tree.roots])
+                children.append(child); owners.append(index)
+            before_cost = self.cost.copy()
+            self.complete(children, meta)
+            for child, index in zip(children, owners):
+                parent = snapshots[index][depths[index]]
+                from .tree_audit import fingerprint
+                n = len(parent.response)
+                if (child.response[:n] != parent.response or child.model_mask[:n] != parent.model_mask
+                        or child.steps[:n] != parent.steps
+                        or fingerprint(child.raw_ledger[:len(parent.raw_ledger)]) != fingerprint(parent.raw_ledger)):
+                    raise ValueError('Completed branch altered inherited sampled prefix or behavior ledger')
+            for key in ('generated_tokens', 'prefill_tokens', 'retrieval_calls', 'raw_emitted_tokens'):
+                if key in before_cost:
+                    name = 'branch_' + key
+                    self.cost[name] = self.cost.get(name, 0) + self.cost[key]-before_cost[key]
+            scores = self.reward_callback(children)
+            if len(scores) != len(children) or not np.isfinite(scores).all():
+                raise ValueError('Nonfinite or misaligned branch rewards')
+            previous = list(base_rewards)
+            for child, index, score in zip(children, owners, scores):
+                child.branch_metadata.update(sampled_reward=float(score),
+                    original_root_reward=float(base_rewards[index]),
+                    same_reward_as_original=bool(score == base_rewards[index]),
+                    stop_reason='root_quota_exhausted' if len(leaves[index])+1 == quotas[index % tree.roots] else 'quota_remaining')
+                leaves[index].append(child); previous[index] = score
+        for index, root in enumerate(roots):
+            root.branch_metadata = dict(protocol='branpo_tail_v1', root_slot=index % tree.roots,
+                continuation=0, sampled_reward=float(base_rewards[index]), stop_reason='original_root')
+        self.tree_candidate_counts = [len(nodes) for nodes in snapshots]
+        return [leaf for rows in leaves for leaf in rows]

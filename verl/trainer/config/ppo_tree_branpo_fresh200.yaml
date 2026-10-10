@@ -1,0 +1,12 @@
+defaults:
+  - ppo_tree_fresh200
+  - _self_
+
+baselines:
+  experiment_variant: Tree-GRPO+BranPO-inspired sampling
+  tree:
+    branch_sampling: branpo_tail_v1
+    continuation_budget_per_question: 3
+
+trainer:
+  experiment_name: tree-branpo-officialfresh200
