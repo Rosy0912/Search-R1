@@ -1,0 +1,12 @@
+{
+  "status": "APPROVE",
+  "reviewer": "probe_metric_semantics",
+  "source_sha256": "c9385df75c06f3c7a28e41e0ae0b502866fa3418e54d3162ec0a7a2996732c34",
+  "local_cpu_fixtures": 30,
+  "fixtures_skipped": 0,
+  "complete_gate_identity": true,
+  "whole_trace_fresh_SHA_before_stream": true,
+  "canonical_actor_SHA_after_stream": true,
+  "CPU_only": true,
+  "remote_raw_output_only": true
+}
