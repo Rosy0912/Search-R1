@@ -1,0 +1,11 @@
+{
+  "source_commit": "a48b2fdf6fcb39821ee2f3e42ce1870d383719e4",
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/batched-eval-a48b2fd/opsd_signal_weight_batched_eval_v1",
+  "publication": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/batched-eval-publication-a48b2fd.json",
+    "sha256": "697261d13e6746b1615b658f0efa99860d70b171223188699d142286d03e2963"
+  },
+  "CPU_fixture_wait": 0,
+  "CPU_fixture_output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.017s\n\nOK\n",
+  "GPU_started": false
+}

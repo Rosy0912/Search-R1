@@ -1,0 +1,52 @@
+{
+  "160": {
+    "accepted": true,
+    "actual_transfer_wait_codes": [
+      0,
+      0
+    ],
+    "elapsed_seconds": 45.779622316360474,
+    "local_checkpoint_payload_files_created": 0,
+    "remote_backup": {
+      "accepted": true,
+      "destination": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000160-outer-00015",
+      "member_bytes": 359785300,
+      "member_count": 9,
+      "receipt": {
+        "bytes": 28960,
+        "ctime_ns": 1791605041569009962,
+        "device": 2065,
+        "inode": 466752748,
+        "mtime_ns": 1791605041569009962,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000160-outer-00015/complete-sha-verified.json",
+        "sha256": "0d5a754d457a7f68713a5f79ec84299391bac5c20d1f152cb3fb6ea0eea13a9f"
+      },
+      "state": "COMPLETE_FRESH_SHA_READBACK"
+    }
+  },
+  "170": {
+    "accepted": true,
+    "actual_transfer_wait_codes": [
+      0,
+      0
+    ],
+    "elapsed_seconds": 44.06623411178589,
+    "local_checkpoint_payload_files_created": 0,
+    "remote_backup": {
+      "accepted": true,
+      "destination": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000170-outer-00016",
+      "member_bytes": 359785236,
+      "member_count": 9,
+      "receipt": {
+        "bytes": 28960,
+        "ctime_ns": 1791605813736783962,
+        "device": 2065,
+        "inode": 466753897,
+        "mtime_ns": 1791605813736783962,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000170-outer-00016/complete-sha-verified.json",
+        "sha256": "0cb2ca927d7de1ce68102951f9be47c0ba3d6992b3002127dd171a3588dd3bbe"
+      },
+      "state": "COMPLETE_FRESH_SHA_READBACK"
+    }
+  }
+}
