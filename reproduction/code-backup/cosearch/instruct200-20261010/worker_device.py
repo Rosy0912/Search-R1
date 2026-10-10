@@ -15,10 +15,11 @@ def bind():
     leased=set(os.environ['COSEARCH_LEASED_UUIDS'].split(','))
     if set(mapping)!=leased or len(leased)!=4:raise RuntimeError('Invalid four-GPU lease')
     assigned=ray.get_runtime_context().get_accelerator_ids().get('GPU',[])
-    visible=[str(torch.cuda.get_device_properties(i).uuid) for i in range(torch.cuda.device_count())]
+    from probe_faiss_gpu import visible_cuda_uuids
+    visible=visible_cuda_uuids(torch.cuda.device_count())
     if not set(visible)<=leased:raise RuntimeError('Foreign GPU visible to worker')
     ordinal,uuid=select(assigned,mapping,visible)
     torch.cuda.set_device(ordinal)
-    if str(torch.cuda.get_device_properties(torch.cuda.current_device()).uuid)!=uuid:
+    if visible_cuda_uuids(torch.cuda.device_count())[torch.cuda.current_device()]!=uuid:
         raise RuntimeError('Actual CUDA binding differs from Ray assignment')
     return {'ray_assigned':assigned,'visible_uuids':visible,'ordinal':ordinal,'uuid':uuid,'mask':os.environ.get('CUDA_VISIBLE_DEVICES')}

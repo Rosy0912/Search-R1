@@ -60,7 +60,8 @@ def install():
             import torch
             if torch.distributed.get_world_size()!=4:raise RuntimeError('Each role must use four ranks')
             props=torch.cuda.get_device_properties(torch.cuda.current_device())
-            uuid=str(props.uuid)
+            from probe_faiss_gpu import visible_cuda_uuids
+            uuid=visible_cuda_uuids(torch.cuda.device_count())[torch.cuda.current_device()]
             if uuid not in os.environ['COSEARCH_LEASED_UUIDS'].split(','):raise RuntimeError('Worker uses an unleased GPU')
             record(worker,'initialized',{'uuid':uuid,'model':props.name,'total_memory_bytes':props.total_memory,'cgroup':Path('/proc/self/cgroup').read_text(),'mask':os.environ.get('CUDA_VISIBLE_DEVICES')})
         return result
