@@ -13,6 +13,24 @@ REVISION='aa8e72537993ba99e69dfaafa59ed015b17504d1'
 OFFICIAL_MANIFEST_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
 
 
+def write_method(base, commit, source):
+    """Freeze prospective method before the fresh run starts; never claim health."""
+    from reproduction.common8.formal_inline_safety import METHOD_ROLE
+    from reproduction.common8.formal_contract import FORMAL_COUNTING, FORMAL_SAFEGUARDS
+    from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
+    method=dict(schema_version=1, role=METHOD_ROLE, source_commit=commit,
+        source_map_sha256=document_sha256(source), policy_safety_mode=SAFETY_MODE,
+        target_updates=TARGET_UPDATES, warmup_steps=57,
+        same_process_after_five=True, fresh_states=True,
+        optimizer_counting=FORMAL_COUNTING, safeguards=FORMAL_SAFEGUARDS,
+        created_unix=time.time(), negative_tail_semantics='prospective operational candidate; not calibrated health',
+        production_admission=False, healthy_checkpoint_accepted=False)
+    path=Path(base)/'preparation/formal-inline-method.json'
+    path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open('xb') as f:f.write(canonical_bytes(method));f.flush();os.fsync(f.fileno())
+    return method
+
+
 def derive_calibration(base):
     import numpy as np
     import pyarrow.parquet as pq
@@ -87,6 +105,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     inputs={name:digest(base/'data'/name) for name in
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
+    method = write_method(base, commit, source)
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
         mixed_first_selection=True,actor_micro_batch_per_rank=4,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
         initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
@@ -116,6 +135,8 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         result['shared_gpu_cohosts'] = [dict(application=[r[0].strip(),r[1].strip()],
             process_identity=identity(int(r[1]))) for r in csv.reader(io.StringIO(raw)) if r]
     assert_formal_run(result)
+    from reproduction.common8.formal_inline_safety import verify_method
+    verify_method(method,result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:json.dump(result,f,indent=2)
     return result
