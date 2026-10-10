@@ -38,7 +38,7 @@ save('native-compatibility-validation.json', {'status': 'FA2_FA3_AND_TRAINER_IMP
       'modules': versions, 'fa2': importlib.metadata.version('flash-attn'),
       'fa3': importlib.metadata.version('flash-attn-3'), 'gpu_execution_tested': False})
 env = dict(os.environ, PYTHONPATH=':'.join(sys.path[:4]))
-result = subprocess.run([sys.executable, '-m', 'verl.trainer.main_ppo', '--cfg', 'job'] + c['training_overrides'],
+result = subprocess.run([sys.executable, '-m', 'verl.trainer.main_ppo', '--config-name', 'ppo_baselines', '--cfg', 'job'] + c['training_overrides'],
                         cwd=c['candidate'], env=env, capture_output=True, text=True, timeout=180)
 (OUT / 'hydra-composed-config.log').write_text(result.stdout + result.stderr)
 if result.returncode: raise RuntimeError('Training CLI configuration failed: ' + result.stderr[-3000:])
@@ -52,6 +52,7 @@ for p in [c['base_model'], c['teacher_path']]:
     assert t.encode('Question: What is the capital of France? <search>France</search>')
 save('offline-model-loading-validation.json', {'status': 'STUDENT_TEACHER_CONFIG_TOKENIZER_OFFLINE_PASS'})
 import ray
+from allocator_policy import worker_environment
 temp = BASE / 'environment/ray-validation'
 temp.mkdir(exist_ok=True)
 # Ray Unix socket paths need a short alias; all actual files stay on shared storage.
@@ -59,9 +60,12 @@ alias = pathlib.Path('/tmp') / ('topd-ray-' + os.environ['SLURM_JOB_ID'])
 alias.symlink_to(temp, target_is_directory=True)
 try:
     ray.init(num_cpus=2, num_gpus=0, include_dashboard=False, _temp_dir=str(alias),
-             object_store_memory=100 * 1024**2)
+             object_store_memory=100 * 1024**2, runtime_env={'env_vars': worker_environment(os.environ)})
     @ray.remote
-    def actual_worker(v): return v + 1
+    def actual_worker(v):
+        import torch, flash_attn_interface, flash_attn_3_cuda
+        assert os.environ.get('LD_PRELOAD')
+        return v + 1
     assert ray.get(actual_worker.remote(41), timeout=90) == 42
     assert ray.get(actual_worker.remote(42), timeout=90) == 43
     save('ray-cpu-validation.json', {'status': 'TWO_ACTUAL_CPU_TASKS_PASS_ZERO_GPU'})

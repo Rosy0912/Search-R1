@@ -86,6 +86,11 @@ def main():
             s = s[:pos] + s[pos:].replace("values={}", "scope=pathlib.Path(str(scope).replace('/freezer/','/memory/'));values={}", 1)
         if p.name == 'allocator_policy.py':
             s = s.replace("keys=('CPATH'", "keys=('LD_PRELOAD','LD_LIBRARY_PATH','CPATH'")
+        if p.name == 'train_entry.py':
+            s = s.replace("temp=pathlib.Path('/dev/shm')/('r1-'+os.environ['SLURM_JOB_ID']);temp.mkdir(mode=0o700,exist_ok=False)",
+                          "shared=pathlib.Path(c['evidence_root'])/'cache/ray';shared.mkdir(mode=0o700,exist_ok=False);temp=pathlib.Path('/tmp')/('r1-'+os.environ['SLURM_JOB_ID']);temp.symlink_to(shared,target_is_directory=True)")
+            s = s.replace(" run_original_main(entry.main_task._function,resolved,ray.shutdown,c)",
+                          " try:run_original_main(entry.main_task._function,resolved,ray.shutdown,c)\n finally:temp.unlink()")
         if s != p.read_text():
             p.write_text(s)
             changes.append({'path': str(p), 'before_sha256': original, 'after_sha256': sha(p)})
