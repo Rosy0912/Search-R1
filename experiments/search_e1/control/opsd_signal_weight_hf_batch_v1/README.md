@@ -9,3 +9,5 @@ hf_backend接收已验收的HF SDPA/BF16 base+未合并FP32 LoRA，保留原gene
 test_state执行已发布原SearchAgent类本体，比较混合终止、四次检索、最后forced/context边界和HTTP原始边界。test_torch在Node原Torch2.4/Transformers4.46 CPU环境验证padding-aware惩罚逐位等于原单题惩罚、各题停止长度互不影响；不加载权重、不做HTTP或CUDA初始化。
 
 尚需：独立四卡/八逻辑分片的正式0/15/25测试controller、真正加载504 FP32 LoRA摘要与原权重身份、实际GPU运行速度/停止/全512覆盖及同协议共同baseline对照。HF batch形状可能产生数值舍入差异，不预先承诺239复现；原未合并LoRA精度保留，不能混用准备中的vLLM合并BF16结果冒充原条件。
+
+Independent search requests now overlap with at most4 threads per model worker; every HTTP body still contains exactly1query, topk3/return_scores/timeout120. Turn barrier applies each response to its original question before next generation. HTTP timing may change; CPU E5 request/GEMM shape is not batched by this client. Original state tests and a real4thread barrier fixture pass; no speedup is claimed before GPU execution. Old0f226d2 is preserved and not hot-edited.

@@ -1,16 +1,20 @@
 {
   "files": {
     "README.md": {
-      "bytes": 1851,
-      "sha256": "1964aa052c2ac76979686c68021a29104c10713475187b11583c5ba1ce869b51"
+      "bytes": 2324,
+      "sha256": "6fc3ae6b3e5f898cea249109ff2fd383aa8fc117b650bcf013e52a0ac58008f6"
     },
     "hf_backend.py": {
       "bytes": 5314,
       "sha256": "0f8565b722521be57fe1dc80c57c71c2b76366c25ebdd47447beae0dfbe9bac1"
     },
     "search_batch.py": {
-      "bytes": 2905,
-      "sha256": "c8ac2f0150bee091638f396d566294412f874fad98fb315783365d4f30385170"
+      "bytes": 3490,
+      "sha256": "fa20068d680481b67b78c30eeba23eb2bace72e8a5fcb16f4283488a0cdbff70"
+    },
+    "test_parallel_http.py": {
+      "bytes": 1702,
+      "sha256": "9727b0e123053bd4aa49a509850dbd760db03380c79fed88d99fc5de04629ef7"
     },
     "test_state.py": {
       "bytes": 3981,
@@ -22,5 +26,6 @@
     }
   },
   "original_rollout_sha256": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a",
+  "retrieval_concurrency_per_worker": 4,
   "schema": "opsd-hf-batch-core-source-v1"
 }

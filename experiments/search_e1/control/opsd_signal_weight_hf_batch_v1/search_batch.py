@@ -4,6 +4,7 @@ HTTP requests stay one query each, so original CPU E5 request boundaries remain.
 Generation callback supplies text plus actual HF IDs; all payloads stay remote.
 """
 import re
+from concurrent.futures import ThreadPoolExecutor
 
 FORCED='\n<information>Search budget exhausted. Give the final answer now inside <answer> and </answer>.</information>\n'
 
@@ -24,6 +25,7 @@ def run_questions(questions,tokenizer,prompt,generate,http,url,max_new_tokens=50
         if not active:break
         outputs=generate(texts)
         if len(outputs)!=len(active):raise ValueError('Batch decoder returned wrong count')
+        pending=[]
         for i,text,output in zip(active,texts,outputs):
             s=states[i];segment=output['text']
             ends=[segment.find(tag)+len(tag) for tag in ('</search>','</answer>') if tag in segment]
@@ -35,8 +37,16 @@ def run_questions(questions,tokenizer,prompt,generate,http,url,max_new_tokens=50
             if '</answer>' in segment:s['termination']='answer';continue
             match=re.search(r'<search>(.*?)</search>',segment,re.S)
             if not match or s['search_calls']==4:s['termination']='invalid_or_budget';continue
-            response=http.post(url,json={'queries':[match.group(1).strip()],'topk':3,'return_scores':True},timeout=120)
-            response.raise_for_status();passages=response.json()['result'][0]
+            service=http.for_case(i,turn) if hasattr(http,'for_case') else http
+            pending.append((i,service,match.group(1).strip()))
+        # Keep each E5 request one query; only independent requests overlap.
+        # No next-turn generation until all current-turn observations are applied.
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            futures=[(i,pool.submit(service.post,url,json={'queries':[query],'topk':3,'return_scores':True},timeout=120))
+                for i,service,query in pending]
+            responses=[(i,f.result()) for i,f in futures]
+        for i,response in responses:
+            s=states[i];response.raise_for_status();passages=response.json()['result'][0]
             formatted=[]
             for n,p in enumerate(passages):
                 doc=p.get('document',p);contents=doc.get('contents',doc.get('text',''))
