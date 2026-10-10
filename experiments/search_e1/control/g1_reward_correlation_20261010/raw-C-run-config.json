@@ -1,0 +1,16 @@
+{
+  "diagnostic_run_id": "1ec36152611a4da4b82cf29f74939d4b",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512",
+  "remote_base": "/data/shaoshitong/Search-G1-reward-reconstruction-20261010-1ec36152611a",
+  "expected_node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "expected_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "run_manifest_sha256": "943e31dcfec0023a38ee4bb5f906d0cb06af578d81a9ba928c1cc73d62af2b25",
+  "resolved_config_sha256": "7269d3ca6c9efc337c08ce20c0516d2424a00e64eea0d068a6668901b32e4f12",
+  "gold_audit_sha256": "1ed1207dbe58513cc404069eb77dc60ab11d53e87d14f5ed99e29c0c9649a7d3",
+  "helper_sha256": "c9385df75c06f3c7a28e41e0ae0b502866fa3418e54d3162ec0a7a2996732c34",
+  "start_step": 1,
+  "end_step": 146,
+  "CPU_only": true,
+  "raw_output_remote_only": true,
+  "shaped_R_replay": false
+}
