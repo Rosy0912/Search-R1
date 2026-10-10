@@ -395,6 +395,9 @@ class EcoRewardManager():
         from search_g1.reward_schedule import binary_phase, scheduled_score
         logical_update = data.meta_info.get('reward_logical_update')
         active_binary = binary_phase(schedule, logical_update)
+        self.last_reward_schedule = schedule
+        self.last_reward_logical_update = logical_update
+        self.last_reward_binary_phase = active_binary
         if 'rm_scores' in data.batch.keys():
             if active_binary:
                 raise ValueError('Binary QA reward cannot accept unverified model scores')

@@ -928,6 +928,9 @@ class RayPPOTrainer(object):
                         # This is the formal logical iteration, not the attempt ordinal.
                         batch.meta_info['reward_logical_update'] = self.global_steps
                         reward_tensor = self.reward_fn(batch)
+                        if getattr(self.reward_fn, 'last_reward_schedule', None) is not None:
+                            metrics['train/reward_binary_phase'] = float(self.reward_fn.last_reward_binary_phase)
+                            metrics['train/reward_logical_update'] = self.reward_fn.last_reward_logical_update
                         for key,value in (self.reward_fn.get_metrics() or {}).items():
                             metrics['train/'+key] = value
                         batch.batch['token_level_scores'] = reward_tensor

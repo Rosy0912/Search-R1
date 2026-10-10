@@ -71,6 +71,14 @@ def record(step,metrics,probe_version,attempt_result=None):
         row.update(attempt_id=attempt_result['attempt_id'],attempt_index=attempt_result['attempt_index'],
              optimizer_writes_before=before,optimizer_writes_after=after,opportunities_processed=20,
              actual_optimizer_writes=successes)
+    if run.get('reward_schedule') is not None:
+        from search_g1.reward_schedule import binary_phase
+        expected_binary = binary_phase(run['reward_schedule'], step)
+        assert metrics.get('train/reward_logical_update') == step, 'Reward logical step differs'
+        assert metrics.get('train/reward_binary_phase') == float(expected_binary), 'Reward phase differs'
+        row['reward_schedule'] = run['reward_schedule']
+        row['reward_mode'] = 'binary_em' if expected_binary else 'search_g1'
+        row['reward_logical_update'] = step
     with path.open('a') as f:
         f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
         parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
