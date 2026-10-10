@@ -21,9 +21,11 @@ def campus(host, command, **kwargs):
     args = ['ssh', '-T', '-oBatchMode=yes', '-oStrictHostKeyChecking=yes', '-oConnectTimeout=8', host, command]
     try:
         r = subprocess.run(args, capture_output=True, text=True, timeout=observation_timeout, **kwargs)
-        if r.returncode == 0:
+        if r.returncode != 255:
             return r
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as error:
+        if observation_timeout > 12:
+            return subprocess.CompletedProcess(args,124,error.stdout or "", "Observation timed out; inspect the existing remote operation before retry")
         pass
     # Previously authorized per-connection recovery, only after current alias failure.
     args = ['ssh', '-T', '-B', 'en0', '-oProxyCommand=none', '-oProxyJump=none', '-oBatchMode=yes',
