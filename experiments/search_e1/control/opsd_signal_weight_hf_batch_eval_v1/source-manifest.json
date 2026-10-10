@@ -1,9 +1,9 @@
 {
-  "batch_core_source_commit": "0f226d21998ae70326b14be8587a83638b99f9ff",
+  "batch_core_source_commit": "64125f9069f2809b1b56f6bd83e6a725ae24dece",
   "files": {
     "README.md": {
-      "bytes": 2955,
-      "sha256": "da961f9dbe058a35322cdabc4ce090fcf5db225688b200dc6d9ff084730bac94"
+      "bytes": 3408,
+      "sha256": "95f080ddd787770ebd9156093f633d889afd2327a5824a5517d53c5b52ba3c74"
     },
     "backend_cpu_fixture.py": {
       "bytes": 1902,
@@ -15,11 +15,15 @@
     },
     "dependencies.py": {
       "bytes": 1602,
-      "sha256": "0350104fd4dea2f4d8b9e78eac5fe3ddac8ade649c912ec05d9fa196d566adca"
+      "sha256": "f0f973c10446016c3baf1771e03866e8157a1cc395d46bc043940733996bc2d1"
     },
     "evaluate.py": {
       "bytes": 12858,
       "sha256": "ed5d7727f23fa6b8fd6b08c6d854f25fc1d31fb0bc2e9987c9b01daa3281d4d7"
+    },
+    "http_trace.py": {
+      "bytes": 2195,
+      "sha256": "b3724973d1b10c2a99a4f106b92181ebc9dfe60dc970114e040978ada1ab4483"
     },
     "metrics.py": {
       "bytes": 2405,
@@ -28,6 +32,10 @@
     "test_bank_adapter.py": {
       "bytes": 2307,
       "sha256": "3595d1fee94c8a8ae696aa6930531733fb36a1f75ac799951ca101e314eaa779"
+    },
+    "test_http_trace.py": {
+      "bytes": 1536,
+      "sha256": "bac05d98e08ae88a749a58aae24bc03e0e2b06648933b120f2f2824b5e41728f"
     },
     "test_layout.py": {
       "bytes": 2785,
@@ -42,8 +50,8 @@
       "sha256": "1d2fe72d42c22d8df3eadd73a9ece7c0a97c42bdb9b4ca6218e07201d461f1c3"
     },
     "worker.py": {
-      "bytes": 9888,
-      "sha256": "3cdef6f9bb23a6830b0a53e7e347bf6735aa9f5bbfa85701e30f6db2a5936f4e"
+      "bytes": 9990,
+      "sha256": "5ceec7847557d3ff34f09f82dfda0de7999bb230983af506ef63e689ef96f4c9"
     }
   },
   "schema": "opsd-hf-batch-eval-source-v1"

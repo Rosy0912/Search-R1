@@ -2,10 +2,10 @@
 import hashlib,json,sys
 from pathlib import Path
 
-CORE=Path('/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/hf-batch-core-0f226d2/opsd_signal_weight_hf_batch_v1')
-PUBLICATION=CORE.parents[2]/'receipts/hf-batch-core-publication-0f226d2.json'
-PUBLICATION_SHA='91a38cff35a9c07c9dfb3c18949ce04dd5d5c82b0dd0f78b414b8fc2163bc7db'
-COMMIT='0f226d21998ae70326b14be8587a83638b99f9ff'
+CORE=Path('/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/hf-batch-core-64125f9/opsd_signal_weight_hf_batch_v1')
+PUBLICATION=CORE.parents[2]/'receipts/hf-batch-core-publication-64125f9.json'
+PUBLICATION_SHA='db67b50d6f1347076939ca0924aadcbbc8ea0398c11f3234d1dc9b7c2ea2f03c'
+COMMIT='64125f9069f2809b1b56f6bd83e6a725ae24dece'
 
 def verify_core():
     raw=PUBLICATION.read_bytes()

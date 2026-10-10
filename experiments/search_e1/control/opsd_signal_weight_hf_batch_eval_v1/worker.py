@@ -77,7 +77,9 @@ def run_worker(request,directory,rank):
         no_training=True,model_load_seconds=time.time()-started,batch_rounding_not_claimed_bitwise_single=True))
     context={};generation_seconds=0.;primary=[]
     with (directory/('generation-%d.jsonl'%rank)).open('x') as generated,(directory/('http-%d.jsonl'%rank)).open('x') as http:
-        proxy=sampling.RequestsTraceProxy(requests,http,rank,loaded['tensor_sha256'],lambda:dict(context))
+        from http_trace import ConcurrentHTTP
+        proxy=ConcurrentHTTP(requests,http,rank,loaded['tensor_sha256'],
+            lambda:{k:v for k,v in context.items() if k not in ('question_slot','turn')})
         def record(event):
             generated.write(json.dumps(dict(event,context=dict(context)),ensure_ascii=False,allow_nan=False)+'\n')
         def decode(texts,logged=True):

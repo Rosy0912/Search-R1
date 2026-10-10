@@ -22,3 +22,5 @@ CUDA_VISIBLE_DEVICES='' python evaluate.py --mode run \
 ```
 
 部分输出或故障保留，在独立恢复副本中继续未完成分片/端点；本入口不伪称已实现自动resume，不重启原训练或填缺失EM为0。
+
+旧GP15的32个保存案例（rank0–3、slots0/1/10–15）累计模型生成400.97秒、HTTP等待1061.89秒，等待含排队，不是服务纯扫描耗时，也不是512总体墙钟。为解决该实际瓶颈，每worker至多4个单query HTTP并发，保持请求边界/FP32 E5/检索参数。日志使用atomic request IDs/写入和明确case绑定；请求可乱序完成，不假称序号代表完成顺序。原训练与旧CPU候选保留。
