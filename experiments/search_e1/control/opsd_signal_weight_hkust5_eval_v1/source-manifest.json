@@ -1,0 +1,29 @@
+{
+  "schema": "opsd-signal-weight-hkust5-eval-v1",
+  "files": {
+    "README.md": {
+      "sha256": "3f5e1048341f8398399db1c4166cef89c3608f30f4fe65f7e8019592835cf007",
+      "bytes": 1911
+    },
+    "bank_adapter.py": {
+      "sha256": "1fbe0bd213c96123f1345623bc1abbd78ace0c0c4cc626f8337ab43c89a4ceaa",
+      "bytes": 7327
+    },
+    "entry.py": {
+      "sha256": "4eb6d0c55c64fb86adcc941fff126e0e2de8520452c418b2946cf37fea5d4384",
+      "bytes": 6552
+    },
+    "evaluate.py": {
+      "sha256": "f8a556d042c358dd98fbdc0255cfa022575b1b9fdbfa330e034b1d72135daba8",
+      "bytes": 15653
+    },
+    "metrics.py": {
+      "sha256": "1f9c8cfd8053b2ac079f5ab8646f21bf68e42c4b0171ab159887a6440cf13144",
+      "bytes": 2399
+    },
+    "test_entry.py": {
+      "sha256": "4680f99b1946813b49dfd9450dc1d25d81c499431d27073a6091069239718b86",
+      "bytes": 1460
+    }
+  }
+}
