@@ -17,6 +17,10 @@
       "bytes": 1602,
       "sha256": "f0f973c10446016c3baf1771e03866e8157a1cc395d46bc043940733996bc2d1"
     },
+    "deploy_cpu.py": {
+      "bytes": 2933,
+      "sha256": "927d354eb11b19a55810de5e25e1bf11879bd6acfc7e69d8bb59e3c734f313bc"
+    },
     "entry.py": {
       "bytes": 7329,
       "sha256": "6ab7fff41d404dca766c0c32e28384997a8c2de78c9d30435990e00d28562a91"
@@ -28,6 +32,10 @@
     "http_trace.py": {
       "bytes": 2195,
       "sha256": "b3724973d1b10c2a99a4f106b92181ebc9dfe60dc970114e040978ada1ab4483"
+    },
+    "integration_cpu.py": {
+      "bytes": 1411,
+      "sha256": "a77bb18bcd23dd9c17e0b85790e79c48cfbd426adb3e7c77849ab92c773274bb"
     },
     "metrics.py": {
       "bytes": 2405,
