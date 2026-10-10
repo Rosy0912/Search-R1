@@ -119,6 +119,16 @@ class OwnedProcesses:
                     todo.remove(pid)
                     progressed = True
                     continue
+                # An exited adopted child can leave the step cgroup before reaping.
+                # Reap only our own zombie under REAP_LOCK; never signal it.
+                if row['state'] == 'Z' and row['ppid'] == os.getpid() and row['uid'] == os.getuid():
+                    try:
+                        os.waitpid(pid, os.WNOHANG)
+                    except ChildProcessError:
+                        pass
+                    todo.remove(pid)
+                    progressed = True
+                    continue
                 if row['ppid'] != os.getpid() and row['ppid'] not in frozen:
                     continue
                 if not self._owned(row):

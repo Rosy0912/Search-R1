@@ -65,7 +65,7 @@ try:
     try:
         trigger.touch()
         deadline = time.monotonic() + 5
-        while not pidfile.exists():
+        while not pidfile.exists() or not pidfile.read_text().strip():
             assert time.monotonic() < deadline
             time.sleep(.02)
         protected_child = int(pidfile.read_text())
