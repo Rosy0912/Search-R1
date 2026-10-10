@@ -12,11 +12,11 @@ def independent_worker_config(config):
     return copy.deepcopy(config)
 
 
-def check_global(config, world_size, sequence_parallel):
-    assert world_size == training_world_size() and sequence_parallel == 1, 'Wrong actual common8 data-parallel topology'
+def check_global(config, world_size, sequence_parallel, run=None):
+    assert world_size == training_world_size(run) and sequence_parallel == 1, 'Wrong actual common8 data-parallel topology'
     assert config.rollout.n == 1 and config.rollout.n_agent == 5
     assert config.actor.ppo_mini_batch_size == 128
-    assert config.actor.ppo_micro_batch_size == actor_global_micro()
+    assert config.actor.ppo_micro_batch_size == actor_global_micro(run)
     assert config.actor.ppo_epochs == 1
     assert config.rollout.log_prob_micro_batch_size == 32
     assert config.ref.log_prob_micro_batch_size == 32

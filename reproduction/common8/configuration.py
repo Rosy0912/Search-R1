@@ -64,7 +64,7 @@ def resolved(base):
         config = compose(config_name='ppo_trainer', overrides=overrides)
     OmegaConf.resolve(config)
     check_global(config.actor_rollout_ref, config.trainer.n_gpus_per_node,
-                 config.actor_rollout_ref.actor.ulysses_sequence_parallel_size)
+                 config.actor_rollout_ref.actor.ulysses_sequence_parallel_size, run=run)
     assert config.data.train_batch_size == 512
     assert config.actor_rollout_ref.actor.grad_clip == 1.0
     verify_precision_config(OmegaConf.to_container(config, resolve=True), run)
