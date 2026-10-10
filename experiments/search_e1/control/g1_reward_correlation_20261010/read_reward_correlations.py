@@ -24,7 +24,8 @@ def summarise(values):
 def reduce(groups):
     r=np.concatenate([g["r"] for g in groups]);c=np.concatenate([g["em"] for g in groups])
     p=float(c.mean());mu=float(r.mean());sd=float(r.std())
-    rho=corr(r,c);moment_rho=(mu-.05)*np.sqrt((1-p)/p)/sd
+    floor=float(np.float32(.05));assert np.all(r[c==0]==floor)
+    rho=corr(r,c);moment_rho=(mu-floor)*np.sqrt((1-p)/p)/sd
     assert abs(rho-moment_rho)<1e-12 and 0<rho<=1
     mixed=[g for g in groups if 0<g["em"].sum()<5]
     assert len(mixed)+sum(g["em"].sum()==0 for g in groups)+sum(g["em"].sum()==5 for g in groups)==len(groups)
