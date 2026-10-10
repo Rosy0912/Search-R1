@@ -45,3 +45,5 @@
 2026-10-10 15:14–15:36 CST推进：G_NEG第3、4轮均完整结束，累计Adam30、39；第3轮P=K288、9次新Adam（21→30）、更新前TRAIN1125/2560=43.9453125%；第4轮P=K284、9次新Adam（30→39）、更新前TRAIN1075/2560=41.9921875%。两轮原torchrun实际wait0，原生四rank adapter/Adam摘要一致；没有重复独立CPU张量实读。不同outer题集不能当作固定512测试退化结论，最终测试仍后置。CP30、39已HKUST1远端各9成员逐SHA备份，两端实际退出0、Mac payload0。
 
 同controller1977766已进入第5轮SAMPLING（outer_index4、更新前CP39），当前真实生成trace约7.23MB、两原控制进程实读存活，无新错误。总TRAIN29/100（G_POS25/G_NEG4/H_POS0/H_NEG0），八次正式512仍pending。此前权限观察提示自然清除，期间采样与后续完整训练持续推进，没有重新启动或重做更新。
+
+2026-10-10 15:53 CST推进：G_NEG5/25完整outer、累计Adam48；第5轮更新前TRAIN strict EM1148/2560=44.84375%，P=K287、9次新Adam（39→48），原torchrun实际wait0。原生四rank adapter/Adam摘要一致，没有重复独立CPU张量实读。CP48已HKUST1远端9成员逐SHA备份，两端实际退出0、Mac payload0。第6轮SAMPLING实际生成trace约5.64MB、两原控制进程实读存活，无新错误；此前Zombie观察提示自然清除，没有重启或新修复。总TRAIN30/100（G_POS25/G_NEG5/H_POS0/H_NEG0），八次正式512仍后置pending，继续当前训练。
