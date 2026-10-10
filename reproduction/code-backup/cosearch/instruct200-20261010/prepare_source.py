@@ -39,9 +39,9 @@ def patch_trainer(trainer):
         'from verl.single_controller.ray.base import create_colocated_worker_cls':
             'from verl.single_controller.ray.base import create_colocated_worker_cls_fused as create_colocated_worker_cls',
         '(is_last_step or self.global_steps % self.config.trainer.test_freq == 0)':
-            '(is_last_step or self.global_steps in (5, 50, 100, 150, 200))',
+            '(is_last_step or self.global_steps in (5, 50, 100, 150, 200) or (self.global_steps == 10 and self.config.trainer.get("recovery_acceptance_at10", False)))',
         'is_last_step or self.global_steps % self.config.trainer.save_freq == 0 or esi_close_to_expiration':
-            'is_last_step or self.global_steps in (5, 50, 100, 150, 200) or esi_close_to_expiration',
+            'is_last_step or self.global_steps in (5, 50, 100, 150, 200) or (self.global_steps == 10 and self.config.trainer.get("recovery_acceptance_at10", False)) or esi_close_to_expiration',
         'print(f"Warning: No dataloader state found at {dataloader_local_path}, will start from scratch")':
             'raise FileNotFoundError(f"Resume requires dataloader state: {dataloader_local_path}")',
     }

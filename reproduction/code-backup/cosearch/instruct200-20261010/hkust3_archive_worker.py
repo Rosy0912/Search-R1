@@ -22,7 +22,7 @@ def state(**kw):
 while True:
  try:
   remote("from pathlib import Path;Path("+repr(ROOT+'/archive-worker-heartbeat.json')+").write_text("+repr(json.dumps({'epoch':time.time(),'pid':os.getpid(),'destination':str(DEST)}))+")")
-  for step in (5,50,100,150,200):
+  for step in (5,10,50,100,150,200):
    code="from pathlib import Path; p=Path("+repr(ROOT+'/archive-requests/'+str(step)+'.json')+");print(p.read_text() if p.exists() else 'null')"
    request=json.loads(remote(code))
    if request is None:continue

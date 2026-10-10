@@ -9,6 +9,12 @@ from verify_evaluation import verify as verify_evaluation
 
 ROOT=Path(os.environ.get('COSEARCH_RUN_ROOT',str(BASE/'runtime/cosearch-instruct200-20261010')))
 
+def file_sha(path):
+    h=hashlib.sha256()
+    with path.open('rb') as f:
+        for chunk in iter(lambda:f.read(8*1024*1024),b''):h.update(chunk)
+    return h.hexdigest()
+
 def status(phase,**values):
     record=dict(phase=phase,epoch=time.time(),pid=os.getpid(),job=os.environ.get('SLURM_JOB_ID'),**values)
     path=ROOT/'controller-state.json';temporary=path.with_suffix('.tmp')
@@ -100,28 +106,41 @@ def main():
         result=json.loads(raw)['result'];assert len(result)==1 and len(result[0])==50
         assert all(math.isfinite(row['score']) for row in result[0])
         (ROOT/'full-retriever-query.json').write_text(json.dumps({'status':'FULL_INDEX_OWN_GPU_QUERY_PASS','response_sha256':hashlib.sha256(raw).hexdigest(),'results':50})+'\n')
-        short=launch([python,str(ROOT/'tools/launch_training.py'),'short5'],'short5.log',env);wait(short,'short5',service)
-        update_receipt=verify_updates(ROOT/'evidence',5,env['SLURM_JOB_ID'])
-        samples=[json.loads(line) for line in (ROOT/'gpu-memory.jsonl').read_text().splitlines() if json.loads(line)['phase']=='short5']
-        if not samples or any(d['used_mib']>0.95*d['total_mib'] for sample in samples for d in sample['devices']):raise RuntimeError('Short-run GPU memory headroom failed')
-        events=[]
-        for path in (ROOT/'evidence').glob('main-*.jsonl'):
-            events.extend(json.loads(line) for line in path.read_text().splitlines())
-        identities={e['rank']:e for e in events if e['kind']=='initialized' and str(e['job'])==env['SLURM_JOB_ID']}
-        updates={(e['outer'],e['rank']):e for e in events if e['kind']=='update' and str(e['job'])==env['SLURM_JOB_ID']}
-        for rank in range(4):
-            previous=updates[(4,rank)]['metrics']['perf/max_memory_reserved_gb']
-            final_peak=updates[(5,rank)]['metrics']['perf/max_memory_reserved_gb']
-            if final_peak-previous>0.05*identities[rank]['total_memory_bytes']/(1024**3):raise RuntimeError('Last short-run outer shows excessive memory growth')
-        update_receipt['gpu_memory_headroom_pass']=True
-        update_receipt['gpu_memory_stability_still_requires_review']=False
-        (ROOT/'short-acceptance.json').write_text(json.dumps(update_receipt,indent=2)+'\n')
-        verify_checkpoint(ROOT,5);verify_evaluation(ROOT/'validation/5.jsonl',512,5)
+        recovery_plan=json.loads((ROOT/'recovery-plan.json').read_text()) if (ROOT/'recovery-plan.json').exists() else None
+        prior={}
+        if recovery_plan:
+            if recovery_plan.get('step')!=5:raise RuntimeError('Only verified step5 repair continuation is supported')
+            saved_path=ROOT/'checkpoints/global_step_5/full-sha-receipt.json'
+            if hashlib.sha256(saved_path.read_bytes()).hexdigest()!=recovery_plan['receipt_sha256']:raise RuntimeError('Recovery source receipt changed')
+            saved=json.loads(saved_path.read_text())
+            for item in saved['files']:
+                p=Path(item['path'])
+                if p.stat().st_size!=item['bytes'] or file_sha(p)!=item['sha256']:raise RuntimeError('Recovery source file differs')
+            verify_updates(ROOT/'evidence',5,recovery_plan['source_job'],require_joint=False)
+            prior={'prior_job':recovery_plan['source_job'],'prior_through':5}
+        else:
+            short=launch([python,str(ROOT/'tools/launch_training.py'),'short5'],'short5.log',env);wait(short,'short5',service)
+            update_receipt=verify_updates(ROOT/'evidence',5,env['SLURM_JOB_ID'])
+            samples=[json.loads(line) for line in (ROOT/'gpu-memory.jsonl').read_text().splitlines() if json.loads(line)['phase']=='short5']
+            if not samples or any(d['used_mib']>0.95*d['total_mib'] for sample in samples for d in sample['devices']):raise RuntimeError('Short-run GPU memory headroom failed')
+            events=[]
+            for path in (ROOT/'evidence').glob('main-*.jsonl'):
+                events.extend(json.loads(line) for line in path.read_text().splitlines())
+            identities={e['rank']:e for e in events if e['kind']=='initialized' and str(e['job'])==env['SLURM_JOB_ID']}
+            updates={(e['outer'],e['rank']):e for e in events if e['kind']=='update' and str(e['job'])==env['SLURM_JOB_ID']}
+            for rank in range(4):
+                previous=updates[(4,rank)]['metrics']['perf/max_memory_reserved_gb']
+                final_peak=updates[(5,rank)]['metrics']['perf/max_memory_reserved_gb']
+                if final_peak-previous>0.05*identities[rank]['total_memory_bytes']/(1024**3):raise RuntimeError('Last short-run outer shows excessive memory growth')
+            update_receipt['gpu_memory_headroom_pass']=True
+            update_receipt['gpu_memory_stability_still_requires_review']=False
+            (ROOT/'short-acceptance.json').write_text(json.dumps(update_receipt,indent=2)+'\n')
+            verify_checkpoint(ROOT,5);verify_evaluation(ROOT/'validation/5.jsonl',512,5)
         continuation=launch([python,str(ROOT/'tools/launch_training.py'),'continue200'],'continue200.log',env);wait(continuation,'continue200',service)
-        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID']);recovery(5)
+        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'],**prior);recovery(5)
         from archive_checkpoint import allow_cleanup
         allow_cleanup(ROOT,5)
-        for step in (5,50,100,150,200):
+        for step in ((5,10,50,100,150,200) if recovery_plan else (5,50,100,150,200)):
             saved=json.loads((ROOT/('checkpoint-receipt-'+str(step)+'.json')).read_text())
             archived=json.loads((ROOT/('archive-verified-'+str(step)+'.json')).read_text())
             if saved['step']!=step or archived['status']!='HKUST3_ALL_CHECKPOINT_SHA_PASS':raise RuntimeError('Missing full archived checkpoint')
@@ -129,7 +148,7 @@ def main():
             (ROOT/('validation-receipt-'+str(step)+'.json')).write_text(json.dumps(receipt,indent=2)+'\n')
         final=launch([python,str(ROOT/'tools/launch_training.py'),'final_eval'],'final-eval.log',env);wait(final,'final_eval',service)
         receipt=verify_evaluation(ROOT/'final-evaluation/200.jsonl',51713,200);recovery(200)
-        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'])
+        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'],**prior)
         (ROOT/'final-evaluation-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
         allow_cleanup(ROOT,200)
         status('COMPLETE_200_FINAL_EVALUATION_AND_RECOVERY_VERIFIED')
