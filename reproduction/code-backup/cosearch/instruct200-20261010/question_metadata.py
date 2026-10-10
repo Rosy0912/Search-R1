@@ -1,5 +1,7 @@
 """Recover question metadata from the unchanged shared dataset prompt."""
 import functools
+import json
+import re
 
 
 def with_question(kwargs):
@@ -27,7 +29,41 @@ def install(loop):
 
     @functools.wraps(original)
     async def run(instance, sampling_params, **kwargs):
-        return await original(instance, sampling_params, **with_question(kwargs))
+        params = dict(sampling_params)
+        stops = params.get('stop') or []
+        stops = [stops] if isinstance(stops, str) else list(stops)
+        if '</search>' not in stops:
+            stops.append('</search>')
+        params['stop'] = stops
+        params['include_stop_str_in_output'] = True
+        return await original(instance, params, **with_question(kwargs))
 
     loop.run = run
     loop._shared_question_adapter = True
+
+
+def search_calls(text):
+    if '<tool_call>' in text or '</tool_call>' in text:
+        return None
+    matches = list(re.finditer(r'<search>(.*?)</search>', text, re.DOTALL))
+    if text.count('<search>') != len(matches) or text.count('</search>') != len(matches):
+        return []
+    return [{'name': 'search', 'arguments': json.dumps({'query': m.group(1).strip()}, ensure_ascii=False)}
+            for m in matches if m.group(1).strip()]
+
+
+def install_parser(parser, function_call):
+    if getattr(parser, '_shared_search_adapter', False):
+        return
+    original = parser.extract_tool_calls
+
+    @functools.wraps(original)
+    async def extract(instance, response_ids):
+        text, native = await original(instance, response_ids)
+        fallback = search_calls(text)
+        if fallback is None or native:
+            return text, native
+        return text, [function_call(**call) for call in fallback]
+
+    parser.extract_tool_calls = extract
+    parser._shared_search_adapter = True
