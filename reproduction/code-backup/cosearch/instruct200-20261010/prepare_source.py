@@ -36,6 +36,8 @@ def patch_source(entry, worker):
 
 def patch_trainer(trainer):
     replacements = {
+        'from verl.single_controller.ray.base import create_colocated_worker_cls':
+            'from verl.single_controller.ray.base import create_colocated_worker_cls_fused as create_colocated_worker_cls',
         '(is_last_step or self.global_steps % self.config.trainer.test_freq == 0)':
             '(is_last_step or self.global_steps in (5, 50, 100, 150, 200))',
         'is_last_step or self.global_steps % self.config.trainer.save_freq == 0 or esi_close_to_expiration':

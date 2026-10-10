@@ -87,7 +87,7 @@ def main():
     OmegaConf.update(config,'ray_kwargs.ray_init.address','local',force_add=True)
     OmegaConf.update(config,'ray_kwargs.ray_init.num_gpus',4,force_add=True)
     OmegaConf.update(config,'ray_kwargs.ray_init.num_cpus',48,force_add=True)
-    OmegaConf.update(config,'ray_kwargs.ray_init._temp_dir','/data/user/jxu957/r200-'+os.environ['SLURM_JOB_ID']+'-'+args.phase,force_add=True)
+    OmegaConf.update(config,'ray_kwargs.ray_init._temp_dir','/tmp/r200-'+os.environ['SLURM_JOB_ID']+'-'+args.phase,force_add=True)
     (root/('resolved-'+args.phase+'.yaml')).write_text(OmegaConf.to_yaml(config,resolve=True))
     try:
         native.run_dual_agent_ppo(config,task_runner_class=ray.remote(num_cpus=1)(Runner))
