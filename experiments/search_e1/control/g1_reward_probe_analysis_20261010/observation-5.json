@@ -1,0 +1,2838 @@
+{
+  "started_utc": "2026-10-10T03:07:56.933694+00:00",
+  "node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "readonly": true,
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "run_manifest_sha256": "943e31dcfec0023a38ee4bb5f906d0cb06af578d81a9ba928c1cc73d62af2b25",
+  "native_progress": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/actual-updates.jsonl",
+    "sha256": "0cf3682de9d00d2770c97e14903a502c075245f3b4570b62ce3f3e69b988617e",
+    "bytes": 128908,
+    "complete_rows": 141,
+    "actual_optimizer_writes": 2820,
+    "last_record": {
+      "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+      "step": 141,
+      "metrics": {
+        "critic/rewards/mean": 0.6758670210838318,
+        "actor/pg_loss": -0.03691616941140337,
+        "actor/entropy_loss": 0.3065612731850706,
+        "actor/kl_loss": 0.0,
+        "actor/ppo_kl": 0.0023104839378092377,
+        "actor/grad_norm": 1.2408541625616678,
+        "actor/optimizer_steps_this_update": 20.0,
+        "actor/update_opportunities_this_attempt": 20.0,
+        "actor/skipped_update_opportunities": 0.0
+      },
+      "probe_version": "db474b6abf654ad9892b02ae67ab6f86:100:1dc59a8c3e9d46228ea7b87b5e98a7dc",
+      "behavior_probability_gate_sha256": "c60dfacbeaff2c19d341a18b8ff7c9125b01e1db20ee05d16e534a7e4fa1fc78",
+      "behavior_trace_sha256": "380cb9890244855b038981e040f5a81477b559745519295c850a978313f63ab0",
+      "attempt_id": "7b591c6a2d3c4cfea6d817fc4989d84e",
+      "attempt_index": 141,
+      "optimizer_writes_before": 2800,
+      "optimizer_writes_after": 2820,
+      "opportunities_processed": 20,
+      "actual_optimizer_writes": 20
+    },
+    "sequential_steps": true
+  },
+  "training_log": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/search-g1-common8-training.log",
+    "sha256_read_prefix": "e24e1a14bdf88f24e67e1c2c645513f7f2e6133919f4b19f657d8721130ff095",
+    "bytes": 6948383,
+    "scalar_rows": [
+      {
+        "step": 1,
+        "line": 474,
+        "metrics": {
+          "train/perf/em": 0.161,
+          "critic/rewards/mean": 0.203,
+          "actor/entropy_loss": 0.903,
+          "actor/pg_loss": 0.059,
+          "actor/grad_norm": 1.979,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.151,
+          "train/cost/nosearch_rate": 0.043,
+          "train/cost/oversearch_rate": 0.146,
+          "env/actual_retrieval_calls/total": 2801.0,
+          "env/actual_retrieval_calls/mean": 1.094,
+          "env/number_of_valid_search": 1.118
+        }
+      },
+      {
+        "step": 2,
+        "line": 587,
+        "metrics": {
+          "train/perf/em": 0.156,
+          "critic/rewards/mean": 0.199,
+          "actor/entropy_loss": 0.896,
+          "actor/pg_loss": 0.05,
+          "actor/grad_norm": 2.075,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.133,
+          "train/cost/nosearch_rate": 0.043,
+          "train/cost/oversearch_rate": 0.138,
+          "env/actual_retrieval_calls/total": 2752.0,
+          "env/actual_retrieval_calls/mean": 1.075,
+          "env/number_of_valid_search": 1.095
+        }
+      },
+      {
+        "step": 3,
+        "line": 700,
+        "metrics": {
+          "train/perf/em": 0.164,
+          "critic/rewards/mean": 0.214,
+          "actor/entropy_loss": 0.894,
+          "actor/pg_loss": 0.045,
+          "actor/grad_norm": 2.092,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.145,
+          "train/cost/nosearch_rate": 0.037,
+          "train/cost/oversearch_rate": 0.138,
+          "env/actual_retrieval_calls/total": 2797.0,
+          "env/actual_retrieval_calls/mean": 1.093,
+          "env/number_of_valid_search": 1.115
+        }
+      },
+      {
+        "step": 4,
+        "line": 813,
+        "metrics": {
+          "train/perf/em": 0.169,
+          "critic/rewards/mean": 0.218,
+          "actor/entropy_loss": 0.866,
+          "actor/pg_loss": 0.04,
+          "actor/grad_norm": 1.95,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.142,
+          "train/cost/nosearch_rate": 0.033,
+          "train/cost/oversearch_rate": 0.133,
+          "env/actual_retrieval_calls/total": 2790.0,
+          "env/actual_retrieval_calls/mean": 1.09,
+          "env/number_of_valid_search": 1.107
+        }
+      },
+      {
+        "step": 5,
+        "line": 979,
+        "metrics": {
+          "train/perf/em": 0.177,
+          "critic/rewards/mean": 0.226,
+          "actor/entropy_loss": 0.891,
+          "actor/pg_loss": 0.007,
+          "actor/grad_norm": 1.946,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.15,
+          "train/cost/nosearch_rate": 0.039,
+          "train/cost/oversearch_rate": 0.137,
+          "env/actual_retrieval_calls/total": 2788.0,
+          "env/actual_retrieval_calls/mean": 1.089,
+          "env/number_of_valid_search": 1.118
+        }
+      },
+      {
+        "step": 6,
+        "line": 1324,
+        "metrics": {
+          "train/perf/em": 0.157,
+          "critic/rewards/mean": 0.2,
+          "actor/entropy_loss": 0.897,
+          "actor/pg_loss": 0.116,
+          "actor/grad_norm": 1.784,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.132,
+          "train/cost/nosearch_rate": 0.029,
+          "train/cost/oversearch_rate": 0.128,
+          "env/actual_retrieval_calls/total": 2778.0,
+          "env/actual_retrieval_calls/mean": 1.085,
+          "env/number_of_valid_search": 1.1
+        }
+      },
+      {
+        "step": 7,
+        "line": 1437,
+        "metrics": {
+          "train/perf/em": 0.164,
+          "critic/rewards/mean": 0.213,
+          "actor/entropy_loss": 0.915,
+          "actor/pg_loss": 0.065,
+          "actor/grad_norm": 1.917,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.153,
+          "train/cost/nosearch_rate": 0.025,
+          "train/cost/oversearch_rate": 0.133,
+          "env/actual_retrieval_calls/total": 2830.0,
+          "env/actual_retrieval_calls/mean": 1.105,
+          "env/number_of_valid_search": 1.119
+        }
+      },
+      {
+        "step": 8,
+        "line": 1550,
+        "metrics": {
+          "train/perf/em": 0.18,
+          "critic/rewards/mean": 0.231,
+          "actor/entropy_loss": 0.871,
+          "actor/pg_loss": 0.058,
+          "actor/grad_norm": 1.88,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.129,
+          "train/cost/nosearch_rate": 0.029,
+          "train/cost/oversearch_rate": 0.126,
+          "env/actual_retrieval_calls/total": 2766.0,
+          "env/actual_retrieval_calls/mean": 1.08,
+          "env/number_of_valid_search": 1.092
+        }
+      },
+      {
+        "step": 9,
+        "line": 1663,
+        "metrics": {
+          "train/perf/em": 0.195,
+          "critic/rewards/mean": 0.257,
+          "actor/entropy_loss": 0.858,
+          "actor/pg_loss": 0.061,
+          "actor/grad_norm": 1.98,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.122,
+          "train/cost/nosearch_rate": 0.022,
+          "train/cost/oversearch_rate": 0.11,
+          "env/actual_retrieval_calls/total": 2756.0,
+          "env/actual_retrieval_calls/mean": 1.077,
+          "env/number_of_valid_search": 1.088
+        }
+      },
+      {
+        "step": 10,
+        "line": 1776,
+        "metrics": {
+          "train/perf/em": 0.203,
+          "critic/rewards/mean": 0.275,
+          "actor/entropy_loss": 0.836,
+          "actor/pg_loss": 0.034,
+          "actor/grad_norm": 1.836,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.126,
+          "train/cost/nosearch_rate": 0.019,
+          "train/cost/oversearch_rate": 0.113,
+          "env/actual_retrieval_calls/total": 2782.0,
+          "env/actual_retrieval_calls/mean": 1.087,
+          "env/number_of_valid_search": 1.093
+        }
+      },
+      {
+        "step": 11,
+        "line": 1889,
+        "metrics": {
+          "train/perf/em": 0.174,
+          "critic/rewards/mean": 0.232,
+          "actor/entropy_loss": 0.855,
+          "actor/pg_loss": 0.093,
+          "actor/grad_norm": 1.793,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.123,
+          "train/cost/nosearch_rate": 0.015,
+          "train/cost/oversearch_rate": 0.113,
+          "env/actual_retrieval_calls/total": 2754.0,
+          "env/actual_retrieval_calls/mean": 1.076,
+          "env/number_of_valid_search": 1.081
+        }
+      },
+      {
+        "step": 12,
+        "line": 2002,
+        "metrics": {
+          "train/perf/em": 0.221,
+          "critic/rewards/mean": 0.289,
+          "actor/entropy_loss": 0.89,
+          "actor/pg_loss": 0.078,
+          "actor/grad_norm": 1.817,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.13,
+          "train/cost/nosearch_rate": 0.018,
+          "train/cost/oversearch_rate": 0.118,
+          "env/actual_retrieval_calls/total": 2804.0,
+          "env/actual_retrieval_calls/mean": 1.095,
+          "env/number_of_valid_search": 1.098
+        }
+      },
+      {
+        "step": 13,
+        "line": 2115,
+        "metrics": {
+          "train/perf/em": 0.233,
+          "critic/rewards/mean": 0.314,
+          "actor/entropy_loss": 0.85,
+          "actor/pg_loss": -0.011,
+          "actor/grad_norm": 1.925,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.101,
+          "train/cost/nosearch_rate": 0.01,
+          "train/cost/oversearch_rate": 0.094,
+          "env/actual_retrieval_calls/total": 2745.0,
+          "env/actual_retrieval_calls/mean": 1.072,
+          "env/number_of_valid_search": 1.074
+        }
+      },
+      {
+        "step": 14,
+        "line": 2228,
+        "metrics": {
+          "train/perf/em": 0.229,
+          "critic/rewards/mean": 0.308,
+          "actor/entropy_loss": 0.848,
+          "actor/pg_loss": 0.033,
+          "actor/grad_norm": 1.926,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.137,
+          "train/cost/nosearch_rate": 0.005,
+          "train/cost/oversearch_rate": 0.116,
+          "env/actual_retrieval_calls/total": 2802.0,
+          "env/actual_retrieval_calls/mean": 1.095,
+          "env/number_of_valid_search": 1.1
+        }
+      },
+      {
+        "step": 15,
+        "line": 2341,
+        "metrics": {
+          "train/perf/em": 0.235,
+          "critic/rewards/mean": 0.311,
+          "actor/entropy_loss": 0.827,
+          "actor/pg_loss": 0.042,
+          "actor/grad_norm": 1.943,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.11,
+          "train/cost/nosearch_rate": 0.013,
+          "train/cost/oversearch_rate": 0.101,
+          "env/actual_retrieval_calls/total": 2754.0,
+          "env/actual_retrieval_calls/mean": 1.076,
+          "env/number_of_valid_search": 1.078
+        }
+      },
+      {
+        "step": 16,
+        "line": 2454,
+        "metrics": {
+          "train/perf/em": 0.214,
+          "critic/rewards/mean": 0.282,
+          "actor/entropy_loss": 0.849,
+          "actor/pg_loss": 0.058,
+          "actor/grad_norm": 1.825,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.116,
+          "train/cost/nosearch_rate": 0.009,
+          "train/cost/oversearch_rate": 0.098,
+          "env/actual_retrieval_calls/total": 2789.0,
+          "env/actual_retrieval_calls/mean": 1.089,
+          "env/number_of_valid_search": 1.092
+        }
+      },
+      {
+        "step": 17,
+        "line": 2567,
+        "metrics": {
+          "train/perf/em": 0.197,
+          "critic/rewards/mean": 0.264,
+          "actor/entropy_loss": 0.834,
+          "actor/pg_loss": 0.043,
+          "actor/grad_norm": 1.775,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.113,
+          "train/cost/nosearch_rate": 0.005,
+          "train/cost/oversearch_rate": 0.097,
+          "env/actual_retrieval_calls/total": 2786.0,
+          "env/actual_retrieval_calls/mean": 1.088,
+          "env/number_of_valid_search": 1.09
+        }
+      },
+      {
+        "step": 18,
+        "line": 2680,
+        "metrics": {
+          "train/perf/em": 0.224,
+          "critic/rewards/mean": 0.303,
+          "actor/entropy_loss": 0.814,
+          "actor/pg_loss": 0.028,
+          "actor/grad_norm": 1.782,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.141,
+          "train/cost/nosearch_rate": 0.007,
+          "train/cost/oversearch_rate": 0.117,
+          "env/actual_retrieval_calls/total": 2875.0,
+          "env/actual_retrieval_calls/mean": 1.123,
+          "env/number_of_valid_search": 1.125
+        }
+      },
+      {
+        "step": 19,
+        "line": 2793,
+        "metrics": {
+          "train/perf/em": 0.253,
+          "critic/rewards/mean": 0.342,
+          "actor/entropy_loss": 0.828,
+          "actor/pg_loss": 0.087,
+          "actor/grad_norm": 1.87,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.136,
+          "train/cost/nosearch_rate": 0.005,
+          "train/cost/oversearch_rate": 0.109,
+          "env/actual_retrieval_calls/total": 2861.0,
+          "env/actual_retrieval_calls/mean": 1.118,
+          "env/number_of_valid_search": 1.121
+        }
+      },
+      {
+        "step": 20,
+        "line": 2906,
+        "metrics": {
+          "train/perf/em": 0.226,
+          "critic/rewards/mean": 0.311,
+          "actor/entropy_loss": 0.777,
+          "actor/pg_loss": 0.089,
+          "actor/grad_norm": 1.848,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.089,
+          "train/cost/nosearch_rate": 0.003,
+          "train/cost/oversearch_rate": 0.078,
+          "env/actual_retrieval_calls/total": 2756.0,
+          "env/actual_retrieval_calls/mean": 1.077,
+          "env/number_of_valid_search": 1.078
+        }
+      },
+      {
+        "step": 21,
+        "line": 3019,
+        "metrics": {
+          "train/perf/em": 0.231,
+          "critic/rewards/mean": 0.316,
+          "actor/entropy_loss": 0.774,
+          "actor/pg_loss": 0.035,
+          "actor/grad_norm": 1.866,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.112,
+          "train/cost/nosearch_rate": 0.004,
+          "train/cost/oversearch_rate": 0.095,
+          "env/actual_retrieval_calls/total": 2808.0,
+          "env/actual_retrieval_calls/mean": 1.097,
+          "env/number_of_valid_search": 1.098
+        }
+      },
+      {
+        "step": 22,
+        "line": 3132,
+        "metrics": {
+          "train/perf/em": 0.209,
+          "critic/rewards/mean": 0.275,
+          "actor/entropy_loss": 0.783,
+          "actor/pg_loss": 0.022,
+          "actor/grad_norm": 1.843,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.102,
+          "train/cost/nosearch_rate": 0.004,
+          "train/cost/oversearch_rate": 0.083,
+          "env/actual_retrieval_calls/total": 2785.0,
+          "env/actual_retrieval_calls/mean": 1.088,
+          "env/number_of_valid_search": 1.091
+        }
+      },
+      {
+        "step": 23,
+        "line": 3245,
+        "metrics": {
+          "train/perf/em": 0.245,
+          "critic/rewards/mean": 0.334,
+          "actor/entropy_loss": 0.765,
+          "actor/pg_loss": 0.091,
+          "actor/grad_norm": 1.873,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.07,
+          "train/cost/nosearch_rate": 0.002,
+          "train/cost/oversearch_rate": 0.061,
+          "env/actual_retrieval_calls/total": 2709.0,
+          "env/actual_retrieval_calls/mean": 1.058,
+          "env/number_of_valid_search": 1.059
+        }
+      },
+      {
+        "step": 24,
+        "line": 3358,
+        "metrics": {
+          "train/perf/em": 0.256,
+          "critic/rewards/mean": 0.352,
+          "actor/entropy_loss": 0.718,
+          "actor/pg_loss": 0.028,
+          "actor/grad_norm": 1.858,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.072,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.062,
+          "env/actual_retrieval_calls/total": 2718.0,
+          "env/actual_retrieval_calls/mean": 1.062,
+          "env/number_of_valid_search": 1.063
+        }
+      },
+      {
+        "step": 25,
+        "line": 3471,
+        "metrics": {
+          "train/perf/em": 0.242,
+          "critic/rewards/mean": 0.335,
+          "actor/entropy_loss": 0.712,
+          "actor/pg_loss": 0.051,
+          "actor/grad_norm": 1.778,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.057,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.05,
+          "env/actual_retrieval_calls/total": 2674.0,
+          "env/actual_retrieval_calls/mean": 1.045,
+          "env/number_of_valid_search": 1.045
+        }
+      },
+      {
+        "step": 26,
+        "line": 3584,
+        "metrics": {
+          "train/perf/em": 0.245,
+          "critic/rewards/mean": 0.332,
+          "actor/entropy_loss": 0.725,
+          "actor/pg_loss": 0.037,
+          "actor/grad_norm": 1.807,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.068,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.059,
+          "env/actual_retrieval_calls/total": 2707.0,
+          "env/actual_retrieval_calls/mean": 1.057,
+          "env/number_of_valid_search": 1.059
+        }
+      },
+      {
+        "step": 27,
+        "line": 3697,
+        "metrics": {
+          "train/perf/em": 0.224,
+          "critic/rewards/mean": 0.305,
+          "actor/entropy_loss": 0.757,
+          "actor/pg_loss": 0.037,
+          "actor/grad_norm": 1.948,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.043,
+          "train/cost/nosearch_rate": 0.002,
+          "train/cost/oversearch_rate": 0.036,
+          "env/actual_retrieval_calls/total": 2651.0,
+          "env/actual_retrieval_calls/mean": 1.036,
+          "env/number_of_valid_search": 1.036
+        }
+      },
+      {
+        "step": 28,
+        "line": 3810,
+        "metrics": {
+          "train/perf/em": 0.254,
+          "critic/rewards/mean": 0.348,
+          "actor/entropy_loss": 0.711,
+          "actor/pg_loss": 0.058,
+          "actor/grad_norm": 1.869,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.045,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.039,
+          "env/actual_retrieval_calls/total": 2655.0,
+          "env/actual_retrieval_calls/mean": 1.037,
+          "env/number_of_valid_search": 1.039
+        }
+      },
+      {
+        "step": 29,
+        "line": 3923,
+        "metrics": {
+          "train/perf/em": 0.247,
+          "critic/rewards/mean": 0.339,
+          "actor/entropy_loss": 0.744,
+          "actor/pg_loss": 0.013,
+          "actor/grad_norm": 1.831,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.054,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.048,
+          "env/actual_retrieval_calls/total": 2676.0,
+          "env/actual_retrieval_calls/mean": 1.045,
+          "env/number_of_valid_search": 1.047
+        }
+      },
+      {
+        "step": 30,
+        "line": 4036,
+        "metrics": {
+          "train/perf/em": 0.246,
+          "critic/rewards/mean": 0.348,
+          "actor/entropy_loss": 0.708,
+          "actor/pg_loss": 0.048,
+          "actor/grad_norm": 1.813,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.06,
+          "train/cost/nosearch_rate": 0.002,
+          "train/cost/oversearch_rate": 0.049,
+          "env/actual_retrieval_calls/total": 2692.0,
+          "env/actual_retrieval_calls/mean": 1.052,
+          "env/number_of_valid_search": 1.054
+        }
+      },
+      {
+        "step": 31,
+        "line": 4149,
+        "metrics": {
+          "train/perf/em": 0.276,
+          "critic/rewards/mean": 0.395,
+          "actor/entropy_loss": 0.732,
+          "actor/pg_loss": 0.044,
+          "actor/grad_norm": 1.807,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.06,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.049,
+          "env/actual_retrieval_calls/total": 2685.0,
+          "env/actual_retrieval_calls/mean": 1.049,
+          "env/number_of_valid_search": 1.053
+        }
+      },
+      {
+        "step": 32,
+        "line": 4262,
+        "metrics": {
+          "train/perf/em": 0.334,
+          "critic/rewards/mean": 0.485,
+          "actor/entropy_loss": 0.709,
+          "actor/pg_loss": 0.134,
+          "actor/grad_norm": 1.811,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.043,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.038,
+          "env/actual_retrieval_calls/total": 2644.0,
+          "env/actual_retrieval_calls/mean": 1.033,
+          "env/number_of_valid_search": 1.036
+        }
+      },
+      {
+        "step": 33,
+        "line": 4375,
+        "metrics": {
+          "train/perf/em": 0.32,
+          "critic/rewards/mean": 0.462,
+          "actor/entropy_loss": 0.692,
+          "actor/pg_loss": 0.009,
+          "actor/grad_norm": 1.79,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.037,
+          "train/cost/nosearch_rate": 0.002,
+          "train/cost/oversearch_rate": 0.032,
+          "env/actual_retrieval_calls/total": 2634.0,
+          "env/actual_retrieval_calls/mean": 1.029,
+          "env/number_of_valid_search": 1.031
+        }
+      },
+      {
+        "step": 34,
+        "line": 4488,
+        "metrics": {
+          "train/perf/em": 0.359,
+          "critic/rewards/mean": 0.525,
+          "actor/entropy_loss": 0.681,
+          "actor/pg_loss": -0.021,
+          "actor/grad_norm": 1.663,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.025,
+          "train/cost/nosearch_rate": 0.002,
+          "train/cost/oversearch_rate": 0.021,
+          "env/actual_retrieval_calls/total": 2600.0,
+          "env/actual_retrieval_calls/mean": 1.016,
+          "env/number_of_valid_search": 1.018
+        }
+      },
+      {
+        "step": 35,
+        "line": 4600,
+        "metrics": {
+          "train/perf/em": 0.352,
+          "critic/rewards/mean": 0.511,
+          "actor/entropy_loss": 0.717,
+          "actor/pg_loss": 0.049,
+          "actor/grad_norm": 1.611,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.017,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.014,
+          "env/actual_retrieval_calls/total": 2591.0,
+          "env/actual_retrieval_calls/mean": 1.012,
+          "env/number_of_valid_search": 1.014
+        }
+      },
+      {
+        "step": 36,
+        "line": 4713,
+        "metrics": {
+          "train/perf/em": 0.302,
+          "critic/rewards/mean": 0.45,
+          "actor/entropy_loss": 0.69,
+          "actor/pg_loss": 0.02,
+          "actor/grad_norm": 1.481,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.019,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.017,
+          "env/actual_retrieval_calls/total": 2592.0,
+          "env/actual_retrieval_calls/mean": 1.012,
+          "env/number_of_valid_search": 1.014
+        }
+      },
+      {
+        "step": 37,
+        "line": 4826,
+        "metrics": {
+          "train/perf/em": 0.367,
+          "critic/rewards/mean": 0.544,
+          "actor/entropy_loss": 0.713,
+          "actor/pg_loss": 0.023,
+          "actor/grad_norm": 1.62,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.017,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.014,
+          "env/actual_retrieval_calls/total": 2586.0,
+          "env/actual_retrieval_calls/mean": 1.01,
+          "env/number_of_valid_search": 1.014
+        }
+      },
+      {
+        "step": 38,
+        "line": 4938,
+        "metrics": {
+          "train/perf/em": 0.351,
+          "critic/rewards/mean": 0.521,
+          "actor/entropy_loss": 0.712,
+          "actor/pg_loss": -0.014,
+          "actor/grad_norm": 1.529,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.009,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.007,
+          "env/actual_retrieval_calls/total": 2575.0,
+          "env/actual_retrieval_calls/mean": 1.006,
+          "env/number_of_valid_search": 1.008
+        }
+      },
+      {
+        "step": 39,
+        "line": 5050,
+        "metrics": {
+          "train/perf/em": 0.327,
+          "critic/rewards/mean": 0.499,
+          "actor/entropy_loss": 0.708,
+          "actor/pg_loss": -0.029,
+          "actor/grad_norm": 1.535,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.004,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.004,
+          "env/actual_retrieval_calls/total": 2567.0,
+          "env/actual_retrieval_calls/mean": 1.003,
+          "env/number_of_valid_search": 1.003
+        }
+      },
+      {
+        "step": 40,
+        "line": 5162,
+        "metrics": {
+          "train/perf/em": 0.357,
+          "critic/rewards/mean": 0.532,
+          "actor/entropy_loss": 0.667,
+          "actor/pg_loss": 0.048,
+          "actor/grad_norm": 1.511,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.006,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.005,
+          "env/actual_retrieval_calls/total": 2565.0,
+          "env/actual_retrieval_calls/mean": 1.002,
+          "env/number_of_valid_search": 1.003
+        }
+      },
+      {
+        "step": 41,
+        "line": 5275,
+        "metrics": {
+          "train/perf/em": 0.332,
+          "critic/rewards/mean": 0.489,
+          "actor/entropy_loss": 0.682,
+          "actor/pg_loss": 0.003,
+          "actor/grad_norm": 1.44,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.006,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.005,
+          "env/actual_retrieval_calls/total": 2569.0,
+          "env/actual_retrieval_calls/mean": 1.004,
+          "env/number_of_valid_search": 1.004
+        }
+      },
+      {
+        "step": 42,
+        "line": 5388,
+        "metrics": {
+          "train/perf/em": 0.362,
+          "critic/rewards/mean": 0.529,
+          "actor/entropy_loss": 0.69,
+          "actor/pg_loss": -0.029,
+          "actor/grad_norm": 1.477,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.008,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.007,
+          "env/actual_retrieval_calls/total": 2572.0,
+          "env/actual_retrieval_calls/mean": 1.005,
+          "env/number_of_valid_search": 1.005
+        }
+      },
+      {
+        "step": 43,
+        "line": 5500,
+        "metrics": {
+          "train/perf/em": 0.356,
+          "critic/rewards/mean": 0.523,
+          "actor/entropy_loss": 0.667,
+          "actor/pg_loss": 0.01,
+          "actor/grad_norm": 1.469,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.004,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.004,
+          "env/actual_retrieval_calls/total": 2564.0,
+          "env/actual_retrieval_calls/mean": 1.002,
+          "env/number_of_valid_search": 1.002
+        }
+      },
+      {
+        "step": 44,
+        "line": 5612,
+        "metrics": {
+          "train/perf/em": 0.359,
+          "critic/rewards/mean": 0.526,
+          "actor/entropy_loss": 0.642,
+          "actor/pg_loss": 0.029,
+          "actor/grad_norm": 1.597,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.004,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.004,
+          "env/actual_retrieval_calls/total": 2564.0,
+          "env/actual_retrieval_calls/mean": 1.002,
+          "env/number_of_valid_search": 1.002
+        }
+      },
+      {
+        "step": 45,
+        "line": 5722,
+        "metrics": {
+          "train/perf/em": 0.361,
+          "critic/rewards/mean": 0.529,
+          "actor/entropy_loss": 0.644,
+          "actor/pg_loss": -0.028,
+          "actor/grad_norm": 1.592,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 46,
+        "line": 5832,
+        "metrics": {
+          "train/perf/em": 0.374,
+          "critic/rewards/mean": 0.547,
+          "actor/entropy_loss": 0.637,
+          "actor/pg_loss": -0.015,
+          "actor/grad_norm": 1.473,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 47,
+        "line": 5944,
+        "metrics": {
+          "train/perf/em": 0.39,
+          "critic/rewards/mean": 0.571,
+          "actor/entropy_loss": 0.626,
+          "actor/pg_loss": 0.028,
+          "actor/grad_norm": 1.489,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.004,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.004,
+          "env/actual_retrieval_calls/total": 2565.0,
+          "env/actual_retrieval_calls/mean": 1.002,
+          "env/number_of_valid_search": 1.002
+        }
+      },
+      {
+        "step": 48,
+        "line": 6055,
+        "metrics": {
+          "train/perf/em": 0.374,
+          "critic/rewards/mean": 0.549,
+          "actor/entropy_loss": 0.655,
+          "actor/pg_loss": 0.032,
+          "actor/grad_norm": 1.438,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.001,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 49,
+        "line": 6166,
+        "metrics": {
+          "train/perf/em": 0.391,
+          "critic/rewards/mean": 0.576,
+          "actor/entropy_loss": 0.631,
+          "actor/pg_loss": -0.002,
+          "actor/grad_norm": 1.617,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 50,
+        "line": 6493,
+        "metrics": {
+          "train/perf/em": 0.405,
+          "critic/rewards/mean": 0.584,
+          "actor/entropy_loss": 0.588,
+          "actor/pg_loss": 0.001,
+          "actor/grad_norm": 1.551,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.001,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 51,
+        "line": 6607,
+        "metrics": {
+          "train/perf/em": 0.382,
+          "critic/rewards/mean": 0.556,
+          "actor/entropy_loss": 0.59,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.486,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 52,
+        "line": 6717,
+        "metrics": {
+          "train/perf/em": 0.377,
+          "critic/rewards/mean": 0.551,
+          "actor/entropy_loss": 0.577,
+          "actor/pg_loss": 0.006,
+          "actor/grad_norm": 1.474,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 53,
+        "line": 6827,
+        "metrics": {
+          "train/perf/em": 0.369,
+          "critic/rewards/mean": 0.524,
+          "actor/entropy_loss": 0.562,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.394,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 54,
+        "line": 6937,
+        "metrics": {
+          "train/perf/em": 0.372,
+          "critic/rewards/mean": 0.537,
+          "actor/entropy_loss": 0.537,
+          "actor/pg_loss": 0.019,
+          "actor/grad_norm": 1.458,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 55,
+        "line": 7047,
+        "metrics": {
+          "train/perf/em": 0.362,
+          "critic/rewards/mean": 0.528,
+          "actor/entropy_loss": 0.567,
+          "actor/pg_loss": 0.035,
+          "actor/grad_norm": 1.409,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.002,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.002,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 56,
+        "line": 7157,
+        "metrics": {
+          "train/perf/em": 0.371,
+          "critic/rewards/mean": 0.534,
+          "actor/entropy_loss": 0.549,
+          "actor/pg_loss": -0.01,
+          "actor/grad_norm": 1.437,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 57,
+        "line": 7269,
+        "metrics": {
+          "train/perf/em": 0.391,
+          "critic/rewards/mean": 0.567,
+          "actor/entropy_loss": 0.529,
+          "actor/pg_loss": -0.012,
+          "actor/grad_norm": 1.381,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.001,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2563.0,
+          "env/actual_retrieval_calls/mean": 1.001,
+          "env/number_of_valid_search": 1.001
+        }
+      },
+      {
+        "step": 58,
+        "line": 7379,
+        "metrics": {
+          "train/perf/em": 0.339,
+          "critic/rewards/mean": 0.499,
+          "actor/entropy_loss": 0.542,
+          "actor/pg_loss": 0.057,
+          "actor/grad_norm": 1.35,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 59,
+        "line": 7489,
+        "metrics": {
+          "train/perf/em": 0.378,
+          "critic/rewards/mean": 0.545,
+          "actor/entropy_loss": 0.541,
+          "actor/pg_loss": 0.0,
+          "actor/grad_norm": 1.538,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.001,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 60,
+        "line": 7599,
+        "metrics": {
+          "train/perf/em": 0.389,
+          "critic/rewards/mean": 0.561,
+          "actor/entropy_loss": 0.525,
+          "actor/pg_loss": 0.008,
+          "actor/grad_norm": 1.419,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 61,
+        "line": 7710,
+        "metrics": {
+          "train/perf/em": 0.387,
+          "critic/rewards/mean": 0.559,
+          "actor/entropy_loss": 0.517,
+          "actor/pg_loss": 0.005,
+          "actor/grad_norm": 1.413,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 62,
+        "line": 7820,
+        "metrics": {
+          "train/perf/em": 0.37,
+          "critic/rewards/mean": 0.545,
+          "actor/entropy_loss": 0.539,
+          "actor/pg_loss": 0.016,
+          "actor/grad_norm": 1.402,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 63,
+        "line": 7930,
+        "metrics": {
+          "train/perf/em": 0.407,
+          "critic/rewards/mean": 0.592,
+          "actor/entropy_loss": 0.522,
+          "actor/pg_loss": -0.021,
+          "actor/grad_norm": 1.458,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 64,
+        "line": 8040,
+        "metrics": {
+          "train/perf/em": 0.395,
+          "critic/rewards/mean": 0.568,
+          "actor/entropy_loss": 0.516,
+          "actor/pg_loss": 0.054,
+          "actor/grad_norm": 1.402,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.001,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 65,
+        "line": 8151,
+        "metrics": {
+          "train/perf/em": 0.381,
+          "critic/rewards/mean": 0.56,
+          "actor/entropy_loss": 0.505,
+          "actor/pg_loss": 0.009,
+          "actor/grad_norm": 1.404,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 66,
+        "line": 8261,
+        "metrics": {
+          "train/perf/em": 0.4,
+          "critic/rewards/mean": 0.591,
+          "actor/entropy_loss": 0.513,
+          "actor/pg_loss": 0.002,
+          "actor/grad_norm": 1.42,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 67,
+        "line": 8371,
+        "metrics": {
+          "train/perf/em": 0.371,
+          "critic/rewards/mean": 0.537,
+          "actor/entropy_loss": 0.475,
+          "actor/pg_loss": -0.009,
+          "actor/grad_norm": 1.395,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 68,
+        "line": 8481,
+        "metrics": {
+          "train/perf/em": 0.384,
+          "critic/rewards/mean": 0.56,
+          "actor/entropy_loss": 0.469,
+          "actor/pg_loss": -0.01,
+          "actor/grad_norm": 1.392,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 69,
+        "line": 8592,
+        "metrics": {
+          "train/perf/em": 0.407,
+          "critic/rewards/mean": 0.591,
+          "actor/entropy_loss": 0.489,
+          "actor/pg_loss": 0.0,
+          "actor/grad_norm": 1.4,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2561.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 70,
+        "line": 8702,
+        "metrics": {
+          "train/perf/em": 0.38,
+          "critic/rewards/mean": 0.56,
+          "actor/entropy_loss": 0.453,
+          "actor/pg_loss": -0.038,
+          "actor/grad_norm": 1.341,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 71,
+        "line": 8812,
+        "metrics": {
+          "train/perf/em": 0.396,
+          "critic/rewards/mean": 0.578,
+          "actor/entropy_loss": 0.459,
+          "actor/pg_loss": -0.04,
+          "actor/grad_norm": 1.372,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 72,
+        "line": 8922,
+        "metrics": {
+          "train/perf/em": 0.405,
+          "critic/rewards/mean": 0.59,
+          "actor/entropy_loss": 0.461,
+          "actor/pg_loss": 0.026,
+          "actor/grad_norm": 1.398,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 73,
+        "line": 9032,
+        "metrics": {
+          "train/perf/em": 0.378,
+          "critic/rewards/mean": 0.545,
+          "actor/entropy_loss": 0.44,
+          "actor/pg_loss": 0.043,
+          "actor/grad_norm": 1.383,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 74,
+        "line": 9142,
+        "metrics": {
+          "train/perf/em": 0.421,
+          "critic/rewards/mean": 0.62,
+          "actor/entropy_loss": 0.415,
+          "actor/pg_loss": 0.018,
+          "actor/grad_norm": 1.386,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 75,
+        "line": 9252,
+        "metrics": {
+          "train/perf/em": 0.39,
+          "critic/rewards/mean": 0.565,
+          "actor/entropy_loss": 0.421,
+          "actor/pg_loss": 0.03,
+          "actor/grad_norm": 1.324,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 76,
+        "line": 9362,
+        "metrics": {
+          "train/perf/em": 0.371,
+          "critic/rewards/mean": 0.55,
+          "actor/entropy_loss": 0.426,
+          "actor/pg_loss": -0.002,
+          "actor/grad_norm": 1.357,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 77,
+        "line": 9472,
+        "metrics": {
+          "train/perf/em": 0.389,
+          "critic/rewards/mean": 0.567,
+          "actor/entropy_loss": 0.433,
+          "actor/pg_loss": 0.048,
+          "actor/grad_norm": 1.432,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 78,
+        "line": 9582,
+        "metrics": {
+          "train/perf/em": 0.382,
+          "critic/rewards/mean": 0.558,
+          "actor/entropy_loss": 0.427,
+          "actor/pg_loss": -0.035,
+          "actor/grad_norm": 1.338,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 79,
+        "line": 9692,
+        "metrics": {
+          "train/perf/em": 0.412,
+          "critic/rewards/mean": 0.596,
+          "actor/entropy_loss": 0.419,
+          "actor/pg_loss": -0.013,
+          "actor/grad_norm": 1.417,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 80,
+        "line": 9802,
+        "metrics": {
+          "train/perf/em": 0.377,
+          "critic/rewards/mean": 0.551,
+          "actor/entropy_loss": 0.407,
+          "actor/pg_loss": -0.01,
+          "actor/grad_norm": 1.381,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 81,
+        "line": 9912,
+        "metrics": {
+          "train/perf/em": 0.402,
+          "critic/rewards/mean": 0.59,
+          "actor/entropy_loss": 0.415,
+          "actor/pg_loss": 0.003,
+          "actor/grad_norm": 1.427,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.001,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2558.0,
+          "env/actual_retrieval_calls/mean": 0.999,
+          "env/number_of_valid_search": 0.999
+        }
+      },
+      {
+        "step": 82,
+        "line": 10022,
+        "metrics": {
+          "train/perf/em": 0.38,
+          "critic/rewards/mean": 0.561,
+          "actor/entropy_loss": 0.429,
+          "actor/pg_loss": -0.013,
+          "actor/grad_norm": 1.35,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 83,
+        "line": 10132,
+        "metrics": {
+          "train/perf/em": 0.4,
+          "critic/rewards/mean": 0.581,
+          "actor/entropy_loss": 0.419,
+          "actor/pg_loss": 0.012,
+          "actor/grad_norm": 1.444,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 84,
+        "line": 10242,
+        "metrics": {
+          "train/perf/em": 0.408,
+          "critic/rewards/mean": 0.595,
+          "actor/entropy_loss": 0.376,
+          "actor/pg_loss": 0.034,
+          "actor/grad_norm": 1.325,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 85,
+        "line": 10352,
+        "metrics": {
+          "train/perf/em": 0.386,
+          "critic/rewards/mean": 0.58,
+          "actor/entropy_loss": 0.393,
+          "actor/pg_loss": 0.003,
+          "actor/grad_norm": 1.291,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 86,
+        "line": 10462,
+        "metrics": {
+          "train/perf/em": 0.343,
+          "critic/rewards/mean": 0.5,
+          "actor/entropy_loss": 0.385,
+          "actor/pg_loss": -0.006,
+          "actor/grad_norm": 1.225,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 87,
+        "line": 10572,
+        "metrics": {
+          "train/perf/em": 0.395,
+          "critic/rewards/mean": 0.58,
+          "actor/entropy_loss": 0.391,
+          "actor/pg_loss": -0.029,
+          "actor/grad_norm": 1.34,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 88,
+        "line": 10682,
+        "metrics": {
+          "train/perf/em": 0.404,
+          "critic/rewards/mean": 0.593,
+          "actor/entropy_loss": 0.401,
+          "actor/pg_loss": 0.001,
+          "actor/grad_norm": 1.442,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 89,
+        "line": 10792,
+        "metrics": {
+          "train/perf/em": 0.38,
+          "critic/rewards/mean": 0.551,
+          "actor/entropy_loss": 0.383,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.32,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 90,
+        "line": 10902,
+        "metrics": {
+          "train/perf/em": 0.394,
+          "critic/rewards/mean": 0.574,
+          "actor/entropy_loss": 0.389,
+          "actor/pg_loss": -0.02,
+          "actor/grad_norm": 1.376,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 91,
+        "line": 11012,
+        "metrics": {
+          "train/perf/em": 0.383,
+          "critic/rewards/mean": 0.56,
+          "actor/entropy_loss": 0.375,
+          "actor/pg_loss": 0.021,
+          "actor/grad_norm": 1.331,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 92,
+        "line": 11123,
+        "metrics": {
+          "train/perf/em": 0.359,
+          "critic/rewards/mean": 0.516,
+          "actor/entropy_loss": 0.398,
+          "actor/pg_loss": 0.036,
+          "actor/grad_norm": 1.272,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.001,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 93,
+        "line": 11233,
+        "metrics": {
+          "train/perf/em": 0.41,
+          "critic/rewards/mean": 0.595,
+          "actor/entropy_loss": 0.345,
+          "actor/pg_loss": 0.01,
+          "actor/grad_norm": 1.304,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 94,
+        "line": 11343,
+        "metrics": {
+          "train/perf/em": 0.437,
+          "critic/rewards/mean": 0.639,
+          "actor/entropy_loss": 0.357,
+          "actor/pg_loss": -0.009,
+          "actor/grad_norm": 1.501,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 95,
+        "line": 11453,
+        "metrics": {
+          "train/perf/em": 0.391,
+          "critic/rewards/mean": 0.574,
+          "actor/entropy_loss": 0.356,
+          "actor/pg_loss": -0.025,
+          "actor/grad_norm": 1.274,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 96,
+        "line": 11563,
+        "metrics": {
+          "train/perf/em": 0.389,
+          "critic/rewards/mean": 0.576,
+          "actor/entropy_loss": 0.366,
+          "actor/pg_loss": -0.053,
+          "actor/grad_norm": 1.39,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 97,
+        "line": 11673,
+        "metrics": {
+          "train/perf/em": 0.451,
+          "critic/rewards/mean": 0.665,
+          "actor/entropy_loss": 0.364,
+          "actor/pg_loss": -0.014,
+          "actor/grad_norm": 1.442,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 98,
+        "line": 11783,
+        "metrics": {
+          "train/perf/em": 0.419,
+          "critic/rewards/mean": 0.62,
+          "actor/entropy_loss": 0.359,
+          "actor/pg_loss": -0.003,
+          "actor/grad_norm": 1.415,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 99,
+        "line": 11893,
+        "metrics": {
+          "train/perf/em": 0.393,
+          "critic/rewards/mean": 0.574,
+          "actor/entropy_loss": 0.361,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.32,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 100,
+        "line": 12217,
+        "metrics": {
+          "train/perf/em": 0.421,
+          "critic/rewards/mean": 0.621,
+          "actor/entropy_loss": 0.334,
+          "actor/pg_loss": 0.013,
+          "actor/grad_norm": 1.364,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 101,
+        "line": 12331,
+        "metrics": {
+          "train/perf/em": 0.401,
+          "critic/rewards/mean": 0.578,
+          "actor/entropy_loss": 0.328,
+          "actor/pg_loss": -0.004,
+          "actor/grad_norm": 1.323,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 102,
+        "line": 12441,
+        "metrics": {
+          "train/perf/em": 0.398,
+          "critic/rewards/mean": 0.587,
+          "actor/entropy_loss": 0.335,
+          "actor/pg_loss": 0.005,
+          "actor/grad_norm": 1.334,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 103,
+        "line": 12551,
+        "metrics": {
+          "train/perf/em": 0.389,
+          "critic/rewards/mean": 0.574,
+          "actor/entropy_loss": 0.345,
+          "actor/pg_loss": 0.029,
+          "actor/grad_norm": 1.329,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 104,
+        "line": 12661,
+        "metrics": {
+          "train/perf/em": 0.439,
+          "critic/rewards/mean": 0.646,
+          "actor/entropy_loss": 0.323,
+          "actor/pg_loss": -0.031,
+          "actor/grad_norm": 1.307,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 105,
+        "line": 12771,
+        "metrics": {
+          "train/perf/em": 0.404,
+          "critic/rewards/mean": 0.593,
+          "actor/entropy_loss": 0.343,
+          "actor/pg_loss": 0.026,
+          "actor/grad_norm": 1.318,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 106,
+        "line": 12881,
+        "metrics": {
+          "train/perf/em": 0.427,
+          "critic/rewards/mean": 0.62,
+          "actor/entropy_loss": 0.351,
+          "actor/pg_loss": 0.028,
+          "actor/grad_norm": 1.403,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 107,
+        "line": 12991,
+        "metrics": {
+          "train/perf/em": 0.414,
+          "critic/rewards/mean": 0.61,
+          "actor/entropy_loss": 0.345,
+          "actor/pg_loss": 0.015,
+          "actor/grad_norm": 1.263,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 108,
+        "line": 13101,
+        "metrics": {
+          "train/perf/em": 0.418,
+          "critic/rewards/mean": 0.619,
+          "actor/entropy_loss": 0.327,
+          "actor/pg_loss": -0.052,
+          "actor/grad_norm": 1.267,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 109,
+        "line": 13211,
+        "metrics": {
+          "train/perf/em": 0.431,
+          "critic/rewards/mean": 0.634,
+          "actor/entropy_loss": 0.351,
+          "actor/pg_loss": -0.019,
+          "actor/grad_norm": 1.35,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 110,
+        "line": 13321,
+        "metrics": {
+          "train/perf/em": 0.392,
+          "critic/rewards/mean": 0.58,
+          "actor/entropy_loss": 0.324,
+          "actor/pg_loss": 0.023,
+          "actor/grad_norm": 1.257,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 111,
+        "line": 13431,
+        "metrics": {
+          "train/perf/em": 0.43,
+          "critic/rewards/mean": 0.635,
+          "actor/entropy_loss": 0.327,
+          "actor/pg_loss": -0.033,
+          "actor/grad_norm": 1.366,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 112,
+        "line": 13541,
+        "metrics": {
+          "train/perf/em": 0.418,
+          "critic/rewards/mean": 0.614,
+          "actor/entropy_loss": 0.311,
+          "actor/pg_loss": 0.024,
+          "actor/grad_norm": 1.302,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 113,
+        "line": 13651,
+        "metrics": {
+          "train/perf/em": 0.405,
+          "critic/rewards/mean": 0.6,
+          "actor/entropy_loss": 0.328,
+          "actor/pg_loss": -0.006,
+          "actor/grad_norm": 1.308,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 114,
+        "line": 13761,
+        "metrics": {
+          "train/perf/em": 0.433,
+          "critic/rewards/mean": 0.63,
+          "actor/entropy_loss": 0.329,
+          "actor/pg_loss": -0.02,
+          "actor/grad_norm": 1.297,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 115,
+        "line": 13871,
+        "metrics": {
+          "train/perf/em": 0.414,
+          "critic/rewards/mean": 0.615,
+          "actor/entropy_loss": 0.324,
+          "actor/pg_loss": 0.02,
+          "actor/grad_norm": 1.42,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 116,
+        "line": 13981,
+        "metrics": {
+          "train/perf/em": 0.427,
+          "critic/rewards/mean": 0.62,
+          "actor/entropy_loss": 0.325,
+          "actor/pg_loss": 0.018,
+          "actor/grad_norm": 1.34,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 117,
+        "line": 14091,
+        "metrics": {
+          "train/perf/em": 0.393,
+          "critic/rewards/mean": 0.584,
+          "actor/entropy_loss": 0.312,
+          "actor/pg_loss": 0.007,
+          "actor/grad_norm": 1.247,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 118,
+        "line": 14201,
+        "metrics": {
+          "train/perf/em": 0.398,
+          "critic/rewards/mean": 0.591,
+          "actor/entropy_loss": 0.322,
+          "actor/pg_loss": 0.005,
+          "actor/grad_norm": 1.252,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 119,
+        "line": 14311,
+        "metrics": {
+          "train/perf/em": 0.438,
+          "critic/rewards/mean": 0.65,
+          "actor/entropy_loss": 0.306,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.367,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 120,
+        "line": 14421,
+        "metrics": {
+          "train/perf/em": 0.404,
+          "critic/rewards/mean": 0.589,
+          "actor/entropy_loss": 0.319,
+          "actor/pg_loss": 0.007,
+          "actor/grad_norm": 1.254,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 121,
+        "line": 14531,
+        "metrics": {
+          "train/perf/em": 0.389,
+          "critic/rewards/mean": 0.576,
+          "actor/entropy_loss": 0.308,
+          "actor/pg_loss": 0.016,
+          "actor/grad_norm": 1.208,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 122,
+        "line": 14641,
+        "metrics": {
+          "train/perf/em": 0.41,
+          "critic/rewards/mean": 0.606,
+          "actor/entropy_loss": 0.307,
+          "actor/pg_loss": -0.005,
+          "actor/grad_norm": 1.274,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 123,
+        "line": 14751,
+        "metrics": {
+          "train/perf/em": 0.404,
+          "critic/rewards/mean": 0.591,
+          "actor/entropy_loss": 0.325,
+          "actor/pg_loss": 0.028,
+          "actor/grad_norm": 1.309,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 124,
+        "line": 14861,
+        "metrics": {
+          "train/perf/em": 0.423,
+          "critic/rewards/mean": 0.619,
+          "actor/entropy_loss": 0.329,
+          "actor/pg_loss": 0.029,
+          "actor/grad_norm": 1.323,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 125,
+        "line": 14971,
+        "metrics": {
+          "train/perf/em": 0.446,
+          "critic/rewards/mean": 0.649,
+          "actor/entropy_loss": 0.334,
+          "actor/pg_loss": -0.003,
+          "actor/grad_norm": 1.324,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 126,
+        "line": 15081,
+        "metrics": {
+          "train/perf/em": 0.485,
+          "critic/rewards/mean": 0.712,
+          "actor/entropy_loss": 0.323,
+          "actor/pg_loss": -0.015,
+          "actor/grad_norm": 1.396,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 127,
+        "line": 15191,
+        "metrics": {
+          "train/perf/em": 0.439,
+          "critic/rewards/mean": 0.642,
+          "actor/entropy_loss": 0.324,
+          "actor/pg_loss": 0.039,
+          "actor/grad_norm": 1.31,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 128,
+        "line": 15301,
+        "metrics": {
+          "train/perf/em": 0.396,
+          "critic/rewards/mean": 0.589,
+          "actor/entropy_loss": 0.329,
+          "actor/pg_loss": 0.03,
+          "actor/grad_norm": 1.203,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 129,
+        "line": 15411,
+        "metrics": {
+          "train/perf/em": 0.376,
+          "critic/rewards/mean": 0.557,
+          "actor/entropy_loss": 0.308,
+          "actor/pg_loss": -0.016,
+          "actor/grad_norm": 1.232,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 130,
+        "line": 15521,
+        "metrics": {
+          "train/perf/em": 0.434,
+          "critic/rewards/mean": 0.642,
+          "actor/entropy_loss": 0.32,
+          "actor/pg_loss": -0.022,
+          "actor/grad_norm": 1.25,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 131,
+        "line": 15631,
+        "metrics": {
+          "train/perf/em": 0.437,
+          "critic/rewards/mean": 0.642,
+          "actor/entropy_loss": 0.335,
+          "actor/pg_loss": 0.027,
+          "actor/grad_norm": 1.221,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 132,
+        "line": 15741,
+        "metrics": {
+          "train/perf/em": 0.407,
+          "critic/rewards/mean": 0.608,
+          "actor/entropy_loss": 0.327,
+          "actor/pg_loss": -0.01,
+          "actor/grad_norm": 1.228,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 133,
+        "line": 15851,
+        "metrics": {
+          "train/perf/em": 0.422,
+          "critic/rewards/mean": 0.621,
+          "actor/entropy_loss": 0.33,
+          "actor/pg_loss": -0.009,
+          "actor/grad_norm": 1.251,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 134,
+        "line": 15961,
+        "metrics": {
+          "train/perf/em": 0.427,
+          "critic/rewards/mean": 0.621,
+          "actor/entropy_loss": 0.331,
+          "actor/pg_loss": -0.03,
+          "actor/grad_norm": 1.243,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 135,
+        "line": 16071,
+        "metrics": {
+          "train/perf/em": 0.442,
+          "critic/rewards/mean": 0.647,
+          "actor/entropy_loss": 0.331,
+          "actor/pg_loss": -0.014,
+          "actor/grad_norm": 1.25,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 136,
+        "line": 16181,
+        "metrics": {
+          "train/perf/em": 0.434,
+          "critic/rewards/mean": 0.638,
+          "actor/entropy_loss": 0.337,
+          "actor/pg_loss": 0.006,
+          "actor/grad_norm": 1.294,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 137,
+        "line": 16291,
+        "metrics": {
+          "train/perf/em": 0.411,
+          "critic/rewards/mean": 0.603,
+          "actor/entropy_loss": 0.319,
+          "actor/pg_loss": -0.028,
+          "actor/grad_norm": 1.316,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 138,
+        "line": 16401,
+        "metrics": {
+          "train/perf/em": 0.458,
+          "critic/rewards/mean": 0.665,
+          "actor/entropy_loss": 0.319,
+          "actor/pg_loss": -0.028,
+          "actor/grad_norm": 1.241,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 139,
+        "line": 16511,
+        "metrics": {
+          "train/perf/em": 0.436,
+          "critic/rewards/mean": 0.643,
+          "actor/entropy_loss": 0.328,
+          "actor/pg_loss": -0.019,
+          "actor/grad_norm": 1.31,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2559.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 140,
+        "line": 16621,
+        "metrics": {
+          "train/perf/em": 0.398,
+          "critic/rewards/mean": 0.588,
+          "actor/entropy_loss": 0.337,
+          "actor/pg_loss": -0.026,
+          "actor/grad_norm": 1.277,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      },
+      {
+        "step": 141,
+        "line": 16731,
+        "metrics": {
+          "train/perf/em": 0.46,
+          "critic/rewards/mean": 0.676,
+          "actor/entropy_loss": 0.307,
+          "actor/pg_loss": -0.037,
+          "actor/grad_norm": 1.241,
+          "actor/kl_loss": 0.0,
+          "actor/kl_coef": 0.0,
+          "train/cost/search_per_query": 1.0,
+          "train/cost/nosearch_rate": 0.0,
+          "train/cost/oversearch_rate": 0.0,
+          "env/actual_retrieval_calls/total": 2560.0,
+          "env/actual_retrieval_calls/mean": 1.0,
+          "env/number_of_valid_search": 1.0
+        }
+      }
+    ],
+    "error_lines": []
+  },
+  "fixed_development_validation": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/validation-identities.jsonl",
+    "file_sha256": "648751112bd04074f95825acf6b7ceda42b5e4b9ad8228a7cfbf07713b839db6",
+    "rows": [
+      {
+        "line": 2,
+        "step": 5,
+        "row_sha256": "5a5f4498868df4a913837d396ecb459feec9e0e003970578b1e625ec6424eafb",
+        "question_count": 512,
+        "correct": 90.0,
+        "weighted_em": 0.17578125,
+        "weighted_f1": 0.24091333577987706,
+        "by_source": {
+          "hotpotqa": {
+            "count": 256,
+            "correct": 41.0
+          },
+          "nq": {
+            "count": 256,
+            "correct": 49.0
+          }
+        },
+        "question_order_sha256": "79a422549eaad7a455cd7b00208fc7b1f1de79d9ac7eb108915bdb906f8425ec",
+        "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "checked_unix": 1791453022.8176913,
+        "ordered_unique_question_count": 512
+      },
+      {
+        "line": 3,
+        "step": 50,
+        "row_sha256": "2e496a8e56c2c676dcdb7a13dea5ff3d122c49801e74c61f4d231d76d996b47a",
+        "question_count": 512,
+        "correct": 202.0,
+        "weighted_em": 0.39453125,
+        "weighted_f1": 0.46546063528485404,
+        "by_source": {
+          "hotpotqa": {
+            "count": 256,
+            "correct": 98.0
+          },
+          "nq": {
+            "count": 256,
+            "correct": 104.0
+          }
+        },
+        "question_order_sha256": "79a422549eaad7a455cd7b00208fc7b1f1de79d9ac7eb108915bdb906f8425ec",
+        "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "checked_unix": 1791521344.3604,
+        "ordered_unique_question_count": 512
+      },
+      {
+        "line": 4,
+        "step": 100,
+        "row_sha256": "aa3e212efe4359e17bac1907506c8769a23387ba1f98dc2739420016f9ae49e0",
+        "question_count": 512,
+        "correct": 205.0,
+        "weighted_em": 0.400390625,
+        "weighted_f1": 0.4763330853174603,
+        "by_source": {
+          "hotpotqa": {
+            "count": 256,
+            "correct": 98.0
+          },
+          "nq": {
+            "count": 256,
+            "correct": 107.0
+          }
+        },
+        "question_order_sha256": "79a422549eaad7a455cd7b00208fc7b1f1de79d9ac7eb108915bdb906f8425ec",
+        "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "checked_unix": 1791566798.5363903,
+        "ordered_unique_question_count": 512
+      }
+    ]
+  },
+  "processes": [
+    {
+      "pid": 1327340,
+      "state": "R",
+      "start_ticks": 552357047,
+      "cwd": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo",
+      "command": "/data/search-g1/env/bin/python -m reproduction.a800_common.run_pipeline --base /data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512 "
+    },
+    {
+      "pid": 1336445,
+      "state": "S",
+      "start_ticks": 552398244,
+      "cwd": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo",
+      "command": "/data/search-g1/env/bin/python probe_server.py --manifest /data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/live/manifest.json --port 18012 "
+    },
+    {
+      "pid": 1338978,
+      "state": "S",
+      "start_ticks": 552409911,
+      "cwd": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo",
+      "command": "/data/search-g1/env/bin/python -m verl.trainer.main_ppo_eco data.train_files=\"/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/data/train.parquet\" data.val_files=\"/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/data/stage.parquet\" data.train_data_num=null data.val_data_num=null data.train_batch_size=512 data.val_batch_size=64 data.max_prompt_length=4096 data.max_response_length=500 data.max_start_length=2048 data.max_obs_length=500 data.shuffle_train_dataloader=True algorithm.adv_estimator=grpo actor_rollout_ref.model.path=\"/data/search-g1/assets/qwen2.5-3b-instruct\" actor_rollout_ref.model.enable_gradient_checkpointing=true actor_rollout_ref.model.use_remove_padding=False actor_rollout_ref.actor.optim.lr=1e-6 actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.0 +actor_rollout_ref.actor.optim.lr_warmup_steps=57 actor_rollout_ref.actor.optim.warmup_style=constant actor_rollout_ref.actor.entropy_coeff=0.0 actor_rollout_ref.actor.use"
+    }
+  ],
+  "latest_behavior_trace_metadata": [
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/behavior-traces/attempt-9bdee9741fd64b38ad95ebb8bde3aca7.json",
+      "bytes": 166669154,
+      "mtime_ns": 1791600020411709447
+    },
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/behavior-traces/attempt-7b591c6a2d3c4cfea6d817fc4989d84e.json",
+      "bytes": 165297641,
+      "mtime_ns": 1791600898617155597
+    }
+  ],
+  "observed_utc": "2026-10-10T03:07:57.046532+00:00"
+}

@@ -1,0 +1,4113 @@
+{
+  "started_utc": "2026-10-10T02:56:09.407461+00:00",
+  "node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512",
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "readonly": true,
+  "cpu_only": true,
+  "CUDA_VISIBLE_DEVICES": "",
+  "interpretation": "Matching round fitted heads scored on that round calibration features; in-sample distributions, not live training scores or independent held-out fidelity.",
+  "rounds": [
+    {
+      "round": 0,
+      "version": "db474b6abf654ad9892b02ae67ab6f86:0:849d3b079d91430eac2502c9f01ad214",
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/version-manifest.json",
+      "manifest_sha256": "a52ed618038b9752af7cb772218296908afac2663af89adee558938bf37100b1",
+      "report_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/heads/calibration-report.json",
+      "report_sha256": "6b6a622b3e6e4978e06d634c1ae0b1dea2de62d70bfc91301a7ac10fefdda4a2",
+      "report": {
+        "commit_cv_auc": 0.8897179559050064,
+        "boundary_cv_auc": 0.7632211538461539,
+        "commit_position": "Xa",
+        "commit_label": "flip",
+        "unique_question_count": 300,
+        "commit_trajectory_count": 979,
+        "boundary_class_counts": [
+          264,
+          36
+        ],
+        "commit_class_counts": [
+          262,
+          717
+        ],
+        "question_grouped_cv": true,
+        "boundary_unique_question_weighting": true,
+        "require_all_cv_folds": true,
+        "configured_cv_folds": 2
+      },
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "df754ac7a765244d70522b32d68bd498ca777d9aedc63374eba9ecd443ef458e",
+      "labels_proof_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/dumps/calibration-label-proof.json",
+      "labels_proof_sha256": "be6f52a0c4187fc02d32d645588aaec954ed0b03594341a638e4b1ab2c015418",
+      "question_ids_set_sha256": "4bdc654855bb39cdd747f8c3678115affa9df41786af1dd3e7948ee2c2c96c7a",
+      "heads": {
+        "commit": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/heads/commit_probe.pkl",
+          "sha256": "75cdfdd41ad57ade7f4e080eef5ab37a2be4c89417424218dbb8f87d96d13e7c",
+          "model": "mlp256",
+          "layer": 24,
+          "label": "flip",
+          "position": "Xa",
+          "classifier_type": "Pipeline"
+        },
+        "boundary": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/heads/boundary_probe.pkl",
+          "sha256": "f19abd7995ff64a0ba0aaa13750c121a9ef38621bf7cfc0554152bec928b4af5",
+          "model": "lr",
+          "layer": 24,
+          "label": "closedbook",
+          "position": "Xp",
+          "classifier_type": "LogisticRegression"
+        }
+      },
+      "npz_keys": [
+        "y_em",
+        "y_flip",
+        "y_flip2",
+        "counterfactual_valid",
+        "counterfactual_strict_valid",
+        "q_cb",
+        "gid",
+        "question_id",
+        "boundary_question_id",
+        "boundary_q_cb",
+        "ds",
+        "Xc_21",
+        "Xa_21",
+        "Xp_question_21",
+        "Xp_21",
+        "Xc_24",
+        "Xa_24",
+        "Xp_question_24",
+        "Xp_24",
+        "Xc_27",
+        "Xa_27",
+        "Xp_question_27",
+        "Xp_27"
+      ],
+      "cohort": {
+        "unique_questions": 300,
+        "valid_searched_trajectory_count": 979,
+        "nominal_generated_trajectories": 1500,
+        "evidence_sensitive_labels": 717,
+        "closedbook_correct_question_labels": 36,
+        "correct_valid_searched_trajectory_labels": 308,
+        "same_reserved_question_set_as_other_rounds": true,
+        "same_sampled_trajectories_as_other_rounds": false
+      },
+      "distributions": {
+        "b_question_equal_question": {
+          "count": 300,
+          "mean": 0.20724984612112407,
+          "std_population": 0.29202554879694353,
+          "min": 6.832071352201722e-06,
+          "max": 0.967631552533176,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            6.832071352201722e-06,
+            0.00084703332314718,
+            0.014515963564484105,
+            0.0741899668255025,
+            0.23269311310014806,
+            0.9063087420321139,
+            0.967631552533176
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            175,
+            39,
+            23,
+            8,
+            7,
+            6,
+            2,
+            4,
+            19,
+            17
+          ],
+          "count_below_point1": 175,
+          "count_above_point9": 17
+        },
+        "b_valid_searched_rollout_weighted": {
+          "count": 979,
+          "mean": 0.1983740300267146,
+          "std_population": 0.28443321740499433,
+          "min": 6.832071352201722e-06,
+          "max": 0.967631552533176,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            6.832071352201722e-06,
+            0.0008374786277363208,
+            0.01243470123346204,
+            0.058669599093971486,
+            0.23334058220910897,
+            0.8952880326757611,
+            0.967631552533176
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            585,
+            120,
+            71,
+            29,
+            28,
+            16,
+            9,
+            14,
+            58,
+            49
+          ],
+          "count_below_point1": 585,
+          "count_above_point9": 49
+        },
+        "d_valid_searched_rollout": {
+          "count": 979,
+          "mean": 0.7400642695563343,
+          "std_population": 0.3719045124665735,
+          "min": 0.0008942074491642416,
+          "max": 0.9999994039535522,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            0.0008942074491642416,
+            0.014487433340400459,
+            0.4887310862541199,
+            0.9679384827613831,
+            0.9981558322906494,
+            0.9999909639358521,
+            0.9999994039535522
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            147,
+            31,
+            29,
+            23,
+            17,
+            21,
+            10,
+            28,
+            60,
+            613
+          ],
+          "count_below_point1": 147,
+          "count_above_point9": 613
+        },
+        "ground_valid_searched_rollout": {
+          "count": 979,
+          "mean": 0.6141271266896338,
+          "std_population": 0.3800334971932586,
+          "min": 7.492151673221386e-05,
+          "max": 0.9999204849002009,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            7.492151673221386e-05,
+            0.00574021576432984,
+            0.16749210368048778,
+            0.7945998243683822,
+            0.9609579460237557,
+            0.995921520667898,
+            0.9999204849002009
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            190,
+            69,
+            33,
+            27,
+            28,
+            34,
+            35,
+            80,
+            124,
+            359
+          ],
+          "count_below_point1": 190,
+          "count_above_point9": 359
+        }
+      },
+      "conditional_distributions": {
+        "em_correct": {
+          "d": {
+            "count": 308,
+            "mean": 0.6342578368405464,
+            "std_population": 0.4007574427728446,
+            "min": 0.0008942074491642416,
+            "max": 0.9997988343238831,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0008942074491642416,
+              0.010620692372322082,
+              0.15237464383244514,
+              0.8784242868423462,
+              0.9751844853162766,
+              0.9949957937002182,
+              0.9997988343238831
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              69,
+              15,
+              10,
+              8,
+              8,
+              7,
+              4,
+              9,
+              31,
+              147
+            ],
+            "count_below_point1": 69,
+            "count_above_point9": 147
+          },
+          "b": {
+            "count": 308,
+            "mean": 0.2820153226604637,
+            "std_population": 0.3506965079128435,
+            "min": 1.4397225687259233e-05,
+            "max": 0.967631552533176,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.4397225687259233e-05,
+              0.002393733383143293,
+              0.017598969433969342,
+              0.09464841419207924,
+              0.5211919754498179,
+              0.9294666312343018,
+              0.967631552533176
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              157,
+              40,
+              15,
+              10,
+              6,
+              6,
+              4,
+              4,
+              33,
+              33
+            ],
+            "count_below_point1": 157,
+            "count_above_point9": 33
+          },
+          "ground": {
+            "count": 308,
+            "mean": 0.5008730268835215,
+            "std_population": 0.39410516458864736,
+            "min": 7.492151673221386e-05,
+            "max": 0.9956362220535316,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              7.492151673221386e-05,
+              0.001767340522709791,
+              0.056723853096786306,
+              0.635310716633064,
+              0.8799602348000569,
+              0.9774855991719897,
+              0.9956362220535316
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              92,
+              29,
+              9,
+              7,
+              5,
+              8,
+              13,
+              27,
+              49,
+              69
+            ],
+            "count_below_point1": 92,
+            "count_above_point9": 69
+          }
+        },
+        "em_wrong": {
+          "d": {
+            "count": 671,
+            "mean": 0.7886311567045649,
+            "std_population": 0.3472498013983121,
+            "min": 0.001902485964819789,
+            "max": 0.9999994039535522,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.001902485964819789,
+              0.019052292220294476,
+              0.7474613785743713,
+              0.9884364604949951,
+              0.9996766448020935,
+              0.9999934434890747,
+              0.9999994039535522
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              78,
+              16,
+              19,
+              15,
+              9,
+              14,
+              6,
+              19,
+              29,
+              466
+            ],
+            "count_below_point1": 78,
+            "count_above_point9": 466
+          },
+          "b": {
+            "count": 671,
+            "mean": 0.15998130553909207,
+            "std_population": 0.23853505254152965,
+            "min": 6.832071352201722e-06,
+            "max": 0.9637702522904026,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.832071352201722e-06,
+              0.0005525448858005205,
+              0.009516710070686545,
+              0.05648268540322909,
+              0.19723195543636443,
+              0.8275217082277323,
+              0.9637702522904026
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              428,
+              80,
+              56,
+              19,
+              22,
+              10,
+              5,
+              10,
+              25,
+              16
+            ],
+            "count_below_point1": 428,
+            "count_above_point9": 16
+          },
+          "ground": {
+            "count": 671,
+            "mean": 0.6661126151252263,
+            "std_population": 0.3617114030740338,
+            "min": 0.0004456731657344068,
+            "max": 0.9999204849002009,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0004456731657344068,
+              0.01509531992084829,
+              0.33563045360627886,
+              0.8500680322256141,
+              0.9725965532392946,
+              0.9972209424986352,
+              0.9999204849002009
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              98,
+              40,
+              24,
+              20,
+              23,
+              26,
+              22,
+              53,
+              75,
+              290
+            ],
+            "count_below_point1": 98,
+            "count_above_point9": 290
+          }
+        },
+        "flip_true": {
+          "d": {
+            "count": 717,
+            "mean": 0.9398036878062425,
+            "std_population": 0.13265883313519908,
+            "min": 0.1473757028579712,
+            "max": 0.9999994039535522,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.1473757028579712,
+              0.695765769481659,
+              0.9507659673690796,
+              0.9905479550361633,
+              0.9995784163475037,
+              0.9999932289123535,
+              0.9999994039535522
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              0,
+              3,
+              7,
+              4,
+              4,
+              13,
+              6,
+              20,
+              54,
+              606
+            ],
+            "count_below_point1": 0,
+            "count_above_point9": 606
+          },
+          "b": {
+            "count": 717,
+            "mean": 0.1649247139794937,
+            "std_population": 0.24872340272477828,
+            "min": 6.832071352201722e-06,
+            "max": 0.9637702522904026,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.832071352201722e-06,
+              0.00043959566126020115,
+              0.009708583951742702,
+              0.04827695628515559,
+              0.19723195543636443,
+              0.8443660082792969,
+              0.9637702522904026
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              450,
+              91,
+              53,
+              19,
+              26,
+              10,
+              7,
+              12,
+              31,
+              18
+            ],
+            "count_below_point1": 450,
+            "count_above_point9": 18
+          },
+          "ground": {
+            "count": 717,
+            "mean": 0.7872708570864773,
+            "std_population": 0.26326457774778356,
+            "min": 0.024913915944658145,
+            "max": 0.9999204849002009,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.024913915944658145,
+              0.14071596331281822,
+              0.7274422712191172,
+              0.8984045088664211,
+              0.9749955734792455,
+              0.9970544917542714,
+              0.9999204849002009
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              22,
+              32,
+              20,
+              13,
+              19,
+              29,
+              30,
+              77,
+              120,
+              355
+            ],
+            "count_below_point1": 22,
+            "count_above_point9": 355
+          }
+        },
+        "flip_false": {
+          "d": {
+            "count": 262,
+            "mean": 0.19344914404036415,
+            "std_population": 0.24636727706031883,
+            "min": 0.0008942074491642416,
+            "max": 0.9835590720176697,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0008942074491642416,
+              0.00354087931336835,
+              0.021646321285516024,
+              0.07124099135398865,
+              0.2915473207831383,
+              0.789952141046524,
+              0.9835590720176697
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              147,
+              28,
+              22,
+              19,
+              13,
+              8,
+              4,
+              8,
+              6,
+              7
+            ],
+            "count_below_point1": 147,
+            "count_above_point9": 7
+          },
+          "b": {
+            "count": 262,
+            "mean": 0.2899128071483077,
+            "std_population": 0.34865986643660773,
+            "min": 6.832071352201722e-06,
+            "max": 0.967631552533176,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.832071352201722e-06,
+              0.001041094225958647,
+              0.023327386501227565,
+              0.09721749505344834,
+              0.5089687121278018,
+              0.9334239329740621,
+              0.967631552533176
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              135,
+              29,
+              18,
+              10,
+              2,
+              6,
+              2,
+              2,
+              27,
+              31
+            ],
+            "count_below_point1": 135,
+            "count_above_point9": 31
+          },
+          "ground": {
+            "count": 262,
+            "mean": 0.14029485686315774,
+            "std_population": 0.20841361749152748,
+            "min": 7.492151673221386e-05,
+            "max": 0.9569857205827902,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              7.492151673221386e-05,
+              0.0012360878599909633,
+              0.010474324778229113,
+              0.04248063217090335,
+              0.16355037113239115,
+              0.6573123409933704,
+              0.9569857205827902
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              168,
+              37,
+              13,
+              14,
+              9,
+              5,
+              5,
+              3,
+              4,
+              4
+            ],
+            "count_below_point1": 168,
+            "count_above_point9": 4
+          }
+        },
+        "closedbook_correct": {
+          "d": {
+            "count": 113,
+            "mean": 0.5538177157425634,
+            "std_population": 0.4168872545879711,
+            "min": 0.0008942074491642416,
+            "max": 0.9999932050704956,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0008942074491642416,
+              0.0077611861750483515,
+              0.054837051779031754,
+              0.7123646140098572,
+              0.9724522233009338,
+              0.9996914625167846,
+              0.9999932050704956
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              33,
+              4,
+              7,
+              4,
+              3,
+              2,
+              1,
+              5,
+              12,
+              42
+            ],
+            "count_below_point1": 33,
+            "count_above_point9": 42
+          },
+          "b": {
+            "count": 113,
+            "mean": 0.8799493728131349,
+            "std_population": 0.05552256257343482,
+            "min": 0.7497568770793673,
+            "max": 0.967631552533176,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.7497568770793673,
+              0.7658300388418636,
+              0.8380586538127213,
+              0.8874595156998675,
+              0.9208865883160247,
+              0.9538358791625,
+              0.967631552533176
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              8,
+              56,
+              49
+            ],
+            "count_below_point1": 0,
+            "count_above_point9": 49
+          },
+          "ground": {
+            "count": 113,
+            "mean": 0.07346475408293072,
+            "std_population": 0.07172827046685815,
+            "min": 7.492151673221386e-05,
+            "max": 0.2502370075031285,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              7.492151673221386e-05,
+              0.0005977227548750335,
+              0.006161839575554205,
+              0.04969179681777732,
+              0.1292529503352082,
+              0.22111625027204124,
+              0.2502370075031285
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              75,
+              31,
+              7,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "count_below_point1": 75,
+            "count_above_point9": 0
+          }
+        },
+        "closedbook_wrong": {
+          "d": {
+            "count": 866,
+            "mean": 0.7643666489800711,
+            "std_population": 0.35856136963986035,
+            "min": 0.0015468186466023326,
+            "max": 0.9999994039535522,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0015468186466023326,
+              0.016432810574769974,
+              0.6407267302274704,
+              0.9764951169490814,
+              0.998657152056694,
+              0.9999919831752777,
+              0.9999994039535522
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              114,
+              27,
+              22,
+              19,
+              14,
+              19,
+              9,
+              23,
+              48,
+              571
+            ],
+            "count_below_point1": 114,
+            "count_above_point9": 571
+          },
+          "b": {
+            "count": 866,
+            "mean": 0.10943867929361357,
+            "std_population": 0.1501029412693453,
+            "min": 6.832071352201722e-06,
+            "max": 0.8379114276622479,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.832071352201722e-06,
+              0.00043959566126020115,
+              0.009708583951742702,
+              0.04179278980252931,
+              0.16476871362999645,
+              0.44450573221551476,
+              0.8379114276622479
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              585,
+              120,
+              71,
+              29,
+              28,
+              16,
+              9,
+              6,
+              2,
+              0
+            ],
+            "count_below_point1": 585,
+            "count_above_point9": 0
+          },
+          "ground": {
+            "count": 866,
+            "mean": 0.684675450136005,
+            "std_population": 0.34565819156732586,
+            "min": 0.0004997032115085915,
+            "max": 0.9999204849002009,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.0004997032115085915,
+              0.015048795399386855,
+              0.4358267095692623,
+              0.8423033605229965,
+              0.9657168322608873,
+              0.99641681020822,
+              0.9999204849002009
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              115,
+              38,
+              26,
+              27,
+              28,
+              34,
+              35,
+              80,
+              124,
+              359
+            ],
+            "count_below_point1": 115,
+            "count_above_point9": 359
+          }
+        }
+      },
+      "counterfactual_valid_count": 974,
+      "calibration_reward_terms_no_cost": {
+        "correct_searched_additive_bonus": {
+          "count": 308,
+          "mean": 0.3005238161301129,
+          "std_population": 0.23646309875318838,
+          "min": 4.495291003932831e-05,
+          "max": 0.597381733232119,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            4.495291003932831e-05,
+            0.0010604043136258747,
+            0.03403431185807178,
+            0.38118642997983837,
+            0.5279761408800341,
+            0.5864913595031939,
+            0.597381733232119
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            118,
+            13,
+            11,
+            18,
+            49,
+            99,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 118,
+          "count_above_point9": 0
+        },
+        "correct_searched_reward_before_search_cost": {
+          "count": 308,
+          "mean": 1.300523816130113,
+          "std_population": 0.23646309875318838,
+          "min": 1.0000449529100393,
+          "max": 1.597381733232119,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            1.0000449529100393,
+            1.001060404313626,
+            1.034034311858072,
+            1.3811864299798384,
+            1.527976140880034,
+            1.586491359503194,
+            1.597381733232119
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 0,
+          "count_above_point9": 308
+        }
+      },
+      "reward_limitations": "No parsed n_search in saved NPZ: cannot reconstruct exact search cost or full calibration reward; summaries are explicit no-cost terms only."
+    },
+    {
+      "round": 100,
+      "version": "db474b6abf654ad9892b02ae67ab6f86:100:1dc59a8c3e9d46228ea7b87b5e98a7dc",
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/version-manifest.json",
+      "manifest_sha256": "8ac4c0ccbd1bd515bd8e05bac34ed2b028a11f586d838dac24ca976eee763706",
+      "report_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/heads/calibration-report.json",
+      "report_sha256": "925fbbc19626b448267612e59ffa696b615569f1371be100e841c4b2c7546c9f",
+      "report": {
+        "commit_cv_auc": 0.7987704221073524,
+        "boundary_cv_auc": 0.8028846153846154,
+        "commit_position": "Xa",
+        "commit_label": "flip",
+        "unique_question_count": 300,
+        "commit_trajectory_count": 1500,
+        "boundary_class_counts": [
+          260,
+          40
+        ],
+        "commit_class_counts": [
+          323,
+          1177
+        ],
+        "question_grouped_cv": true,
+        "boundary_unique_question_weighting": true,
+        "require_all_cv_folds": true,
+        "configured_cv_folds": 2
+      },
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "d7e58233de597ee424f6da95996ef4a4541c242f76cb334585d227ed73cbc2b6",
+      "labels_proof_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/dumps/calibration-label-proof.json",
+      "labels_proof_sha256": "73e12e046ab478569f6dde72ce2dc6245ff1be46cbeb831cd625888cacdcc37a",
+      "question_ids_set_sha256": "4bdc654855bb39cdd747f8c3678115affa9df41786af1dd3e7948ee2c2c96c7a",
+      "heads": {
+        "commit": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/heads/commit_probe.pkl",
+          "sha256": "908c9704556a74e4ab5c8f53f49f86e326215ebdcfd24b29028f17730fadeb0e",
+          "model": "mlp64",
+          "layer": 21,
+          "label": "flip",
+          "position": "Xa",
+          "classifier_type": "Pipeline"
+        },
+        "boundary": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/heads/boundary_probe.pkl",
+          "sha256": "22c3c34d8ab5b38ade8821f6de23c6e1095b63ab4247cd9dfd8d03583d4e438b",
+          "model": "mlp64",
+          "layer": 27,
+          "label": "closedbook",
+          "position": "Xp",
+          "classifier_type": "Pipeline"
+        }
+      },
+      "npz_keys": [
+        "y_em",
+        "y_flip",
+        "y_flip2",
+        "counterfactual_valid",
+        "counterfactual_strict_valid",
+        "q_cb",
+        "gid",
+        "question_id",
+        "boundary_question_id",
+        "boundary_q_cb",
+        "ds",
+        "Xc_21",
+        "Xa_21",
+        "Xp_question_21",
+        "Xp_21",
+        "Xc_24",
+        "Xa_24",
+        "Xp_question_24",
+        "Xp_24",
+        "Xc_27",
+        "Xa_27",
+        "Xp_question_27",
+        "Xp_27"
+      ],
+      "cohort": {
+        "unique_questions": 300,
+        "valid_searched_trajectory_count": 1500,
+        "nominal_generated_trajectories": 1500,
+        "evidence_sensitive_labels": 1177,
+        "closedbook_correct_question_labels": 40,
+        "correct_valid_searched_trajectory_labels": 580,
+        "same_reserved_question_set_as_other_rounds": true,
+        "same_sampled_trajectories_as_other_rounds": false
+      },
+      "distributions": {
+        "b_question_equal_question": {
+          "count": 300,
+          "mean": 0.11248405820890033,
+          "std_population": 0.18857977006778512,
+          "min": 1.193432581203524e-06,
+          "max": 0.9253449440002441,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            1.193432581203524e-06,
+            0.00041411281854379926,
+            0.007275408366695046,
+            0.02891585696488619,
+            0.10834998078644276,
+            0.5702456414699556,
+            0.9253449440002441
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            218,
+            30,
+            16,
+            10,
+            5,
+            8,
+            4,
+            5,
+            2,
+            2
+          ],
+          "count_below_point1": 218,
+          "count_above_point9": 2
+        },
+        "b_valid_searched_rollout_weighted": {
+          "count": 1500,
+          "mean": 0.11248405820890033,
+          "std_population": 0.18857977006778512,
+          "min": 1.193432581203524e-06,
+          "max": 0.9253449440002441,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            1.193432581203524e-06,
+            0.00041411281854379926,
+            0.007275408366695046,
+            0.02891585696488619,
+            0.10834998078644276,
+            0.5702456414699546,
+            0.9253449440002441
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            1090,
+            150,
+            80,
+            50,
+            25,
+            40,
+            20,
+            25,
+            10,
+            10
+          ],
+          "count_below_point1": 1090,
+          "count_above_point9": 10
+        },
+        "d_valid_searched_rollout": {
+          "count": 1500,
+          "mean": 0.7875265115100204,
+          "std_population": 0.37172989057643946,
+          "min": 2.996269722643774e-05,
+          "max": 0.9999988079071045,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            2.996269722643774e-05,
+            0.005829434026964009,
+            0.8583605140447617,
+            0.9907144904136658,
+            0.998378723859787,
+            0.9999039590358734,
+            0.9999988079071045
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            238,
+            32,
+            11,
+            21,
+            8,
+            8,
+            16,
+            18,
+            44,
+            1104
+          ],
+          "count_below_point1": 238,
+          "count_above_point9": 1104
+        },
+        "ground_valid_searched_rollout": {
+          "count": 1500,
+          "mean": 0.727013056979723,
+          "std_population": 0.36554194974703036,
+          "min": 6.3228098952095024e-06,
+          "max": 0.9999040961265564,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            6.3228098952095024e-06,
+            0.0038017410784959797,
+            0.592941477894783,
+            0.9349839985370636,
+            0.9835209548473358,
+            0.9980582237243653,
+            0.9999040961265564
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            251,
+            25,
+            24,
+            33,
+            18,
+            32,
+            48,
+            75,
+            143,
+            851
+          ],
+          "count_below_point1": 251,
+          "count_above_point9": 851
+        }
+      },
+      "conditional_distributions": {
+        "em_correct": {
+          "d": {
+            "count": 580,
+            "mean": 0.6728444462167192,
+            "std_population": 0.4294967457209069,
+            "min": 5.100911221234128e-05,
+            "max": 0.9999951124191284,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              5.100911221234128e-05,
+              0.0002912499316153117,
+              0.09613665007054806,
+              0.975475400686264,
+              0.9956731200218201,
+              0.9998056411743164,
+              0.9999951124191284
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              147,
+              24,
+              4,
+              8,
+              3,
+              2,
+              11,
+              11,
+              17,
+              353
+            ],
+            "count_below_point1": 147,
+            "count_above_point9": 353
+          },
+          "b": {
+            "count": 580,
+            "mean": 0.1693063896878694,
+            "std_population": 0.24175239651046598,
+            "min": 4.3425520743767265e-06,
+            "max": 0.9253449440002441,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.3425520743767265e-06,
+              0.0009989975951611996,
+              0.012724719941616058,
+              0.04681209474802017,
+              0.2021177113056183,
+              0.7409626245498657,
+              0.9253449440002441
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              358,
+              75,
+              34,
+              26,
+              6,
+              27,
+              17,
+              17,
+              10,
+              10
+            ],
+            "count_below_point1": 358,
+            "count_above_point9": 10
+          },
+          "ground": {
+            "count": 580,
+            "mean": 0.610135942402158,
+            "std_population": 0.4097802927068392,
+            "min": 6.3228098952095024e-06,
+            "max": 0.9998722672462463,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.3228098952095024e-06,
+              9.145340773102365e-05,
+              0.08182168006896973,
+              0.8359227180480957,
+              0.9671964347362518,
+              0.9939327746629715,
+              0.9998722672462463
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              156,
+              18,
+              6,
+              16,
+              6,
+              14,
+              22,
+              32,
+              64,
+              246
+            ],
+            "count_below_point1": 156,
+            "count_above_point9": 246
+          }
+        },
+        "em_wrong": {
+          "d": {
+            "count": 920,
+            "mean": 0.859826074412319,
+            "std_population": 0.3090067342599986,
+            "min": 2.996269722643774e-05,
+            "max": 0.9999988079071045,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.996269722643774e-05,
+              0.020633610989898445,
+              0.9675100594758987,
+              0.9945117235183716,
+              0.9990719109773636,
+              0.9999267399311066,
+              0.9999988079071045
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              91,
+              8,
+              7,
+              13,
+              5,
+              6,
+              5,
+              7,
+              27,
+              751
+            ],
+            "count_below_point1": 91,
+            "count_above_point9": 751
+          },
+          "b": {
+            "count": 920,
+            "mean": 0.07666128401563721,
+            "std_population": 0.13348402398670342,
+            "min": 1.193432581203524e-06,
+            "max": 0.7652868628501892,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.193432581203524e-06,
+              0.0002116638352163136,
+              0.0045069376938045025,
+              0.02097222302109003,
+              0.07767555862665176,
+              0.34556543827056885,
+              0.7652868628501892
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              732,
+              75,
+              46,
+              24,
+              19,
+              13,
+              3,
+              8,
+              0,
+              0
+            ],
+            "count_below_point1": 732,
+            "count_above_point9": 0
+          },
+          "ground": {
+            "count": 920,
+            "mean": 0.8006964553003617,
+            "std_population": 0.31298004146428826,
+            "min": 2.8586277039721608e-05,
+            "max": 0.9999040961265564,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.8586277039721608e-05,
+              0.018888019770383842,
+              0.7933964282274246,
+              0.9583300054073334,
+              0.9883224219083786,
+              0.998547688126564,
+              0.9999040961265564
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              95,
+              7,
+              18,
+              17,
+              12,
+              18,
+              26,
+              43,
+              79,
+              605
+            ],
+            "count_below_point1": 95,
+            "count_above_point9": 605
+          }
+        },
+        "flip_true": {
+          "d": {
+            "count": 1177,
+            "mean": 0.9709899037468707,
+            "std_population": 0.08907393348350759,
+            "min": 0.042709700763225555,
+            "max": 0.9999988079071045,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.042709700763225555,
+              0.8587427020072937,
+              0.982337236404419,
+              0.9952208399772644,
+              0.9990289211273193,
+              0.999925684928894,
+              0.9999988079071045
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              3,
+              3,
+              1,
+              1,
+              1,
+              4,
+              10,
+              15,
+              41,
+              1098
+            ],
+            "count_below_point1": 3,
+            "count_above_point9": 1098
+          },
+          "b": {
+            "count": 1177,
+            "mean": 0.07620161345568732,
+            "std_population": 0.13353874959940285,
+            "min": 1.193432581203524e-06,
+            "max": 0.768688976764679,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.193432581203524e-06,
+              0.0003850586945191026,
+              0.005006372928619385,
+              0.022302206605672836,
+              0.08267038315534592,
+              0.38186198472976685,
+              0.768688976764679
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              926,
+              117,
+              57,
+              30,
+              19,
+              9,
+              8,
+              11,
+              0,
+              0
+            ],
+            "count_below_point1": 926,
+            "count_above_point9": 0
+          },
+          "ground": {
+            "count": 1177,
+            "mean": 0.8979090682769744,
+            "std_population": 0.15755993545637806,
+            "min": 0.04220091924071312,
+            "max": 0.9999040961265564,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.04220091924071312,
+              0.5784287333488465,
+              0.8889473080635071,
+              0.9642279148101807,
+              0.9883159399032593,
+              0.998454749584198,
+              0.9999040961265564
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              4,
+              3,
+              11,
+              14,
+              15,
+              25,
+              46,
+              72,
+              140,
+              847
+            ],
+            "count_below_point1": 4,
+            "count_above_point9": 847
+          }
+        },
+        "flip_false": {
+          "d": {
+            "count": 323,
+            "mean": 0.11899272617635855,
+            "std_population": 0.2078858660464467,
+            "min": 2.996269722643774e-05,
+            "max": 0.9982495903968811,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.996269722643774e-05,
+              0.00010486047613085247,
+              0.006928641349077225,
+              0.028100596740841866,
+              0.10776104778051376,
+              0.6321991264820096,
+              0.9982495903968811
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              235,
+              29,
+              10,
+              20,
+              7,
+              4,
+              6,
+              3,
+              3,
+              6
+            ],
+            "count_below_point1": 235,
+            "count_above_point9": 6
+          },
+          "b": {
+            "count": 323,
+            "mean": 0.24469593893500471,
+            "std_population": 0.2790911371910288,
+            "min": 1.193432581203524e-06,
+            "max": 0.9253449440002441,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.193432581203524e-06,
+              0.0034548465628176928,
+              0.02400936186313629,
+              0.08326594531536102,
+              0.41828539967536926,
+              0.843783438205719,
+              0.9253449440002441
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              164,
+              33,
+              23,
+              20,
+              6,
+              31,
+              12,
+              14,
+              10,
+              10
+            ],
+            "count_below_point1": 164,
+            "count_above_point9": 10
+          },
+          "ground": {
+            "count": 323,
+            "mean": 0.1042743408903579,
+            "std_population": 0.18931888425353885,
+            "min": 6.3228098952095024e-06,
+            "max": 0.9970197081565857,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.3228098952095024e-06,
+              3.4491615951992575e-05,
+              0.004458861192688346,
+              0.019698748365044594,
+              0.09441237524151802,
+              0.5435294926166532,
+              0.9970197081565857
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              247,
+              22,
+              13,
+              19,
+              3,
+              7,
+              2,
+              3,
+              3,
+              4
+            ],
+            "count_below_point1": 247,
+            "count_above_point9": 4
+          }
+        },
+        "closedbook_correct": {
+          "d": {
+            "count": 200,
+            "mean": 0.4252228410856151,
+            "std_population": 0.4414625724012474,
+            "min": 5.100911221234128e-05,
+            "max": 0.9996585845947266,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              5.100911221234128e-05,
+              0.00010393607044534292,
+              0.0067606898956000805,
+              0.12157047912478447,
+              0.9617374837398529,
+              0.993224585056305,
+              0.9996585845947266
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              96,
+              8,
+              2,
+              6,
+              4,
+              2,
+              6,
+              2,
+              5,
+              69
+            ],
+            "count_below_point1": 96,
+            "count_above_point9": 69
+          },
+          "b": {
+            "count": 200,
+            "mean": 0.4265398114628624,
+            "std_population": 0.2866688405642998,
+            "min": 0.003804375184699893,
+            "max": 0.9253449440002441,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.003804375184699893,
+              0.02107555093243718,
+              0.17511119320988655,
+              0.3975449353456497,
+              0.6695015579462051,
+              0.877890938520431,
+              0.9253449440002441
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              35,
+              25,
+              30,
+              10,
+              10,
+              25,
+              20,
+              25,
+              10,
+              10
+            ],
+            "count_below_point1": 35,
+            "count_above_point9": 10
+          },
+          "ground": {
+            "count": 200,
+            "mean": 0.2768137910702421,
+            "std_population": 0.31977405158601163,
+            "min": 6.3228098952095024e-06,
+            "max": 0.9734734892845154,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              6.3228098952095024e-06,
+              2.1300842399796244e-05,
+              0.003674785722978413,
+              0.09388945624232292,
+              0.5124569833278656,
+              0.8549185007810592,
+              0.9734734892845154
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              103,
+              4,
+              13,
+              18,
+              12,
+              6,
+              6,
+              13,
+              19,
+              6
+            ],
+            "count_below_point1": 103,
+            "count_above_point9": 6
+          }
+        },
+        "closedbook_wrong": {
+          "d": {
+            "count": 1300,
+            "mean": 0.8432655377291597,
+            "std_population": 0.3258186683962034,
+            "min": 2.996269722643774e-05,
+            "max": 0.9999988079071045,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.996269722643774e-05,
+              0.015795902628451586,
+              0.961333155632019,
+              0.9937724769115448,
+              0.9987914711236954,
+              0.9999123930931091,
+              0.9999988079071045
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              142,
+              24,
+              9,
+              15,
+              4,
+              6,
+              10,
+              16,
+              39,
+              1035
+            ],
+            "count_below_point1": 142,
+            "count_above_point9": 1035
+          },
+          "b": {
+            "count": 1300,
+            "mean": 0.06416778847752154,
+            "std_population": 0.1043171420413118,
+            "min": 1.193432581203524e-06,
+            "max": 0.5933419466018677,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.193432581203524e-06,
+              0.000376909995975439,
+              0.005158785497769713,
+              0.021519570611417294,
+              0.07395759597420692,
+              0.3151265561580655,
+              0.5933419466018677
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              1055,
+              125,
+              50,
+              40,
+              15,
+              15,
+              0,
+              0,
+              0,
+              0
+            ],
+            "count_below_point1": 1055,
+            "count_above_point9": 0
+          },
+          "ground": {
+            "count": 1300,
+            "mean": 0.7962744825042585,
+            "std_population": 0.32010589874321155,
+            "min": 2.8586277039721608e-05,
+            "max": 0.9999040961265564,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.8586277039721608e-05,
+              0.014169590501114727,
+              0.7951843589544296,
+              0.9539985358715057,
+              0.986322894692421,
+              0.9982852667570115,
+              0.9999040961265564
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              148,
+              21,
+              11,
+              15,
+              6,
+              26,
+              42,
+              62,
+              124,
+              845
+            ],
+            "count_below_point1": 148,
+            "count_above_point9": 845
+          }
+        }
+      },
+      "counterfactual_valid_count": 1499,
+      "calibration_reward_terms_no_cost": {
+        "correct_searched_additive_bonus": {
+          "count": 580,
+          "mean": 0.366081580617991,
+          "std_population": 0.24586818564705445,
+          "min": 3.793686119024642e-06,
+          "max": 0.5999233722686768,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            3.793686119024642e-06,
+            5.487204616656529e-05,
+            0.04909301083534956,
+            0.5015536546707153,
+            0.5803178697824478,
+            0.5963596761226654,
+            0.5999233722686768
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            171,
+            16,
+            15,
+            29,
+            56,
+            293,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 171,
+          "count_above_point9": 0
+        },
+        "correct_searched_reward_before_search_cost": {
+          "count": 580,
+          "mean": 1.36608157918371,
+          "std_population": 0.24586818388971107,
+          "min": 1.0000038146972656,
+          "max": 1.5999233722686768,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            1.0000038146972656,
+            1.0000548303127288,
+            1.0490929782390594,
+            1.5015536546707153,
+            1.580317884683609,
+            1.596359622478485,
+            1.5999233722686768
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 0,
+          "count_above_point9": 580
+        }
+      },
+      "reward_limitations": "No parsed n_search in saved NPZ: cannot reconstruct exact search cost or full calibration reward; summaries are explicit no-cost terms only."
+    },
+    {
+      "round": 50,
+      "version": "db474b6abf654ad9892b02ae67ab6f86:50:7f06c28977dc4ee08e9381ef793835aa",
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/version-manifest.json",
+      "manifest_sha256": "2df3677ec6b3056281b48080797c18ffa56dc150c8c96050589d4d2eb7a5bbe0",
+      "report_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/heads/calibration-report.json",
+      "report_sha256": "8a63ee19168acd902172e75173f351bbe5ceb44c7b015d628a21bd9a70d4fb6b",
+      "report": {
+        "commit_cv_auc": 0.8295158596508603,
+        "boundary_cv_auc": 0.7344046771130104,
+        "commit_position": "Xa",
+        "commit_label": "flip",
+        "unique_question_count": 300,
+        "commit_trajectory_count": 1478,
+        "boundary_class_counts": [
+          262,
+          38
+        ],
+        "commit_class_counts": [
+          331,
+          1147
+        ],
+        "question_grouped_cv": true,
+        "boundary_unique_question_weighting": true,
+        "require_all_cv_folds": true,
+        "configured_cv_folds": 2
+      },
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "ef9177259cd1a6bdcdf94fb32aef79971839a61007e833085415c755689b8758",
+      "labels_proof_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/dumps/calibration-label-proof.json",
+      "labels_proof_sha256": "2b7ba79715e85dd7343d8c136881411b5bf9d7d682ddc8c62e5859cec4ea043e",
+      "question_ids_set_sha256": "4bdc654855bb39cdd747f8c3678115affa9df41786af1dd3e7948ee2c2c96c7a",
+      "heads": {
+        "commit": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/heads/commit_probe.pkl",
+          "sha256": "6837feec91cc3f006b7be9eea5a793fbb7b5ac470d20ee28c4ff2d0baa21d2fa",
+          "model": "mlp128",
+          "layer": 24,
+          "label": "flip",
+          "position": "Xa",
+          "classifier_type": "Pipeline"
+        },
+        "boundary": {
+          "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/heads/boundary_probe.pkl",
+          "sha256": "e7b74e8da5ad646197aa4c1561abc296872a323f2143cac4b43e8d72858ffe10",
+          "model": "lr",
+          "layer": 27,
+          "label": "closedbook",
+          "position": "Xp",
+          "classifier_type": "LogisticRegression"
+        }
+      },
+      "npz_keys": [
+        "y_em",
+        "y_flip",
+        "y_flip2",
+        "counterfactual_valid",
+        "counterfactual_strict_valid",
+        "q_cb",
+        "gid",
+        "question_id",
+        "boundary_question_id",
+        "boundary_q_cb",
+        "ds",
+        "Xc_21",
+        "Xa_21",
+        "Xp_question_21",
+        "Xp_21",
+        "Xc_24",
+        "Xa_24",
+        "Xp_question_24",
+        "Xp_24",
+        "Xc_27",
+        "Xa_27",
+        "Xp_question_27",
+        "Xp_27"
+      ],
+      "cohort": {
+        "unique_questions": 300,
+        "valid_searched_trajectory_count": 1478,
+        "nominal_generated_trajectories": 1500,
+        "evidence_sensitive_labels": 1147,
+        "closedbook_correct_question_labels": 38,
+        "correct_valid_searched_trajectory_labels": 516,
+        "same_reserved_question_set_as_other_rounds": true,
+        "same_sampled_trajectories_as_other_rounds": false
+      },
+      "distributions": {
+        "b_question_equal_question": {
+          "count": 300,
+          "mean": 0.18962084262531884,
+          "std_population": 0.298453551961729,
+          "min": 4.2383415819981417e-07,
+          "max": 0.9863906811558301,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            4.2383415819981417e-07,
+            0.00040800184914201437,
+            0.009397344712609983,
+            0.04724783263734755,
+            0.1906816938880705,
+            0.9208088419212799,
+            0.9863906811558301
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            190,
+            38,
+            17,
+            8,
+            5,
+            2,
+            0,
+            2,
+            12,
+            26
+          ],
+          "count_below_point1": 190,
+          "count_above_point9": 26
+        },
+        "b_valid_searched_rollout_weighted": {
+          "count": 1478,
+          "mean": 0.1895017000516203,
+          "std_population": 0.29863063506014936,
+          "min": 4.2383415819981417e-07,
+          "max": 0.9863906811558301,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            4.2383415819981417e-07,
+            0.000406685353899556,
+            0.009362789685571422,
+            0.04713669468570877,
+            0.18912411694042444,
+            0.9211686958384484,
+            0.9863906811558301
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            936,
+            188,
+            83,
+            40,
+            25,
+            10,
+            0,
+            7,
+            60,
+            129
+          ],
+          "count_below_point1": 936,
+          "count_above_point9": 129
+        },
+        "d_valid_searched_rollout": {
+          "count": 1478,
+          "mean": 0.7756228731679972,
+          "std_population": 0.38639727757427816,
+          "min": 2.906517124756647e-07,
+          "max": 1.0,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            2.906517124756647e-07,
+            0.008333720359951257,
+            0.881339967250824,
+            0.9929240942001343,
+            0.9989031404256821,
+            0.9999749600887299,
+            1.0
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            259,
+            42,
+            14,
+            12,
+            6,
+            6,
+            5,
+            11,
+            28,
+            1095
+          ],
+          "count_below_point1": 259,
+          "count_above_point9": 1095
+        },
+        "ground_valid_searched_rollout": {
+          "count": 1478,
+          "mean": 0.6715366476825056,
+          "std_population": 0.3961992245771158,
+          "min": 3.955571827685326e-09,
+          "max": 0.9999903290924262,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            3.955571827685326e-09,
+            0.0015262907773222433,
+            0.14198327490298682,
+            0.9049551824823889,
+            0.9751522253482414,
+            0.9971441447033593,
+            0.9999903290924262
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            329,
+            63,
+            6,
+            12,
+            10,
+            27,
+            39,
+            76,
+            164,
+            752
+          ],
+          "count_below_point1": 329,
+          "count_above_point9": 752
+        }
+      },
+      "conditional_distributions": {
+        "em_correct": {
+          "d": {
+            "count": 516,
+            "mean": 0.6950706908091231,
+            "std_population": 0.42889756501098864,
+            "min": 2.906517124756647e-07,
+            "max": 1.0,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.906517124756647e-07,
+              0.0005503843422047794,
+              0.09004139713943005,
+              0.9854903519153595,
+              0.996425062417984,
+              0.9998208284378052,
+              1.0
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              131,
+              13,
+              8,
+              4,
+              3,
+              3,
+              1,
+              5,
+              9,
+              339
+            ],
+            "count_below_point1": 131,
+            "count_above_point9": 339
+          },
+          "b": {
+            "count": 516,
+            "mean": 0.3225872691291783,
+            "std_population": 0.3890584401171035,
+            "min": 4.2383415819981417e-07,
+            "max": 0.9863906811558301,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.2383415819981417e-07,
+              0.000692313535377272,
+              0.018384355227489557,
+              0.10262736418027965,
+              0.8788494161297401,
+              0.954299817350546,
+              0.9863906811558301
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              258,
+              54,
+              38,
+              10,
+              5,
+              5,
+              0,
+              0,
+              33,
+              113
+            ],
+            "count_below_point1": 258,
+            "count_above_point9": 113
+          },
+          "ground": {
+            "count": 516,
+            "mean": 0.5626808271853376,
+            "std_population": 0.43167298424485007,
+            "min": 3.955571827685326e-09,
+            "max": 0.9997402916430735,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              3.955571827685326e-09,
+              8.044081293790052e-05,
+              0.02889087893307795,
+              0.8144042021126737,
+              0.9604004717278445,
+              0.9957823757148035,
+              0.9997402916430735
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              181,
+              14,
+              2,
+              3,
+              6,
+              10,
+              9,
+              32,
+              55,
+              204
+            ],
+            "count_below_point1": 181,
+            "count_above_point9": 204
+          }
+        },
+        "em_wrong": {
+          "d": {
+            "count": 962,
+            "mean": 0.8188296570527988,
+            "std_population": 0.35407602587306025,
+            "min": 2.9917359256614873e-07,
+            "max": 1.0,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.9917359256614873e-07,
+              0.012916676653549076,
+              0.9538073092699051,
+              0.9955255091190338,
+              0.9993397891521454,
+              0.9999875962734223,
+              1.0
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              128,
+              29,
+              6,
+              8,
+              3,
+              3,
+              4,
+              6,
+              19,
+              756
+            ],
+            "count_below_point1": 128,
+            "count_above_point9": 756
+          },
+          "b": {
+            "count": 962,
+            "mean": 0.11811692495388647,
+            "std_population": 0.20304823975713968,
+            "min": 4.2383415819981417e-07,
+            "max": 0.9783496175723676,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.2383415819981417e-07,
+              0.0003014082721651353,
+              0.008492823806601053,
+              0.04040103049213683,
+              0.1167282159470468,
+              0.7026612703172784,
+              0.9783496175723676
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              678,
+              134,
+              45,
+              30,
+              20,
+              5,
+              0,
+              7,
+              27,
+              16
+            ],
+            "count_below_point1": 678,
+            "count_above_point9": 16
+          },
+          "ground": {
+            "count": 962,
+            "mean": 0.7299250087807788,
+            "std_population": 0.36256912326141455,
+            "min": 1.7716265324699957e-07,
+            "max": 0.9999903290924262,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.7716265324699957e-07,
+              0.010396177377998975,
+              0.6477739139420583,
+              0.9262611284416407,
+              0.9805214228954942,
+              0.9978032944805488,
+              0.9999903290924262
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              148,
+              49,
+              4,
+              9,
+              4,
+              17,
+              30,
+              44,
+              109,
+              548
+            ],
+            "count_below_point1": 148,
+            "count_above_point9": 548
+          }
+        },
+        "flip_true": {
+          "d": {
+            "count": 1147,
+            "mean": 0.9745280997536363,
+            "std_population": 0.09162216473532618,
+            "min": 5.7978486438514665e-05,
+            "max": 1.0,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              5.7978486438514665e-05,
+              0.9024772882461548,
+              0.985965758562088,
+              0.9964989423751831,
+              0.9994078874588013,
+              0.9999873280525208,
+              1.0
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              3,
+              3,
+              1,
+              3,
+              2,
+              4,
+              5,
+              8,
+              27,
+              1091
+            ],
+            "count_below_point1": 3,
+            "count_above_point9": 1091
+          },
+          "b": {
+            "count": 1147,
+            "mean": 0.1348848524587327,
+            "std_population": 0.23700981909191923,
+            "min": 4.2383415819981417e-07,
+            "max": 0.9863906811558301,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.2383415819981417e-07,
+              0.0003014082721651353,
+              0.008436647001106147,
+              0.040271899966656206,
+              0.1279052138679525,
+              0.8881065859070096,
+              0.9863906811558301
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              807,
+              140,
+              58,
+              39,
+              15,
+              5,
+              0,
+              0,
+              33,
+              50
+            ],
+            "count_below_point1": 807,
+            "count_above_point9": 50
+          },
+          "ground": {
+            "count": 1147,
+            "mean": 0.8470363562331705,
+            "std_population": 0.24356703598871535,
+            "min": 5.793834714759259e-05,
+            "max": 0.9999903290924262,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              5.793834714759259e-05,
+              0.1069004548305581,
+              0.8357310960969858,
+              0.9485785010847357,
+              0.9844795849201007,
+              0.9975226730177887,
+              0.9999903290924262
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              54,
+              33,
+              0,
+              2,
+              7,
+              26,
+              38,
+              74,
+              164,
+              749
+            ],
+            "count_below_point1": 54,
+            "count_above_point9": 749
+          }
+        },
+        "flip_false": {
+          "d": {
+            "count": 331,
+            "mean": 0.08636518466730803,
+            "std_population": 0.15941442086917718,
+            "min": 2.906517124756647e-07,
+            "max": 0.9983512163162231,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.906517124756647e-07,
+              0.0001775862037902698,
+              0.01063363766297698,
+              0.027018489316105843,
+              0.0872468501329422,
+              0.3748404532670975,
+              0.9983512163162231
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              256,
+              39,
+              13,
+              9,
+              4,
+              2,
+              0,
+              3,
+              1,
+              4
+            ],
+            "count_below_point1": 256,
+            "count_above_point9": 4
+          },
+          "b": {
+            "count": 331,
+            "mean": 0.37876310243543326,
+            "std_population": 0.3967365221684241,
+            "min": 4.2383415819981417e-07,
+            "max": 0.9863906811558301,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.2383415819981417e-07,
+              0.001586660130411075,
+              0.025471275650112455,
+              0.15374366822623384,
+              0.8957462809841018,
+              0.9600907808882103,
+              0.9863906811558301
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              129,
+              48,
+              25,
+              1,
+              10,
+              5,
+              0,
+              7,
+              27,
+              79
+            ],
+            "count_below_point1": 129,
+            "count_above_point9": 79
+          },
+          "ground": {
+            "count": 331,
+            "mean": 0.06338508965346419,
+            "std_population": 0.13701710242096204,
+            "min": 3.955571827685326e-09,
+            "max": 0.9632080772004766,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              3.955571827685326e-09,
+              1.7974426103656104e-05,
+              0.0020893406390107413,
+              0.013484150245699553,
+              0.06002033037818778,
+              0.3323999621833581,
+              0.9632080772004766
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              275,
+              30,
+              6,
+              10,
+              3,
+              1,
+              1,
+              2,
+              0,
+              3
+            ],
+            "count_below_point1": 275,
+            "count_above_point9": 3
+          }
+        },
+        "closedbook_correct": {
+          "d": {
+            "count": 189,
+            "mean": 0.43445401157937646,
+            "std_population": 0.45167718169849647,
+            "min": 2.906517124756647e-07,
+            "max": 0.9999955892562866,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.906517124756647e-07,
+              0.00024967047502286735,
+              0.015042255632579327,
+              0.13510780036449432,
+              0.9715969562530518,
+              0.9980777740478516,
+              0.9999955892562866
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              91,
+              9,
+              6,
+              2,
+              1,
+              2,
+              0,
+              2,
+              10,
+              66
+            ],
+            "count_below_point1": 91,
+            "count_above_point9": 66
+          },
+          "b": {
+            "count": 189,
+            "mean": 0.9153949182617719,
+            "std_population": 0.037863109032670726,
+            "min": 0.8481668809750885,
+            "max": 0.9863906811558301,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              0.8481668809750885,
+              0.8536072851268912,
+              0.8923826912808381,
+              0.9160529760671302,
+              0.9488006980643829,
+              0.9777906187978873,
+              0.9863906811558301
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              60,
+              129
+            ],
+            "count_below_point1": 0,
+            "count_above_point9": 129
+          },
+          "ground": {
+            "count": 189,
+            "mean": 0.04082263862894036,
+            "std_population": 0.04930782335346766,
+            "min": 3.955571827685326e-09,
+            "max": 0.1494914149515388,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              3.955571827685326e-09,
+              9.065033371356702e-06,
+              0.001196700612825401,
+              0.010831068248590982,
+              0.08197486888215517,
+              0.1417366116996043,
+              0.1494914149515388
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              158,
+              31,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "count_below_point1": 158,
+            "count_above_point9": 0
+          }
+        },
+        "closedbook_wrong": {
+          "d": {
+            "count": 1289,
+            "mean": 0.8256468567523645,
+            "std_population": 0.34887253686190123,
+            "min": 2.9917359256614873e-07,
+            "max": 1.0,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              2.9917359256614873e-07,
+              0.013590525090694429,
+              0.9583920240402222,
+              0.9947956204414368,
+              0.9991893172264099,
+              0.9999836444854736,
+              1.0
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              168,
+              33,
+              8,
+              10,
+              5,
+              4,
+              5,
+              9,
+              18,
+              1029
+            ],
+            "count_below_point1": 168,
+            "count_above_point9": 1029
+          },
+          "b": {
+            "count": 1289,
+            "mean": 0.08306739575238158,
+            "std_population": 0.11600832805551187,
+            "min": 4.2383415819981417e-07,
+            "max": 0.712726788068631,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              4.2383415819981417e-07,
+              0.0003014082721651353,
+              0.007653336640676069,
+              0.0371805949129058,
+              0.11121009320267497,
+              0.33371355652289936,
+              0.712726788068631
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              936,
+              188,
+              83,
+              40,
+              25,
+              10,
+              0,
+              7,
+              0,
+              0
+            ],
+            "count_below_point1": 936,
+            "count_above_point9": 0
+          },
+          "ground": {
+            "count": 1289,
+            "mean": 0.76401527274932,
+            "std_population": 0.33578834630834775,
+            "min": 1.7716265324699957e-07,
+            "max": 0.9999903290924262,
+            "quantile_probabilities": [
+              0.0,
+              0.05,
+              0.25,
+              0.5,
+              0.75,
+              0.95,
+              1.0
+            ],
+            "quantiles": [
+              1.7716265324699957e-07,
+              0.012198063214084558,
+              0.7402001617248185,
+              0.9328541965131304,
+              0.9810951753396093,
+              0.9973223544960708,
+              0.9999903290924262
+            ],
+            "histogram_edges": [
+              0.0,
+              0.1,
+              0.2,
+              0.30000000000000004,
+              0.4,
+              0.5,
+              0.6000000000000001,
+              0.7000000000000001,
+              0.8,
+              0.9,
+              1.0
+            ],
+            "histogram_counts": [
+              171,
+              32,
+              6,
+              12,
+              10,
+              27,
+              39,
+              76,
+              164,
+              752
+            ],
+            "count_below_point1": 171,
+            "count_above_point9": 752
+          }
+        }
+      },
+      "counterfactual_valid_count": 1478,
+      "calibration_reward_terms_no_cost": {
+        "correct_searched_additive_bonus": {
+          "count": 516,
+          "mean": 0.33760849631120254,
+          "std_population": 0.25900379054691003,
+          "min": 2.3733430966111955e-09,
+          "max": 0.5998441749858441,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            2.3733430966111955e-09,
+            4.826448776274031e-05,
+            0.01733452735984677,
+            0.4886425212676042,
+            0.5762402830367066,
+            0.5974694254288822,
+            0.5998441749858441
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            195,
+            3,
+            8,
+            17,
+            44,
+            249,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 195,
+          "count_above_point9": 0
+        },
+        "correct_searched_reward_before_search_cost": {
+          "count": 516,
+          "mean": 1.3376084963112027,
+          "std_population": 0.25900379054691003,
+          "min": 1.000000002373343,
+          "max": 1.599844174985844,
+          "quantile_probabilities": [
+            0.0,
+            0.05,
+            0.25,
+            0.5,
+            0.75,
+            0.95,
+            1.0
+          ],
+          "quantiles": [
+            1.000000002373343,
+            1.0000482644877629,
+            1.0173345273598469,
+            1.4886425212676042,
+            1.5762402830367066,
+            1.5974694254288822,
+            1.599844174985844
+          ],
+          "histogram_edges": [
+            0.0,
+            0.1,
+            0.2,
+            0.30000000000000004,
+            0.4,
+            0.5,
+            0.6000000000000001,
+            0.7000000000000001,
+            0.8,
+            0.9,
+            1.0
+          ],
+          "histogram_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "count_below_point1": 0,
+          "count_above_point9": 516
+        }
+      },
+      "reward_limitations": "No parsed n_search in saved NPZ: cannot reconstruct exact search cost or full calibration reward; summaries are explicit no-cost terms only."
+    }
+  ],
+  "same300_question_ids_across_all_rounds": true,
+  "behavior_trace_schema_probe": [
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/behavior-traces/attempt-088b55211c504c7c947396f706e8ef5d.json",
+      "bytes": 261549463,
+      "sampled_prefix_bytes": 32768,
+      "unique_key_names": [
+        "actor_rows",
+        "attention_mask",
+        "info_mask",
+        "input_ids"
+      ],
+      "probe_terms_present_in_prefix": [],
+      "bounded_prefix_not_full_file_scan": true
+    },
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/behavior-traces/attempt-7b591c6a2d3c4cfea6d817fc4989d84e.json",
+      "bytes": 165297641,
+      "sampled_prefix_bytes": 32768,
+      "unique_key_names": [
+        "actor_rows",
+        "attention_mask",
+        "info_mask",
+        "input_ids",
+        "position_ids"
+      ],
+      "probe_terms_present_in_prefix": [],
+      "bounded_prefix_not_full_file_scan": true
+    }
+  ],
+  "torch_imported": false,
+  "observed_utc": "2026-10-10T02:56:10.633509+00:00"
+}

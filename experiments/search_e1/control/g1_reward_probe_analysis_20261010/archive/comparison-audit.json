@@ -1,0 +1,256 @@
+{
+  "scope": "small metadata/static source andactualoriginalbootlog comparison, no tensorload/newtraining/evaluation",
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "observation_cst": "2026-10-10T10:57:59.682223+08:00",
+  "model": {
+    "repository": "Qwen/Qwen2.5-3B-Instruct",
+    "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "manifest_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/manifest.json",
+    "manifest_sha256": "b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508",
+    "model_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/assets/model",
+    "origin": "official upstream pretrained2shards, not restartedfromlaterconvertedGRPOcheckpoint",
+    "recorded_initial_shards": [
+      {
+        "path": "model-00001-of-00002.safetensors",
+        "bytes": 3968658944,
+        "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "upstream_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2"
+      },
+      {
+        "path": "model-00002-of-00002.safetensors",
+        "bytes": 2203268048,
+        "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+        "upstream_sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d"
+      }
+    ],
+    "fresh_tensor_payload_SHA": false,
+    "same_as_g1_repo_revision_supplied_by_parent": true,
+    "same_initial_numericweights_not_independently_recomputed_here": true
+  },
+  "precision": {
+    "actor_load_master": "torch.float32 when actor fsdp.model_dtype unspecified",
+    "FSDP_forward_param": "bfloat16",
+    "FSDP_reduce": "float32",
+    "FSDP_buffer": "float32",
+    "rollout": "bfloat16 asactualbootconfigline43",
+    "evidence": "fresh fsdp_workers.py lines132–136/164–170/184–192 +bootconfig",
+    "runtime_tensors_independently_read": false
+  },
+  "training": {
+    "questions_per_outer": 512,
+    "rollouts_per_question": 5,
+    "responses_per_outer": 2560,
+    "physical_GPU_count": 4,
+    "train_questions": 169103,
+    "global_mini": 128,
+    "global_logical_micro": 8,
+    "logical_micro_per_rank": 2,
+    "physical_micro": 1,
+    "score_logical_micro_global": 16,
+    "physical_score_initial": 2,
+    "physical_score_after36": 1,
+    "LR_peak": 1e-06,
+    "warmup_ratio": 0.285,
+    "scheduler_warmup_steps": 57,
+    "scheduler_warmup57_evidence": "archive-live-physical-score1 rank last_epoch36 actual_last_lr6.31578947368421e-7 =36/57*1e-6",
+    "ppo_epochs": 1,
+    "entropy_coefficient": 0.0,
+    "reference_KL_loss_coefficient": 0.001,
+    "reference_KL_type": "low_var_kl",
+    "standardPPO_clip": 0.2,
+    "DualClip": false,
+    "pre_exp_logratio_clamp": false,
+    "gradient_norm_clip": 1.0,
+    "Adam_opportunities_per_outer_from2560div128": 20,
+    "actual_boundary_receipt_scheduler36_Adamsteps720": true,
+    "not_claiming_all199Adamstates_CPUread": true
+  },
+  "loss_reduction": {
+    "actual": "pertrajectoryvalidpolicytokenmean then equaltrajectorymean; originallogicalmicrobatchmean withgradient_accumulation normalization",
+    "boot_log_marker_actual": [
+      {
+        "line": 166,
+        "text": "\u001b[36m(WorkerDict pid=1438383)\u001b[0m {'trajectory_mean_batching': 'enabled'}"
+      },
+      {
+        "line": 239,
+        "text": "\u001b[36m(WorkerDict pid=1438382)\u001b[0m {'trajectory_mean_batching': 'enabled'}\u001b[32m [repeated 3x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)\u001b[0m"
+      }
+    ],
+    "mechanism": "worker_debug.py invokes grpo_batching.install whenSEARCH_E1_TRAJECTORY_BATCHING=1; patchedmasked_mean(values,mask,axis=-1).mean(); physical1piece weightedlen(piece)/len(logical_data)",
+    "grpo_batching_source": [
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/search_e1/grpo_batching.py",
+        "sha256": "c6be925da005d59937595af7bd1ea1d2392a7b1295c1870e00a881cc8dd45132",
+        "lines": [
+          {
+            "line": 1,
+            "text": "\"\"\"Batch trajectories while preserving the microbatch=1 GRPO loss reduction."
+          },
+          {
+            "line": 6,
+            "text": "clipping, optimizer steps, masking and reference KL remain upstream code."
+          },
+          {
+            "line": 13,
+            "text": "def trajectory_mean(values, mask, axis=None):"
+          },
+          {
+            "line": 15,
+            "text": "        return functional.masked_mean(values, mask, axis=axis)"
+          },
+          {
+            "line": 16,
+            "text": "    return functional.masked_mean(values, mask, axis=-1).mean()"
+          },
+          {
+            "line": 19,
+            "text": "def scoped_function(function, **overrides):"
+          },
+          {
+            "line": 27,
+            "text": "scoped_functional = SimpleNamespace(**dict(vars(functional), masked_mean=trajectory_mean))"
+          },
+          {
+            "line": 28,
+            "text": "trajectory_policy_loss = scoped_function(core_algos.compute_policy_loss, verl_F=scoped_functional)"
+          },
+          {
+            "line": 31,
+            "text": "def install():"
+          },
+          {
+            "line": 35,
+            "text": "    algorithms = SimpleNamespace(**dict(vars(core_algos), compute_policy_loss=trajectory_policy_loss))"
+          },
+          {
+            "line": 36,
+            "text": "    DataParallelPPOActor.update_policy = scoped_function("
+          },
+          {
+            "line": 37,
+            "text": "        DataParallelPPOActor.update_policy, core_algos=algorithms,"
+          },
+          {
+            "line": 38,
+            "text": "        verl_F=scoped_functional, masked_mean=trajectory_mean)"
+          }
+        ]
+      }
+    ],
+    "tooltext_context_but_noactorloss": true,
+    "same_as_g1_micro_pooledtoken_mean": false
+  },
+  "generation": {
+    "configured_max_turns": 4,
+    "tool_enabled_turns_max": 4,
+    "final_generation_if_stillactive": 1,
+    "final_do_search": false,
+    "maximum_actions": 5,
+    "promptcap": 4096,
+    "startcap": 2048,
+    "per_action_newtokens": 500,
+    "observation_tokens": 500,
+    "topk": 3,
+    "training_temperature": 1.0,
+    "training_top_p": 1.0,
+    "native_validation_do_sample": false,
+    "native_validation_backend": "vLLM",
+    "not_nativeHF1.05_protocol": true,
+    "validation_source_evidence": {
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "9b4d61f06cdad3603c37ff4a5c3dcc0fc073bd91d64319d4de2b214b911a529b",
+      "lines": [
+        {
+          "line": 436,
+          "text": "    def _validate(self):"
+        },
+        {
+          "line": 445,
+          "text": "        gen_config = GenerationConfig("
+        },
+        {
+          "line": 446,
+          "text": "            max_turns=self.config.max_turns,"
+        },
+        {
+          "line": 447,
+          "text": "            max_start_length=self.config.data.max_start_length,"
+        },
+        {
+          "line": 448,
+          "text": "            max_prompt_length=self.config.data.max_prompt_length,"
+        },
+        {
+          "line": 449,
+          "text": "            max_response_length=self.config.data.max_response_length,"
+        },
+        {
+          "line": 450,
+          "text": "            max_obs_length=self.config.data.max_obs_length,"
+        },
+        {
+          "line": 454,
+          "text": "            topk = self.config.retriever.topk,"
+        },
+        {
+          "line": 478,
+          "text": "                    'do_sample': False,"
+        },
+        {
+          "line": 479,
+          "text": "                    'validate': True,"
+        },
+        {
+          "line": 508,
+          "text": "                    'do_sample': False,"
+        },
+        {
+          "line": 509,
+          "text": "                    'validate': True,"
+        }
+      ]
+    }
+  },
+  "data512": {
+    "JSONL_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.jsonl",
+    "JSONL_bytes": 93609,
+    "JSONL_SHA256": "75785f9c9b32c1b35878f6922be57923f431c52d11aa410c380f159d69febd76",
+    "rows": 512,
+    "parquet_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/data/validation.parquet",
+    "parquet_bytes": 63006,
+    "parquet_SHA256": "30d8a6175f3f3f7cc6d4e106521035be672cf9b35e98d371a8e81ac487859e71",
+    "NQ_count": 256,
+    "Hotpot_count": 256,
+    "policy": "heldoutfromNQ/Hotpottrainseed42",
+    "g1_dev512_identity_status": "normalizedquestion_source_andgoldidenticalall512_andorder;filebytesdifferent",
+    "full_raw_data_exported": false,
+    "same_normalized_question_set_and_order_asG1": true,
+    "same_NFKC_whitespace_casefold_alias_set_eachquestion": true,
+    "comparison_proof": {
+      "path": "outputs/g1-probe-evolution-20261010/archive/cohort-gold-comparison-verified.json",
+      "sha256": "f2fb512e4b7c38dcf4b6ac65bc36b2702d0d2ae3fa2a88f9548cc8c43f283b62"
+    }
+  },
+  "scoring": {
+    "taskreward": "binarystrictgenerated-onlyterminalnormalizedEM",
+    "legacy": "auditedonly, notoptimizationreward",
+    "b": null,
+    "d": null,
+    "probes": "notcollectednotzero",
+    "KL_actorloss_separate_notincludedintrainreward": true
+  },
+  "collapse_precision_correction": {
+    "first_severeobserved_drop": 184,
+    "183_EM_logged": 0.419,
+    "184_EM_logged": 0.019,
+    "185_EM_logged": 0.003,
+    "186_EM_logged": 0.0,
+    "186_score_max_actual_logged": 1.0,
+    "186_notallwrong": true,
+    "187_199_eachscore_max_min_zero": true,
+    "collapse_is_firstGRPO_notOPSD": true,
+    "numericrootcause_notproved": true
+  },
+  "terminal": "199uniquecompletedscalariterations;200missing; stopped/preservedacceptedreceipt,currentowned3trainingPIDsABSENT; oldRUNNINGandEXIT_0notfull200acceptance"
+}

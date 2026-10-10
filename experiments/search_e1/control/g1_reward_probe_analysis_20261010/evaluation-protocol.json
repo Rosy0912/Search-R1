@@ -1,0 +1,237 @@
+{
+  "readonly": true,
+  "cpu_only": true,
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "observed_utc": "2026-10-10T03:03:31.604413+00:00",
+  "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/data/manifest.json",
+  "manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "validation_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/data/validation.parquet",
+  "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+  "question_count": 512,
+  "source_counts": {
+    "nq": 256,
+    "hotpotqa": 256
+  },
+  "normalized_question_identity_definition": "last Question: suffix; whitespace collapse; strip; casefold; UTF-8 SHA256",
+  "question_order_compact_sha256": "b8557f89a232e9f0cf4532222e679ceb141d0d398ed4d9ca91906cf67355bbe6",
+  "question_set_compact_sha256": "256b08cff964dbccaef4eab5dd98feaf9726465ab8963748a4c8d850f3510e65",
+  "resolved_config_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/resolved-training-config.json",
+  "resolved_config_file_sha256": "7269d3ca6c9efc337c08ce20c0516d2424a00e64eea0d068a6668901b32e4f12",
+  "generation_configured": {
+    "max_turns": 4,
+    "do_search": true,
+    "data": {
+      "max_start_length": 2048,
+      "max_prompt_length": 4096,
+      "max_response_length": 500,
+      "max_obs_length": 500,
+      "val_batch_size": 64
+    },
+    "rollout": {
+      "name": "vllm",
+      "temperature": 1,
+      "top_k": -1,
+      "top_p": 1.0,
+      "prompt_length": 4096,
+      "response_length": 500,
+      "dtype": "bfloat16",
+      "gpu_memory_utilization": 0.25,
+      "ignore_eos": false,
+      "enforce_eager": true,
+      "free_cache_engine": true,
+      "load_format": "dummy_dtensor",
+      "tensor_model_parallel_size": 1,
+      "max_num_batched_tokens": 8192,
+      "max_num_seqs": 1024,
+      "log_prob_micro_batch_size": 32,
+      "log_prob_use_dynamic_bsz": false,
+      "log_prob_max_token_len_per_gpu": 16384,
+      "do_sample": true,
+      "n": 1,
+      "n_agent": 5
+    },
+    "retriever": {
+      "url": "http://127.0.0.1:18010/retrieve",
+      "topk": 3
+    }
+  },
+  "source": [
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo/verl/trainer/ppo/ray_trainer.py",
+      "sha256": "0c9042cb1e414a34e8928df761fbf850505ddcb29cfddbc54f0ed767066635d0",
+      "bound_sha256_match": true,
+      "excerpts": [
+        {
+          "line": 423,
+          "source": "                                         shuffle=False,\n                                         drop_last=False,\n                                         collate_fn=collate_fn)\n"
+        },
+        {
+          "line": 475,
+          "source": "        gen_config = GenerationConfig(\n            max_turns=self.config.max_turns,\n            max_start_length=self.config.data.max_start_length,\n            max_prompt_length=self.config.data.max_prompt_length,"
+        },
+        {
+          "line": 479,
+          "source": "            max_response_length=self.config.data.max_response_length,\n            max_obs_length=self.config.data.max_obs_length,\n            num_gpus=self.config.trainer.n_gpus_per_node * self.config.trainer.nnodes,\n            no_think_rl=self.config.algorithm.no_think_rl,"
+        },
+        {
+          "line": 491,
+          "source": "            config=gen_config,\n            is_validation = True,\n        )\n"
+        },
+        {
+          "line": 509,
+          "source": "                    'recompute_log_prob': False,\n                    'do_sample': False,\n                    'validate': True,\n                }"
+        },
+        {
+          "line": 510,
+          "source": "                    'do_sample': False,\n                    'validate': True,\n                }\n"
+        },
+        {
+          "line": 546,
+          "source": "                    'recompute_log_prob': False,\n                    'do_sample': False,\n                    'validate': True,\n                }"
+        },
+        {
+          "line": 547,
+          "source": "                    'do_sample': False,\n                    'validate': True,\n                }\n                if behavior_identity is not None:"
+        },
+        {
+          "line": 782,
+          "source": "        gen_config = GenerationConfig(\n            max_turns=self.config.max_turns,\n            max_start_length=self.config.data.max_start_length,\n            max_prompt_length=self.config.data.max_prompt_length,"
+        },
+        {
+          "line": 786,
+          "source": "            max_response_length=self.config.data.max_response_length,\n            max_obs_length=self.config.data.max_obs_length,\n            num_gpus=self.config.trainer.n_gpus_per_node * self.config.trainer.nnodes,\n            no_think_rl=self.config.algorithm.no_think_rl,"
+        }
+      ]
+    },
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo/search_r1/llm_agent/generation.py",
+      "sha256": "ad80aa52d935b8f11171c8402c2e3a4788f01f9e0ef78ecf205fb9f5b85394ae",
+      "bound_sha256_match": true,
+      "excerpts": [
+        {
+          "line": 15,
+          "source": "class GenerationConfig:\n    max_turns: int\n    max_start_length: int\n    max_prompt_length: int"
+        },
+        {
+          "line": 19,
+          "source": "    max_response_length: int\n    max_obs_length: int\n    num_gpus: int\n    no_think_rl: bool=False"
+        },
+        {
+          "line": 31,
+          "source": "        config: GenerationConfig,\n        is_validation: bool = False,\n    ):\n        self.tokenizer = tokenizer"
+        },
+        {
+          "line": 36,
+          "source": "        self.config = config\n        self.is_validation = is_validation\n\n        self.tensor_fn = TensorHelper(TensorConfig("
+        },
+        {
+          "line": 41,
+          "source": "            max_prompt_length=config.max_prompt_length,\n            max_obs_length=config.max_obs_length,\n            max_start_length=config.max_start_length\n        ))"
+        },
+        {
+          "line": 87,
+          "source": "\n        if next_obs_ids.shape[1] > self.config.max_obs_length:\n            print(f\"[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, {next_obs_ids.shape[1]} & {self.config.max_obs_length}\")\n            next_obs_ids = next_obs_ids[:, :self.config.max_obs_length]"
+        },
+        {
+          "line": 88,
+          "source": "        if next_obs_ids.shape[1] > self.config.max_obs_length:\n            print(f\"[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, {next_obs_ids.shape[1]} & {self.config.max_obs_length}\")\n            next_obs_ids = next_obs_ids[:, :self.config.max_obs_length]\n"
+        },
+        {
+          "line": 89,
+          "source": "            print(f\"[WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, {next_obs_ids.shape[1]} & {self.config.max_obs_length}\")\n            next_obs_ids = next_obs_ids[:, :self.config.max_obs_length]\n\n        return next_obs_ids"
+        },
+        {
+          "line": 239,
+          "source": "        # Main generation loop\n        for step in range(self.config.max_turns):\n            if not active_mask.sum():\n                break"
+        }
+      ]
+    },
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo/verl/workers/rollout/vllm_rollout/vllm_rollout.py",
+      "sha256": "d12b026367d49665f83c8b91ce17cc3549133088fe8a5ec4d80072d69950c306",
+      "bound_sha256_match": true,
+      "excerpts": [
+        {
+          "line": 154,
+          "source": "        print(f\"kwargs: {kwargs}\")\n        self.sampling_params = SamplingParams(**kwargs)\n\n        self.pad_token_id = tokenizer.pad_token_id"
+        },
+        {
+          "line": 159,
+          "source": "    @contextmanager\n    def update_sampling_params(self, **kwargs):\n        # update sampling params\n        old_sampling_params_args = {}"
+        },
+        {
+          "line": 161,
+          "source": "        # update sampling params\n        old_sampling_params_args = {}\n        if kwargs:\n            for key, value in kwargs.items():"
+        },
+        {
+          "line": 164,
+          "source": "            for key, value in kwargs.items():\n                if hasattr(self.sampling_params, key):\n                    old_value = getattr(self.sampling_params, key)\n                    old_sampling_params_args[key] = old_value"
+        },
+        {
+          "line": 165,
+          "source": "                if hasattr(self.sampling_params, key):\n                    old_value = getattr(self.sampling_params, key)\n                    old_sampling_params_args[key] = old_value\n                    setattr(self.sampling_params, key, value)"
+        },
+        {
+          "line": 166,
+          "source": "                    old_value = getattr(self.sampling_params, key)\n                    old_sampling_params_args[key] = old_value\n                    setattr(self.sampling_params, key, value)\n        yield"
+        },
+        {
+          "line": 167,
+          "source": "                    old_sampling_params_args[key] = old_value\n                    setattr(self.sampling_params, key, value)\n        yield\n        # roll back to previous sampling params"
+        },
+        {
+          "line": 170,
+          "source": "        # roll back to previous sampling params\n        # if len(old_sampling_params_args):\n        for key, value in old_sampling_params_args.items():\n            setattr(self.sampling_params, key, value)"
+        },
+        {
+          "line": 171,
+          "source": "        # if len(old_sampling_params_args):\n        for key, value in old_sampling_params_args.items():\n            setattr(self.sampling_params, key, value)\n"
+        },
+        {
+          "line": 172,
+          "source": "        for key, value in old_sampling_params_args.items():\n            setattr(self.sampling_params, key, value)\n\n    @torch.no_grad()"
+        },
+        {
+          "line": 223,
+          "source": "\n        # users can customize different sampling_params at different run\n        with self.update_sampling_params(**kwargs):\n            sampler_actual = actual_sampling_metadata(self.sampling_params, do_sample) if common8 else None"
+        },
+        {
+          "line": 224,
+          "source": "        # users can customize different sampling_params at different run\n        with self.update_sampling_params(**kwargs):\n            sampler_actual = actual_sampling_metadata(self.sampling_params, do_sample) if common8 else None\n            prior_capture = getattr(self.inference_engine, 'capture_behavior_trace', False)"
+        },
+        {
+          "line": 225,
+          "source": "        with self.update_sampling_params(**kwargs):\n            sampler_actual = actual_sampling_metadata(self.sampling_params, do_sample) if common8 else None\n            prior_capture = getattr(self.inference_engine, 'capture_behavior_trace', False)\n            try:"
+        },
+        {
+          "line": 231,
+          "source": "                    from reproduction.common8.sampling_capture import capture_scope\n                    with capture_scope(self.inference_engine.llm_engine, self.sampling_params,\n                            sampler_actual, call_id, list(row_ids), idx_list) as actual_groups:\n                        output = self.inference_engine.generate("
+        },
+        {
+          "line": 234,
+          "source": "                        output = self.inference_engine.generate(\n                            prompts=None, sampling_params=self.sampling_params,\n                            prompt_token_ids=idx_list, use_tqdm=False)\n                        if len(output) != 3:"
+        },
+        {
+          "line": 242,
+          "source": "                        prompts=None,  # because we have already convert it to prompt token id\n                        sampling_params=self.sampling_params,\n                        prompt_token_ids=idx_list,\n                        use_tqdm=False)"
+        }
+      ]
+    },
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/repo/reproduction/common8/validation_identity.py",
+      "sha256": "44d1b9dec6749947a2967d23abc294807c35a765bf2d65046556da4f9b5d3050",
+      "bound_sha256_match": true,
+      "excerpts": [
+        {
+          "line": 48,
+          "source": "    else:\n        split = 'final' if final else ('validation' if step > 0 and step % 50 == 0 else 'stage')\n    base = Path(os.environ['SEARCH_G1_BASE'])\n    record, frame, _ = expected(base, split)"
+        },
+        {
+          "line": 54,
+          "source": "    trainer.val_dataloader = DataLoader(dataset, batch_size=64, shuffle=False,\n        drop_last=False, collate_fn=collate_fn)\n    _ACTIVE_SPLIT = split\n    _ACTIVE_SOURCE_COUNTS = dict(record['source_counts'])"
+        }
+      ]
+    }
+  ]
+}

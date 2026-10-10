@@ -1,0 +1,207 @@
+{
+  "started_utc": "2026-10-10T03:00:19.290621+00:00",
+  "node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "readonly": true,
+  "cpu_only": true,
+  "interpretation": "Off-diagonal cells are diagnostic CPU scores only, never actual served training rewards. Both feature encoder and learned head may change; this matrix separates their numerical contributions on the same 300 prompts, not a causal attribution of learning.",
+  "input_files": [
+    {
+      "round": 0,
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/version-manifest.json",
+      "manifest_sha256": "a52ed618038b9752af7cb772218296908afac2663af89adee558938bf37100b1",
+      "head_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/heads/boundary_probe.pkl",
+      "head_sha256": "f19abd7995ff64a0ba0aaa13750c121a9ef38621bf7cfc0554152bec928b4af5",
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_0-adopted-849d3b079d91430eac2502c9f01ad214/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "df754ac7a765244d70522b32d68bd498ca777d9aedc63374eba9ecd443ef458e",
+      "actual_question_order_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+    },
+    {
+      "round": 50,
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/version-manifest.json",
+      "manifest_sha256": "2df3677ec6b3056281b48080797c18ffa56dc150c8c96050589d4d2eb7a5bbe0",
+      "head_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/heads/boundary_probe.pkl",
+      "head_sha256": "e7b74e8da5ad646197aa4c1561abc296872a323f2143cac4b43e8d72858ffe10",
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_50-attempt-1206ed1816254f32a10cbd216bce8fc0/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "ef9177259cd1a6bdcdf94fb32aef79971839a61007e833085415c755689b8758",
+      "actual_question_order_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+    },
+    {
+      "round": 100,
+      "manifest_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/version-manifest.json",
+      "manifest_sha256": "8ac4c0ccbd1bd515bd8e05bac34ed2b028a11f586d838dac24ca976eee763706",
+      "head_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/heads/boundary_probe.pkl",
+      "head_sha256": "22c3c34d8ab5b38ade8821f6de23c6e1095b63ab4247cd9dfd8d03583d4e438b",
+      "dump_path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/artifacts/round_100-attempt-62a295c0259e40999864edef8e8a04a3/dumps/nq-hotpot-common_0.npz",
+      "dump_sha256": "d7e58233de597ee424f6da95996ef4a4541c242f76cb334585d227ed73cbc2b6",
+      "actual_question_order_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+    }
+  ],
+  "score_matrix": [
+    {
+      "feature_encoder_round": 0,
+      "boundary_head_round": 0,
+      "count": 300,
+      "actual_served_pair": true,
+      "head_layer": 24,
+      "head_model": "lr",
+      "mean": 0.20724984612112407,
+      "median": 0.0741899668255025,
+      "quantiles": [
+        0.00084703332314718,
+        0.014515963564484105,
+        0.0741899668255025,
+        0.23269311310014806,
+        0.9063087420321139
+      ],
+      "closedbook_correct_current_labels": 36
+    },
+    {
+      "feature_encoder_round": 0,
+      "boundary_head_round": 50,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 27,
+      "head_model": "lr",
+      "mean": 0.11055464381975506,
+      "median": 0.0074363260005603825,
+      "quantiles": [
+        6.032409943649183e-06,
+        0.0005397864052937659,
+        0.0074363260005603825,
+        0.08271464050856148,
+        0.6848987173459984
+      ],
+      "closedbook_correct_current_labels": 36
+    },
+    {
+      "feature_encoder_round": 0,
+      "boundary_head_round": 100,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 27,
+      "head_model": "mlp64",
+      "mean": 0.015994040295481682,
+      "median": 0.0018650684505701065,
+      "quantiles": [
+        1.1672839582388407e-05,
+        0.0003525580250425264,
+        0.0018650683923624456,
+        0.009187640156596899,
+        0.0836505141109229
+      ],
+      "closedbook_correct_current_labels": 36
+    },
+    {
+      "feature_encoder_round": 50,
+      "boundary_head_round": 0,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 24,
+      "head_model": "lr",
+      "mean": 0.5522888744424868,
+      "median": 0.5810003832696442,
+      "quantiles": [
+        0.020501266001816572,
+        0.2736819705353018,
+        0.5810003832696442,
+        0.8685936204579314,
+        0.9914375729142934
+      ],
+      "closedbook_correct_current_labels": 38
+    },
+    {
+      "feature_encoder_round": 50,
+      "boundary_head_round": 50,
+      "count": 300,
+      "actual_served_pair": true,
+      "head_layer": 27,
+      "head_model": "lr",
+      "mean": 0.18962084262531884,
+      "median": 0.04724783263734755,
+      "quantiles": [
+        0.00040800184914201437,
+        0.009397344712609983,
+        0.04724783263734755,
+        0.1906816938880705,
+        0.9208088419212799
+      ],
+      "closedbook_correct_current_labels": 38
+    },
+    {
+      "feature_encoder_round": 50,
+      "boundary_head_round": 100,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 27,
+      "head_model": "mlp64",
+      "mean": 0.22996607422828674,
+      "median": 0.15857619047164917,
+      "quantiles": [
+        0.0030138021917082373,
+        0.05262868478894234,
+        0.15857618302106857,
+        0.34675513207912445,
+        0.704004991054535
+      ],
+      "closedbook_correct_current_labels": 38
+    },
+    {
+      "feature_encoder_round": 100,
+      "boundary_head_round": 0,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 24,
+      "head_model": "lr",
+      "mean": 0.8537529997635215,
+      "median": 0.9729046712922458,
+      "quantiles": [
+        0.19706060688912205,
+        0.8670579048560784,
+        0.9729046712922458,
+        0.9957763477456467,
+        0.9997333555130672
+      ],
+      "closedbook_correct_current_labels": 40
+    },
+    {
+      "feature_encoder_round": 100,
+      "boundary_head_round": 50,
+      "count": 300,
+      "actual_served_pair": false,
+      "head_layer": 27,
+      "head_model": "lr",
+      "mean": 0.0026559277473306247,
+      "median": 9.172551190700894e-05,
+      "quantiles": [
+        1.1061166510130094e-06,
+        1.2967051219639603e-05,
+        9.172551190700894e-05,
+        0.00047942472140983486,
+        0.009472369938536585
+      ],
+      "closedbook_correct_current_labels": 40
+    },
+    {
+      "feature_encoder_round": 100,
+      "boundary_head_round": 100,
+      "count": 300,
+      "actual_served_pair": true,
+      "head_layer": 27,
+      "head_model": "mlp64",
+      "mean": 0.11248406767845154,
+      "median": 0.028915856033563614,
+      "quantiles": [
+        0.00041411281854379926,
+        0.007275408366695046,
+        0.02891585696488619,
+        0.10834998078644276,
+        0.5702456414699556
+      ],
+      "closedbook_correct_current_labels": 40
+    }
+  ],
+  "same_question_order": true,
+  "torch_imported": false,
+  "observed_utc": "2026-10-10T03:00:20.009943+00:00"
+}
