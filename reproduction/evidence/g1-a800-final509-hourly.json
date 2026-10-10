@@ -1,0 +1,89 @@
+{
+  "checked_unix": 1791664103.0959816,
+  "log_bytes": 11951838,
+  "log_mtime": 1791664100.7371132,
+  "logged_final_scoring_batches": 509,
+  "errors": {
+    "Traceback (most recent call last)": 0,
+    "CUDA out of memory": 0
+  },
+  "final-identity.json": false,
+  "full-run-acceptance.json": false,
+  "cleanup-status.json": false,
+  "trainer_present": true,
+  "trainer_birth": 552404529,
+  "trainer_state": "S",
+  "previous_check": {
+    "checked_unix": 1791662281.638848,
+    "log_bytes": 11535287,
+    "logged_final_scoring_batches": 408
+  },
+  "run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "completed_outers": 200,
+  "successful_adam_writes": 4000,
+  "processed_opportunities": 4000,
+  "skips": 0,
+  "new_complete_outers_since_previous_report": 0,
+  "new_reward_window": null,
+  "latest_reward": 0.7357940673828125,
+  "latest_dev512": {
+    "step": 200,
+    "correct": 212,
+    "count": 512,
+    "em": 0.4140625,
+    "f1": 0.49615730406746034
+  },
+  "gpu_current": [
+    {
+      "physical_index": 0,
+      "assignment": "training",
+      "used_mib": 29183,
+      "total_mib": 81920,
+      "util_percent": 48,
+      "sampled_run_peak_mib": null
+    },
+    {
+      "physical_index": 1,
+      "assignment": "training",
+      "used_mib": 29423,
+      "total_mib": 81920,
+      "util_percent": 50,
+      "sampled_run_peak_mib": null
+    },
+    {
+      "physical_index": 2,
+      "assignment": "training",
+      "used_mib": 29423,
+      "total_mib": 81920,
+      "util_percent": 48,
+      "sampled_run_peak_mib": null
+    },
+    {
+      "physical_index": 3,
+      "assignment": "training",
+      "used_mib": 29403,
+      "total_mib": 81920,
+      "util_percent": 47,
+      "sampled_run_peak_mib": null
+    },
+    {
+      "physical_index": 5,
+      "assignment": "auxiliary",
+      "used_mib": 17887,
+      "total_mib": 81920,
+      "util_percent": 0,
+      "sampled_run_peak_mib": null
+    },
+    {
+      "physical_index": 6,
+      "assignment": "auxiliary",
+      "used_mib": 25083,
+      "total_mib": 81920,
+      "util_percent": 0,
+      "sampled_run_peak_mib": null
+    }
+  ],
+  "gpu_sample_time": 1791664106.264751,
+  "gpu_max_scanned_gap": 3.2785353660583496,
+  "gpu_peak_scope": "Bounded tail only; full-run and exact-hour peak unavailable"
+}
