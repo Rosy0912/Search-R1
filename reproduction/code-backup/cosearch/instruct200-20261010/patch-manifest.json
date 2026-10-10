@@ -10,5 +10,9 @@
   "verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py": {
     "source_sha256": "9b136601b0585cc69b437a0949eae90377ce1d19287e8a180cd1d18e2f5e4d8a",
     "patched_sha256": "98b5be0da58cd53348b8ea66b71214f8eebcf72baf7e73d42d1d8061e9e786ee"
+  },
+  "verl/verl/workers/config/actor.py": {
+    "source_sha256": "3c7995168f04789a2aea6af7f15083058089f7f7d28005bdc68b0574481489b4",
+    "patched_sha256": "ffb7af2bfee622818eb19a0fdd1dd0e0873d2539a10688ce302a1f3037ae00a7"
   }
 }

@@ -1,7 +1,7 @@
 """Prepare a new remote code deployment. No Slurm submission or GPU initialization."""
 import base64,hashlib,json,shutil,sys
 from pathlib import Path
-from prepare_source import patch_source,patch_trainer
+from prepare_source import patch_source,patch_trainer,patch_actor_config
 from configure import configure,BASE,RUN
 
 def main():
@@ -9,10 +9,10 @@ def main():
     run=Path(RUN)
     if run.exists():
         raise RuntimeError('Existing deployment: inspect manifest instead of overwriting')
-    targets=['main_co_search_ppo.py','verl/verl/workers/fsdp_workers.py','verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py']
+    targets=['main_co_search_ppo.py','verl/verl/workers/fsdp_workers.py','verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py','verl/verl/workers/config/actor.py']
     texts=[(source/p).read_text() for p in targets]
     original_hashes={p:hashlib.sha256(t.encode()).hexdigest() for p,t in zip(targets,texts)}
-    changed=[*patch_source(*texts[:2]),patch_trainer(texts[2])]
+    changed=[*patch_source(*texts[:2]),patch_trainer(texts[2]),patch_actor_config(texts[3])]
     run.mkdir()
     shutil.copytree(source,run/'repo',symlinks=True)
     for p,t in zip(targets,changed):(run/'repo'/p).write_text(t)

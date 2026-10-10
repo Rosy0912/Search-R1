@@ -51,13 +51,19 @@ def patch_trainer(trainer):
     return trainer
 
 
+def patch_actor_config(source):
+    before = "    ppo_mini_batch_size: int = 256"
+    if source.count(before) != 1: raise ValueError("Unexpected ActorConfig")
+    return source.replace(before, before + "\n    mini_batch_counts_trajectories: bool = False")
+
+
 def prepare(source, destination):
     source, destination = Path(source).resolve(), Path(destination).resolve()
     if source == destination or source in destination.parents:
         raise ValueError('Destination must be separate from frozen source')
-    targets = ['main_co_search_ppo.py', 'verl/verl/workers/fsdp_workers.py', 'verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py']
+    targets = ['main_co_search_ppo.py', 'verl/verl/workers/fsdp_workers.py', 'verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py', 'verl/verl/workers/config/actor.py']
     originals = [(source / p).read_text() for p in targets]
-    changed = (*patch_source(*originals[:2]), patch_trainer(originals[2]))
+    changed = (*patch_source(*originals[:2]), patch_trainer(originals[2]), patch_actor_config(originals[3]))
     destination.mkdir(parents=True, exist_ok=False)
     manifest = {}
     for path, before, after in zip(targets, originals, changed):
