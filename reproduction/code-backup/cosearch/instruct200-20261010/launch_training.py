@@ -83,7 +83,7 @@ def main():
         'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1',
         'COSEARCH_LEASED_UUIDS':os.environ['COSEARCH_LEASED_UUIDS'],
         'COSEARCH_LEASED_UUID_TO_INDEX':os.environ['COSEARCH_LEASED_UUID_TO_INDEX']}}
-    config.ray_kwargs.ray_init.runtime_env=OmegaConf.create(env)
+    OmegaConf.update(config,'ray_kwargs.ray_init.runtime_env',env,force_add=True)
     OmegaConf.update(config,'ray_kwargs.ray_init.address','local',force_add=True)
     OmegaConf.update(config,'ray_kwargs.ray_init.num_gpus',4,force_add=True)
     OmegaConf.update(config,'ray_kwargs.ray_init.num_cpus',48,force_add=True)
