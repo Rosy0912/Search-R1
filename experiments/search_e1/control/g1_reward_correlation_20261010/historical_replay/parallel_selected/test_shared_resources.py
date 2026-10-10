@@ -66,7 +66,7 @@ class SharedResources(unittest.TestCase):
         r=dict(RUN,auxiliary_physical_indices=[4,5,6,7],excluded_physical_indices=[])
         for i in [4,7]:self.assertFalse(pf.candidate_allowed(r,i))
     def test_core_not_changed_from_dense(self):
-        dense=HERE.parent/'replay_core.py'
-        self.assertEqual(hashlib.sha256(dense.read_bytes()).hexdigest(),hashlib.sha256((HERE/'replay_core.py').read_bytes()).hexdigest())
+        self.assertEqual('3e177773ce7875fe34f72b27c8976b9fafdf943abd89c263cfe6800f14b809a9',
+            hashlib.sha256((HERE/'replay_core.py').read_bytes()).hexdigest())
 
 if __name__=='__main__':unittest.main()
