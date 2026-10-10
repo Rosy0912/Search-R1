@@ -1,0 +1,203 @@
+{
+  "built_utc": "2026-10-10T04:06:06.689432+00:00",
+  "requested_full_individual_TRAIN_pearson_status": "NOT_COMPUTED",
+  "previous_answer_withdrawn": true,
+  "withdrawal_reason": "141 iteration-mean pairs and 305 calibration pairs are not complete individual TRAIN trajectory pairs requested by the user.",
+  "raw_definition": "C = original strict EM 0/1; R = designed pre-GRPO G1 reward",
+  "training_iteration_mean_correlations": [
+    {
+      "first_iteration": 1,
+      "last_iteration": 50,
+      "n_iterations": 50,
+      "pearson_iteration_mean_R_vs_EM": 0.9983381613879334,
+      "em_precision": "console rounded to 0.001; coefficient approximate"
+    },
+    {
+      "first_iteration": 51,
+      "last_iteration": 100,
+      "n_iterations": 50,
+      "pearson_iteration_mean_R_vs_EM": 0.9852819850152986,
+      "em_precision": "console rounded to 0.001; coefficient approximate"
+    },
+    {
+      "first_iteration": 101,
+      "last_iteration": 141,
+      "n_iterations": 41,
+      "pearson_iteration_mean_R_vs_EM": 0.9892886713658464,
+      "em_precision": "console rounded to 0.001; coefficient approximate"
+    },
+    {
+      "first_iteration": 1,
+      "last_iteration": 141,
+      "n_iterations": 141,
+      "pearson_iteration_mean_R_vs_EM": 0.9986505224723585,
+      "em_precision": "console rounded to 0.001; coefficient approximate"
+    }
+  ],
+  "calibration_common61": {
+    "0": {
+      "questions": 61,
+      "trajectories": 305,
+      "trajectory_pearson_R_EM": 0.9793869395189627,
+      "moment_reconstruction_rho": 0.9793869395189626,
+      "group_mean_pearson_R_EM": 0.9869470394551355,
+      "mixed_group_pearson_summary": {
+        "count": 15,
+        "mean": 0.9877057144108573,
+        "min": 0.9560729462245698,
+        "median": 0.9996799882418661,
+        "max": 0.9999999999999999
+      },
+      "group_pearson_undefined_all_correct": 12,
+      "group_pearson_undefined_all_wrong": 34,
+      "mixed_only_pooled_group_centered_pearson": 0.9752503464261457,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.7362137036350558,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.9877057105497153,
+      "correctness_fraction": 0.32131147540983607,
+      "R_mean": 0.4689058157630631,
+      "R_std_population": 0.621633220886763
+    },
+    "100": {
+      "questions": 61,
+      "trajectories": 305,
+      "trajectory_pearson_R_EM": 0.9764655363050229,
+      "moment_reconstruction_rho": 0.9764655363050185,
+      "group_mean_pearson_R_EM": 0.9744470910128215,
+      "mixed_group_pearson_summary": {
+        "count": 17,
+        "mean": 0.9999081346735499,
+        "min": 0.9986543770223408,
+        "median": 0.9999999999999999,
+        "max": 1.0
+      },
+      "group_pearson_undefined_all_correct": 18,
+      "group_pearson_undefined_all_wrong": 26,
+      "mixed_only_pooled_group_centered_pearson": 0.9915942061063063,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.7041196149059873,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.9999081346986707,
+      "correctness_fraction": 0.39672131147540984,
+      "R_mean": 0.5806743175279899,
+      "R_std_population": 0.6701736929909166
+    },
+    "50": {
+      "questions": 61,
+      "trajectories": 305,
+      "trajectory_pearson_R_EM": 0.9713528003984369,
+      "moment_reconstruction_rho": 0.9713528003984382,
+      "group_mean_pearson_R_EM": 0.9703590469608834,
+      "mixed_group_pearson_summary": {
+        "count": 13,
+        "mean": 0.9958233841348019,
+        "min": 0.9582911650869445,
+        "median": 0.9999999045727483,
+        "max": 1.0
+      },
+      "group_pearson_undefined_all_correct": 18,
+      "group_pearson_undefined_all_wrong": 30,
+      "mixed_only_pooled_group_centered_pearson": 0.985001262016932,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.6458573763455547,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.9958233827258913,
+      "correctness_fraction": 0.39672131147540984,
+      "R_mean": 0.5722170563017736,
+      "R_std_population": 0.6629645119015045
+    }
+  },
+  "calibration_all_complete": {
+    "0": {
+      "questions": 62,
+      "trajectories": 310,
+      "trajectory_pearson_R_EM": 0.9795504234789584,
+      "moment_reconstruction_rho": 0.9795504234789615,
+      "group_mean_pearson_R_EM": 0.9869062553464883,
+      "mixed_group_pearson_summary": {
+        "count": 16,
+        "mean": 0.9884741072601788,
+        "min": 0.9560729462245698,
+        "median": 0.9997841438537496,
+        "max": 0.9999999999999999
+      },
+      "group_pearson_undefined_all_correct": 12,
+      "group_pearson_undefined_all_wrong": 34,
+      "mixed_only_pooled_group_centered_pearson": 0.9756025954630956,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.7472370694980977,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.988474103521044,
+      "correctness_fraction": 0.3193548387096774,
+      "R_mean": 0.4669858960254538,
+      "R_std_population": 0.6214671805748555
+    },
+    "100": {
+      "questions": 300,
+      "trajectories": 1500,
+      "trajectory_pearson_R_EM": 0.9727074400904689,
+      "moment_reconstruction_rho": 0.9727074400904656,
+      "group_mean_pearson_R_EM": 0.9704224953464031,
+      "mixed_group_pearson_summary": {
+        "count": 74,
+        "mean": 0.9965585966634196,
+        "min": 0.9275081130294832,
+        "median": 0.9999986823443583,
+        "max": 1.0
+      },
+      "group_pearson_undefined_all_correct": 79,
+      "group_pearson_undefined_all_wrong": 147,
+      "mixed_only_pooled_group_centered_pearson": 0.9894450708780459,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.6980680246775051,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.9965585979000732,
+      "correctness_fraction": 0.38666666666666666,
+      "R_mean": 0.5588848781387011,
+      "R_std_population": 0.6588965358107063
+    },
+    "50": {
+      "questions": 281,
+      "trajectories": 1405,
+      "trajectory_pearson_R_EM": 0.9699417893772838,
+      "moment_reconstruction_rho": 0.9699417893772802,
+      "group_mean_pearson_R_EM": 0.9690607088135563,
+      "mixed_group_pearson_summary": {
+        "count": 74,
+        "mean": 0.9931346304633113,
+        "min": 0.9022725857047478,
+        "median": 0.9999996942211637,
+        "max": 1.0
+      },
+      "group_pearson_undefined_all_correct": 63,
+      "group_pearson_undefined_all_wrong": 144,
+      "mixed_only_pooled_group_centered_pearson": 0.981056743692318,
+      "all_groups_pooled_GRPO_advantage_pearson": 0.7338839965095448,
+      "mixed_only_pooled_GRPO_advantage_pearson": 0.9931346302390653,
+      "correctness_fraction": 0.35373665480427047,
+      "R_mean": 0.5053409751517917,
+      "R_std_population": 0.6345353057870364
+    }
+  },
+  "independent_prior_moment_cross_checks": [
+    {
+      "round": 0,
+      "prior_moment_pearson": 0.9793869395189626,
+      "direct_remote_pearson": 0.9793869395189627,
+      "absolute_difference": 1.1102230246251565e-16,
+      "accepted": true
+    },
+    {
+      "round": 50,
+      "prior_moment_pearson": 0.9713528003984382,
+      "direct_remote_pearson": 0.9713528003984369,
+      "absolute_difference": 1.3322676295501878e-15,
+      "accepted": true
+    },
+    {
+      "round": 100,
+      "prior_moment_pearson": 0.9764655362306288,
+      "direct_remote_pearson": 0.9764655363050229,
+      "absolute_difference": 7.439404647868741e-11,
+      "accepted": true
+    }
+  ],
+  "provenance_sha256": {
+    "remote-correlations.stdout.json": "189bc22667deec2fcb6dd3ed4ac1c8a0d151c00cb8c647eb0d9ca416ba5a15c4",
+    "raw-reward-distributions.json": "b6ade2eecb6e4c0023416fb4c63e66ce0fc5a4737e124e2b63581ada569ab529",
+    "group-calibration.json": "3678000382427ff93f6f5721726095213fb71f6ca56e2da602346d4f0605a7ed"
+  },
+  "historical_individual_TRAIN_correlations_available": false,
+  "round150_cohort_available": false
+}

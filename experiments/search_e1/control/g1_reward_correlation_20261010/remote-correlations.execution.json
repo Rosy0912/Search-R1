@@ -1,0 +1,11 @@
+{
+  "started_utc": "2026-10-10T03:56:35.364558+00:00",
+  "ended_utc": "2026-10-10T03:56:40.123108+00:00",
+  "rc": 0,
+  "source_sha256": "ce0a9c621f7150d69bf67c564aaad8d33f4fa126adb57e4895b3d47e2854d71a",
+  "published_source_commit": "94df0cb73572529bc3b18f70cc5f7886050a51c6",
+  "stdout_sha256": "189bc22667deec2fcb6dd3ed4ac1c8a0d151c00cb8c647eb0d9ca416ba5a15c4",
+  "stderr_bytes": 100,
+  "readonly": true,
+  "cpu_only": true
+}

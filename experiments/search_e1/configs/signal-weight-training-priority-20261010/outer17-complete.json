@@ -1,0 +1,54 @@
+{
+  "K": 303,
+  "P": 303,
+  "accepted": true,
+  "checkpoint": {
+    "bytes": 28980,
+    "ctime_ns": 1791605672623233544,
+    "device": 2081,
+    "inode": 48178777,
+    "mtime_ns": 1791605672595233174,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000170-outer-00016/manifest.json",
+    "sha256": "17fb2c62ed07457d0044bec1f6ac5b36e4bdab61c7ef4a80faddca4652b48933"
+  },
+  "completed_outers": 17,
+  "exits": [
+    {
+      "accepted": true,
+      "codes": [
+        0
+      ],
+      "ref": {
+        "bytes": 107955,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00016/trainer-logs/attempt-00000-exit.json",
+        "sha256": "5242a9f29396fcf04c4b84a1710cdb3b709217e3a845a34cc131f09f8ff3b42c"
+      }
+    }
+  ],
+  "latest_status": {
+    "error": null,
+    "optimizer_updates": 170,
+    "outer_index": 17,
+    "phase": "SAMPLING"
+  },
+  "next_outer_exists": true,
+  "observed_unix": 1791605769.796782,
+  "optimizer_updates": 170,
+  "outer_complete": {
+    "bytes": 4166,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00016/training/outer-complete.json",
+    "sha256": "a26389f999ffbe514ba99058d0d29577b1aae8b557a3c1d04106fe328598e5db"
+  },
+  "preupdate_model": 160,
+  "train_em": {
+    "denominator": 2560,
+    "em": 0.4828125,
+    "no_executed_search": 0,
+    "strict_correct": 1236,
+    "termination": {
+      "answer": 2559,
+      "invalid_or_budget": 1
+    },
+    "trajectories": 2560
+  }
+}

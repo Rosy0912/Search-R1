@@ -1,0 +1,91 @@
+{
+  "K": 307,
+  "P": 307,
+  "actual_trainer_exits": [
+    {
+      "accepted": true,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00015/trainer-logs/attempt-00000-exit.json",
+      "returncodes": [
+        0
+      ]
+    }
+  ],
+  "checkpoint": {
+    "bytes": 28980,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000160-outer-00015/manifest.json",
+    "sha256": "25407743d5641604d042e3190f27e7c0c6117f4c507d4e905f2364c5dcf35bc9"
+  },
+  "complete": {
+    "bytes": 4166,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00015/training/outer-complete.json",
+    "sha256": "0d86b7e36d63bc4aa1c451221da15707a05889888599f1b4690ae209068e72ed"
+  },
+  "cumulative_pair_exposure": 4875,
+  "native_adapter_rank_sha256": [
+    "f039803bbc6bf0c224c48b5b46a2df858d0751df48793b58ccf3e101fff20440",
+    "f039803bbc6bf0c224c48b5b46a2df858d0751df48793b58ccf3e101fff20440",
+    "f039803bbc6bf0c224c48b5b46a2df858d0751df48793b58ccf3e101fff20440",
+    "f039803bbc6bf0c224c48b5b46a2df858d0751df48793b58ccf3e101fff20440"
+  ],
+  "native_equal_optimizer_steps": true,
+  "native_optimizer_rank_sha256": [
+    "e0884c62fb110ac0cec04f04a815f20673ac7c0a11b2ddf410f43c8cd5f41d40",
+    "e0884c62fb110ac0cec04f04a815f20673ac7c0a11b2ddf410f43c8cd5f41d40",
+    "e0884c62fb110ac0cec04f04a815f20673ac7c0a11b2ddf410f43c8cd5f41d40",
+    "e0884c62fb110ac0cec04f04a815f20673ac7c0a11b2ddf410f43c8cd5f41d40"
+  ],
+  "next_outer_exists": true,
+  "observed_unix": 1791604815.8054326,
+  "optimizer_updates": 160,
+  "sampling_preupdate": 150,
+  "status": {
+    "actual_optimizer_updates": null,
+    "error": null,
+    "outer_index": 16,
+    "owner": {
+      "argv": [
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-priority-ed7f976/opsd_signal_weight_train_priority_v1/entry.py",
+        "--mode",
+        "controller",
+        "--recovery-ref",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/training-priority-input-ed7f976.json",
+        "--recovery-sha256",
+        "1e8f2d5155f0be4ed78ed2dda0f9fe9ab879979afa32362d828906aee1756557",
+        "--",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+        "--config-sha256",
+        "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661",
+        "--run-id",
+        "59de0d17968b4955b97f312cb2387429",
+        "--resume"
+      ],
+      "euid": 1001,
+      "pgid": 1861436,
+      "pid": 1861436,
+      "ppid": 1861244,
+      "run_id": "59de0d17968b4955b97f312cb2387429",
+      "starttick": 689989852,
+      "uid": 1001
+    },
+    "phase": "SAMPLING"
+  },
+  "summary": {
+    "bytes": 22012,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/outers/outer-00015/summary.json",
+    "sha256": "cd36a79a9161e3a3d3f71de7b7c7b4542e4369836e3b7cc1db2336285bd5385a"
+  },
+  "supervisor_terminal": "1861244|0|",
+  "train_em": {
+    "denominator": 2560,
+    "em": 0.47734375,
+    "no_executed_search": 0,
+    "strict_correct": 1222,
+    "termination": {
+      "answer": 2557,
+      "invalid_or_budget": 3
+    },
+    "trajectories": 2560
+  }
+}
