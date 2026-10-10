@@ -1,0 +1,148 @@
+"""Frozen-policy candidate collection before any reward, probe or Adam update."""
+import json
+import os
+from pathlib import Path
+import numpy as np
+import torch
+from verl import DataProto
+from search_g1.mixed_selection import MixedFirstSelector
+from search_g1.signals import decode_segments, contexts
+from verl.utils.reward_score import qa_em
+
+
+def subset(batch, indices):
+    return DataProto(batch=batch.batch[indices],
+                     non_tensor_batch={k:v[indices] for k,v in batch.non_tensor_batch.items()},
+                     meta_info=batch.meta_info.copy())
+
+
+class CandidateStream:
+    def __init__(self, loader):
+        self.loader, self.iterator, self.pending, self.offset = loader, iter(loader), None, 0
+        self.consumed = 0
+
+    def one(self):
+        if self.pending is None or self.offset == len(self.pending):
+            try:
+                raw = next(self.iterator)
+            except StopIteration:
+                self.iterator = iter(self.loader)
+                raw = next(self.iterator)
+            self.pending, self.offset = DataProto.from_single_dict(raw), 0
+        row = subset(self.pending, [self.offset]); self.offset += 1; self.consumed += 1
+        return row
+
+    def parents(self, selector, tokenizer):
+        rows, ordinals = [], []
+        # Each source record is visited at most once in this fill. Exhaustion is
+        # explicit rather than looping indefinitely over a duplicate-only epoch.
+        examined = 0
+        while len(rows) < 512:
+            if examined >= len(self.loader.dataset):
+                raise RuntimeError('UNIQUE_CANDIDATE_SOURCE_EXHAUSTED')
+            row = self.one(); examined += 1
+            mask = row.batch['attention_mask'][0].bool()
+            question = tokenizer.decode(row.batch['input_ids'][0][mask])
+            key = json.dumps([str(row.non_tensor_batch['data_source'][0]),
+                              str(row.non_tensor_batch['index'][0])])
+            ordinal = selector.reserve(key, question)
+            if ordinal is not None:
+                rows.append(row); ordinals.append(ordinal)
+        return DataProto.concat(rows), ordinals
+
+
+def strict_vectors(parent, output, tokenizer):
+    values = []
+    for i in range(len(output)):
+        item = output[i]; width = item.batch['prompts'].shape[-1]
+        count = int(item.batch['attention_mask'][width:].sum())
+        ids = item.batch['responses'][:count]
+        mask = item.batch['info_mask'][width:width+count]
+        text, ranges = decode_segments(tokenizer, ids, mask)
+        ctx = contexts('', text, ranges)
+        gt = parent.non_tensor_batch['reward_model'][i//5]['ground_truth']
+        values.append(int(ctx is not None and qa_em.em_check(ctx['answer'], gt['target'])))
+    return [values[i:i+5] for i in range(0,len(values),5)]
+
+
+def padded_concat(outputs, pad_id):
+    widths = {int(x.batch['prompts'].shape[-1]) for x in outputs}
+    if len(widths) != 1:
+        raise ValueError('Candidate prompt widths differ')
+    max_response = max(x.batch['responses'].shape[-1] for x in outputs)
+    token_keys = {'responses','responses_with_info_mask','input_ids','prompts'}
+    for output in outputs:
+        extra = max_response-output.batch['responses'].shape[-1]
+        if not extra:
+            continue
+        for key in output.batch.keys():
+            if key == 'prompts' or output.batch[key].ndim != 2:
+                continue
+            value = pad_id if key in token_keys else 0
+            output.batch[key] = torch.nn.functional.pad(output.batch[key],(0,extra),value=value)
+    return DataProto.concat(outputs)
+
+
+def collect(trainer, manager, stream, attempt_identity):
+    from reproduction.common8.behavior_runtime import prepare_identity, attach_generation_identity
+    selector = MixedFirstSelector(); candidates = {}; identities = []
+    snapshot = None
+    base = Path(os.environ['SEARCH_G1_BASE'])
+    tag = attempt_identity['attempt_id'] if attempt_identity is not None else str(trainer.global_steps)
+    pool = base/'artifacts/mixed-candidate-pools'/tag
+    pool.mkdir(parents=True, exist_ok=False)
+    while len(selector.reserved) < 2048 and selector.mixed_count < 512:
+        parent, ordinals = stream.parents(selector, trainer.tokenizer)
+        identity = prepare_identity(parent, trainer.global_steps, repeats=5,
+            candidate_offset=ordinals[0], **({k:attempt_identity[k] for k in ('attempt_id','attempt_index')}
+                                           if attempt_identity is not None else {}))
+        if snapshot is None:
+            snapshot = identity['policy_snapshot_id']
+        identity['policy_snapshot_id'] = snapshot
+        repeated = parent.repeat(repeat_times=5,interleave=True)
+        gen = repeated.pop(batch_keys=['input_ids','attention_mask','position_ids'])
+        attach_generation_identity(gen, identity, do_sample=True)
+        output = manager.run_llm_loop(gen_batch=gen,
+            initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
+        vectors = strict_vectors(parent, output, trainer.tokenizer)
+        # Complete generated tensors remain remote for interruption diagnosis.
+        torch.save({'parents':parent,'output':output,'identity':identity,
+                    'ordinals':ordinals,'strict_correctness':vectors,
+                    'source_consumed':stream.consumed,'pending_source':stream.pending,
+                    'pending_offset':stream.offset,'torch_rng':torch.get_rng_state(),
+                    'numpy_rng':np.random.get_state()}, pool/(str(ordinals[0])+'.pt'))
+        for local, ordinal in enumerate(ordinals):
+            selector.complete(ordinal, identity['trajectory_ids'][local*5:(local+1)*5], vectors[local])
+            candidates[ordinal] = (subset(parent,[local]),subset(output,list(range(local*5,(local+1)*5))))
+        identities.append(identity)
+        with (pool/'progress.json').open('w') as f:
+            json.dump({'step':trainer.global_steps,'reserved':selector.reserved,
+                       'complete_ordinals':sorted(selector.results),
+                       'policy_snapshot_id':snapshot,'source_consumed':stream.consumed},f)
+            f.flush();os.fsync(f.fileno())
+        print(json.dumps({'stage':'mixed_candidate_fill','step':trainer.global_steps,
+                          'candidates':len(selector.reserved),'mixed':selector.mixed_count}),flush=True)
+    try:
+        audit = selector.audit()
+    except Exception as exc:
+        with (pool/'selection-failure.json').open('x') as f:
+            json.dump({'status':str(exc),'reserved':len(selector.reserved),
+                       'mixed':selector.mixed_count,'optimizer_started':False},f)
+        raise
+    members = selector.select()
+    parents = DataProto.concat([candidates[x.ordinal][0] for x in members])
+    output = padded_concat([candidates[x.ordinal][1] for x in members], trainer.tokenizer.pad_token_id)
+    identity = identities[0].copy()
+    identity['parent_group_ids'] = [identities[x.ordinal//512]['parent_group_ids'][x.ordinal%512] for x in members]
+    identity['trajectory_ids'] = [tid for x in members for tid in x.trajectory_ids]
+    output.meta_info['behavior_identity'] = identity
+    output.meta_info['policy_snapshot_id'] = snapshot
+    base = Path(os.environ['SEARCH_G1_BASE']); directory = base/'artifacts/mixed-selection';directory.mkdir(parents=True,exist_ok=True)
+    tag = attempt_identity['attempt_id'] if attempt_identity is not None else str(trainer.global_steps)
+    audit.update(step=trainer.global_steps,policy_snapshot_id=snapshot,source_consumed=stream.consumed,
+                 raw_generated_trajectories=len(selector.reserved)*5)
+    with (directory/(tag+'.json')).open('x') as f:
+        json.dump(audit,f);f.flush();os.fsync(f.fileno())
+    parents = parents.repeat(repeat_times=5,interleave=True)
+    parents.pop(batch_keys=['input_ids','attention_mask','position_ids'])
+    return parents, output, identity, audit

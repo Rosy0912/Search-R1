@@ -76,5 +76,6 @@
   "+actor_rollout_ref.actor.fsdp_config.mixed_precision.reduce_dtype=fp32",
   "+actor_rollout_ref.actor.fsdp_config.mixed_precision.buffer_dtype=fp32",
   "+actor_rollout_ref.ref.fsdp_config.model_dtype=fp32",
-  "actor_rollout_ref.rollout.dtype=float32"
+  "actor_rollout_ref.rollout.dtype=float32",
+  "+data.mixed_first_selection=true"
 ]

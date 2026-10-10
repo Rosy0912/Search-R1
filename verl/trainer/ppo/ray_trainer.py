@@ -796,35 +796,49 @@ class RayPPOTrainer(object):
             config=gen_config,
         )
 
+        mixed_stream = None
+        if self.config.data.get("mixed_first_selection", False):
+            from search_g1.mixed_runtime import CandidateStream
+            mixed_stream = CandidateStream(self.train_dataloader)
+            assert inline_attempts is not None and self.config.do_search
+
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
-            for batch_dict in self.train_dataloader:
+            for batch_dict in (itertools.repeat(None) if mixed_stream is not None else self.train_dataloader):
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
                 attempt_result=None
                 attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
-                batch: DataProto = DataProto.from_single_dict(batch_dict)
-                behavior_identity = None
-                if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
-                    from reproduction.common8.behavior_runtime import prepare_identity
-                    behavior_identity = prepare_identity(batch, self.global_steps, repeats=5,
-                        **({key:attempt_identity[key] for key in ('attempt_id','attempt_index')}
-                           if attempt_identity is not None else {}))
-                calibration_parents = None
-                if calibration_phase is not None:
-                    from reproduction.common8.calibration_runtime import training_inputs
-                    calibration_parents = training_inputs(batch, calibration_phase)
-                batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
-                if calibration_phase is not None:
-                    training_inputs(batch, calibration_phase, calibration_parents)
+                if mixed_stream is not None:
+                    from search_g1.mixed_runtime import collect
+                    batch, mixed_output, behavior_identity, mixed_audit = collect(
+                        self, generation_manager, mixed_stream, attempt_identity)
+                    calibration_parents = None
+                    metrics.update({"selection/"+k: mixed_audit[k] for k in
+                        ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories")})
+                else:
+                    batch: DataProto = DataProto.from_single_dict(batch_dict)
+                    behavior_identity = None
+                    if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+                        from reproduction.common8.behavior_runtime import prepare_identity
+                        behavior_identity = prepare_identity(batch, self.global_steps, repeats=5,
+                            **({key:attempt_identity[key] for key in ('attempt_id','attempt_index')}
+                               if attempt_identity is not None else {}))
+                    calibration_parents = None
+                    if calibration_phase is not None:
+                        from reproduction.common8.calibration_runtime import training_inputs
+                        calibration_parents = training_inputs(batch, calibration_phase)
+                    batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
+                    if calibration_phase is not None:
+                        training_inputs(batch, calibration_phase, calibration_parents)
 
-                # pop those keys for generation
-                gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
-                if behavior_identity is not None:
-                    from reproduction.common8.behavior_runtime import attach_generation_identity
-                    attach_generation_identity(gen_batch, behavior_identity, do_sample=True)
+                    # pop those keys for generation
+                    gen_batch = batch.pop(batch_keys=['input_ids', 'attention_mask', 'position_ids'])
+                    if behavior_identity is not None:
+                        from reproduction.common8.behavior_runtime import attach_generation_identity
+                        attach_generation_identity(gen_batch, behavior_identity, do_sample=True)
 
                 ####################
                 # original code here
@@ -844,14 +858,17 @@ class RayPPOTrainer(object):
                 ####################
                 # with _timer('step', timing_raw):
                     else:
-                        first_input_ids = gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone().long()
+                        if mixed_stream is not None:
+                            final_gen_batch_output = mixed_output
+                        else:
+                            first_input_ids = gen_batch.batch['input_ids'][:, -gen_config.max_start_length:].clone().long()
 
-                        with _timer('gen', timing_raw):
-                            generation_manager.timing_raw = timing_raw
-                            final_gen_batch_output = generation_manager.run_llm_loop(
-                                gen_batch=gen_batch,
-                                initial_input_ids=first_input_ids,
-                            )
+                            with _timer('gen', timing_raw):
+                                generation_manager.timing_raw = timing_raw
+                                final_gen_batch_output = generation_manager.run_llm_loop(
+                                    gen_batch=gen_batch,
+                                    initial_input_ids=first_input_ids,
+                                )
 
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         if behavior_identity is not None:
