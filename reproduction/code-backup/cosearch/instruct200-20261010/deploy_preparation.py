@@ -24,6 +24,8 @@ def main():
         (tools/name).write_bytes(base64.b64decode(data))
     from communication import patch
     patch(run/'repo')
+    from process_isolation import patch as isolate_roles
+    isolate_roles(run/'repo')
     overrides=configure(payload['author_cli'])
     (run/'author-cli.json').write_text(json.dumps(overrides,indent=2)+'\n')
     record={'status':'SOURCE_AND_CLI_DEPLOYED_NOT_RUNTIME_ACCEPTED','source':str(source),'run':str(run),'original_hashes':original_hashes,'patched_hashes':{p:hashlib.sha256((run/'repo'/p).read_bytes()).hexdigest() for p in targets},'training_started':False}
