@@ -1,5 +1,6 @@
 {
   "files": {
+    "deploy.py": "24dc1b0399f2caac7796fccae327bdbd1ab72d0c6dcd45cfafee3c7379f49168",
     "entry.py": "5d1c52a57211e94814a500e3c9e516b09e043d426d81227557c1ad6b2984d0a0",
     "launch.sh": "392c65efa704e3f3dc63c7a7f2efdacd39a8a778f752d745c71714a9a55c9415",
     "test_entry.py": "05bd2c4322a13db99370d845b6bb2ad2971211118def744b378d92e233d53106",
