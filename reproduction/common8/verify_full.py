@@ -135,6 +135,12 @@ def verify_full(base):
     data=verify(base/'data')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     assert [r['step'] for r in records]==list(range(1,TARGET_UPDATES+1))
+    if run.get('reward_schedule') is not None:
+        from search_g1.reward_schedule import binary_phase
+        for r in records:
+            assert r['reward_schedule']==run['reward_schedule']
+            assert r['reward_logical_update']==r['step']
+            assert r['reward_mode']==('binary_em' if binary_phase(run['reward_schedule'],r['step']) else 'search_g1')
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
