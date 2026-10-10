@@ -57,6 +57,7 @@ def main():
             p.symlink_to(target, target_is_directory=True)
     rt = ROOT / 'tools/topd-instruct300-launch-v6/runtime'
     shutil.copy2(pathlib.Path(__file__).with_name('hpc3_owned_processes.py'), rt)
+    shutil.copy2(pathlib.Path(__file__).with_name('bind_hpc3_run.py'), rt)
     changes = []
     for p in list(rt.glob('*.py')) + [ROOT / 'tools/search-r1-32b-grpo100-tools-direct-v5/owner_support.py']:
         s = p.read_text()
@@ -83,6 +84,8 @@ def main():
             marker = "def charged_memory(scope):"
             pos = s.index(marker)
             s = s[:pos] + s[pos:].replace("values={}", "scope=pathlib.Path(str(scope).replace('/freezer/','/memory/'));values={}", 1)
+        if p.name == 'allocator_policy.py':
+            s = s.replace("keys=('CPATH'", "keys=('LD_PRELOAD','LD_LIBRARY_PATH','CPATH'")
         if s != p.read_text():
             p.write_text(s)
             changes.append({'path': str(p), 'before_sha256': original, 'after_sha256': sha(p)})
@@ -150,6 +153,15 @@ def main():
     header_file = headers / 'inventory.json'
     config['compiler_headers'] = {'base': str(headers), 'inventory_sha256': sha(header_file),
                                   'cpath': str(include), 'provider': 'HPC3_CONDA_PY310_NATIVE_ABI'}
+    launcher = rt.parent / 'launch.sbatch'
+    launch = launcher.read_text().replace(OLD, str(ROOT))
+    launch = launch.replace('#SBATCH --nodelist=h100-11', '#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --account=mou176')
+    launch = launch.replace('#SBATCH --partition=gpu', '#SBATCH --partition=acd_u')
+    launch = launch.replace('#SBATCH --cpus-per-task=128', '#SBATCH --cpus-per-task=96')
+    launch = launch.replace('set -euo pipefail', 'set -euo pipefail\nsource ' + str(BASE / 'environment/activate-topd.sh'))
+    launch = launch.replace('Actual teacher100 bound student configuration required', 'Prepared user-approved teacher85 HPC3 configuration required')
+    launch = launch.replace('exec "$TASK_ROOT/env/bin/python"', 'RUN_CONFIG="$TASK_ROOT/logs/topd-hpc3-${SLURM_JOB_ID}/config.json"\n"$TASK_ROOT/env/bin/python" "$TASK_ROOT/tools/topd-instruct300-launch-v6/runtime/bind_hpc3_run.py" --template "$TOPD_CONFIG" --output "$RUN_CONFIG"\nTOPD_CONFIG="$RUN_CONFIG"\nexec "$TASK_ROOT/env/bin/python"', 1)
+    launcher.write_text(launch)
     config['tools_manifest'] = manifest(rt)
     config['launcher_manifest'] = manifest(rt.parent)
     out = BASE / 'outputs/training-preparation'
