@@ -1,0 +1,29 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 10452,
+      "sha256": "a69f837f9b2d851a1845c751f5faecc47aadd0a9a9b2d3d00d280e06fa490add"
+    },
+    "__init__.py": {
+      "bytes": 83,
+      "sha256": "d8660ea755ec15e85b7de3d879ce946b86707b545c24e428785206a570e2cdec"
+    },
+    "common.py": {
+      "bytes": 7582,
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    "reader.py": {
+      "bytes": 20322,
+      "sha256": "87b799ba3757673d9478891bbd7221bf552fc6772232dd6bc45ab4836be6d11a"
+    },
+    "test_publication_topology.py": {
+      "bytes": 16721,
+      "sha256": "bac7b2f5aacccf5219e1d8903e1835daced050296d9675e9efc52958b9b3acdf"
+    },
+    "test_reader.py": {
+      "bytes": 23606,
+      "sha256": "3103f2586de3a9c58bdc9866451d7590007f2169a5c9d93ad162d0eb96d36587"
+    }
+  },
+  "schema": "opsd-signal-weight-endpoint-pair-source-manifest-v2"
+}
