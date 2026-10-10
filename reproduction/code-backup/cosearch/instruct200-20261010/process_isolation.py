@@ -31,6 +31,12 @@ def patch(root):
         for resource_pool, class_dict in isolated_role_groups:
 '''
             after = before.replace(marker, replacement)
+            marker = '            worker_dict_cls = create_colocated_worker_cls(class_dict=class_dict)'
+            assert after.count(marker) == 1
+            after = after.replace(marker, '            worker_dict_cls = next(iter(class_dict.values()))')
+            marker = '            spawn_wg = wg_dict.spawn(prefix_set=class_dict.keys())'
+            assert after.count(marker) == 1
+            after = after.replace(marker, '            spawn_wg = {next(iter(class_dict)): wg_dict}')
         ast.parse(after)
         (root / name).write_text(after)
         changes[name] = {'before': hashlib.sha256(before.encode()).hexdigest(),
