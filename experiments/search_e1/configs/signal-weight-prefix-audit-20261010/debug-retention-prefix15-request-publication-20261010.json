@@ -1,0 +1,37 @@
+{
+  "schema": "opsd-signal-prefix15-request-publication-v1",
+  "accepted": true,
+  "source_commit": "128a5eff0ba812a4b1679786cc96797243616da5",
+  "remote_readback_sha": "128a5eff0ba812a4b1679786cc96797243616da5",
+  "files": [
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix-fifteen-rich-request-20261010.json",
+      "bytes": 31976,
+      "sha256": "88fccb66c3676f81089d91e218aa899533bd967342e6a44911912faf711cc697",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix15-collector-publication-20261010.json",
+      "bytes": 1021,
+      "sha256": "ed70ca76847905ef9b4d958eb7c5f070d8fbf4b17f0dbf75a046c1b889b0b78a",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix15-metadata-actual-1791596878682.execution.json",
+      "bytes": 1369,
+      "sha256": "76cf1e5ea0493fda0b7ad7a3679a3670a6a987769c347779db8bf7154fe93cb5",
+      "equal": true
+    },
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix15-metadata-actual-1791596878682.stdout.json",
+      "bytes": 7007,
+      "sha256": "44617c3124305701d6f5da7997fa1704225f2f3cc40c3da38bf28bc0a0ddc226",
+      "equal": true
+    }
+  ],
+  "checked_unix": 1791596975.831862,
+  "branch": "search-e1",
+  "production_source_changed": false,
+  "retention_CLI_executed": false,
+  "workingtree_clean": true
+}

@@ -1,0 +1,45 @@
+{
+  "config": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+    "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+  },
+  "destination": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/preserved/gpos-outer15-failed-evaluation-31e2d74-20261010",
+  "failure_metadata": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation-recovery-failure-metadata-31e2d74.json",
+    "sha256": "a337e552d34592ed812b88cb0d5d7068ea682a78d4f5ac65ead7d4cb4ce4c51e"
+  },
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/evaluation-recovery-31e2d74/opsd_signal_weight_eval_recovery_v2",
+  "mutable_metadata": [
+    {
+      "bytes": 236512,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/status.json",
+      "sha256": "7d57a2c654f974f743c44ab0efa0038b993ce2dacc5281bbeb23f30d9071eaae"
+    },
+    {
+      "bytes": 253022,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/failure-actual-exits.json",
+      "sha256": "f0de4e0d36e21e7111e1647b721c94f8dea54e857d6f445664159bb9f98b28d9"
+    },
+    {
+      "bytes": 2215,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/study-status.json",
+      "sha256": "dadf74111ec63b9b299a5a2a9e1f49e01c1ccfc2291fbd17e35be3937534bf4d"
+    },
+    {
+      "bytes": 7815,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/scoped-cpu-processes.json",
+      "sha256": "b2fc302898bd63955472b0498763ac6362bd56914c11877609ea23410740f881"
+    }
+  ],
+  "output": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation15-failure-preserved-31e2d74.json",
+  "publication": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation-recovery-publication-31e2d74.json",
+    "sha256": "ce4b9b12b9c6fc3485caab941a2e017b8efb46edb8de87aac268e2cdb6818f78"
+  },
+  "schema": "opsd-signal-evaluation-preservation-plan-v2",
+  "source_commit": "31e2d74a217aa7749c7de89d7c4a4bb85215c716",
+  "source_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/evaluation-recovery-31e2d74/opsd_signal_weight_eval_recovery_v2/source-manifest.json",
+    "sha256": "5ba5b8d93cc02b93fe1a3f62f4fe3038a5080a10cda27f5590ddc95e6745dcbc"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema": "opsd-signal-debug-prefix15-accepted-reference-v1",
+  "accepted": true,
+  "full_goal_complete": false,
+  "scope": "Actual saved generation and HTTP retention only for G_POS outers0..14",
+  "source_commit": "9e1d179664573128f42a2fb0f2bbc72f89fb9ed6",
+  "request": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix-fifteen-rich-request-20261010.json",
+    "sha256": "88fccb66c3676f81089d91e218aa899533bd967342e6a44911912faf711cc697",
+    "bytes": 31976
+  },
+  "request_publication": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-request-publication-20261010.json",
+    "sha256": "3be6551e2ad5badb0722b9d6ffae802191e1e46c058d35489bcf9745b57d61a3",
+    "commit": "128a5eff0ba812a4b1679786cc96797243616da5"
+  },
+  "actual_stdout": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-actual-1791597036151.stdout.json",
+    "sha256": "33aab57eefcdc8f723ec2a5f3fe36900b519cbb718af101cd8ae10ba63a65275",
+    "bytes": 37181
+  },
+  "actual_execution": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-actual-1791597036151.execution.json",
+    "sha256": "0a50445909deb5a37ab0e10c87539d07d286943842ec4ae7a7752fdabff0d8fe",
+    "bytes": 2134
+  },
+  "actual_wait_returncode": 0,
+  "complete_outers": 15,
+  "sampling_workers": 120,
+  "complete_training_sampling_slots": 38400,
+  "teacher_parents": 15,
+  "teacher_cases": 120,
+  "referenced_inventory": {
+    "bytes": 1336535119,
+    "files": 1499,
+    "fresh_end_sha_recheck": true,
+    "sha256": "d15b22b310fac3c2921b60da242681382ec26061f0fbccb15b0675aba90182aa"
+  },
+  "generation_counts": {
+    "student_generated_turns": 102097,
+    "student_raw_generated_token_ids": 7626731,
+    "student_HTTP_requests": 480,
+    "teacher_generated_turns": 206,
+    "teacher_raw_generated_token_ids": 11740,
+    "teacher_HTTP_requests": 86
+  },
+  "limits": {
+    "new_generation_or_training": false,
+    "source100_weights_freshly_rehashed": false,
+    "online_tokenloss_numeric_audit_by_this_tool": false,
+    "optimizer_deserialized_by_this_tool": false,
+    "native512_complete_acceptance_by_this_tool": false,
+    "full100_complete": false,
+    "payloads_on_Mac": false
+  }
+}
