@@ -380,7 +380,24 @@ class EcoRewardManager():
         return self.D_AMBIGUOUS
 
     def __call__(self, data: DataProto):
+        # Bind the opt-in ablation to an immutable run manifest. Evaluation keeps
+        # its existing EM semantics and the probe lifecycle remains unchanged.
+        schedule = None
+        if self.reward_mode == 'eco':
+            import os
+            import json
+            from pathlib import Path
+            base = os.environ.get('SEARCH_G1_BASE')
+            if base:
+                manifest = Path(base) / 'logs/run-manifest.json'
+                if manifest.is_file():
+                    schedule = json.loads(manifest.read_text()).get('reward_schedule')
+        from search_g1.reward_schedule import binary_phase, scheduled_score
+        logical_update = data.meta_info.get('reward_logical_update')
+        active_binary = binary_phase(schedule, logical_update)
         if 'rm_scores' in data.batch.keys():
+            if active_binary:
+                raise ValueError('Binary QA reward cannot accept unverified model scores')
             return data.batch['rm_scores']
 
         reward_tensor = torch.zeros_like(data.batch['responses'], dtype=torch.float32)
@@ -491,7 +508,9 @@ class EcoRewardManager():
             if cls == 'true': cf_true += 1
             elif cls == 'hall': cf_hall += 1
             elif cls == 'amb': cf_amb += 1
-            reward_tensor[row['i'], row['valid_rlen'] - 1] = score
+            score = scheduled_score(score, row['correct'], schedule, logical_update)
+            if row['valid_rlen'] > 0:
+                reward_tensor[row['i'], row['valid_rlen'] - 1] = score
 
             n_total += 1
             sum_reward += score

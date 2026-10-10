@@ -925,6 +925,8 @@ class RayPPOTrainer(object):
                             batch = batch.union(reward_tensor)
 
                         # we combine with rule-based rm
+                        # This is the formal logical iteration, not the attempt ordinal.
+                        batch.meta_info['reward_logical_update'] = self.global_steps
                         reward_tensor = self.reward_fn(batch)
                         for key,value in (self.reward_fn.get_metrics() or {}).items():
                             metrics['train/'+key] = value
