@@ -1,5 +1,8 @@
 {
-  "built_utc": "2026-10-10T03:58:36.068639+00:00",
+  "built_utc": "2026-10-10T04:06:06.689432+00:00",
+  "requested_full_individual_TRAIN_pearson_status": "NOT_COMPUTED",
+  "previous_answer_withdrawn": true,
+  "withdrawal_reason": "141 iteration-mean pairs and 305 calibration pairs are not complete individual TRAIN trajectory pairs requested by the user.",
   "raw_definition": "C = original strict EM 0/1; R = designed pre-GRPO G1 reward",
   "training_iteration_mean_correlations": [
     {

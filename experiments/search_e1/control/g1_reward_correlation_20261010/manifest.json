@@ -2,23 +2,28 @@
   "files": [
     {
       "path": "experiments/search_e1/control/g1_reward_correlation_20261010/README.md",
-      "bytes": 969,
-      "sha256": "7f29f0fd9a968f521c5dbb35eaf1bad411f53df0b4d927d5b7e3fc490a0d635d"
+      "bytes": 1706,
+      "sha256": "23c19cca5d219dc9b10e4299cfadc15c7030e49fdfd9ff24097a5555c2bebb40"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/audit_historical_train_reward_inputs.py",
+      "bytes": 13903,
+      "sha256": "9962081eeb5ecda03f39c0a2765c303ec9396c14c48cfad45a236e56d4d38e88"
     },
     {
       "path": "experiments/search_e1/control/g1_reward_correlation_20261010/build_correlation_report.py",
-      "bytes": 7093,
-      "sha256": "a414a7622698ee0973c952ad6f9293e1d1d2be232528d682c4d1b8a54d4f3351"
+      "bytes": 9003,
+      "sha256": "e602e33607927b547a626583aa0dd07ba2b66553b6535751e94d2219903e05d4"
     },
     {
       "path": "experiments/search_e1/control/g1_reward_correlation_20261010/correlations.json",
-      "bytes": 7512,
-      "sha256": "89a7438001ffcea86b943da3e95de3dcdda3efeafd3c71e1493f9e057f11ffe2"
+      "bytes": 7768,
+      "sha256": "77b4514c831e268862598685e381b7bad98bdd109c1b082c94296617467fa049"
     },
     {
       "path": "experiments/search_e1/control/g1_reward_correlation_20261010/findings.md",
-      "bytes": 2385,
-      "sha256": "460d7599a5f57af9ba840d881c90e4d81a2f6e14a6cd6db8b9229ca18a3a88e1"
+      "bytes": 3781,
+      "sha256": "a90477765192c06feb88f8c0965fb11e52f0eea6e1df22f5c5141e4fc4ea083c"
     },
     {
       "path": "experiments/search_e1/control/g1_reward_correlation_20261010/read_reward_correlations.py",
@@ -42,9 +47,11 @@
     },
     {
       "path": "experiments/search_e1/docs/g1-designed-reward-vs-em-pearson-20261010.md",
-      "bytes": 2385,
-      "sha256": "460d7599a5f57af9ba840d881c90e4d81a2f6e14a6cd6db8b9229ca18a3a88e1"
+      "bytes": 3781,
+      "sha256": "a90477765192c06feb88f8c0965fb11e52f0eea6e1df22f5c5141e4fc4ea083c"
     }
   ],
+  "requested_pearson_status": "NOT_COMPUTED_FULL_INDIVIDUAL_TRAIN",
+  "previous_mean_and_calibration_answers_withdrawn": true,
   "excluded": "No weights, raw rollout rows, embeddings, tensor arrays, credentials or environments."
 }
