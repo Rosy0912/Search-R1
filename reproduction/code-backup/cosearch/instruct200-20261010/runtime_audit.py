@@ -16,6 +16,10 @@ def digest(value):
     import torch
     h=hashlib.sha256()
     def add(v):
+        from omegaconf import OmegaConf
+        if OmegaConf.is_config(v):
+            add(OmegaConf.to_container(v,resolve=False))
+            return
         if torch.is_tensor(v):
             h.update(json.dumps([str(v.dtype),list(v.shape)]).encode())
             raw=v.detach().contiguous().reshape(-1).view(torch.uint8)
@@ -98,12 +102,18 @@ def install():
     original_save=Worker.save_checkpoint
     @functools.wraps(original_save)
     def save(worker,local_path,*args,**kwargs):
-        before=state(worker)
         result=original_save(worker,local_path,*args,**kwargs)
         import torch
         path=Path(local_path)/('recovery-state-rank-'+str(torch.distributed.get_rank())+'.json')
-        path.write_text(json.dumps(before,sort_keys=True)+'\n')
-        record(worker,'saved_state',dict(before,path=str(path)))
+        try:
+            saved_state=state(worker)
+        except Exception as error:
+            # Preserve all native role shards and let the controller save data.pt.
+            # The strict checkpoint verifier rejects missing recovery evidence later.
+            record(worker,'save_audit_failed_native_files_preserved',{'path':str(path),'error_type':type(error).__name__,'error':str(error)})
+            return result
+        path.write_text(json.dumps(saved_state,sort_keys=True)+'\n')
+        record(worker,'saved_state',dict(saved_state,path=str(path)))
         return result
     Worker.save_checkpoint=save
     original_load=Worker.load_checkpoint
