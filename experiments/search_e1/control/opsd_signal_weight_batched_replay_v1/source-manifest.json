@@ -1,0 +1,41 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 2144,
+      "sha256": "708ada5261811b9cabd4cb88a9a1ca62b63b06e3b7270fe82bdc20a63bf5f240"
+    },
+    "__init__.py": {
+      "bytes": 86,
+      "sha256": "1e37255b73690d58cc5eb21f124a7bc0163af5e7fb0f3c26146a1dff9dfe34c7"
+    },
+    "adapter.py": {
+      "bytes": 8690,
+      "sha256": "714730ee7db12777df28f436e91775ca0ec6699ec69cbd9679259d599e3ce413"
+    },
+    "common.py": {
+      "bytes": 8979,
+      "sha256": "0c6f78a65fe78fa832fb1f86ccf0f47fc50aee0c7407a27400ca631899433f23"
+    },
+    "replay.py": {
+      "bytes": 16226,
+      "sha256": "fa9c023a5d0ed78f1e9559fa47e665e54f3e7a688d355532861a0b108248ad07"
+    },
+    "replay_math.py": {
+      "bytes": 11789,
+      "sha256": "082e421452d4e0aafcae55d8cec640cde401d3d6383e112c6ec16dfd18491933"
+    },
+    "replay_worker.py": {
+      "bytes": 9434,
+      "sha256": "a438fd3e35524a1ba1017220f5366c2fa2aeed22944972776a5b6fc2e1077223"
+    },
+    "summary.py": {
+      "bytes": 16307,
+      "sha256": "b7bd7a71e01b30146faac45a79ac25fa31ef1b313a21750caaf1819286eb1e01"
+    },
+    "test_adapter.py": {
+      "bytes": 2772,
+      "sha256": "06fa496818aa891837107613933518d2c494e73e4c075cad4900fe41c3416b02"
+    }
+  },
+  "schema": "opsd-signal-batched-replay-source-v1"
+}

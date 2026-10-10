@@ -1,0 +1,33 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 3576,
+      "sha256": "ad1a34779c57d5933530f27ed249164954c3ffae8f7f196fd7fc290bdb851511"
+    },
+    "bank_adapter.py": {
+      "bytes": 7327,
+      "sha256": "1fbe0bd213c96123f1345623bc1abbd78ace0c0c4cc626f8337ab43c89a4ceaa"
+    },
+    "evaluate.py": {
+      "bytes": 15653,
+      "sha256": "f8a556d042c358dd98fbdc0255cfa022575b1b9fdbfa330e034b1d72135daba8"
+    },
+    "metrics.py": {
+      "bytes": 2399,
+      "sha256": "1f9c8cfd8053b2ac079f5ab8646f21bf68e42c4b0171ab159887a6440cf13144"
+    },
+    "test_bank_adapter.py": {
+      "bytes": 2307,
+      "sha256": "3595d1fee94c8a8ae696aa6930531733fb36a1f75ac799951ca101e314eaa779"
+    },
+    "test_metrics.py": {
+      "bytes": 1973,
+      "sha256": "db4223dcbc0ffe66c0773ca8cdfc6c7740fdd0f6b4295326dcc32d84799ef984"
+    },
+    "test_terminal.py": {
+      "bytes": 1587,
+      "sha256": "1d2fe72d42c22d8df3eadd73a9ece7c0a97c42bdb9b4ca6218e07201d461f1c3"
+    }
+  },
+  "schema": "opsd_signal_weight_batched_eval_v4-source-v1"
+}
