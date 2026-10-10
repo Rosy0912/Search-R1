@@ -25,3 +25,5 @@ H10018/h100-10/10.33.0.18只读探测：epoch1791656672.9163759，队列空、8�
 证据：PLAN.md、MATH_REVIEW.md、CODE_REVIEW.md、INDEPENDENT_RELEASE_BINDING.json、RESOURCE_PROBE_20261011.json及STATUS.json。执行前接受不代表训练、评分或最终HF重载验收。
 
 成本观察截至epoch1791662068：已完成五轮实际3153412生成token、12690908 prefill token、8672检索调用、12800逻辑叶及136 padding rows；全卡967个5秒样本最高50208768000字节（46.76GiB），外来显存/SM最大0。Slurm运行4914秒、预约8GPU累计10.92 GPU小时，独占allocated192 CPU累计262.08 core小时（task请求32 CPU为43.68 core小时）；这是预约量而非实测CPU时间，均非最终成本。第6轮在两次根新只读epoch1791662017/2139间采样日志继续增长，未终态。
+
+六轮实际防护审计（SAFETY_SUMMARY-3360.json）：2880条rank事件，均allowed，invalid/overflow记录0；固定每rank32行监测的采样KL最高0.001682260948、negative-tail fraction最高0.000191350932，分别低于0.2/0.01阈值。分母为actual_behavior_mu；不声称原始sampler/actor一致，也不把固定监测样本当全token总体KL。六轮8rank各20梯度范数有限，普通global gradient clip1生效；裁剪前范数>1不等于策略刹车。第7轮实际采样audit继续新增，未退出、未重启。

@@ -3,7 +3,7 @@
   "new_training_submitted": true,
   "job_id": 3360,
   "run_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360",
-  "last_observed_epoch": 1791662650.6044598,
+  "last_observed_epoch": 1791662918.4375396,
   "slurm_state": "RUNNING",
   "iteration_progress_verified": true,
   "successful_adam_per_rank": {
@@ -174,8 +174,9 @@
   "next_outer_started": true,
   "full_hf_cold_reload_accepted": false,
   "training_accepted": false,
-  "last_verified_queue": "3360|tree-branpo-fresh200|RUNNING|1:31:36|h100-10",
-  "last_verified_guard_age_seconds": 3.606663703918457,
+  "last_verified_queue": "3360|tree-branpo-fresh200|RUNNING|1:36:04|h100-10",
+  "last_verified_guard_age_seconds": 3.1553239822387695,
   "cost_summary": "COST_SUMMARY-3360.json",
-  "latest_observation": "48 direct rank records + six credited attempts; actual epoch0 step7 confirmed OUTER7_STARTED-3360.json"
+  "latest_observation": "actual6 credited/rank48; outer7 rollout audit advanced to13 by epoch1791662918; in-flight writes excluded",
+  "safety_summary": "SAFETY_SUMMARY-3360.json"
 }
