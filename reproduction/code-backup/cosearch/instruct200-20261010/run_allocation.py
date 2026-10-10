@@ -28,6 +28,10 @@ def recovery(step):
 def main():
     approval=json.loads((ROOT/'storage-authorization.json').read_text())
     if approval.get('human_authorized') is not True or approval.get('budget_bytes',0)<1_500_000_000_000:raise RuntimeError('Storage authorization is required before launch')
+    manifest=json.loads((ROOT/'deployment-manifest.json').read_text())
+    if not manifest.get('published_remote_sha_verified'):raise RuntimeError('Unverified publication')
+    for name,expected in manifest['sha256'].items():
+        if hashlib.sha256((ROOT/name).read_bytes()).hexdigest()!=expected:raise RuntimeError('Source changed before execution: '+name)
     leases=acquire(ROOT)
     for name in ('logs','tmp','cache','evidence'):(ROOT/name).mkdir(exist_ok=True)
     env=dict(os.environ,COSEARCH_RUN_ROOT=str(ROOT),COSEARCH_AUDIT_ROOT=str(ROOT/'evidence'),TMPDIR=str(ROOT/'tmp'),HF_HOME=str(ROOT/'cache/hf-training'),HF_DATASETS_CACHE=str(ROOT/'cache/datasets-training'),TRITON_CACHE_DIR=str(ROOT/'cache/triton'),TORCH_EXTENSIONS_DIR=str(ROOT/'cache/torch-extensions'),HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
@@ -98,6 +102,7 @@ def main():
             (ROOT/('validation-receipt-'+str(step)+'.json')).write_text(json.dumps(receipt,indent=2)+'\n')
         final=launch([python,str(ROOT/'tools/launch_training.py'),'final_eval'],'final-eval.log',env);wait(final,'final_eval',service)
         receipt=verify_evaluation(ROOT/'final-evaluation/200.jsonl',51713,200);recovery(200)
+        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'])
         (ROOT/'final-evaluation-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
         status('COMPLETE_200_FINAL_EVALUATION_AND_RECOVERY_VERIFIED')
     except BaseException as error:

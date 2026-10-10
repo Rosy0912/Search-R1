@@ -22,6 +22,7 @@ def verify(root,through,job):
     ranker_uuids={latest[('reranker',rank)]['uuid'] for rank in range(4)}
     if len(main_uuids)!=4 or main_uuids!=ranker_uuids:raise RuntimeError('Roles do not share exactly four GPUs')
     if any('job_'+str(job) not in e['cgroup'] for e in latest.values()):raise RuntimeError('Worker cgroup differs from allocated job')
+    if any(e.get('kind')=='update' and str(e.get('job'))==str(job) and e['outer']>through for e in events):raise RuntimeError('Unexpected update beyond requested stopping boundary')
     updates=[e for e in events if e['kind']=='update' and str(e['job'])==str(job) and e['outer']<=through]
     main=[e for e in updates if e['role']=='main']
     expected={(step,rank) for step in range(1,through+1) for rank in range(4)}
