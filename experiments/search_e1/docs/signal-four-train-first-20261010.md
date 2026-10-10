@@ -25,3 +25,7 @@
 2026-10-10 13:20 CST推进：G_POS21/25完整outer、Adam210；第22轮SAMPLING实际生成trace约2.53MB、两原控制进程实读存活，无新错误。第21轮更新前TRAIN strict EM1187/2560=46.3671875%，P=K301、10次新Adam、原torchrun实际wait0。CP210已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组仍待串行启动，八次正式512后置pending，继续当前训练。
 
 2026-10-10 13:35 CST推进：G_POS22/25完整outer、Adam220；第23轮SAMPLING实际生成trace约1.25MB、两原控制进程实读存活，无新错误。第22轮更新前TRAIN strict EM1228/2560=47.96875%，P=K313、10次新Adam、原torchrun实际wait0。CP220已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组待串行启动，八次正式512后置pending，继续当前训练。
+
+2026-10-10 13:50 CST推进：G_POS23/25完整outer、Adam230；第23轮更新前TRAIN strict EM1216/2560=47.50%，P=K311、10次新Adam、原torchrun实际wait0。CP230已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。第24轮进入SAMPLING，继续确认实际新生成，其余三组待串行启动，八次正式512仍后置pending。
+
+最终CPU汇总接口4f13ffbcdbf86ffb2ba115772fe2ff34762f3c13已独立发布部署，Mac/Node各3项CPU检查通过；没有额外GPU任务或新审查轮。它仅将新批量评测九端点的完整4608行转换给原result_analysis.analyze，复用第25轮G_POS−G_NEG、H_POS−H_NEG两项exact McNemar/Holm家族和seed42/10000次共享分层配对bootstrap；旧HF239不混入新vLLM指标，TRAIN信号关系另报。当前八端点评测尚未开始，此准备不代表效果验收。
