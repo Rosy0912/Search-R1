@@ -6,7 +6,9 @@ ROOT=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runt
 def main():
     lock=(ROOT/'submit.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     approval=json.loads((ROOT/'storage-authorization.json').read_text())
-    if approval.get('human_authorized') is not True or approval.get('budget_bytes',0)<1500000000000:raise RuntimeError('Storage authorization pending')
+    if approval.get('human_authorized') is not True or approval.get('budget_bytes',0)<1000000000000 or approval.get('archive_strategy')!='hkust3_verified_then_delete':raise RuntimeError('Storage authorization pending')
+    heartbeat=json.loads((ROOT/'archive-worker-heartbeat.json').read_text())
+    if time.time()-heartbeat['epoch']>120:raise RuntimeError('HKUST3 archive worker not freshly reachable')
     manifest=json.loads((ROOT/'deployment-manifest.json').read_text())
     if not manifest.get('published_remote_sha_verified'):raise RuntimeError('Publication not verified')
     for name,expected in manifest['sha256'].items():

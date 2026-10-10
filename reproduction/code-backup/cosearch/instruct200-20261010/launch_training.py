@@ -27,6 +27,9 @@ def main():
                     result=super()._save_checkpoint()
                     from verify_checkpoint import verify
                     verify(root,self.global_steps)
+                    from archive_checkpoint import request,allow_cleanup
+                    request(root,self.global_steps)
+                    if self.global_steps not in (5,200):allow_cleanup(root,self.global_steps)
                     return result
                 def _validate(self):
                     metrics=super()._validate()
@@ -46,6 +49,9 @@ def main():
                         if digest(expected)!=digest(actual):raise RuntimeError('Restored data progress differs')
                         if self.global_steps!=resume:raise RuntimeError('Restored outer step differs')
                         (root/('data-recovery-'+str(resume)+'.json')).write_text(json.dumps({'step':resume,'data_state_sha256':digest(actual),'equal':True})+'\n')
+                        if resume==5:
+                            from archive_checkpoint import allow_cleanup
+                            allow_cleanup(root,5)
                     return result
                 def fit(self):
                     assert len(self.train_dataset)==169028

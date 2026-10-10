@@ -27,7 +27,9 @@ def recovery(step):
 
 def main():
     approval=json.loads((ROOT/'storage-authorization.json').read_text())
-    if approval.get('human_authorized') is not True or approval.get('budget_bytes',0)<1_500_000_000_000:raise RuntimeError('Storage authorization is required before launch')
+    if approval.get('human_authorized') is not True or approval.get('budget_bytes',0)<1_000_000_000_000 or approval.get('archive_strategy')!='hkust3_verified_then_delete':raise RuntimeError('Storage authorization is required before launch')
+    heartbeat=json.loads((ROOT/'archive-worker-heartbeat.json').read_text())
+    if time.time()-heartbeat['epoch']>120:raise RuntimeError('HKUST3 archive worker not freshly reachable')
     manifest=json.loads((ROOT/'deployment-manifest.json').read_text())
     if not manifest.get('published_remote_sha_verified'):raise RuntimeError('Unverified publication')
     for name,expected in manifest['sha256'].items():
@@ -107,14 +109,19 @@ def main():
         verify_checkpoint(ROOT,5);verify_evaluation(ROOT/'validation/5.jsonl',512,5)
         continuation=launch([python,str(ROOT/'tools/launch_training.py'),'continue200'],'continue200.log',env);wait(continuation,'continue200',service)
         verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID']);recovery(5)
+        from archive_checkpoint import allow_cleanup
+        allow_cleanup(ROOT,5)
         for step in (5,50,100,150,200):
-            verify_checkpoint(ROOT,step)
+            saved=json.loads((ROOT/('checkpoint-receipt-'+str(step)+'.json')).read_text())
+            archived=json.loads((ROOT/('archive-verified-'+str(step)+'.json')).read_text())
+            if saved['step']!=step or archived['status']!='HKUST3_ALL_CHECKPOINT_SHA_PASS':raise RuntimeError('Missing full archived checkpoint')
             receipt=verify_evaluation(ROOT/'validation'/ (str(step)+'.jsonl'),512,step)
             (ROOT/('validation-receipt-'+str(step)+'.json')).write_text(json.dumps(receipt,indent=2)+'\n')
         final=launch([python,str(ROOT/'tools/launch_training.py'),'final_eval'],'final-eval.log',env);wait(final,'final_eval',service)
         receipt=verify_evaluation(ROOT/'final-evaluation/200.jsonl',51713,200);recovery(200)
         verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'])
         (ROOT/'final-evaluation-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+        allow_cleanup(ROOT,200)
         status('COMPLETE_200_FINAL_EVALUATION_AND_RECOVERY_VERIFIED')
     except BaseException as error:
         status('FAILED',error_type=type(error).__name__,error=str(error));raise
