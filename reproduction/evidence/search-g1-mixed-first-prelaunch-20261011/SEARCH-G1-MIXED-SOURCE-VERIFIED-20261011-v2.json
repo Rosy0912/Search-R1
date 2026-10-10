@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-10T18:02:29.208876+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-10T18:02:28.469200+00:00\\\", \\\"source_files\\\": 634, \\\"tree_sha256\\\": \\\"f20d3829b716dcbd2df5aab89f1e75569eddb7a34b2e52d3f465954fa0c53080\\\", \\\"tests_rc\\\": 0, \\\"tests\\\": \\\"......\\\\n----------------------------------------------------------------------\\\\nRan 6 tests in 0.039s\\\\n\\\\nOK\\\\n\\\", \\\"padding_rc\\\": 0, \\\"padding_stdout\\\": \\\"PADDING_AND_IDENTITY_PASS\\\\n\\\", \\\"padding_stderr\\\": \\\"\\\"}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-10T18:02:28.845168+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}

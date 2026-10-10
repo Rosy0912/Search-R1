@@ -1,0 +1,22 @@
+{
+  "updated_utc": "2026-10-10T18:03:01.502150+00:00",
+  "goal": "Search-G1 mixed-first fallback fresh200",
+  "source_commit": "f2ad0ec",
+  "branch": "codex/search-g1-mixed-first-200",
+  "remote_node": "h100-8",
+  "remote_source": "/mnt/data/shaoshitong/search-g1-mixed-f2ad0ec-20261011/repo",
+  "source_files_verified": 634,
+  "full_tree_file_sha256_match": true,
+  "selection_tests_passed": 6,
+  "runtime_padding_identity_cpu_passed": true,
+  "training_started": false,
+  "configuration_question_pending": "Fixed mini128 with 8 ranks gives accumulation8 at actor localmicro2; accumulation4 requires localmicro4/global32, conflicting explicit global16/local2",
+  "remaining": [
+    "resolve actor micro/accumulation setting",
+    "bind isolated fresh model/data/probe/runtime and actual resource guard",
+    "launch exactly once and verify complete real training iteration plus two progress measurements",
+    "continue same run to200, checkpoints5/50/100/150/200 and final51713 evaluation",
+    "full checkpoint SHA/reload/durable backup/resource cleanup"
+  ],
+  "progress_classification": "progress: implementation committed/pushed and remote full-file verification/CPU behavior tests completed; no training launch claimed"
+}
