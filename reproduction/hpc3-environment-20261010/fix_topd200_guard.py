@@ -7,6 +7,7 @@ def main():
  policy=ROOT/'tools/qwen25-32b-window-safety-direct-own-sm-v2'
  for n in ['startup_guard.py','runtime_safety.py']:
   p=policy/n;s=p.read_text();s=re.sub(r'== 8(?![0-9])','== 4',s);ast.parse(s);p.write_text(s)
+ g=policy/'startup_guard.py';text=g.read_text();text=re.sub(r"SAFETY_SHA = '[0-9a-f]{64}'","SAFETY_SHA = '"+sha(policy/'runtime_safety.py')+"'",text);g.write_text(text)
  p=policy/'files.json';j=json.loads(p.read_text());j['files']={str(f.relative_to(policy)):{'size':f.stat().st_size,'sha256':sha(f)} for f in policy.rglob('*') if f.is_file() and f!=p};p.write_text(json.dumps(j,indent=2,sort_keys=True))
  cfg=BASE/'outputs/training-preparation/hpc3-topd200-protocol-draft.json';c=json.loads(cfg.read_text());old=c['telemetry_policy'];new=dict(old,runtime_sha256=sha(policy/'runtime_safety.py'),guard_sha256=sha(policy/'startup_guard.py'),manifest_sha256=sha(p))
  guardian=ROOT/'tools/topd-instruct300-launch-v6/runtime/window_guardian.py';s=guardian.read_text()
