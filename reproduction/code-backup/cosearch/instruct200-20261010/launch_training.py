@@ -39,7 +39,9 @@ def main():
         'COSEARCH_AUDIT_ROOT':os.environ['COSEARCH_AUDIT_ROOT'],
         'SLURM_JOB_ID':os.environ['SLURM_JOB_ID'],
         'PYTHONPATH':os.environ['PYTHONPATH'],
-        'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1'}}
+        'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1',
+        'COSEARCH_LEASED_UUIDS':os.environ['COSEARCH_LEASED_UUIDS'],
+        'COSEARCH_LEASED_UUID_TO_INDEX':os.environ['COSEARCH_LEASED_UUID_TO_INDEX']}}
     config.ray_kwargs.ray_init.runtime_env=OmegaConf.create(env)
     (root/('resolved-'+args.phase+'.yaml')).write_text(OmegaConf.to_yaml(config,resolve=True))
     native.run_dual_agent_ppo(config,task_runner_class=ray.remote(num_cpus=1)(Runner))

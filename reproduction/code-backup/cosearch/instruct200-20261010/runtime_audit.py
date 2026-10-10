@@ -47,6 +47,22 @@ def state(worker):
 def install():
     from verl.workers.fsdp_workers import ActorRolloutRefWorker as Worker
     if getattr(Worker,'_cosearch_audit_installed',False):return
+    if os.environ.get('COSEARCH_LEASED_UUIDS'):
+        import gpu_identity
+        gpu_identity.install()
+    original_init=Worker.init_model
+    @functools.wraps(original_init)
+    def init(worker,*args,**kwargs):
+        result=original_init(worker,*args,**kwargs)
+        if worker._is_actor:
+            import torch
+            if torch.distributed.get_world_size()!=4:raise RuntimeError('Each role must use four ranks')
+            props=torch.cuda.get_device_properties(torch.cuda.current_device())
+            uuid=str(props.uuid)
+            if uuid not in os.environ['COSEARCH_LEASED_UUIDS'].split(','):raise RuntimeError('Worker uses an unleased GPU')
+            record(worker,'initialized',{'uuid':uuid,'model':props.name,'total_memory_bytes':props.total_memory,'cgroup':Path('/proc/self/cgroup').read_text(),'mask':os.environ.get('CUDA_VISIBLE_DEVICES')})
+        return result
+    Worker.init_model=init
     original_update=Worker.update_actor
     @functools.wraps(original_update)
     def update(worker,data):

@@ -9,6 +9,7 @@ torch.distributed.get_world_size=lambda:4
 class Worker:
     role='actor_rollout'
     checkpoint_manager=types.SimpleNamespace(get_rng_state=lambda:{'cpu':torch.get_rng_state()})
+    def init_model(self):pass
     def __init__(self):
         self.p=torch.nn.Parameter(torch.tensor([1.,2.]));self.actor_optimizer=torch.optim.AdamW([self.p],lr=1e-6)
         self.actor_lr_scheduler=torch.optim.lr_scheduler.LambdaLR(self.actor_optimizer,lambda step:min(step/57,1))
