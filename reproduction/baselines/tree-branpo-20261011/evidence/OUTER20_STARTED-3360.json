@@ -1,0 +1,224 @@
+{
+  "classification": "PROGRESS",
+  "job_id": 3360,
+  "first_observed_epoch": 1791672949.5804312,
+  "second_observed_epoch": 1791673067.8285875,
+  "completed_outer": 19,
+  "current_outer": 20,
+  "first_queue": {
+    "returncode": 0,
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|4:23:15|h100-10\n",
+    "stderr": ""
+  },
+  "second_queue": {
+    "returncode": 0,
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|4:25:13|h100-10\n",
+    "stderr": ""
+  },
+  "start_receipt": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 20"
+  ],
+  "saved_receipt": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_19/manifest.json"
+  ],
+  "accounting": {
+    "complete_outer_only_per_rank": {
+      "0": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "1": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "2": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "3": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "4": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "5": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "6": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "7": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      }
+    },
+    "all_finalized_attempts_per_rank": {
+      "0": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "1": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "2": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "3": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "4": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "5": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "6": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      },
+      "7": {
+        "adam_writes": 380,
+        "opportunities": 380,
+        "skips": 0
+      }
+    },
+    "complete_outer_count": 19,
+    "finalized_attempt_count": 19,
+    "all_skipped_attempt_count": 0,
+    "accounting_errors": [],
+    "complete_totals_valid": true,
+    "source": "Every finalized small attempt JSON and all-skip worker ledger, not last8",
+    "in_flight_or_unrecorded_partial_adam_writes": null,
+    "scope": "Current attempt and unfinalized partial writes excluded and unknown; completed credits differ from consumed attempts"
+  },
+  "timing": {
+    "completed_outer": 19,
+    "attempt_id": 19,
+    "timing_seconds": {
+      "timing_s/gen": 312.9000843204558,
+      "timing_s/ref": 10.415504593402147,
+      "timing_s/adv": 10.913967620581388,
+      "timing_s/update_actor": 235.42492442950606,
+      "timing_s/stage_testing": 40.00238986313343,
+      "timing_s/step": 700.7077378556132
+    },
+    "scope": "Original trainer completed step timer including validation/checkpoint when scheduled; joined to credited attempt",
+    "rollout_cost": {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 19,
+      "candidate_outer": 19,
+      "start_epoch": 1791672340.6797712,
+      "end_epoch": 1791672653.306359,
+      "wall_seconds": 312.62658823281527,
+      "costs": {
+        "generated_tokens": 527276,
+        "prefill_tokens": 2408220,
+        "retrieval_calls": 1708,
+        "trajectories": 2560,
+        "padded_rows": 27,
+        "context_mismatches": 0,
+        "raw_slots": 2140000,
+        "raw_emitted_tokens": 527276,
+        "raw_retained_tokens": 257349,
+        "raw_discarded_tail_tokens": 269927,
+        "raw_inherited_leaf_tokens": 98341,
+        "semantic_prefix_scan_cpu_seconds": 24.465374478961166,
+        "semantic_prefix_scan_wall_seconds": 24.376644659787416
+      },
+      "error": null
+    }
+  },
+  "variance": {
+    "logger_step": 19,
+    "completed_outer": 19.0,
+    "attempt_id": 19.0,
+    "metrics": {
+      "tree_sampling/action_depth_mean": 0.7890625,
+      "tree_sampling/backoff_actions_mean": 0.3046875,
+      "tree_sampling/inherited_response_tokens_mean": 436.4108072916667,
+      "tree_sampling/inherited_observation_tokens_mean": 372.38671875,
+      "tree_sampling/continuations": 1536.0,
+      "tree_sampling/inherited_prefix_verified_fraction": 1.0,
+      "tree_sampling/same_reward_branch_fraction": 0.8938802083333334,
+      "tree_sampling/same_reward_branch_count": 1373.0,
+      "tree_sampling/different_reward_branch_count": 163.0,
+      "tree_sampling/action_depth_0_count": 445.0,
+      "tree_sampling/action_depth_1_count": 994.0,
+      "tree_sampling/action_depth_2_count": 73.0,
+      "tree_sampling/action_depth_3_count": 24.0,
+      "tree_sampling/action_depth_4_count": 0.0,
+      "tree_sampling/earliest_state_clamp_count": 1.0,
+      "tree_variance/group_raw_reward_population_variance": 0.0640624999999999,
+      "tree_variance/group_actual_adv_population_variance": 0.5951715856073331,
+      "tree_variance/group_inter_normalized_component_population_variance": 0.24999898968051382,
+      "tree_variance/same_reward_question_fraction": 0.6875,
+      "tree_variance/mixed_reward_question_fraction": 0.3125,
+      "tree_variance/exact_reward_one_question_count": 42.0,
+      "tree_variance/exact_reward_zero_question_count": 310.0,
+      "tree_variance/mixed_question_count": 160.0,
+      "tree_variance/within_root_raw_reward_population_variance": 0.03393554687499994,
+      "tree_variance/within_root_actual_adv_population_variance": 0.4542216987769103,
+      "tree_variance/within_root_raw_centered_adv_population_variance": 0.03393554687499994,
+      "tree_variance/within_root_normalized_component_population_variance": 0.09130829060882406,
+      "tree_variance/intra_adv_population_variance": 0.09130829060882406,
+      "tree_variance/intra_adv_sample_variance": 0.14746045234167288,
+      "tree_variance/intra_adv_zero_variance_tree_fraction": 0.8525390625,
+      "tree_variance/same_reward_tree_fraction": 0.8525390625,
+      "tree_variance/mixed_reward_tree_fraction": 0.1474609375,
+      "tree_variance/exact_reward_one_tree_count": 168.0,
+      "tree_variance/exact_reward_zero_tree_count": 705.0,
+      "tree_variance/mixed_tree_count": 151.0,
+      "tree_variance/root0_raw_reward_population_variance": 0.046874999999999896,
+      "tree_variance/root0_actual_adv_population_variance": 0.6576709967229478,
+      "tree_variance/root0_intra_adv_population_variance": 0.1406245155038998,
+      "tree_variance/root0_intra_adv_zero_variance_fraction": 0.7890625,
+      "tree_variance/root0_mixed_reward_fraction": 0.2109375,
+      "tree_variance/root0_same_reward_fraction": 0.7890625,
+      "tree_variance/root0_exact_reward_one_count": 64.0,
+      "tree_variance/root0_exact_reward_zero_count": 340.0,
+      "tree_variance/root0_mixed_count": 108.0,
+      "tree_variance/root1_raw_reward_population_variance": 0.02099609375,
+      "tree_variance/root1_actual_adv_population_variance": 0.2507724008308728,
+      "tree_variance/root1_intra_adv_population_variance": 0.04199206571374811,
+      "tree_variance/root1_intra_adv_zero_variance_fraction": 0.916015625,
+      "tree_variance/root1_mixed_reward_fraction": 0.083984375,
+      "tree_variance/root1_same_reward_fraction": 0.916015625,
+      "tree_variance/root1_exact_reward_one_count": 104.0,
+      "tree_variance/root1_exact_reward_zero_count": 365.0,
+      "tree_variance/root1_mixed_count": 43.0,
+      "tree_variance/between_root_actual_adv_population_variance_equal_tree": 0.10443752837626571,
+      "tree_variance/between_root_actual_adv_population_variance_leaf_mass": 0.10026002724121512,
+      "tree_variance/within_root_actual_adv_population_variance_leaf_mass": 0.49491155836611683,
+      "tree_variance/intra_adv_population_variance_leaf_mass": 0.10117153558783913,
+      "tree_variance/adv_variance_decomposition_abs_error": 8.750866784673628e-17,
+      "tree_variance/question_count": 512.0,
+      "tree_variance/tree_count": 1024.0,
+      "tree_variance/empty_loss_row_count": 0.0
+    }
+  },
+  "terminal_result": null
+}
