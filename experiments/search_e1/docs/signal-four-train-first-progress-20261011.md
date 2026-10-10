@@ -17,6 +17,8 @@
 
 随后CPU实读H_POS初始CP0：四rank实际Adam均为0，504个adapter张量与共同初始权重逐项相同，未初始化CUDA。首轮CP11已完成HKUST4→HKUST1远端备份，9成员/359,775,849字节、两端真实exit0和逐文件SHA通过，Mac payload为0。第二轮8个采样worker均真实exit0、全部2560轨迹完成，更新前1191/2560=46.5234375%；当次尚在教师诊断阶段，不能将其计作第二个完整训练outer。既有退出回收暂态自然清除，没有重复采样、重启或停止自有/他人进程。
 
+01:41 CST后续实测取代上段的第二轮未完成状态：H_POS第2轮已完整训练结束，P=K309，新增10次Adam、累计21次、累计pair曝光636；末CP21 SHA为`e237472e1dcc019a11d66d14256b8f7c469f0e0049c6a0036e709a95cfe2887b`。监督器继续第3轮的CPU模型合并，保持同一run/controller。总完整outer为52/100。第5次更新状态的HKUST4→HKUST1备份已完成；末CP21备份另行推进，不作为续训门槛。没有将原生CP21记录冒称独立CPU全Adam张量实读。
+
 G_POS/G_NEG的25个已完成outer逐轮cohort SHA一致。全25轮分别30,095/64,000=47.0234375%与30,163/64,000=47.1296875%，G_POS减G_NEG为−0.10625个百分点。这是相同训练题序列下各轮更新前五次采样的汇总，包含全部成功与失败轨迹；不是25轮末raw权重的测试EM，也没有据此给出泛化优势或统计显著性结论。逐轮小型数值摘要保留本地，原始轨迹/状态仍仅在HKUST。
 
 G_NEG末CP248已独立CPU实读：四rank实际Adam248、完整moments/groups一致且有限，504个FP32 adapter张量全部有限并相对共同初始权重改变；CPU程序实际exit0且未初始化CUDA。CP218/228/238/248均已HKUST4→HKUST1备份，两端实际exit0、全部成员SHA匹配；Mac没有checkpoint payload。H_POS当前四卡直接memory.free最小27535MiB，observer鲜活，无低于门槛采样；仅自有GPU4–7及获准oracle，GPU0–3不动。
