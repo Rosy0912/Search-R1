@@ -1,0 +1,28 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 10041,
+      "sha256": "b796a9825476d981b75e95004a1810d012fa0c01066524970af5844e9fd473a4"
+    },
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "d8998ede0587547a414550d69c457d7e6b275163aff2fafdf33dcf243bccd1a3"
+    },
+    "capture.py": {
+      "bytes": 35431,
+      "sha256": "2a6d9ae10e8232ae4deabe677ead17872be5819804194d1c99cb34c255f40be7"
+    },
+    "test_binding_v2.py": {
+      "bytes": 11780,
+      "sha256": "113f4760dd4dc3cc01124cd151b22a6898397e4fa2bdb9e53cdfc66992aff91e"
+    },
+    "test_capture.py": {
+      "bytes": 15149,
+      "sha256": "47f11fed8a18f41ce2aafaa52d9bba472db132522007303881737b2cbe1457e7"
+    }
+  },
+  "large_local_products": false,
+  "original_production_changed": false,
+  "schema": "opsd-signal-weight-terminal-source-v2",
+  "terminal_output_compatible_with_original_v1": true
+}
