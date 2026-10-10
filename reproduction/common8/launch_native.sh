@@ -23,7 +23,11 @@ assert job['JobId']==os.environ['SLURM_JOB_ID'] and job['NumNodes']=='1' and job
 assert memory_bytes(job['TRES'])>=512*2**30
 assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==8
 PY
+reward_args=()
+if [[ -n "${SEARCH_G1_REWARD_SCHEDULE:-}" ]]; then
+  reward_args=(--reward-schedule "$SEARCH_G1_REWARD_SCHEDULE")
+fi
 python -m reproduction.common8.prepare_run --base "$BASE" \
   --model "$BASE/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725" \
-  --official-manifest "$BASE/preparation/official-model-manifest-original.json" --source-commit "$COMMIT"
+  --official-manifest "$BASE/preparation/official-model-manifest-original.json" --source-commit "$COMMIT" "${reward_args[@]}"
 exec python -m reproduction.common8.run_pipeline --base "$BASE" --export-port "${SEARCH_G1_EXPORT_PORT:-19874}"

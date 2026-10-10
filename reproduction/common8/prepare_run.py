@@ -71,7 +71,9 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit):
+def prepare(base,model,official_path,commit,reward_schedule=None):
+    from search_g1.reward_schedule import SCHEDULE
+    assert reward_schedule in (None, SCHEDULE), 'Unknown reward schedule'
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
@@ -100,6 +102,9 @@ def prepare(base,model,official_path,commit):
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    if reward_schedule is not None:
+        result['reward_schedule'] = reward_schedule
+        result['reward_schedule_boundary'] = 50
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:json.dump(result,f,indent=2)
@@ -109,5 +114,7 @@ def prepare(base,model,official_path,commit):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',required=True);p.add_argument('--official-manifest',required=True)
-    p.add_argument('--source-commit',required=True);a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit)))
+    p.add_argument('--source-commit',required=True)
+    p.add_argument('--reward-schedule',choices=['g1_through50_then_binary'])
+    a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.reward_schedule)))
