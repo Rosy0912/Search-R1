@@ -1,0 +1,65 @@
+{
+  "cohort_id": "8388f2b8b85347338abdc509d6fdd5fb",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512",
+  "expected_node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "remote_parent": "/data/shaoshitong/Search-G1-reward-reconstruction-20261010-1ec36152611a/parallel-recovery-8388f2b8b853",
+  "remote_source": "/data/shaoshitong/Search-G1-reward-reconstruction-20261010-1ec36152611a/R-recovery-source-8388f2b8b853",
+  "entries": [
+    {
+      "gpu": 0,
+      "steps": [
+        60
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_recovery_v1/configs/gpu0.json",
+      "session": "g1-pair-recovery-8388f2b8b853-g0"
+    },
+    {
+      "gpu": 1,
+      "steps": [
+        80
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_recovery_v1/configs/gpu1.json",
+      "session": "g1-pair-recovery-8388f2b8b853-g1"
+    },
+    {
+      "gpu": 2,
+      "steps": [
+        140
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_recovery_v1/configs/gpu2.json",
+      "session": "g1-pair-recovery-8388f2b8b853-g2"
+    },
+    {
+      "gpu": 3,
+      "steps": [
+        120
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_recovery_v1/configs/gpu3.json",
+      "session": "g1-pair-recovery-8388f2b8b853-g3"
+    }
+  ],
+  "original_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "selected_steps": [
+    1,
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140
+  ],
+  "final_pair_count": 20480,
+  "recovery_from_preserved_parallel_cohort": "ff98085b6918423c9a6d0bdbc903bafa",
+  "recovery_only_steps": [
+    60,
+    80,
+    120,
+    140
+  ],
+  "retained_original_parallel_steps": [
+    20,
+    40,
+    100
+  ]
+}
