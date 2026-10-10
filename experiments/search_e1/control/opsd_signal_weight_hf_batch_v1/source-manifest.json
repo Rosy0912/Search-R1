@@ -1,0 +1,26 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 1851,
+      "sha256": "1964aa052c2ac76979686c68021a29104c10713475187b11583c5ba1ce869b51"
+    },
+    "hf_backend.py": {
+      "bytes": 5314,
+      "sha256": "0f8565b722521be57fe1dc80c57c71c2b76366c25ebdd47447beae0dfbe9bac1"
+    },
+    "search_batch.py": {
+      "bytes": 2905,
+      "sha256": "c8ac2f0150bee091638f396d566294412f874fad98fb315783365d4f30385170"
+    },
+    "test_state.py": {
+      "bytes": 3981,
+      "sha256": "694672c7d1dcabbdea580a27e524543f78de61c9fa8d8a65f06e8c4148817fbd"
+    },
+    "test_torch.py": {
+      "bytes": 1825,
+      "sha256": "1313793b977926f1bdde88b65f693f550116978cf0840871e10ff7c8ba1a51dd"
+    }
+  },
+  "original_rollout_sha256": "a88506797ea7fe24e61e1ad53ba4487aef87bdd69ec395aef26c94973b3d629a",
+  "schema": "opsd-hf-batch-core-source-v1"
+}

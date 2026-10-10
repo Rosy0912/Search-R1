@@ -1,0 +1,11 @@
+# 原精度HF批量推理核心：仅CPU准备
+
+当前只实现search_batch/hf_backend及针对性fixtures，没有GPU controller、模型加载或正式512结果。训练原代码不变，不占GPU。全100完成后才可接入新独立评测入口；不能把本目录CPU测试通过叫完整效果验收。
+
+search_batch直接对照原冻结SearchAgent：5turn、4search、500token/8192、原提示、480obs、每请求1query/top3/120s、contents/text回退、强制最终提示及context-limit先后顺序和字符policy spans一致。仅将活跃题目的model.generate合并，已终止的题独立移出。没有改用vLLM executor。
+
+hf_backend接收已验收的HF SDPA/BF16 base+未合并FP32 LoRA，保留原generation_config/repetition1.05/原EOS和greedy。左填充有attention mask，并把重复惩罚中仅用于填充的EOS替成该行已经存在的第一个真实token；不改变真正EOS的惩罚、模型输入或其他参数。每题独立停止并保留真实生成ID；ByteLevel tokenizer仅在新token可能闭合ASCII标签时解码完整响应，其余decoder保守退回原全响应解码。未保存生成processed概率。
+
+test_state执行已发布原SearchAgent类本体，比较混合终止、四次检索、最后forced/context边界和HTTP原始边界。test_torch在Node原Torch2.4/Transformers4.46 CPU环境验证padding-aware惩罚逐位等于原单题惩罚、各题停止长度互不影响；不加载权重、不做HTTP或CUDA初始化。
+
+尚需：独立四卡/八逻辑分片的正式0/15/25测试controller、真正加载504 FP32 LoRA摘要与原权重身份、实际GPU运行速度/停止/全512覆盖及同协议共同baseline对照。HF batch形状可能产生数值舍入差异，不预先承诺239复现；原未合并LoRA精度保留，不能混用准备中的vLLM合并BF16结果冒充原条件。
