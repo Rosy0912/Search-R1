@@ -183,6 +183,8 @@ try:
         '--source-commit',actual]
     if intent.get('initial_probes_source_base') is not None:
         prepare.extend(['--initial-probes-source-base',intent['initial_probes_source_base']])
+    if intent.get('reward_schedule') is not None:
+        prepare.extend(['--reward-schedule',intent['reward_schedule']])
     assert command(prepare,'prepare-run',600,environment)==0
     run=json.loads((base/'logs/run-manifest.json').read_text());verify_method(method,run)
     environment['RAY_TMPDIR']=run['ray_tmp_dir']
@@ -627,6 +629,8 @@ def create_intent(args):
         inputs=inputs, training_world_size=4, training_physical_indices=[0, 1, 2, 3],
         auxiliary_physical_indices=[5, 6], target_updates=200, same_process_after_five=True,
         execution_policy='one explicit execution; inspect the same handle after failure or uncertainty; no automatic retry')
+    if args.reward_schedule is not None:
+        value['reward_schedule']=args.reward_schedule
     if args.initial_probes_source_base is not None:
         source_base=args.initial_probes_source_base
         assert re.fullmatch('/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',source_base)
@@ -721,10 +725,11 @@ def main():
     parser.add_argument('--method', type=Path, default=PROJECT / 'preparation/formal-inline-method.json')
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--initial-probes-source-base')
+    parser.add_argument('--reward-schedule', choices=['g1_through50_then_binary'])
     parser.add_argument('--reuse-published-bundle', action='store_true')
     args = parser.parse_args()
     if args.execute or args.observe or args.launch_prepared or args.retry_unclaimed:
-        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
+        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and args.reward_schedule is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
     return 0

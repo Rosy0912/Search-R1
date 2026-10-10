@@ -19,9 +19,11 @@ from reproduction.common8.source_files import runtime_files
 from reproduction.common8.formal_contract import CONTRACT_KIND,TARGET_UPDATES,SAFETY_MODE,assert_formal_run,formal_mathematics
 from reproduction.common8.topology import validate_base
 from reproduction.common8.precision_contract import BF16_PROFILE,SAMPLING_JOURNAL_POLICY
+from search_g1.reward_schedule import SCHEDULE
 
 
-def prepare(base,model,official_path,commit,initial_probes_source_base=None):
+def prepare(base,model,official_path,commit,initial_probes_source_base=None,reward_schedule=None):
+    assert reward_schedule in (None,SCHEDULE), 'Unsupported reward schedule'
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
         slurm_job_id=None,execution_id=uuid.uuid4().hex,precision_profile=BF16_PROFILE,
@@ -111,6 +113,8 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
         # Selection metadata only; the pipeline must verify the actual immutable
         # source probe artifacts and receipts before it can adopt them.
         result['initial_probe_adoption_source_base']=str(initial_probes_source_base)
+    if reward_schedule is not None:
+        result.update(reward_schedule=reward_schedule,reward_schedule_boundary=50)
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:
@@ -125,5 +129,6 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',default='/data/search-g1/assets/qwen2.5-3b-instruct')
     p.add_argument('--official-manifest',required=True);p.add_argument('--source-commit',required=True)
-    p.add_argument('--initial-probes-source-base');a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base)))
+    p.add_argument('--initial-probes-source-base')
+    p.add_argument('--reward-schedule',choices=[SCHEDULE]);a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base,a.reward_schedule)))
