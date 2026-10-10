@@ -1,0 +1,26 @@
+{
+  "original_miner_sha256": "b66909664f58c7a481ac102115a54a95da0c2799ecc84adb6b94cf1a1056f55a",
+  "files": {
+    "bootstrap.py": {
+      "bytes": 756,
+      "sha256": "f6409b12ec1d0cb745b0f9b8e6d113c91bac4786c3116fb61187a938ddce6569"
+    },
+    "child_entry.py": {
+      "bytes": 263,
+      "sha256": "30cf4db39efcc3daf049d69944844cfc06b360849b60a9837e24c5b780091542"
+    },
+    "entry.py": {
+      "bytes": 5470,
+      "sha256": "01c50c5c57c9945eef763a91be2792561d8f19bb9df276f1d76a959620cdf96a"
+    },
+    "miner_v1.py": {
+      "bytes": 10707,
+      "sha256": "b9f8f5358e6b73c656fb9a13d3a701332243b6426efebeda863969580dcd5d2d"
+    }
+  },
+  "only_changes": [
+    "uniform_sibling outer_index upper bound10 to200",
+    "mine_pairs outer_index upper bound10 to200"
+  ],
+  "science_math_unchanged": true
+}
