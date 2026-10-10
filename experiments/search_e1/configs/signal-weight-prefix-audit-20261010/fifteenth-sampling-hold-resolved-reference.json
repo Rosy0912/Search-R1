@@ -1,0 +1,59 @@
+{
+  "actual_parent_waits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "after": {
+    "checked_unix": 1791590516.4,
+    "error": null,
+    "phase": "TRAINING"
+  },
+  "before": {
+    "checked_unix": 1791590410.73,
+    "phase": "TEACHER_DIAGNOSTIC"
+  },
+  "complete_training_outers": 14,
+  "completed_chain_optimizer_updates": 140,
+  "fifteenth_heldout512_complete": false,
+  "goal_full_complete": false,
+  "local_proof": {
+    "bytes": 10975,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/sampling-hold-two-timepoint-findings-1791590516.json",
+    "sha256": "fb35b2896ab2d664b8dfa7238a819b6ba433088144a4627e2ae7d4cef63662bb"
+  },
+  "logical_worker_rows": [
+    320,
+    320,
+    320,
+    320,
+    320,
+    320,
+    320,
+    320
+  ],
+  "new_actual_training_child": {
+    "pid": 1713047,
+    "ppid": 1554467,
+    "starttick": 688663480,
+    "uid": 1001
+  },
+  "old_HOLD_specific_error": "UNKNOWN; prior c43 did not preserve it, not attributed to older zombie events",
+  "outer_index": 14,
+  "production_restarted": false,
+  "same_controller": {
+    "pid": 1554467,
+    "run_id": "59de0d17968b4955b97f312cb2387429",
+    "starttick": 687295549,
+    "uid": 1001
+  },
+  "sampling_complete_rows": 2560,
+  "schema": "opsd-signal-fifteenth-sampling-hold-resolved-reference-v1",
+  "signals_sent": false,
+  "unsupported_readonly_checks": "256KiB local reader cap, bare original gate without98b scoped_roles; neither productionfailure"
+}
