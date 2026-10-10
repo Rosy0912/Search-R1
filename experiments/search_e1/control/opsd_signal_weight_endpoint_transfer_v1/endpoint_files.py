@@ -24,6 +24,12 @@ def inventory():
   refs[str(p)]=r
  def newref(p):return dict(path=str(p),bytes=p.stat().st_size,sha256=digest(p))
  for group in ['G_POS','G_NEG']:
+  config_path=S/('group-'+group)/'receipts/config.json'
+  expected={'G_POS':'e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661','G_NEG':'2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d'}[group]
+  require_ref=newref(config_path)
+  if require_ref['sha256']!=expected:raise ValueError('Original arm config changed')
+  add(require_ref);config=json.loads(config_path.read_text())
+  for key in ['publication','storage','resource_transition','retriever_admission']:add(config['gates'][key])
   for outer in [14,24]:
    done=S/('group-'+group)/'runs/outers'/('outer-%05d'%outer)/'training/outer-complete.json'
    value=json.loads(done.read_text())
