@@ -153,13 +153,10 @@ def collect(trainer, manager, stream, attempt_identity):
         # Save the actual post-generation sampling boundary as well as the
         # pre-generation one. A later backward failure must not require replay
         # of an already completed candidate group to reconstruct its RNG.
-        from search_g1.training_state import atomic_save, driver_rng
+        from search_g1.training_state import atomic_save, driver_rng, compact_stream_state
         after_workers = trainer.actor_rollout_wg.capture_mixed_state(
             str(pool/(str(ordinals[0])+'-after-generation-worker-rng')))
-        after_stream = stream.state()
-        pending = after_stream['pending_source']
-        if pending is not None and after_stream['pending_offset'] == len(pending):
-            after_stream = dict(after_stream,pending_source=None,pending_offset=0)
+        after_stream = compact_stream_state(stream.state())
         atomic_save(pool/(str(ordinals[0])+'-after-generation.pt'),
                     dict(stream=after_stream,worker_files=after_workers,
                          driver_rng=driver_rng(),identity=identity))

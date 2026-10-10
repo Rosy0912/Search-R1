@@ -36,6 +36,20 @@ def driver_rng():
     return dict(torch_cpu=torch.get_rng_state(),numpy=np.random.get_state(),python=random.getstate())
 
 
+def compact_stream_state(state):
+    """Discard only a fully consumed source batch; retain partial batches exactly."""
+    state = dict(state)
+    pending = state['pending_source']
+    offset = state['pending_offset']
+    if pending is not None:
+        assert 0 <= offset <= len(pending), 'Invalid source batch offset'
+        if offset == len(pending):
+            state.update(pending_source=None,pending_offset=0)
+    else:
+        assert offset == 0, 'Absent source batch has a nonzero offset'
+    return state
+
+
 def worker_rng(worker):
     from verl.third_party.vllm import vllm_version
     assert vllm_version=='0.6.3', 'Sampling snapshot requires the verified SPMD vLLM implementation'
