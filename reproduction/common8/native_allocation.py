@@ -66,7 +66,7 @@ def cuda_uuids(count=8):
     return result
 
 
-def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated, actual_cuda_uuids):
+def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated, actual_cuda_uuids, allowed_applications=None):
     assert job['JobState']=='RUNNING', 'No active native allocation'
     assert job['NodeList']==node and job['NumNodes']=='1', 'Allocation is not this single node'
     assert job['TresPerNode'] in ('gres:gpu:h100:8','gres:gpu:8'), 'Eight GPUs were not requested'
@@ -78,7 +78,11 @@ def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated,
     expected=[physical[int(i)] if i.isdecimal() else i for i in visible]
     assert set(expected)=={physical[i] for i in allocated}, 'Visible GPUs differ from actual Slurm allocation'
     assert actual_cuda_uuids==expected, 'CUDA runtime UUID mapping differs from allocated visible devices'
-    assert not applications, 'Foreign compute applications occupy this node'
+    if allowed_applications is None:
+        assert not applications, 'Foreign compute applications occupy this node'
+    else:
+        allowed = {(str(row[0]).strip(), str(row[1]).strip()) for row in allowed_applications}
+        assert all((str(row[0]).strip(), str(row[1]).strip()) in allowed for row in applications), 'Unbound compute application appeared before shared launch'
     return True
 
 
@@ -104,13 +108,23 @@ def admit(base):
     applications=[r for r in csv.reader(io.StringIO(raw_apps)) if r]
     assert torch.cuda.device_count()==8
     actual=cuda_uuids()
-    validate(job,node,visible,active,rows,applications,allocated,actual)
+    cohosts = run.get('shared_gpu_cohosts')
+    allowed = None
+    if cohosts is not None:
+        assert run.get('shared_gpu_policy') == 'preserve_bound_existing_processes'
+        from reproduction.a800.owned_processes import same
+        allowed = [record['application'] for record in cohosts if same(record['process_identity'])]
+    validate(job,node,visible,active,rows,applications,allocated,actual,allowed)
+    memory_raw = subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used,memory.free',
+        '--format=csv,noheader,nounits'],text=True)
+    memory_rows = [[x.strip() for x in r] for r in csv.reader(io.StringIO(memory_raw))]
     proof=dict(accepted=True,run_id=run['run_id'],slurm_job_id=job_id,node=node,
         actual_job_state=job['JobState'],requested_gres=job['TresPerNode'],
         visible_devices=visible,actual_allocated_indices=allocated,actual_cuda_runtime_uuids=actual,
         actual_allocation_detail=detail,physical_gpu_inventory=rows,active_node_jobs=active,
-        foreign_compute_applications=applications,checked_unix=time.time(),
-        scope='exclusive native allocation before project GPU work; not GPU/model/GRPO acceptance')
+        foreign_compute_applications=applications,shared_gpu_policy=run.get('shared_gpu_policy'),
+        bound_cohosts=cohosts,actual_memory_inventory=memory_rows,checked_unix=time.time(),
+        scope='native allocation and actual UUID mapping before project GPU work; bound foreign processes preserved under explicit shared policy; not model/GRPO acceptance')
     target=base/'logs/native-allocation-admission.json'
     with target.open('x') as f:
         json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())

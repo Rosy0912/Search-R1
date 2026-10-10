@@ -71,7 +71,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.4):
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
@@ -100,6 +100,17 @@ def prepare(base,model,official_path,commit):
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    assert type(allow_existing_gpu_processes) is bool
+    assert 0.0 < rollout_memory_utilization <= 0.4
+    result['vllm_gpu_memory_utilization'] = rollout_memory_utilization
+    if allow_existing_gpu_processes:
+        import subprocess,csv,io
+        from reproduction.a800.owned_processes import identity
+        raw = subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid',
+            '--format=csv,noheader,nounits'],text=True)
+        result['shared_gpu_policy'] = 'preserve_bound_existing_processes'
+        result['shared_gpu_cohosts'] = [dict(application=[r[0].strip(),r[1].strip()],
+            process_identity=identity(int(r[1]))) for r in csv.reader(io.StringIO(raw)) if r]
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:json.dump(result,f,indent=2)
@@ -109,5 +120,8 @@ def prepare(base,model,official_path,commit):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',required=True);p.add_argument('--official-manifest',required=True)
-    p.add_argument('--source-commit',required=True);a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit)))
+    p.add_argument('--source-commit',required=True)
+    p.add_argument('--allow-existing-gpu-processes',action='store_true')
+    p.add_argument('--rollout-memory-utilization',type=float,default=0.4);a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,
+        a.allow_existing_gpu_processes,a.rollout_memory_utilization)))

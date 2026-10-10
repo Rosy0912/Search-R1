@@ -41,7 +41,7 @@ def arguments(base):
             raw=str(actor_global_micro(run))
         elif key=='trainer.n_gpus_per_node':
             raw=str(world_size(run))
-        elif key=='actor_rollout_ref.rollout.gpu_memory_utilization' and run.get('execution_backend')=='ssh_local':
+        elif key=='actor_rollout_ref.rollout.gpu_memory_utilization':
             raw=str(run.get('vllm_gpu_memory_utilization',0.4))
         elif key=='+trainer.val_before_train' and run.get('pretraining_baseline_policy')=='reuse_historical':
             raw='false'
