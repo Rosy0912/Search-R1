@@ -1,10 +1,12 @@
 {
-  "observed_epoch": 1791673067.8285875,
+  "observed_epoch": 1791674379.2720106,
   "job": 3360,
   "source_commit": "8b6f99d1b3353145200eb3fa7c16a579a79a987c",
   "rows": [
     {
-      "outer": 1,
+      "logger_step": 1,
+      "completed_outer": 1.0,
+      "attempt_id": 1.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8255208333333334,
         "tree_sampling/backoff_actions_mean": 0.2975260416666667,
@@ -70,7 +72,9 @@
       }
     },
     {
-      "outer": 2,
+      "logger_step": 2,
+      "completed_outer": 2.0,
+      "attempt_id": 2.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8203125,
         "tree_sampling/backoff_actions_mean": 0.2981770833333333,
@@ -136,7 +140,9 @@
       }
     },
     {
-      "outer": 3,
+      "logger_step": 3,
+      "completed_outer": 3.0,
+      "attempt_id": 3.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8352864583333334,
         "tree_sampling/backoff_actions_mean": 0.3046875,
@@ -202,7 +208,9 @@
       }
     },
     {
-      "outer": 4,
+      "logger_step": 4,
+      "completed_outer": 4.0,
+      "attempt_id": 4.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.810546875,
         "tree_sampling/backoff_actions_mean": 0.2994791666666667,
@@ -268,7 +276,9 @@
       }
     },
     {
-      "outer": 5,
+      "logger_step": 5,
+      "completed_outer": 5.0,
+      "attempt_id": 5.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8196614583333334,
         "tree_sampling/backoff_actions_mean": 0.294921875,
@@ -334,7 +344,9 @@
       }
     },
     {
-      "outer": 6,
+      "logger_step": 6,
+      "completed_outer": 6.0,
+      "attempt_id": 6.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8352864583333334,
         "tree_sampling/backoff_actions_mean": 0.296875,
@@ -400,7 +412,9 @@
       }
     },
     {
-      "outer": 7,
+      "logger_step": 7,
+      "completed_outer": 7.0,
+      "attempt_id": 7.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8111979166666666,
         "tree_sampling/backoff_actions_mean": 0.3001302083333333,
@@ -466,7 +480,9 @@
       }
     },
     {
-      "outer": 8,
+      "logger_step": 8,
+      "completed_outer": 8.0,
+      "attempt_id": 8.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.814453125,
         "tree_sampling/backoff_actions_mean": 0.30078125,
@@ -532,7 +548,9 @@
       }
     },
     {
-      "outer": 9,
+      "logger_step": 9,
+      "completed_outer": 9.0,
+      "attempt_id": 9.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.814453125,
         "tree_sampling/backoff_actions_mean": 0.3033854166666667,
@@ -598,7 +616,9 @@
       }
     },
     {
-      "outer": 10,
+      "logger_step": 10,
+      "completed_outer": 10.0,
+      "attempt_id": 10.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8072916666666666,
         "tree_sampling/backoff_actions_mean": 0.3072916666666667,
@@ -664,7 +684,9 @@
       }
     },
     {
-      "outer": 11,
+      "logger_step": 11,
+      "completed_outer": 11.0,
+      "attempt_id": 11.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.7942708333333334,
         "tree_sampling/backoff_actions_mean": 0.3098958333333333,
@@ -730,7 +752,9 @@
       }
     },
     {
-      "outer": 12,
+      "logger_step": 12,
+      "completed_outer": 12.0,
+      "attempt_id": 12.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8307291666666666,
         "tree_sampling/backoff_actions_mean": 0.302734375,
@@ -796,7 +820,9 @@
       }
     },
     {
-      "outer": 13,
+      "logger_step": 13,
+      "completed_outer": 13.0,
+      "attempt_id": 13.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8489583333333334,
         "tree_sampling/backoff_actions_mean": 0.302734375,
@@ -862,7 +888,9 @@
       }
     },
     {
-      "outer": 14,
+      "logger_step": 14,
+      "completed_outer": 14.0,
+      "attempt_id": 14.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.8274739583333334,
         "tree_sampling/backoff_actions_mean": 0.310546875,
@@ -928,7 +956,9 @@
       }
     },
     {
-      "outer": 15,
+      "logger_step": 15,
+      "completed_outer": 15.0,
+      "attempt_id": 15.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.7936197916666666,
         "tree_sampling/backoff_actions_mean": 0.3098958333333333,
@@ -994,7 +1024,9 @@
       }
     },
     {
-      "outer": 16,
+      "logger_step": 16,
+      "completed_outer": 16.0,
+      "attempt_id": 16.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.794921875,
         "tree_sampling/backoff_actions_mean": 0.3118489583333333,
@@ -1060,7 +1092,9 @@
       }
     },
     {
-      "outer": 17,
+      "logger_step": 17,
+      "completed_outer": 17.0,
+      "attempt_id": 17.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.78515625,
         "tree_sampling/backoff_actions_mean": 0.310546875,
@@ -1126,7 +1160,9 @@
       }
     },
     {
-      "outer": 18,
+      "logger_step": 18,
+      "completed_outer": 18.0,
+      "attempt_id": 18.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.7916666666666666,
         "tree_sampling/backoff_actions_mean": 0.30859375,
@@ -1192,7 +1228,9 @@
       }
     },
     {
-      "outer": 19,
+      "logger_step": 19,
+      "completed_outer": 19.0,
+      "attempt_id": 19.0,
       "metrics": {
         "tree_sampling/action_depth_mean": 0.7890625,
         "tree_sampling/backoff_actions_mean": 0.3046875,
@@ -1252,6 +1290,74 @@
         "tree_variance/within_root_actual_adv_population_variance_leaf_mass": 0.49491155836611683,
         "tree_variance/intra_adv_population_variance_leaf_mass": 0.10117153558783913,
         "tree_variance/adv_variance_decomposition_abs_error": 8.750866784673628e-17,
+        "tree_variance/question_count": 512.0,
+        "tree_variance/tree_count": 1024.0,
+        "tree_variance/empty_loss_row_count": 0.0
+      }
+    },
+    {
+      "logger_step": 20,
+      "completed_outer": 20.0,
+      "attempt_id": 20.0,
+      "metrics": {
+        "tree_sampling/action_depth_mean": 0.7565104166666666,
+        "tree_sampling/backoff_actions_mean": 0.3131510416666667,
+        "tree_sampling/inherited_response_tokens_mean": 416.5045572916667,
+        "tree_sampling/inherited_observation_tokens_mean": 356.349609375,
+        "tree_sampling/continuations": 1536.0,
+        "tree_sampling/inherited_prefix_verified_fraction": 1.0,
+        "tree_sampling/same_reward_branch_fraction": 0.9127604166666666,
+        "tree_sampling/same_reward_branch_count": 1402.0,
+        "tree_sampling/different_reward_branch_count": 134.0,
+        "tree_sampling/action_depth_0_count": 461.0,
+        "tree_sampling/action_depth_1_count": 1001.0,
+        "tree_sampling/action_depth_2_count": 61.0,
+        "tree_sampling/action_depth_3_count": 13.0,
+        "tree_sampling/action_depth_4_count": 0.0,
+        "tree_sampling/earliest_state_clamp_count": 2.0,
+        "tree_variance/group_raw_reward_population_variance": 0.05062499999999994,
+        "tree_variance/group_actual_adv_population_variance": 0.47650533047224886,
+        "tree_variance/group_inter_normalized_component_population_variance": 0.1953117162603056,
+        "tree_variance/same_reward_question_fraction": 0.755859375,
+        "tree_variance/mixed_reward_question_fraction": 0.244140625,
+        "tree_variance/exact_reward_one_question_count": 70.0,
+        "tree_variance/exact_reward_zero_question_count": 317.0,
+        "tree_variance/mixed_question_count": 125.0,
+        "tree_variance/within_root_raw_reward_population_variance": 0.026774088541666623,
+        "tree_variance/within_root_actual_adv_population_variance": 0.35901875088414104,
+        "tree_variance/within_root_raw_centered_adv_population_variance": 0.026774088541666623,
+        "tree_variance/within_root_normalized_component_population_variance": 0.07373022186499628,
+        "tree_variance/intra_adv_population_variance": 0.07373022186499628,
+        "tree_variance/intra_adv_sample_variance": 0.11718711055488497,
+        "tree_variance/intra_adv_zero_variance_tree_fraction": 0.8828125,
+        "tree_variance/same_reward_tree_fraction": 0.8828125,
+        "tree_variance/mixed_reward_tree_fraction": 0.1171875,
+        "tree_variance/exact_reward_one_tree_count": 195.0,
+        "tree_variance/exact_reward_zero_tree_count": 709.0,
+        "tree_variance/mixed_tree_count": 120.0,
+        "tree_variance/root0_raw_reward_population_variance": 0.04036458333333325,
+        "tree_variance/root0_actual_adv_population_variance": 0.5672213408497573,
+        "tree_variance/root0_intra_adv_population_variance": 0.12109333270042962,
+        "tree_variance/root0_intra_adv_zero_variance_fraction": 0.818359375,
+        "tree_variance/root0_mixed_reward_fraction": 0.181640625,
+        "tree_variance/root0_same_reward_fraction": 0.818359375,
+        "tree_variance/root0_exact_reward_one_count": 82.0,
+        "tree_variance/root0_exact_reward_zero_count": 337.0,
+        "tree_variance/root0_mixed_count": 93.0,
+        "tree_variance/root1_raw_reward_population_variance": 0.01318359375,
+        "tree_variance/root1_actual_adv_population_variance": 0.15081616091852487,
+        "tree_variance/root1_intra_adv_population_variance": 0.026367111029562768,
+        "tree_variance/root1_intra_adv_zero_variance_fraction": 0.947265625,
+        "tree_variance/root1_mixed_reward_fraction": 0.052734375,
+        "tree_variance/root1_same_reward_fraction": 0.947265625,
+        "tree_variance/root1_exact_reward_one_count": 113.0,
+        "tree_variance/root1_exact_reward_zero_count": 372.0,
+        "tree_variance/root1_mixed_count": 27.0,
+        "tree_variance/between_root_actual_adv_population_variance_equal_tree": 0.07900631416144197,
+        "tree_variance/between_root_actual_adv_population_variance_leaf_mass": 0.07584606159498435,
+        "tree_variance/within_root_actual_adv_population_variance_leaf_mass": 0.40065926887726366,
+        "tree_variance/intra_adv_population_variance_leaf_mass": 0.08320284403208296,
+        "tree_variance/adv_variance_decomposition_abs_error": 6.976840979944221e-17,
         "tree_variance/question_count": 512.0,
         "tree_variance/tree_count": 1024.0,
         "tree_variance/empty_loss_row_count": 0.0
