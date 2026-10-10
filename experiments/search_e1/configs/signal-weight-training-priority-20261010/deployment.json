@@ -1,0 +1,20 @@
+{
+  "source_commit": "ed7f9769564436b115e1a58812f7f893f7dce8e2",
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-priority-ed7f976/opsd_signal_weight_train_priority_v1",
+  "publication": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/training-priority-publication-ed7f976.json",
+    "sha256": "068faca8caa956762a5a9df8058d8e31d4ecb7cba8ce78db3f2ebd8606e66892",
+    "bytes": 314
+  },
+  "input": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/training-priority-input-ed7f976.json",
+    "sha256": "1e8f2d5155f0be4ed78ed2dda0f9fe9ab879979afa32362d828906aee1756557",
+    "bytes": 4870
+  },
+  "launch": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/launch-training-priority-ed7f976.sh",
+    "sha256": "0f51207c866cfc0f01dac2572c56b2f35e56202b9ac6559b5db4ae167caf44fe",
+    "bytes": 813
+  },
+  "marker": "signal-study-training-priority-4b8d40b5cdab45d7b9f984d8f63f30db"
+}

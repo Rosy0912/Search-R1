@@ -1,0 +1,111 @@
+{
+  "accepted": true,
+  "common_zero": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-zero-evaluation.json",
+    "sha256": "c1a984609c3280fbc36c7fbf44573f3a9d839047adce48f7e90215d0b8d54765"
+  },
+  "completed_prefix": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation-recovery-retained-prefix15-31e2d74.json",
+    "sha256": "33aab57eefcdc8f723ec2a5f3fe36900b519cbb718af101cd8ae10ba63a65275"
+  },
+  "evaluation_failure": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation-recovery-failure-metadata-31e2d74.json",
+    "sha256": "a337e552d34592ed812b88cb0d5d7068ea682a78d4f5ac65ead7d4cb4ce4c51e"
+  },
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-priority-ed7f976/opsd_signal_weight_train_priority_v1",
+  "human_instruction": {
+    "date": "2026-10-10",
+    "defer_evaluation_and_continue_training": true,
+    "tests_still_pending": true,
+    "text": "\u4f60\u76f4\u63a5\u7ee7\u7eed\u5f80\u4e0b\u8bad\u4e0d\u5c31\u884c\u4e86\u5417\uff1f"
+  },
+  "original_configs": [
+    {
+      "bytes": 11363,
+      "ctime_ns": 1791567687412215119,
+      "device": 2081,
+      "inode": 48112408,
+      "mtime_ns": 1791567687412215119,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/config.json",
+      "sha256": "e7c0659bc6544d3440b7f67b1ba2f976c56c79d8371e23b4dbe614cbb894f661"
+    },
+    {
+      "bytes": 11364,
+      "ctime_ns": 1791567689308260331,
+      "device": 2081,
+      "inode": 48112415,
+      "mtime_ns": 1791567689308260331,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "sha256": "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d"
+    },
+    {
+      "bytes": 11372,
+      "ctime_ns": 1791567691332308518,
+      "device": 2081,
+      "inode": 48112422,
+      "mtime_ns": 1791567691332308518,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/config.json",
+      "sha256": "934f3e1ab8f70d7a1faa14b9806e9ddaecdbaea6afc97668ca3389a5c7237612"
+    },
+    {
+      "bytes": 11373,
+      "ctime_ns": 1791567693372357005,
+      "device": 2081,
+      "inode": 48112429,
+      "mtime_ns": 1791567693372357005,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/config.json",
+      "sha256": "ddb7d18dfcd5826f6aede00bcb507cebe553d8af5a28b9ef3d299c137b92c8bc"
+    }
+  ],
+  "original_helper_manifest": {
+    "bytes": 6528,
+    "ctime_ns": 1791567644319167866,
+    "device": 2081,
+    "inode": 48112375,
+    "mtime_ns": 1791567615000000000,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-00fec71/opsd_signal_weight_v1/source-manifest.json",
+    "sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+  },
+  "preservation": {
+    "bytes": 371303,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation15-failure-preserved-31e2d74.json",
+    "sha256": "755441fbb0e0a26e5087df38b34c7e7794c15b3015f6661a69f6185ab50c5bc8"
+  },
+  "previous_processes": [
+    1811163,
+    1811536,
+    1812077,
+    1812298,
+    1812300,
+    1812302,
+    1812304
+  ],
+  "publication": {
+    "bytes": 314,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/training-priority-publication-ed7f976.json",
+    "sha256": "068faca8caa956762a5a9df8058d8e31d4ecb7cba8ce78db3f2ebd8606e66892"
+  },
+  "resume_checkpoint": {
+    "bytes": 28980,
+    "ctime_ns": 1791590780710904427,
+    "device": 2081,
+    "inode": 48175279,
+    "mtime_ns": 1791590780678904044,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000150-outer-00014/manifest.json",
+    "sha256": "fda38c2a8a60fc13512c8a3b29ae2a2c5b4ba02aa732104a02257cc478ba4050"
+  },
+  "schema": "opsd-signal-weight-train-priority-manifest-v1",
+  "scope": "defer_tests_continue_same_training_named_outer_old_fp32",
+  "source_commit": "ed7f9769564436b115e1a58812f7f893f7dce8e2",
+  "source_manifest": {
+    "bytes": 755,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/training-priority-ed7f976/opsd_signal_weight_train_priority_v1/source-manifest.json",
+    "sha256": "b67a6a1abb943dd23d9622cd38858036deb7ec9c0e500b76e02df0643b883744"
+  },
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  },
+  "supervisor_run_id": "signal-study-training-priority-4b8d40b5cdab45d7b9f984d8f63f30db"
+}
