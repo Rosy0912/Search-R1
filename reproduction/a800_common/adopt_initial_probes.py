@@ -244,10 +244,16 @@ def _compatible(base, source, run, old, source_provenance=None):
             _check(digest(path) == sha, 'Actual shared input changed: ' + name)
     previous, current = _source_map(source, old, source_provenance), _source_map(base, run)
     changed = []
+    reward_delta = False
+    if run.get('reward_schedule') is not None:
+        from reproduction.a800_common.reward_adoption_contract import verify_delta
+        reward_delta = verify_delta(previous,current,run,old,source,base/'repo')
     for name in sorted(set(previous) | set(current)):
         if previous.get(name) == current.get(name):
             continue
-        if name == RAY_ENTRY:
+        if reward_delta:
+            pass  # Complete exact delta was authenticated above, including core files.
+        elif name == RAY_ENTRY:
             before = artifacts._owned_file(source / 'repo' / name, source).read_bytes()
             after = artifacts._owned_file(base / 'repo' / name, base).read_bytes()
             _check(_outside_ray_bootstrap(before) == _outside_ray_bootstrap(after),
@@ -355,6 +361,9 @@ def adopt(base, source_base):
     source_provenance = {}
     changes = _compatible(base, source, run, old, source_provenance)
     live, archive, heads, dump, files, job, calibration_log = _original_artifacts(source, old)
+    if run.get('reward_schedule') is not None:
+        from reproduction.a800_common.reward_adoption_contract import ORIGIN_ARCHIVE
+        _check(digest(archive)==ORIGIN_ARCHIVE, 'Reward adoption original archive differs')
     token = uuid.uuid4().hex
     round_dir = base / 'artifacts' / ('round_0-adopted-' + token)
     origin = dict(run_id=old['run_id'], source_commit=old['source_commit'],

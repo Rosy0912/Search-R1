@@ -1,0 +1,104 @@
+{
+  "origin_run": "6de29bcb7be741cfa1bfacdf9e34efc9",
+  "origin_commit": "f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c",
+  "origin_archive": "eb54e4ac27035260e22e30788937dcdaa9208acde6b1d0a1b5d3ce413b946a5d",
+  "schedule": "g1_through50_then_binary",
+  "changes": {
+    "reproduction/a800_common/adopt_initial_probes.py": {
+      "old_sha256": null,
+      "new_sha256": "499df8df804683e0c3ad5dfcd6f2158f264af53a45bdd39af747638044ea5f3d"
+    },
+    "reproduction/a800_common/bf16-adoption-source-delta.json": {
+      "old_sha256": null,
+      "new_sha256": "3368544c1109492e3b75eaaec1cabfd2e57ed6f0272faf4db0f2f407c3535ed8"
+    },
+    "reproduction/a800_common/deploy.py": {
+      "old_sha256": "81ea073eeb75a6c969f7485e32ba4c713026758889779334b551b587d4585da7",
+      "new_sha256": "8f47a6c4e7281d10e02955669edf05d52b4498d1c1e86c37ef21bf0d600269e1"
+    },
+    "reproduction/a800_common/prepare_run.py": {
+      "old_sha256": "9e0298f0277a12eb810f0195e2d459848ad3b03d2e021607ca0ce1553cb44b61",
+      "new_sha256": "f72a8a5ec5ede2f3053da86992870701c28b972966e239e44fd4e51ad98e1a76"
+    },
+    "reproduction/a800_common/reward_adoption_contract.py": {
+      "old_sha256": null,
+      "new_sha256": "c0ebd551bb030c74d260c90c8c2a742f2962c22a1f495000ef103b5881192b4c"
+    },
+    "reproduction/a800_common/run_pipeline.py": {
+      "old_sha256": "03db83e339851938ea83886ac6170a19b2d9d74e0a0fead4b5b4a55be417a184",
+      "new_sha256": "b188d73d792bf7a4dedbe5b02da0004a6b8abebf421b2a818343c3a895acfef9"
+    },
+    "reproduction/a800_common/train.sh": {
+      "old_sha256": "43eff3d565f7581a781df4d678528f0a945021193a7fce575297676c473e74ea",
+      "new_sha256": "f8d7ff061f603e6276807b59a6948accf57123bd6cf9abb56a09880bc5cb89fa"
+    },
+    "reproduction/common8/behavior_probability.py": {
+      "old_sha256": "be6ee53ae44529440bb8222b5e7a70d87378b41ceeb71a7bbc0d6fdbb0e07457",
+      "new_sha256": "ead9647d09bde633b3d46070a0cc69b2c9d46db46116a5d21d94952bd730f8c5"
+    },
+    "reproduction/common8/behavior_runtime.py": {
+      "old_sha256": "ddcb8caf3c44a6b70323874e0d9b2465f217e13266f6073f0836dfce1d0be74f",
+      "new_sha256": "03375726de1bfd6af0da51450014c27e5d7460ce4bfb64ed1028fdb8c3a9a20d"
+    },
+    "reproduction/common8/configuration.py": {
+      "old_sha256": "9c95c4b6efd505d2ef3361bb5f3751e22f569430b03a61315517887856c8460d",
+      "new_sha256": "71d42ad85864a29f12633c2b39029b7663572c07cd0ce84086a1405b29b6d765"
+    },
+    "reproduction/common8/formal_contract.py": {
+      "old_sha256": "5e5812ab70bc72353fc902c2484b688569d3e55fe489b1c1f1ad74276179af63",
+      "new_sha256": "5048abd916c2238d848a84756e725324e554cf0095d3a96db9eee180904aa81f"
+    },
+    "reproduction/common8/formal_inline_evaluation.py": {
+      "old_sha256": "0a3fc3adeeb6369eaf2695e01852a006bbcaa68b1f663354d33f367a0004c09f",
+      "new_sha256": "8b6fc5670f6cd6fb8f2aa5afb96925111ecdcd0f6f1945cc9630d39e32a6f3c3"
+    },
+    "reproduction/common8/formal_inline_safety.py": {
+      "old_sha256": "bb0fb14bf37ffc85313c8845979c4113e7154854ff970a7fa063733873b84041",
+      "new_sha256": "669d066a562a60a4e94663277f7e50c87bbc5f369d495137e2a878896b1fc0a3"
+    },
+    "reproduction/common8/launch_native.sh": {
+      "old_sha256": "92cf3ed2da95e4c2a67fa98a8ee90b9420913561097dc4309995f309c2cf8dab",
+      "new_sha256": "7356dff83bd39a9279d4444ab3697a901a5f3bd41e343788b3ba775c693bf185"
+    },
+    "reproduction/common8/precision_contract.py": {
+      "old_sha256": null,
+      "new_sha256": "c88136ed054d9a03747186a8298d179b834b0435bfca04da12907073bd235458"
+    },
+    "reproduction/common8/prepare_run.py": {
+      "old_sha256": "92d5bdbccf44b5c08c7860d939d82ccf9dbf8677a5dd7cb8a3a2c2fc409bf8eb",
+      "new_sha256": "307a81e386da3fc9a4d63a21a70b8d3f48266c65ac7bf7637b94e28c206f3401"
+    },
+    "reproduction/common8/update_evidence.py": {
+      "old_sha256": "42da0d71a1a2a8c0145863f9992330f3111374da6ba3a0d21c0fee986884ca51",
+      "new_sha256": "5a2e8b2c723c512dad109fc62cce93f9121a1376823e9164545bea0f0186510a"
+    },
+    "reproduction/common8/verify_full.py": {
+      "old_sha256": "4f93749c18bbc278ba78bb21f5fcc8ef0021a66a9fdaec1d715f695f2dda2ec0",
+      "new_sha256": "31c3ca8b0fa6c21a791de83eb10717e0aa12a135dca3cf33f7744a687009f349"
+    },
+    "reproduction/monitoring/search-g1-a800-30min.json": {
+      "old_sha256": null,
+      "new_sha256": "fa66d14c563b1ae84546e26daa1ae142b6e22521afba84346c7bbbf2651c3019"
+    },
+    "search_g1/reward_schedule.py": {
+      "old_sha256": null,
+      "new_sha256": "40ff3f22ec45d9abafaeb1b41da0f7af55b1e78c628d65d4608786826db76c0b"
+    },
+    "tests/reproduction/test_reward_schedule.py": {
+      "old_sha256": null,
+      "new_sha256": "6598e5f3b821bf77e0db3be6a305a35889c7deddad4f6120cc93309251697fea"
+    },
+    "verl/trainer/main_ppo_eco.py": {
+      "old_sha256": "cf9366860857ffe9529b4462355d2e7e6f3f8e036bd2012bfc21359b58a67dfb",
+      "new_sha256": "eb850f9183839da65798c84d83681fcd6717db7fb83d524d67b08ed9bed85b39"
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "old_sha256": "29b286cb75d272ff708ccb5882c144c1415a7bd37f686fafa29ad16a8858f35d",
+      "new_sha256": "7ed3596c8c1424e4624df1c40f9d572aad40e1231f0604ec6ae6dc7fac1e9964"
+    },
+    "verl/workers/actor/dp_actor.py": {
+      "old_sha256": "a6b46ba64cc307875bb39c42f613f9e2b13255ad42c67c69130c76c7dcbf82e0",
+      "new_sha256": "eb385b3d396e065252d8e0c8f480bb72589291e663d8c53c9be06ad5ecf9548e"
+    }
+  }
+}
