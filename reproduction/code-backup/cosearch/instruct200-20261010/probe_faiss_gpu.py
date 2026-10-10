@@ -1,13 +1,26 @@
 """Exercise the migrated FAISS GPU extension only inside the owned four-GPU job."""
-import json,os,time
+import ctypes,json,os,time,uuid
 from pathlib import Path
+
+def visible_cuda_uuids(count):
+    # CUDA driver ordinals obey the process visibility mask, unlike physical NVML indices.
+    driver=ctypes.CDLL('libcuda.so.1')
+    def checked(code):
+        if code:raise RuntimeError('CUDA driver identity query failed: '+str(code))
+    checked(driver.cuInit(0))
+    result=[]
+    for ordinal in range(count):
+        device=ctypes.c_int();checked(driver.cuDeviceGet(ctypes.byref(device),ordinal))
+        raw=(ctypes.c_ubyte*16)();checked(driver.cuDeviceGetUuid(ctypes.byref(raw),device))
+        result.append('GPU-'+str(uuid.UUID(bytes=bytes(raw))))
+    return result
 
 def main():
     import torch,numpy as np,faiss
     leased=os.environ['COSEARCH_LEASED_UUIDS'].split(',')
     assert os.environ['SLURM_JOB_ID'] and len(set(leased))==4
     assert torch.cuda.device_count()==4 and faiss.get_num_gpus()==4
-    actual=[str(torch.cuda.get_device_properties(i).uuid) for i in range(4)]
+    actual=visible_cuda_uuids(4)
     assert set(actual)==set(leased)
     # Clear-margin, exactly representable vectors avoid false FP16 ranking ambiguity.
     vectors=np.eye(64,dtype=np.float32);queries=vectors[[0,7,31,63]]
