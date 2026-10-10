@@ -35,7 +35,7 @@ def run(base,job):
         if r.returncode==0 and fields.get('JobId')==job:
             last=value;misses=0
             atomic(base/'logs/native-current-receipt.json',value)
-            if state not in ('PENDING','RUNNING','CONFIGURING','COMPLETING','SUSPENDED','REQUEUED','RESIZING'):
+            if state in ('COMPLETED','FAILED','CANCELLED','TIMEOUT','NODE_FAIL','OUT_OF_MEMORY','PREEMPTED','BOOT_FAIL','DEADLINE','REVOKED'):
                 assert 'ExitCode' in fields
                 value['terminal_proved']=True
                 atomic(target,value)
