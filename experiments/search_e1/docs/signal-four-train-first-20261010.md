@@ -39,3 +39,5 @@
 2026-10-10 14:40–14:43 CST推进：G_NEG第1/25outer完整结束，P=K327，11真实Adam（10×32+7尾批），原torchrun实际wait0；更新前TRAIN1280/2560=50.00%，包含全错/未选轨迹，该指标与G_POS首轮相同，不宣称全轨迹bitwise一致。独立CPU初始CP0实读四rank Adam0、504FP32 adapter与共同初始完全相同；末CP11实读四rank全Adam11/moments/RNG/scaler/cursor一致有限、504adapter全有限且相对初始全部改变，均未初始化CUDA，确认fresh组没有继承G_POS Adam。CP11已HKUST4→HKUST1远端9成员SHA备份，两端实际退出0，Mac payload0。
 
 同controller1977766继续G_NEG第2轮SAMPLING，当前真实生成trace约10.42MB、更新前采样模型CP11、无新错误。当前TRAIN记录26/100（G_POS25、G_NEG1、H_POS/H_NEG0），八次正式512仍后置pending。训练设置与四rank累积8保持，不重做已有更新。
+
+2026-10-10 15:00 CST推进：G_NEG2/25完整outer、累计Adam21；第2轮更新前TRAIN strict EM1230/2560=48.046875%，P=K317、10次新Adam（11→21），原torchrun实际wait0。原生四rank adapter/Adam摘要一致；本次未重复独立CPU张量实读，不冒充CP21完整数值审计。CP21已HKUST1远端9成员逐SHA备份，两端实际退出0、Mac payload0。第3轮SAMPLING实际生成trace约8.83MB、两原控制进程实读存活、无新错误；此前采样收尾Zombie观察提示自然清除，没有重启或新修复。总TRAIN27/100（G_POS25/G_NEG2/H_POS0/H_NEG0），八次正式512仍后置pending，继续当前训练。
