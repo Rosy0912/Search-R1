@@ -1,0 +1,6 @@
+# J minus P: new BF16 five-outer operating acceptance
+Latest human 2026-10-10 replaces and deletes PR100 outputs. Source100 fresh Adam; J's R uniform five-sibling selection, W 5-softmax standardized strict rewards, M .1 teacher+.9 outer-old; BF16 base/main/rollout and existing C1 FP32 LoRA/grad/Adam. Five actual online outers, no FP16/autocast/scaler, no old PR resume. Exact global actual trajectory mean and native budgets unchanged. Source is independent; no old runtime hot edit.
+
+Initial cohort is the existing common ten-cohort manifest; execute its first five only. Historical `variant=J` and schema field names retain native R/W/M dispatch, while standalone factory requires BF16 and five outers. No autonomous teacher, top32 or vocabulary snapshots. Keep state0/1/5, all outer-end and latest2; reclaim only bound non-key state payload and completed rebuildable merge caches. Existing original per-token loss/rollout logs required by resume remain remote.
+
+`prepare_start.py --publication FILE` verifies previous exact stop/delete, fresh current oracle PID/source/full gate, empty self GPU set, publication, paths and memory; starts independent observer then replaces itself with the controller. `stop_delete_old_pr.py` is a one-time explicit human scoped cleanup, not a training import.
