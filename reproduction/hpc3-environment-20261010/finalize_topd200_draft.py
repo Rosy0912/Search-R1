@@ -8,6 +8,9 @@ def main():
  for p in [rt/'supervise.py',rt/'owner_support.py',ROOT/'tools/search-r1-32b-grpo100-tools-direct-v5/owner_support.py']:
   s=p.read_text().replace("<96","<48").replace('>=96','>=48').replace('<768*1024','<384*1024')
   ast.parse(s);p.write_text(s)
+ stage=rt/'student_phase.py'
+ s=stage.read_text().replace('stage.parquet','validation.parquet').replace('stage64','stage512').replace('STAGE64','STAGE512').replace('!=64','!=512').replace('batch_size=64','batch_size=512').replace("'rows':64","'rows':512")
+ ast.parse(s);stage.write_text(s)
  launch=rt.parent/'launch.sbatch'
  s=launch.read_text().replace('--job-name=topd-instruct300','--job-name=topd-instruct200').replace('--gres=gpu:8','--gres=gpu:4').replace('--cpus-per-task=96','--cpus-per-task=48').replace('--mem=768G','--mem=384G')
  launch.write_text(s)
