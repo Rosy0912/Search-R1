@@ -1,0 +1,25 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "checked_unix": 1791599548.3600352,
+  "deployed_source_commit": "31e2d74a217aa7749c7de89d7c4a4bb85215c716",
+  "files": [
+    {
+      "bytes": 4478,
+      "path": "experiments/search_e1/configs/signal-weight-4gpu-20261010/evaluation-hold-recovery-launch-31e2d74/recovery-input.json",
+      "remote_equal": true,
+      "sha256": "ff44d73effa3a40ff5ed1f3d6b5049002b6b8937aa491a761b00266d74f1863e"
+    },
+    {
+      "bytes": 852,
+      "path": "experiments/search_e1/configs/signal-weight-4gpu-20261010/evaluation-hold-recovery-launch-31e2d74/launch-evaluation-recovery.sh",
+      "remote_equal": true,
+      "sha256": "0f50705a162a43c7138f03916dcb4063455b9a3f232270799f6caff880a57772"
+    }
+  ],
+  "independent_input_review": "APPROVE",
+  "input_publication_commit": "be8b41ce40c66ffd556135c4d26a10f0d2889a0b",
+  "new_GPU_started": false,
+  "non_fast_forward_push_preserved_then_only_unpublished_commit_rebased": true,
+  "remote_readback_sha": "be8b41ce40c66ffd556135c4d26a10f0d2889a0b"
+}
