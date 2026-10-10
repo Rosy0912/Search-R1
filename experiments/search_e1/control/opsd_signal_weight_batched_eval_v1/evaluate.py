@@ -136,7 +136,7 @@ def run(studyref,publication):
     write(root/'plan.json',dict(protocol=PROTOCOL,study=studyref,requests=requests,run_id=marker,old_HF_baseline_is_not_reused=True))
     baseline=None;summaries=[]
     env=dict(os.environ,E1_RUN_ID=marker,PYTHONDONTWRITEBYTECODE='1',PYTHONUNBUFFERED='1',
-        HF_HOME=str(S/'cache/hf'),TMPDIR=str(S/'tmp'),VLLM_ATTENTION_BACKEND='XFORMERS',E1_INFERENCE_UTIL='.85')
+        HF_HOME=str(S/'cache/hf'),TMPDIR=str(S/'tmp'),CUDA_DEVICE_ORDER='PCI_BUS_ID',VLLM_ATTENTION_BACKEND='XFORMERS',E1_INFERENCE_UTIL='.85')
     for name,req in requests:
         directory=root/name;directory.mkdir();req=dict(req,evaluation_run_id=marker);requestref=write(directory/'request.json',req)
         command=[config['paths']['python'],str(Path(__file__).resolve()),'--request',requestref['path'],'--request-sha256',requestref['sha256'],'--directory',str(directory)]
