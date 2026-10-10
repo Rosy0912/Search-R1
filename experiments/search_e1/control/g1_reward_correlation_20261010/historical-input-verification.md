@@ -1,0 +1,17 @@
+# 全量逐轨迹 C/R Pearson：输入验收与重构范围
+
+此前每轮均值相关及305条校准子集相关均已撤回，不能回答本请求。
+
+2026-10-10 12:24 CST，原 Search-G1 节点只读核验完成：TRAIN 1–146 共373760条（512题×5轨迹×146）；146原始trace共27651749707字节已全量流式SHA匹配对应成功attempt、原生门禁和run身份。原训练数据169028行新SHA匹配；74752个实际上游index hash全部唯一关联原gold，缺失0、歧义0。
+
+原0/50/100探针manifest及b/d头SHA通过，大encoder权重仍待新读完整SHA。原trace没有逐条C/R/b/d字段，但完整input IDs、attention/info mask、prompt width仍保留。独立CPU C重构与按历史版本重放R准备中；不能用当前学生/最新探针替代旧版本。原线上R不可从均值反推，之后值均标R_reconstructed。当前full trajectory Pearson仍NOT_COMPUTED。
+
+正确统计单位为每条轨迹，以(run,step,attempt,trajectory_id)一对一对齐。每轮2560对和所选完整范围的所有配对展平分别计算：
+
+r = [N Σ(CR) − ΣC ΣR] / sqrt([N ΣC² − (ΣC)²][N ΣR² − (ΣR)²])。
+
+所有Σ均逐条配对累加；不先把每轮/每题压成均值，不平均轮相关系数。C是同条G1轨迹严格EM 0/1，R是探针设计奖励、归一化前。无效输出保留C=0及原R=-0.1，不能过滤。零方差为undefined，缺失/重复/身份错配为HOLD。第0轮没有TRAIN更新；147–150在该次核验尚未完成。
+
+原始轨迹、gold、模型、逐条重构输出仅留原集群远端；Mac只保存代码和小型审计。训练未修改，未启动新生成或优化。
+
+完整输入证据：historical-train-input-audit-v2-full-trace-sha.json SHA e037d21b30c6b133900bb35f7f3b4019078b22a5f2b05e940d30242963fb11af。
