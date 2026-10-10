@@ -12,7 +12,9 @@ def sha(path):
 def main():
     protocol=json.loads((BASE/'outputs/training-preparation/hpc3-topd200-protocol-draft.json').read_text())
     model=Path(protocol['base_model']);data=Path(protocol['common_data']['directory'])
-    manifest=json.loads((model/'VERIFIED-MODEL-MANIFEST.json').read_text())
+    manifest_path=model/'VERIFIED-MODEL-MANIFEST.json'
+    assert sha(manifest_path)=='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+    manifest=json.loads(manifest_path.read_text())
     assert manifest['repo']=='Qwen/Qwen2.5-3B-Instruct'
     assert manifest['revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
     records=[]

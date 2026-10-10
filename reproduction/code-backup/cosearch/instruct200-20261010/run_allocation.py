@@ -32,6 +32,10 @@ def main():
     if not manifest.get('published_remote_sha_verified'):raise RuntimeError('Unverified publication')
     for name,expected in manifest['sha256'].items():
         if hashlib.sha256((ROOT/name).read_bytes()).hexdigest()!=expected:raise RuntimeError('Source changed before execution: '+name)
+    checked=subprocess.run([sys.executable,str(ROOT/'tools/verify_inputs.py')],capture_output=True,text=True,check=True)
+    inputs=json.loads(checked.stdout)
+    if inputs['status']!='FRESH_MODEL_AND_FIXED_DATA_SHA_PASS':raise RuntimeError('Initial inputs not verified')
+    (ROOT/'inputs-verified-at-launch.json').write_text(json.dumps(inputs,indent=2)+'\n')
     leases=acquire(ROOT)
     for name in ('logs','tmp','cache','evidence'):(ROOT/name).mkdir(exist_ok=True)
     env=dict(os.environ,COSEARCH_RUN_ROOT=str(ROOT),COSEARCH_AUDIT_ROOT=str(ROOT/'evidence'),TMPDIR=str(ROOT/'tmp'),HF_HOME=str(ROOT/'cache/hf-training'),HF_DATASETS_CACHE=str(ROOT/'cache/datasets-training'),TRITON_CACHE_DIR=str(ROOT/'cache/triton'),TORCH_EXTENSIONS_DIR=str(ROOT/'cache/torch-extensions'),HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
