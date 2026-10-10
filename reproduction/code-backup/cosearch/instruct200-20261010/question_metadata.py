@@ -52,6 +52,21 @@ def search_calls(text):
             for m in matches if m.group(1).strip()]
 
 
+def canonical_format_for_score(text):
+    # This is a scoring copy only; never alter generated tokens or training data.
+    if any(tag in text for tag in ('<reason>', '</reason>', '<tool_call>', '</tool_call>')):
+        return text
+    if text.count('<think>') != 1 or text.count('</think>') != 1:
+        return text
+    result = text.replace('<think>', '<reason>').replace('</think>', '</reason>')
+    calls = search_calls(result)
+    if calls:
+        result = re.sub(r'<search>(.*?)</search>',
+                        lambda m: '<tool_call>' + json.dumps({'name': 'search', 'arguments': {'query': m.group(1).strip()}}, ensure_ascii=False) + '</tool_call>',
+                        result, flags=re.DOTALL)
+    return result
+
+
 def install_parser(parser, function_call):
     if getattr(parser, '_shared_search_adapter', False):
         return
