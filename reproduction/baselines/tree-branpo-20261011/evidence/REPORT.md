@@ -1,6 +1,6 @@
 # Tree-GRPO BranPO sampling：执行准备与证据
 
-最新实际进展：3360已完成6/200轮，第7轮真实开始（measured_task pid4011013 epoch0 step7）。8rank各累计120次成功Adam、120机会、0skip，scheduler6；48份直接rank记录与6份credited attempt一致。第6轮732.061420秒（12.201分钟），纯intra总体方差0.079426817415，mixed题26.953125%；rolling global_step_5/6已保存。周期评分未更新，仍为第5轮dev512 F1 24.475422%、EM 18.1640625%。五轮初期流程独审通过，完整200/51713/HF冷重载及自身清理仍未验收。
+最新实际进展：3360已完成7/200轮，第8轮实际开始（measured_task pid4011013 epoch0 step8）。8rank各累计140次成功Adam、140机会、0skip，scheduler7；56份直接rank记录及7份credited attempt一致。第7轮751.574045秒（12.526分钟），纯intra总体方差0.073404705794，mixed题25%；rolling global_step_6/7已保存。周期评分未更新，仍为第5轮dev512 F1 24.475422%、EM 18.1640625%。已独审的初期五轮不替代完整200/51713/HF冷重载与自身清理，完整goal保持进行。
 
 第1轮记录：8rank各20次成功Adam、20机会、0skip，scheduler0→1；首轮LR0所以参数delta为0，随后第2轮使用非零warmup LR。完整第一轮730.257855秒（12.171分钟），含rolling存档；单独采样322.530420秒，生成618857 token、1720检索调用。
 
