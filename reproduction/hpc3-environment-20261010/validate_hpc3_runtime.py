@@ -15,6 +15,12 @@ OUT = BASE / 'outputs/training-preparation'
 c = json.loads((OUT / 'hpc3-config-draft.json').read_text())
 sys.path[:0] = [str(ROOT / 'retriever-gpu-lib'), c['candidate'],
                str(ROOT / 'tools/topd-instruct300-launch-v6/runtime'), c['teacher_backend']]
+from student_binding import check
+from supervise import verify_recipe
+from bind_hpc3_run import bind
+check(c)
+c = bind(c, os.environ['SLURM_JOB_ID'], os.environ['SLURMD_NODENAME'])
+verify_recipe(c)
 
 def save(name, value):
     (OUT / name).write_text(json.dumps(value, indent=2))
@@ -69,22 +75,31 @@ save('training-dataset-cpu-validation.json', {'status': 'ACTUAL_DATASET_TOKENIZE
       'validation_rows_after_filter': len(dataset), 'batch_shape': list(batch.batch['input_ids'].shape)})
 import ray
 from allocator_policy import worker_environment
+from observed_worker import install
+import verl.workers.fsdp_workers as workers
+install(workers.ActorRolloutRefWorker)
+ray.cloudpickle.register_pickle_by_value(workers)
+worker_payload = ray.cloudpickle.dumps(workers.ActorRolloutRefWorker)
 temp = BASE / 'environment/ray-validation'
 temp.mkdir(exist_ok=True)
 # Ray Unix socket paths need a short alias; all actual files stay on shared storage.
 alias = pathlib.Path('/tmp') / ('topd-ray-' + os.environ['SLURM_JOB_ID'])
 alias.symlink_to(temp, target_is_directory=True)
 try:
-    ray.init(num_cpus=2, num_gpus=0, include_dashboard=False, _temp_dir=str(alias),
+    ray.init(address='local', num_cpus=2, num_gpus=0, include_dashboard=False, _temp_dir=str(alias),
              object_store_memory=100 * 1024**2, runtime_env={'env_vars': worker_environment(os.environ)})
     @ray.remote
-    def actual_worker(v):
-        import torch, flash_attn_interface, flash_attn_3_cuda
+    def actual_worker(v, payload, data):
+        import torch, flash_attn, flash_attn_interface, flash_attn_3_cuda
+        cls = ray.cloudpickle.loads(payload)
+        assert cls._r1_observation_installed and len(data) == 2
         assert os.environ.get('LD_PRELOAD')
         return v + 1
-    assert ray.get(actual_worker.remote(41), timeout=90) == 42
-    assert ray.get(actual_worker.remote(42), timeout=90) == 43
-    save('ray-cpu-validation.json', {'status': 'TWO_ACTUAL_CPU_TASKS_PASS_ZERO_GPU'})
+    assert ray.get(actual_worker.remote(41, worker_payload, batch), timeout=90) == 42
+    assert ray.get(actual_worker.remote(42, worker_payload, batch), timeout=90) == 43
+    save('ray-cpu-validation.json', {'status': 'TWO_ACTUAL_CPU_TASKS_PASS_ZERO_GPU',
+         'native_fa2_fa3_imported_in_worker': True, 'observed_fsdp_class_by_value_roundtrip': True,
+         'actual_dataproto_batch_transfer': True})
 finally:
     ray.shutdown()
     alias.unlink()
@@ -97,7 +112,7 @@ emb = encoder.encode(['What is the capital of France?'])
 assert emb.shape == (1, 768) and np.isfinite(emb).all()
 save('e5-cpu-validation.json', {'status': 'ORIGINAL_ENCODER_CPU_FORWARD_PASS', 'shape': list(emb.shape)})
 index = faiss.read_index(str(ROOT / 'assets-root/assets/wiki/e5_Flat.index'))
-assert index.d == 768 and index.ntotal > 1000000
+assert index.d == 768 and index.ntotal == 21015324
 scores, ids = index.search(emb, 3)
 assert ids.shape == (1, 3) and (ids >= 0).all() and np.isfinite(scores).all()
 selected = set(int(i) for i in ids[0]); docs = {}

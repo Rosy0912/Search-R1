@@ -13,3 +13,7 @@ export TORCH_HOME=/data/user/jxu957/experiments/topd-20261008/environment/cache/
 export TRITON_CACHE_DIR=/data/user/jxu957/experiments/topd-20261008/environment/cache/triton
 export TORCH_EXTENSIONS_DIR=/data/user/jxu957/experiments/topd-20261008/environment/cache/torch-extensions
 export TMPDIR=/data/user/jxu957/experiments/topd-20261008/environment/tmp
+# Keep Torch 2.4 cu121 JIT compilation on its matching installed toolkit.
+# FA3 is already compiled with 12.8; its required runtime is preloaded above.
+export CUDA_HOME=/data/apps/cuda/12.1
+export CC=/data/apps/gcc/10.5/bin/gcc CXX=/data/apps/gcc/10.5/bin/g++

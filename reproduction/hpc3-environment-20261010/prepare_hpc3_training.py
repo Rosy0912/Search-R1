@@ -85,7 +85,7 @@ def main():
             pos = s.index(marker)
             s = s[:pos] + s[pos:].replace("values={}", "scope=pathlib.Path(str(scope).replace('/freezer/','/memory/'));values={}", 1)
         if p.name == 'allocator_policy.py':
-            s = s.replace("keys=('CPATH'", "keys=('LD_PRELOAD','LD_LIBRARY_PATH','CPATH'")
+            s = s.replace("keys=('CPATH'", "keys=('LD_PRELOAD','LD_LIBRARY_PATH','CC','CXX','CUDA_HOME','CPATH'")
         if p.name == 'train_entry.py':
             s = s.replace("temp=pathlib.Path('/dev/shm')/('r1-'+os.environ['SLURM_JOB_ID']);temp.mkdir(mode=0o700,exist_ok=False)",
                           "shared=pathlib.Path(c['evidence_root'])/'cache/ray';shared.mkdir(mode=0o700,exist_ok=False);temp=pathlib.Path('/tmp')/('r1-'+os.environ['SLURM_JOB_ID']);temp.symlink_to(shared,target_is_directory=True)")
@@ -147,6 +147,9 @@ def main():
         if isinstance(v, str): return v.replace(OLD, str(ROOT))
         return v
     config = remap(json.loads(src.read_text()))
+    config['training_overrides'] = [
+        'baselines.local_runtime_host=HPC3_BOUND_AT_LAUNCH' if s.startswith('baselines.local_runtime_host=') else s
+        for s in config['training_overrides']]
     prior_evidence = str(ROOT / 'logs/topd-instruct300-teacher85-approved-v1/evidence')
     def run_paths(v):
         if isinstance(v, dict): return {k: run_paths(x) for k, x in v.items()}

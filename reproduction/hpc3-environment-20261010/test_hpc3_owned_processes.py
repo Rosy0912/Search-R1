@@ -34,10 +34,19 @@ try:
         except BaseException as e: errors.append(repr(e))
     poller = threading.Thread(target=poll_concurrently)
     guardian = threading.Thread(target=guardian_cleanup)
-    poller.start(); guardian.start()
+    waiting = []
+    waiter = threading.Thread(target=lambda: waiting.append(resistant.wait(timeout=40)))
+    poller.start(); waiter.start(); guardian.start()
     guardian.join(45)
-    stop.set(); poller.join(10)
-    assert not guardian.is_alive() and not poller.is_alive() and not errors, errors
+    stop.set(); poller.join(10); waiter.join(10)
+    assert not guardian.is_alive() and not poller.is_alive() and not waiter.is_alive() and not errors, errors
+    assert waiting == [-9], waiting
+    try:
+        owner.spawn([sys.executable, '-c', 'pass'], log.with_name('must-not-spawn.log'))
+    except RuntimeError as e:
+        assert 'revoked' in str(e)
+    else:
+        raise AssertionError('New process admitted after scope revocation')
     assert baseline.poll() is None, 'Protected baseline was signalled'
     assert resistant.returncode is not None
     assert not (members(scope) - owner.baseline)
@@ -83,6 +92,8 @@ try:
     print(json.dumps({'status': 'OWN_CHILD_TREE_CLEANUP_PASS_BASELINE_PROTECTED',
                       'job': os.environ['SLURM_JOB_ID'], 'unknown_ancestry_refused_and_owned_resumed': True,
                       'guardian_thread_cleanup_with_concurrent_poll_pass': True,
+                      'blocking_wait_does_not_deadlock_cleanup': True,
+                      'spawn_after_revocation_rejected': True,
                       'cleanup': owner.cleanup_record}))
 finally:
     baseline.terminate()

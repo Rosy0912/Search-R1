@@ -32,11 +32,38 @@ def protect_controller_lifecycle():
             with REAP_LOCK:
                 return function(*args, **kwargs)
         return call
-    for name in ('__init__', '_internal_poll', '_wait'):
+    for name in ('__init__', '_internal_poll'):
         setattr(subprocess.Popen, name, guarded(getattr(subprocess.Popen, name)))
-    for name in ('waitpid', 'wait', 'wait3', 'wait4'):
+    # Blocking waits must release the lifecycle lock between polls, otherwise a
+    # monitor waiting for a child could prevent cleanup from terminating it.
+    def popen_wait(child, timeout=None):
+        deadline = None if timeout is None else time.monotonic() + timeout
+        while child.returncode is None:
+            child._internal_poll()
+            if child.returncode is not None:
+                break
+            if deadline is not None and time.monotonic() >= deadline:
+                raise subprocess.TimeoutExpired(child.args, timeout)
+            time.sleep(.01)
+        return child.returncode
+    subprocess.Popen._wait = popen_wait
+    original_waitpid = os.waitpid
+    def polling_wait(function, args, options):
+        while True:
+            with REAP_LOCK:
+                result = function(*args, options | os.WNOHANG)
+            if result[0] or options & os.WNOHANG:
+                return result
+            time.sleep(.01)
+    os.waitpid = lambda pid, options: polling_wait(original_waitpid, (pid,), options)
+    os.wait = lambda: os.waitpid(-1, 0)
+    for name in ('wait3', 'wait4'):
         if hasattr(os, name):
-            setattr(os, name, guarded(getattr(os, name)))
+            original = getattr(os, name)
+            if name == 'wait3':
+                setattr(os, name, lambda options, fn=original: polling_wait(fn, (), options))
+            else:
+                setattr(os, name, lambda pid, options, fn=original: polling_wait(fn, (pid,), options))
     _installed = True
 
 
@@ -61,14 +88,18 @@ class OwnedProcesses:
         self.scope, self.relative, self.cwd = pathlib.Path(scope), relative, cwd
         self.baseline = members(scope)
         self.children, self.streams = [], []
+        self.revoked = False
 
     def spawn(self, command, log, env=None, pass_fds=()):
-        stream = pathlib.Path(log).open('w')
-        self.streams.append(stream)
-        child = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
-                                 env=env, cwd=self.cwd, pass_fds=tuple(pass_fds))
-        self.children.append((child, None))
-        return child
+        with REAP_LOCK:
+            if self.revoked:
+                raise RuntimeError('Owned scope revoked; no further spawn')
+            stream = pathlib.Path(log).open('w')
+            self.streams.append(stream)
+            child = subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT,
+                                     env=env, cwd=self.cwd, pass_fds=tuple(pass_fds))
+            self.children.append((child, None))
+            return child
 
     def _owned(self, row):
         return row['uid'] == os.getuid() and any(
@@ -115,6 +146,7 @@ class OwnedProcesses:
             return self._cleanup_locked()
 
     def _cleanup_locked(self):
+        self.revoked = True
         began = time.monotonic()
         self.cleanup_record = {'backend': 'SUBREAPER_REAP_LOCK_STOPPED_PARENT_IDENTITY',
                                'signals': [], 'remaining': [], 'actual_cgroup_empty': False}
@@ -151,6 +183,8 @@ class OwnedProcesses:
                     child.poll()
                 # Reap adopted orphans only after all signals/resumes above.
                 for pid in pending:
+                    if pid in {child.pid for child, _ in self.children}:
+                        continue
                     try:
                         if identity(pid)['ppid'] == os.getpid():
                             os.waitpid(pid, os.WNOHANG)
