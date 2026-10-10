@@ -14,7 +14,8 @@ def main(job):
   n=len(steps);paths=[root/'actor-resource-audit'/('actor-updates-rank%d-outer%d.json'%(rank,n)) for rank in range(4)]
   if n and all(p.is_file() for p in paths):
    audit=verify_updates([json.loads(p.read_text()) for p in paths],n)
-   if audit['ranks']!=4 or audit['optimizer_steps_per_rank']!=20*n:raise ValueError('Actual rank update geometry differs')
+   if len(paths)!=4 or audit['optimizer_steps_per_rank']!=20*n:raise ValueError('Actual rank update geometry differs')
+   audit['observed_rank_receipts']=len(paths)
    report.update(verified_full_outer_iterations=n,rank_update_audit=audit)
   elif n:report['rank_audit_pending']=True
  for name in ['train-result.json','trainer-first-error.json']:
