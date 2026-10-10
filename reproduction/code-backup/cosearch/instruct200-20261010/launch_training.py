@@ -23,6 +23,19 @@ def main():
         def run(self,c):
             original=native.CoSearchRayTrainer
             class Trainer(original):
+                def _save_checkpoint(self):
+                    result=super()._save_checkpoint()
+                    from verify_checkpoint import verify
+                    verify(root,self.global_steps)
+                    return result
+                def _validate(self):
+                    metrics=super()._validate()
+                    from verify_evaluation import verify
+                    folder=root/'final-evaluation' if args.phase=='final_eval' else root/'validation'
+                    rows=51713 if args.phase=='final_eval' else 512
+                    receipt=verify(folder/(str(self.global_steps)+'.jsonl'),rows,self.global_steps)
+                    (root/('evaluation-'+args.phase+'-'+str(self.global_steps)+'.json')).write_text(json.dumps(receipt,indent=2)+'\n')
+                    return metrics
                 def _load_checkpoint(self):
                     result=super()._load_checkpoint()
                     if resume is not None:
