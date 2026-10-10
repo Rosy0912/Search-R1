@@ -14,6 +14,7 @@ def main():
     original_hashes={p:hashlib.sha256(t.encode()).hexdigest() for p,t in zip(targets,texts)}
     changed=[*patch_source(*texts[:2]),patch_trainer(texts[2]),patch_actor_config(texts[3])]
     run.mkdir()
+    (run/'data').symlink_to(Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b'),target_is_directory=True)
     shutil.copytree(source,run/'repo',symlinks=True)
     for p,t in zip(targets,changed):(run/'repo'/p).write_text(t)
     payload=json.loads(sys.stdin.read())
