@@ -1,0 +1,50 @@
+{
+  "files": [
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/README.md",
+      "bytes": 969,
+      "sha256": "7f29f0fd9a968f521c5dbb35eaf1bad411f53df0b4d927d5b7e3fc490a0d635d"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/build_correlation_report.py",
+      "bytes": 7093,
+      "sha256": "a414a7622698ee0973c952ad6f9293e1d1d2be232528d682c4d1b8a54d4f3351"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/correlations.json",
+      "bytes": 7512,
+      "sha256": "89a7438001ffcea86b943da3e95de3dcdda3efeafd3c71e1493f9e057f11ffe2"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/findings.md",
+      "bytes": 2385,
+      "sha256": "460d7599a5f57af9ba840d881c90e4d81a2f6e14a6cd6db8b9229ca18a3a88e1"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/read_reward_correlations.py",
+      "bytes": 13151,
+      "sha256": "ce0a9c621f7150d69bf67c564aaad8d33f4fa126adb57e4895b3d47e2854d71a"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/remote-correlations.execution.json",
+      "bytes": 428,
+      "sha256": "cfcee6e55251a4e10cc8fae8da5e04f3a9e31752e482a9940f5d11f0dd78d3b4"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/remote-correlations.stdout.json",
+      "bytes": 6945,
+      "sha256": "189bc22667deec2fcb6dd3ed4ac1c8a0d151c00cb8c647eb0d9ca416ba5a15c4"
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/source-publication-v2.json",
+      "bytes": 723,
+      "sha256": "006db8c4fb781af4d2ede3e3f98a6fd4aa7f5816662998e631c9ababf13fb47b"
+    },
+    {
+      "path": "experiments/search_e1/docs/g1-designed-reward-vs-em-pearson-20261010.md",
+      "bytes": 2385,
+      "sha256": "460d7599a5f57af9ba840d881c90e4d81a2f6e14a6cd6db8b9229ca18a3a88e1"
+    }
+  ],
+  "excluded": "No weights, raw rollout rows, embeddings, tensor arrays, credentials or environments."
+}

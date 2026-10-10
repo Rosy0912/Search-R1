@@ -1,0 +1,20 @@
+{
+  "verified_utc": "2026-10-10T03:56:23.460227+00:00",
+  "source_commit": "94df0cb73572529bc3b18f70cc5f7886050a51c6",
+  "remote_readback": "94df0cb73572529bc3b18f70cc5f7886050a51c6",
+  "files": [
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/read_reward_correlations.py",
+      "sha256": "ce0a9c621f7150d69bf67c564aaad8d33f4fa126adb57e4895b3d47e2854d71a",
+      "bytes": 13151
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/README.md",
+      "sha256": "7f29f0fd9a968f521c5dbb35eaf1bad411f53df0b4d927d5b7e3fc490a0d635d",
+      "bytes": 969
+    }
+  ],
+  "checkout_preserved": true,
+  "no_force_push": true,
+  "previous_helper_unexecuted": true
+}
