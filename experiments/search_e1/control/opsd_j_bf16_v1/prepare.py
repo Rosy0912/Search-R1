@@ -103,7 +103,7 @@ def validate_config(config, launch=False):
                 'common_cohort_manifest','common_initial_adapter_manifest','common_initial_adapter_tensor_sha256'):
         if not config.get(key): reasons.append(key+' identity missing')
     if not isinstance(config.get('source_commit'),str) or len(config['source_commit'])!=40: reasons.append('Published source commit missing')
-    require(config['retention']['mode']=='keep_all' and config['retention']['authorized'] is False,'No historical checkpoint deletion authorized')
+    require(config['retention']==fixed['retention'],'Only explicitly authorized new-run key/resume retention is allowed')
     require(config['resources']['study_lease_path']==fixed['resources']['study_lease_path'],'Ablation common GPU lease changed')
     require(config['gates']['scoped_cpu_processes_path']==fixed['gates']['scoped_cpu_processes_path'],
             'CPU role registry must be the planned group receipt path')
