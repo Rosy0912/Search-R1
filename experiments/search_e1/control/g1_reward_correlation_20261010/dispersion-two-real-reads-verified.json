@@ -1,0 +1,19 @@
+{
+  "same_aggregate": true,
+  "actual_rcs": [
+    0,
+    0
+  ],
+  "source": "ead081c3b3abc2af252b555292272ea1df75b3b2b28d2026eea9fa95481c1215",
+  "records": 4096,
+  "proof_files": [
+    "outputs/g1-reward-correlation-20261010/group-dispersion-20261010T060727387131Z.stdout.json",
+    "outputs/g1-reward-correlation-20261010/group-dispersion-20261010T061006438675Z.stdout.json"
+  ],
+  "sha256": [
+    "da100cb455d428eaa5264bd6077a886eb1c1ea3a27e2f959ec2e9a5693e811c0",
+    "da100cb455d428eaa5264bd6077a886eb1c1ea3a27e2f959ec2e9a5693e811c0"
+  ],
+  "node_output_written": false,
+  "raw_members_exported": false
+}
