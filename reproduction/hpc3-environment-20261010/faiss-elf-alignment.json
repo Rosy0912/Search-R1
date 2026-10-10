@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/data/user/jxu957/experiments/topd-20261008/environment/gpu-faiss-lib/faiss/_swigfaiss.cpython-310-x86_64-linux-gnu.so",
+    "segments": [
+      6
+    ],
+    "before_sha256": "1992d0aa5d8c2ac443a03d1e8728a2c783ed00032aaf0778113001044dd7ae45",
+    "after_sha256": "97e588a586104f6c30a0935fae5fa0afeb828eea4c103b6f91920106734ccfc3"
+  }
+]

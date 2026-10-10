@@ -1,0 +1,11 @@
+{
+  "status": "FA3_COMPILE_INSTALL_NATIVE_IMPORT_PASS",
+  "epoch": 1791601097.6860757,
+  "torch": "2.4.0+cu121",
+  "interface": "/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/lib/python3.10/site-packages/flash_attn_interface.py",
+  "native_extension": "/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/lib/python3.10/site-packages/flash_attn_3_cuda.cpython-310-x86_64-linux-gnu.so",
+  "wheel": "/data/user/jxu957/experiments/topd-20261008/environment/sources/flash_attn-2.7.4.post1/hopper/dist/flash_attn-3.0.0b1-cp310-cp310-linux_x86_64.whl",
+  "wheel_sha256": "ad10d71fa17dea66a576980a7aa29a9385eb668c542edff965a913e198cdf06e",
+  "gpu_execution_tested": false,
+  "activation": "/data/user/jxu957/experiments/topd-20261008/environment/activate-topd.sh"
+}
