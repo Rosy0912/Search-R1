@@ -18,16 +18,23 @@ def subset(batch, indices):
 
 class CandidateStream:
     def __init__(self, loader):
-        self.loader, self.iterator, self.pending, self.offset = loader, iter(loader), None, 0
+        self.loader, self.pending, self.offset = loader, None, 0
+        self.order, self.cursor, self.epoch = list(iter(loader.sampler)), 0, 0
         self.consumed = 0
+
+    def state(self):
+        return dict(candidate_order=self.order, candidate_cursor=self.cursor,
+                    epoch=self.epoch, consumed_source_rows=self.consumed,
+                    pending_source=self.pending, pending_offset=self.offset)
 
     def one(self):
         if self.pending is None or self.offset == len(self.pending):
-            try:
-                raw = next(self.iterator)
-            except StopIteration:
-                self.iterator = iter(self.loader)
-                raw = next(self.iterator)
+            if self.cursor == len(self.order):
+                self.order = list(iter(self.loader.sampler))
+                self.cursor, self.epoch = 0, self.epoch+1
+            indices = self.order[self.cursor:self.cursor+512]
+            self.cursor += len(indices)
+            raw = self.loader.collate_fn([self.loader.dataset[i] for i in indices])
             self.pending, self.offset = DataProto.from_single_dict(raw), 0
         row = subset(self.pending, [self.offset]); self.offset += 1; self.consumed += 1
         return row
@@ -102,6 +109,10 @@ def collect(trainer, manager, stream, attempt_identity):
         repeated = parent.repeat(repeat_times=5,interleave=True)
         gen = repeated.pop(batch_keys=['input_ids','attention_mask','position_ids'])
         attach_generation_identity(gen, identity, do_sample=True)
+        torch.save({'stream':stream.state(),'reserved':selector.reserved,
+                    'identity':identity,'torch_rng':torch.get_rng_state(),
+                    'numpy_rng':np.random.get_state(),'worker_sampling_rng_status':'requires actual worker evidence'},
+                   pool/(str(ordinals[0])+'-before-generation.pt'))
         manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
             initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
@@ -110,7 +121,7 @@ def collect(trainer, manager, stream, attempt_identity):
         torch.save({'parents':parent,'output':output,'identity':identity,
                     'ordinals':ordinals,'strict_correctness':vectors,
                     'source_consumed':stream.consumed,'pending_source':stream.pending,
-                    'pending_offset':stream.offset,'torch_rng':torch.get_rng_state(),
+                    'pending_offset':stream.offset,'stream':stream.state(),'torch_rng':torch.get_rng_state(),
                     'numpy_rng':np.random.get_state()}, pool/(str(ordinals[0])+'.pt'))
         for local, ordinal in enumerate(ordinals):
             selector.complete(ordinal, identity['trajectory_ids'][local*5:(local+1)*5], vectors[local])
@@ -140,7 +151,11 @@ def collect(trainer, manager, stream, attempt_identity):
     output.meta_info['policy_snapshot_id'] = snapshot
     base = Path(os.environ['SEARCH_G1_BASE']); directory = base/'artifacts/mixed-selection';directory.mkdir(parents=True,exist_ok=True)
     tag = attempt_identity['attempt_id'] if attempt_identity is not None else str(trainer.global_steps)
+    run = json.loads((base/'logs/run-manifest.json').read_text())
     audit.update(step=trainer.global_steps,policy_snapshot_id=snapshot,source_consumed=stream.consumed,
+                 source_commit=run['source_commit'],model_revision=run['model_revision'],
+                 data_manifest_sha256=run['budget']['common_manifest_sha256'],
+                 frozen_probe_version=getattr(trainer.reward_fn,'expected_probe_version',None),
                  raw_generated_trajectories=len(selector.reserved)*5)
     with (directory/(tag+'.json')).open('x') as f:
         json.dump(audit,f);f.flush();os.fsync(f.fileno())

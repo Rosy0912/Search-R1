@@ -12,7 +12,7 @@ from pathlib import Path
 from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, consumed_lr
 from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
 from reproduction.common8.topology import (
-    actor_local_mini, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
+    actor_local_mini, actor_local_micro, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
 )
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
@@ -242,7 +242,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 _integer(terminal[key], key)
             _require(terminal[key] == value, 'Actual attempt terminal counter differs: ' + key)
         if complete:
-            for key, value in dict(local_trajectories=local_trajectories(run), local_mini=actor_local_mini(run), local_micro=2,
+            for key, value in dict(local_trajectories=local_trajectories(run), local_mini=actor_local_mini(run), local_micro=actor_local_micro(run),
                 optimizer_writes_before=start, optimizer_writes_after=counter).items():
                 _require(terminal[key] == value, 'Actual completed budget differs: ' + key)
         else:

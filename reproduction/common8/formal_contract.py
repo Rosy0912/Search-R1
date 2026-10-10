@@ -30,7 +30,8 @@ def formal_mathematics(run=None):
     """The same formal objective with manifest-bound four/eight-rank placement."""
     size = world_size(run)
     values = copy.deepcopy(FORMAL_MATHEMATICS)
-    values.update(world_size=size, ppo_micro_batch_size=2 * size,
+    values.update(world_size=size, ppo_micro_batch_size=actor_global_micro(run),
+                  per_rank_actor_micro_batch=actor_global_micro(run)//size,
                   per_rank_log_prob_micro_batch=32 // size)
     if run is not None and bf16_policy(run):
         values.update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)

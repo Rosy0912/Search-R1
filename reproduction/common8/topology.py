@@ -40,8 +40,16 @@ def ranks(run=None):
     return range(world_size(run))
 
 
+def actor_local_micro(run=None):
+    run = _bound_run() if run is None else run
+    value = run.get("actor_micro_batch_per_rank", 2) if run is not None else 2
+    assert type(value) is int and value in (2, 4)
+    assert actor_local_mini(run) % value == 0
+    return value
+
+
 def actor_global_micro(run=None):
-    return 2 * world_size(run)
+    return actor_local_micro(run) * world_size(run)
 
 
 def actor_local_mini(run=None):

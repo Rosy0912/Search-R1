@@ -386,12 +386,12 @@ class DataParallelPPOActor(BasePPOActor):
         common8 = __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8'
         if common8:
             from reproduction.common8.behavior_runtime import verify_worker_input
-            from reproduction.common8.topology import actor_local_mini, local_trajectories, world_size
+            from reproduction.common8.topology import actor_local_mini, actor_local_micro, local_trajectories, world_size
             verify_worker_input(data, logical_update=logical_update, group=group)
             batch_gate_sha = data.meta_info['behavior_probability_gate']['sha256']
             assert torch.distributed.get_world_size() == world_size()
             assert len(data) == local_trajectories() and self.config.ppo_mini_batch_size == actor_local_mini()
-            assert self.config.ppo_micro_batch_size == 2 and self.config.ppo_epochs == 1
+            assert self.config.ppo_micro_batch_size == actor_local_micro() and self.config.ppo_epochs == 1
         temperature = data.meta_info['temperature']
 
 
@@ -515,7 +515,7 @@ class DataParallelPPOActor(BasePPOActor):
             from reproduction.common8.worker_evidence import append
             budget = dict(rank=torch.distributed.get_rank(),
                 logical_update=logical_update, local_trajectories=len(batch),
-                local_mini=self.config.ppo_mini_batch_size, local_micro=2, optimizer_writes=writes,
+                local_mini=self.config.ppo_mini_batch_size, local_micro=self.config.ppo_micro_batch_size, optimizer_writes=writes,
                 cumulative_writes=self._optimizer_writes)
             if getattr(self,'_recoverable_guard_mode',False):
                 budget.update(**attempt_meta,opportunities_processed=20,

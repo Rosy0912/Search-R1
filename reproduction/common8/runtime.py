@@ -14,7 +14,7 @@ from reproduction.common8.formal_contract import (
     FORMAL_COUNTING, assert_formal_run, consumed_lr,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes
-from reproduction.common8.topology import world_size, ranks, actor_local_mini, local_trajectories, execution_job_id
+from reproduction.common8.topology import world_size, ranks, actor_local_micro, actor_local_mini, local_trajectories, execution_job_id
 
 
 def budget_rows(text, first, last,complete_records=None, run=None):
@@ -42,7 +42,7 @@ def budget_rows(text, first, last,complete_records=None, run=None):
         group = [r for r in selected if r['logical_update'] == step]
         assert sorted(r['rank'] for r in group) == list(range(size))
         for r in group:
-            assert (r['local_trajectories'], r['local_mini'], r['local_micro']) == (local_trajectories(run), actor_local_mini(run), 2)
+            assert (r['local_trajectories'], r['local_mini'], r['local_micro']) == (local_trajectories(run), actor_local_mini(run), actor_local_micro(run))
             record=completed.get(step)
             if record is None:
                 # Retain old pure receipt tests; actual inline callers supply

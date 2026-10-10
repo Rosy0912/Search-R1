@@ -1,6 +1,6 @@
 """Check the actual worker config before and after global-to-rank normalization."""
 from reproduction.common8.topology import (
-    actor_global_micro, actor_local_mini, logprob_local_micro,
+    actor_global_micro, actor_local_micro, actor_local_mini, logprob_local_micro,
     world_size as training_world_size,
 )
 
@@ -29,7 +29,7 @@ def check_global(config, world_size, sequence_parallel):
 def check_local(config, *, actor, rollout, reference):
     if actor:
         assert config.actor.ppo_mini_batch_size == actor_local_mini()
-        assert config.actor.ppo_micro_batch_size == 2
+        assert config.actor.ppo_micro_batch_size == actor_local_micro()
     if rollout:
         assert config.rollout.log_prob_micro_batch_size == logprob_local_micro()
     if reference:
