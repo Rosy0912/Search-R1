@@ -1,0 +1,26 @@
+{
+  "schema": "opsd-signal-prefix15-collector-publication-v1",
+  "accepted": true,
+  "branch": "search-e1",
+  "source_commit": "e40cadb0c90d9e6bcb9b851618ea93952300ec2f",
+  "remote_readback_sha": "e40cadb0c90d9e6bcb9b851618ea93952300ec2f",
+  "checked_unix": 1791596852.953245,
+  "files": [
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix-fifteen-metadata-collector-20261010.py",
+      "bytes": 13476,
+      "sha256": "8ebaa76f9aeedeeca0536c5c7961b195b83939ad73901ce2c569a9084219ae4e",
+      "remote_bytes_equal": true
+    },
+    {
+      "path": "experiments/search_e1/configs/signal-weight-prefix-audit-20261010/debug-retention-prefix-fifteen-metadata-preparation-20261010.json",
+      "bytes": 6600,
+      "sha256": "47d1855be4a42d694554e22040f82fa3c465369e767214c24a7fd7d85714f831",
+      "remote_bytes_equal": true
+    }
+  ],
+  "workingtree_clean": true,
+  "collector_executed": false,
+  "retention_executed": false,
+  "production_source_changed": false
+}

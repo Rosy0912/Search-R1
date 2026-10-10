@@ -1,0 +1,33 @@
+{
+  "schema": "opsd-signal-prefix15-metadata-execution-v1",
+  "source_commit": "e40cadb0c90d9e6bcb9b851618ea93952300ec2f",
+  "collector_sha256": "8ebaa76f9aeedeeca0536c5c7961b195b83939ad73901ce2c569a9084219ae4e",
+  "publication_sha256": "ed70ca76847905ef9b4d958eb7c5f070d8fbf4b17f0dbf75a046c1b889b0b78a",
+  "argv": [
+    "ssh",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ConnectTimeout=15",
+    "-o",
+    "ProxyCommand=none",
+    "-o",
+    "ProxyJump=none",
+    "-o",
+    "ControlMaster=no",
+    "-o",
+    "ControlPath=none",
+    "hkust4",
+    "'env' 'CUDA_VISIBLE_DEVICES=' 'PYTHONDONTWRITEBYTECODE=1' 'E1_RUN_ID=retention-metadata-prefix15-e40cadb' '/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python' '-B' '-'"
+  ],
+  "actual_tool_result": {
+    "chunk_id": "3e163a",
+    "wall_time_seconds": 0.336790792,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "stdout_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-metadata-actual-1791596878682.stdout.json",
+  "stderr_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-metadata-actual-1791596878682.stderr",
+  "scope": "Four missing original metadata refs only; not full debug retention, numeric state or native512 acceptance"
+}
