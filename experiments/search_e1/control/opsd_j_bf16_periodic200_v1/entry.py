@@ -6,6 +6,8 @@ sys.path.insert(0,str(B/'source/guard-recovery-5585c5a/opsd_j_bf16_guard200_reco
 from entry import Recovery
 from controller import *
 class Periodic(Recovery):
+    def sample(self,outer,questions,identity):
+        return Controller.sample(self,outer,questions,identity)
     def evaluate(self,number,checkpoint):
         destination=B/'periodic512'/f'eval-{number:03d}'
         done=destination/'summary.json'
