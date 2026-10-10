@@ -17,6 +17,27 @@ from reproduction.common8.formal_contract import (
 from reproduction.common8.topology import ranks
 
 
+def checkpoint_tokenizer_hashes(checkpoint, official):
+    """Allow only the HF BPE merge serialization/default-field normalization."""
+    def normalized(path):
+        value=json.loads(path.read_text())
+        model=value['model']
+        assert model['type']=='BPE'
+        merges=[]
+        for pair in model['merges']:
+            if isinstance(pair,str):
+                assert pair.count(' ')==1
+                pair=pair.split(' ')
+            assert isinstance(pair,list) and len(pair)==2 and all(isinstance(x,str) for x in pair)
+            merges.append(pair)
+        model['merges']=merges
+        model.setdefault('ignore_merges',False)
+        return value
+    assert normalized(checkpoint/'tokenizer.json')==normalized(official/'tokenizer.json'), 'Checkpoint tokenizer semantics changed'
+    assert json.loads((checkpoint/'tokenizer_config.json').read_text())==json.loads((official/'tokenizer_config.json').read_text()), 'Checkpoint tokenizer configuration changed'
+    return {name:digest(checkpoint/name) for name in ('tokenizer.json','tokenizer_config.json')}
+
+
 def verify_five_scheduler_prefix(five, full):
     """Compare the actual complete five interval, independent of row counts."""
     selected=[row for row in full['selected_rows'] if 1<=row['logical_update']<=5]
@@ -226,7 +247,7 @@ def verify_full(base):
         else:
             snapshot=snapshots[str(round_id)]
             expected_encoder=dict(snapshot['files_sha256'])
-            expected_encoder.update({n:run['initial_model_sha256'][n] for n in ('tokenizer.json','tokenizer_config.json')})
+            expected_encoder.update(checkpoint_tokenizer_hashes(encoder,Path(run['initial_model'])))
             assert encoder.resolve()==Path(snapshot['checkpoint']).resolve()
         assert live['encoder_sha256']==expected_encoder
         assert all(digest(encoder/name)==sha for name,sha in live['encoder_sha256'].items())
