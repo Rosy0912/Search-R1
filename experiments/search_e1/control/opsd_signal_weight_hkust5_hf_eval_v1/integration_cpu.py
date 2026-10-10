@@ -9,7 +9,7 @@ def main():
  dependency=verify_core()
  study=m.read(dict(path=str(entry.S/'receipts/study-manifest.json'),sha256='86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e'))
  configs=[m.read(g['config']) for g in study['groups']]
- _,prepare,_=m.modules(configs[0]) if False else (None,__import__('prepare'),None)
+ import prepare
  for c in configs:prepare.validate_config(c,launch=True)
  config=configs[0];m.modules(config)
  import evaluation

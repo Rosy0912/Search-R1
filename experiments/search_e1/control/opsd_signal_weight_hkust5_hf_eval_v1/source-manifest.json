@@ -34,8 +34,8 @@
       "sha256": "b3724973d1b10c2a99a4f106b92181ebc9dfe60dc970114e040978ada1ab4483"
     },
     "integration_cpu.py": {
-      "bytes": 1411,
-      "sha256": "a77bb18bcd23dd9c17e0b85790e79c48cfbd426adb3e7c77849ab92c773274bb"
+      "bytes": 1344,
+      "sha256": "011708e9257d7ec2986d9c16bd184631ef909d0e20bec4fc0a240a85ecf45d48"
     },
     "metrics.py": {
       "bytes": 2405,
