@@ -15,6 +15,10 @@
 
 每轮分母包括512题全部五条采样，含全错题及未选轨迹；该值是本轮训练前采样表现，不是更新后固定测试EM。不同outer题目不同，不能用此表直接比较四组泛化效果。H_POS首轮采样实际绑定共同source100、共同初始adapter及optimizer_updates=0，没有继承G_NEG Adam。
 
+随后CPU实读H_POS初始CP0：四rank实际Adam均为0，504个adapter张量与共同初始权重逐项相同，未初始化CUDA。首轮CP11已完成HKUST4→HKUST1远端备份，9成员/359,775,849字节、两端真实exit0和逐文件SHA通过，Mac payload为0。第二轮8个采样worker均真实exit0、全部2560轨迹完成，更新前1191/2560=46.5234375%；当次尚在教师诊断阶段，不能将其计作第二个完整训练outer。既有退出回收暂态自然清除，没有重复采样、重启或停止自有/他人进程。
+
+G_POS/G_NEG的25个已完成outer逐轮cohort SHA一致。全25轮分别30,095/64,000=47.0234375%与30,163/64,000=47.1296875%，G_POS减G_NEG为−0.10625个百分点。这是相同训练题序列下各轮更新前五次采样的汇总，包含全部成功与失败轨迹；不是25轮末raw权重的测试EM，也没有据此给出泛化优势或统计显著性结论。逐轮小型数值摘要保留本地，原始轨迹/状态仍仅在HKUST。
+
 G_NEG末CP248已独立CPU实读：四rank实际Adam248、完整moments/groups一致且有限，504个FP32 adapter张量全部有限并相对共同初始权重改变；CPU程序实际exit0且未初始化CUDA。CP218/228/238/248均已HKUST4→HKUST1备份，两端实际exit0、全部成员SHA匹配；Mac没有checkpoint payload。H_POS当前四卡直接memory.free最小27535MiB，observer鲜活，无低于门槛采样；仅自有GPU4–7及获准oracle，GPU0–3不动。
 
 ## 为什么旧补测慢
