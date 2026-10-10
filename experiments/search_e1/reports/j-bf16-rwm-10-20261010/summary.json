@@ -1,0 +1,38 @@
+{
+  "count": 512,
+  "hits": 239,
+  "em": 0.466796875,
+  "by_dataset": {
+    "hotpotqa": {
+      "count": 256,
+      "hits": 128
+    },
+    "nq": {
+      "count": 256,
+      "hits": 111
+    }
+  },
+  "checkpoint": {
+    "bytes": 31816,
+    "ctime_ns": 1791605549463919217,
+    "device": 2065,
+    "inode": 466753647,
+    "mtime_ns": 1791605549463919217,
+    "path": "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/runs/checkpoints/update-00000100-outer-00009/manifest.json",
+    "sha256": "58619ab366ad73e389d93f0948ebc71859a82c8d8bc8475b3450909bf055a3df"
+  },
+  "completed_outers": 10,
+  "finished_unix": 1791613165.9290454,
+  "protocol": "native HF SDPA BF16base FP32unmergedadapter greedy rep1.05",
+  "eight_actual_wait_returncodes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "all_owned_release_accepted": true
+}
