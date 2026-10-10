@@ -1,5 +1,5 @@
 {
-  "observed_epoch": 1791669128.9446938,
+  "observed_epoch": 1791670268.0008054,
   "job": 3360,
   "rows": [
     {
@@ -155,7 +155,18 @@
         "critic/rewards/max": 1.0,
         "critic/rewards/min": 0.0
       }
+    },
+    {
+      "outer": 15,
+      "metrics": {
+        "critic/score/mean": 0.2421875,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.2421875,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
     }
   ],
-  "scope": "Logged leaf training score/reward, separate from dev EM/F1"
+  "scope": "Logged leaf train reward separate from dev EM/F1"
 }
