@@ -7,7 +7,7 @@ import time
 import hashlib
 from numbers import Real
 from pathlib import Path
-from reproduction.a800.runtime import checkpoint_complete
+from reproduction.a800.runtime import checkpoint_complete as hf_checkpoint_complete
 from reproduction.common8.verify_data import digest, verify
 from reproduction.common8.formal_contract import (
     CONTRACT_KIND, PROBE_ROUNDS, TARGET_UPDATES, WARMUP_STEPS,
@@ -15,6 +15,47 @@ from reproduction.common8.formal_contract import (
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes
 from reproduction.common8.topology import world_size, ranks, actor_local_micro, actor_local_mini, local_trajectories, execution_job_id
+
+
+def checkpoint_complete(step, checkpoint):
+    result = hf_checkpoint_complete(step, checkpoint)
+    base = Path(os.environ['SEARCH_G1_BASE'])
+    run = json.loads((base/'logs/run-manifest.json').read_text())
+    if not run.get('mixed_first_selection', False):
+        return result
+    import torch
+    checkpoint = Path(checkpoint)
+    state_dir = checkpoint/'training_state'
+    state_manifest = json.loads((state_dir/'manifest.json').read_text())
+    assert state_manifest['completed_outer'] == step
+    proofs = state_manifest['worker_files']
+    assert sorted(p['rank'] for p in proofs) == list(ranks(run))
+    writes = []
+    for proof in proofs + [state_manifest['driver_file']]:
+        path = Path(proof['path'])
+        assert path.resolve().is_relative_to(state_dir.resolve()) and path.stat().st_size == proof['bytes']
+        assert digest(path) == proof['sha256'], 'Actual state readback differs'
+        state = torch.load(path, map_location='cpu', weights_only=False)
+        if 'rank' in proof:
+            assert state['rank'] == proof['rank'] and state['run_id'] == run['run_id']
+            assert state['world_size'] == world_size(run) and state['scheduler']['last_epoch'] == step
+            writes.append(state['actual_optimizer_writes'])
+            assert state['optimizer']['state'], 'Saved Adam is empty'
+            for values in state['optimizer']['state'].values():
+                for name in ('step', 'exp_avg', 'exp_avg_sq'):
+                    assert name in values and torch.isfinite(values[name]).all()
+                assert int(values['step']) == state['actual_optimizer_writes']
+        else:
+            assert state['completed_outer'] == step and state['candidate_stream']['consumed_source_rows'] >= 512*step
+        result['files_sha256'][str(path.relative_to(checkpoint))] = proof['sha256']
+        del state
+    assert len(set(writes)) == 1 and writes[0] > 0
+    result['files_sha256']['training_state/manifest.json'] = digest(state_dir/'manifest.json')
+    result.update(actual_optimizer_writes_per_rank=writes[0],
+        training_state_readback='all rank Adam/scheduler states and actual driver cursor verified; actual restart/reload pending')
+    from reproduction.a800.owned_processes import publish
+    publish(checkpoint/'complete.json', result)
+    return result
 
 
 def budget_rows(text, first, last,complete_records=None, run=None):

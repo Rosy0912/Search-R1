@@ -71,7 +71,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.4):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.4,local_retrieval_assets=None):
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
@@ -88,7 +88,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
-        actor_micro_batch_per_rank=4,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
+        mixed_first_selection=True,actor_micro_batch_per_rank=4,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
         initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
         source_commit=commit,source_sha256=source,
         source_snapshot_semantics='disk fingerprint before launch; not proof of loaded modules',
@@ -103,6 +103,10 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     assert type(allow_existing_gpu_processes) is bool
     assert 0.0 < rollout_memory_utilization <= 0.4
     result['vllm_gpu_memory_utilization'] = rollout_memory_utilization
+    if local_retrieval_assets is not None:
+        assets = Path(local_retrieval_assets).resolve()
+        assert assets.is_dir() and (assets/'e5_Flat.index').is_file() and (assets/'wiki-18.jsonl').is_file()
+        result['local_retrieval_assets'] = str(assets)
     if allow_existing_gpu_processes:
         import subprocess,csv,io
         from reproduction.a800.owned_processes import identity
@@ -122,6 +126,7 @@ if __name__=='__main__':
     p.add_argument('--model',required=True);p.add_argument('--official-manifest',required=True)
     p.add_argument('--source-commit',required=True)
     p.add_argument('--allow-existing-gpu-processes',action='store_true')
-    p.add_argument('--rollout-memory-utilization',type=float,default=0.4);a=p.parse_args()
+    p.add_argument('--rollout-memory-utilization',type=float,default=0.4)
+    p.add_argument('--local-retrieval-assets');a=p.parse_args()
     print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,
-        a.allow_existing_gpu_processes,a.rollout_memory_utilization)))
+        a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets)))

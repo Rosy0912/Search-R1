@@ -44,7 +44,21 @@ class CandidateStream:
                 self.cursor, self.epoch = 0, self.epoch+1
             indices = self.order[self.cursor:self.cursor+512]
             self.cursor += len(indices)
-            raw = self.loader.collate_fn([self.loader.dataset[i] for i in indices])
+            records=[]
+            for i in indices:
+                record=self.loader.dataset[i]
+                original=self.loader.dataset.dataframe.iloc[i]
+                chat=original[self.loader.dataset.prompt_key]
+                question='\n'.join(message['content'] for message in chat)
+                extra=original.get('extra_info', {})
+                upstream_id=extra.get('index') if isinstance(extra,dict) else None
+                if upstream_id is None:
+                    from search_g1.mixed_selection import question_identity
+                    upstream_id=question_identity(question)
+                record['candidate_original_question']=question
+                record['candidate_stable_id']=json.dumps([str(original['data_source']),str(upstream_id)])
+                records.append(record)
+            raw = self.loader.collate_fn(records)
             self.pending, self.offset = DataProto.from_single_dict(raw), 0
         row = subset(self.pending, [self.offset]); self.offset += 1; self.consumed += 1
         return row
@@ -58,10 +72,8 @@ class CandidateStream:
             if examined >= len(self.loader.dataset):
                 raise RuntimeError('UNIQUE_CANDIDATE_SOURCE_EXHAUSTED')
             row = self.one(); examined += 1
-            mask = row.batch['attention_mask'][0].bool()
-            question = tokenizer.decode(row.batch['input_ids'][0][mask])
-            key = json.dumps([str(row.non_tensor_batch['data_source'][0]),
-                              str(row.non_tensor_batch['index'][0])])
+            question = row.non_tensor_batch['candidate_original_question'][0]
+            key = row.non_tensor_batch['candidate_stable_id'][0]
             ordinal = selector.reserve(key, question)
             if ordinal is not None:
                 rows.append(row); ordinals.append(ordinal)

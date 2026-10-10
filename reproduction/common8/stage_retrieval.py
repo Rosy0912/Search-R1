@@ -162,10 +162,18 @@ def stage(base,port):
         status['stage']='TRANSFERRING';atomic(target,status)
         for name,expected in ASSETS.items():
             partial=root/(name+'.partial')
-            request=urllib.request.Request(f'http://{SOURCE}:{port}/assets-root/assets/wiki/{name}')
+            local_root = run.get('local_retrieval_assets')
+            if local_root is not None:
+                source_path = Path(local_root)/name
+                assert source_path.is_file() and source_path.stat().st_size == expected['size']
+                source_stream = source_path.open('rb')
+                status['source_origin'] = str(Path(local_root).resolve())
+            else:
+                request=urllib.request.Request(f'http://{SOURCE}:{port}/assets-root/assets/wiki/{name}')
+                source_stream = opener.open(request,timeout=60)
+                assert source_stream.status==200 and int(source_stream.headers['Content-Length'])==expected['size']
             h=hashlib.sha256();count=0
-            with opener.open(request,timeout=60) as response,partial.open('xb') as output:
-                assert response.status==200 and int(response.headers['Content-Length'])==expected['size']
+            with source_stream as response,partial.open('xb') as output:
                 while True:
                     chunk=response.read(8*1024*1024)
                     if not chunk:break
