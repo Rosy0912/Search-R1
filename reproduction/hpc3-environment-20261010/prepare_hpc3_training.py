@@ -106,8 +106,13 @@ def main():
 
     binding_path = ROOT / 'logs/qwen25-32b-terminal-fixed413-binding.json'
     retrieval = json.loads(binding_path.read_text())
+    obsolete = {k: v for k, v in retrieval['runtime_files'].items()
+                if k.endswith('.partial') and not (ROOT / k).exists()}
+    if any(not k.startswith('assets-root/assets/e5-base-v2/') for k in obsolete):
+        raise ValueError('Unexpected missing source dependency')
     retrieval['runtime_files'] = {k: v for k, v in retrieval['runtime_files'].items()
-                                  if not k.startswith('retriever-gpu-lib/')}
+                                  if not k.startswith('retriever-gpu-lib/') and k not in obsolete}
+    retrieval['hpc3_excluded_historical_incomplete_downloads'] = obsolete
     retrieval['runtime_files'].update({str(p.relative_to(ROOT)): sha(p)
                                        for p in gpu.rglob('*') if p.is_file()})
     retrieval['hpc3_gpu_faiss'] = {'version': '1.8.0.2', 'elf_alignment_repair': True,
