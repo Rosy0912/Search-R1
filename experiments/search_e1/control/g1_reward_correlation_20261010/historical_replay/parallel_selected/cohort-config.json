@@ -1,0 +1,70 @@
+{
+  "cohort_id": "ff98085b6918423c9a6d0bdbc903bafa",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512",
+  "expected_node": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+  "remote_parent": "/data/shaoshitong/Search-G1-reward-reconstruction-20261010-1ec36152611a/parallel-cohort-ff98085b6918",
+  "remote_source": "/data/shaoshitong/Search-G1-reward-reconstruction-20261010-1ec36152611a/R-parallel-source-ff98085b6918",
+  "entries": [
+    {
+      "gpu": 0,
+      "steps": [
+        60
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu0.json",
+      "session": "g1-pair-selected-ff98085b6918-g0"
+    },
+    {
+      "gpu": 1,
+      "steps": [
+        80
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu1.json",
+      "session": "g1-pair-selected-ff98085b6918-g1"
+    },
+    {
+      "gpu": 2,
+      "steps": [
+        100
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu2.json",
+      "session": "g1-pair-selected-ff98085b6918-g2"
+    },
+    {
+      "gpu": 3,
+      "steps": [
+        120
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu3.json",
+      "session": "g1-pair-selected-ff98085b6918-g3"
+    },
+    {
+      "gpu": 5,
+      "steps": [
+        20,
+        40
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu5.json",
+      "session": "g1-pair-selected-ff98085b6918-g5"
+    },
+    {
+      "gpu": 6,
+      "steps": [
+        140
+      ],
+      "local_config": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/historical_replay/parallel_selected/configs/gpu6.json",
+      "session": "g1-pair-selected-ff98085b6918-g6"
+    }
+  ],
+  "original_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "selected_steps": [
+    1,
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140
+  ],
+  "final_pair_count": 20480
+}
