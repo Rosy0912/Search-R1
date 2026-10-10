@@ -51,6 +51,9 @@ def main():
         os.environ.pop(key,None)
     # Keep the verified four-device mask stable before any worker CUDA imports.
     env['RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES']='1'
+    rpc=Path('/tmp')/('csrpc-'+env['SLURM_JOB_ID'])
+    rpc.mkdir(mode=0o700,exist_ok=True)
+    env['VLLM_RPC_BASE_PATH']=str(rpc)
     scorer=BASE/'runtime/pytrec-eval-05-hpc-build'
     scorer_receipt=json.loads((scorer/'build-complete.json').read_text())
     extension=Path(scorer_receipt['extension'])
