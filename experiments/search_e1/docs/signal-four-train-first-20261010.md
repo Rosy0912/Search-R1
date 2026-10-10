@@ -67,3 +67,5 @@
 CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅修正旧失败driver的终态门禁，绑定新supervisor2297236/tick693190113/runmarker及foreground pane2297233真正exit0，并要求原生4组/100outer/100TRAIN行终态。原vLLM批量生成、CPUmerge、strictEM、八端点及共同新baseline协议不变；Mac/Node各3项针对性终态检查通过，旧7项metrics不重复审核。Node source/batched-eval-v2-409dda7已仅CPU部署，没有GPU开始，训练未热改。
 
 完整分析尚未完成：原HF239成功B bank和旧HF endpoint/replay接口保留为历史；新的vLLM结果不能混用其baseline指标。正式新共同zero生成后、看到其余八端点输出前，需按原计划冻结该次成功参考bank；随后做固定模型posthoc g/h/KL回放并适配新端点输入，明确NA、覆盖和constant-label情况。它不增加fresh参考/额外pass采样预算，不能拿TRAIN某轮s/5冒充heldout pass。当前CPU补测终态准备不等于以上分析已完成。
+
+21:42 CST实际复核：G_POS25、G_NEG13、H_POS0、H_NEG0，共38条完整TRAIN记录。G_NEG末raw CP128/index12，末轮更新前EM1243/2560=48.5546875%；第14轮真实采样文件从27836239增长到29186428bytes，无error，原controller2300905继续。补测未占卡、不阻塞续训。原评测慢在四卡HF逐题生成，对比训练vLLM批量生成；后续统一四卡批量评测，现有raw15/25保留。
