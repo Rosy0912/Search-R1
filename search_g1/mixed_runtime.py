@@ -1,6 +1,7 @@
 """Frozen-policy candidate collection before any reward, probe or Adam update."""
 import json
 import os
+import time
 from pathlib import Path
 import numpy as np
 import torch
@@ -10,10 +11,19 @@ from search_g1.signals import decode_segments, contexts
 from verl.utils.reward_score import qa_em
 
 
+ROW_META = ('turns_stats', 'active_mask', 'valid_action_stats',
+            'valid_search_stats', 'actual_retrieval_stats')
+
 def subset(batch, indices):
+    meta = batch.meta_info.copy()
+    for key in ROW_META:
+        if key in meta:
+            if len(meta[key]) != len(batch):
+                raise ValueError("Per-trajectory metadata length differs: " + key)
+            meta[key] = [meta[key][i] for i in indices]
     return DataProto(batch=batch.batch[indices],
                      non_tensor_batch={k:v[indices] for k,v in batch.non_tensor_batch.items()},
-                     meta_info=batch.meta_info.copy())
+                     meta_info=meta)
 
 
 class CandidateStream:
@@ -87,11 +97,21 @@ def padded_concat(outputs, pad_id):
                 continue
             value = pad_id if key in token_keys else 0
             output.batch[key] = torch.nn.functional.pad(output.batch[key],(0,extra),value=value)
-    return DataProto.concat(outputs)
+    merged = DataProto.concat(outputs)
+    merged.meta_info = outputs[0].meta_info.copy()
+    for key in ROW_META:
+        if any(key in x.meta_info for x in outputs):
+            if not all(key in x.meta_info and len(x.meta_info[key]) == len(x) for x in outputs):
+                raise ValueError("Incomplete per-trajectory metadata: " + key)
+            merged.meta_info[key] = [v for x in outputs for v in x.meta_info[key]]
+    return merged
 
 
 def collect(trainer, manager, stream, attempt_identity):
     from reproduction.common8.behavior_runtime import prepare_identity, attach_generation_identity
+    started = time.monotonic()
+    raw_policy_tokens = raw_retrieval_calls = 0
+    generation_timings = {}
     selector = MixedFirstSelector(); candidates = {}; identities = []
     snapshot = None
     base = Path(os.environ['SEARCH_G1_BASE'])
@@ -116,6 +136,10 @@ def collect(trainer, manager, stream, attempt_identity):
         manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
             initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
+        raw_policy_tokens += int(output.batch["sampling_mask"].sum().item())
+        raw_retrieval_calls += sum(output.meta_info["actual_retrieval_stats"])
+        for key, value in manager.timing_raw.items():
+            generation_timings[key] = generation_timings.get(key, 0.0) + float(value)
         vectors = strict_vectors(parent, output, trainer.tokenizer)
         # Complete generated tensors remain remote for interruption diagnosis.
         torch.save({'parents':parent,'output':output,'identity':identity,
@@ -143,6 +167,8 @@ def collect(trainer, manager, stream, attempt_identity):
         raise
     members = selector.select()
     parents = DataProto.concat([candidates[x.ordinal][0] for x in members])
+    parents.non_tensor_batch["selection_source"] = np.array([
+        "mixed" if x.category == "mixed" else "all_correct_fallback" for x in members], dtype=object)
     output = padded_concat([candidates[x.ordinal][1] for x in members], trainer.tokenizer.pad_token_id)
     identity = identities[0].copy()
     identity['parent_group_ids'] = [identities[x.ordinal//512]['parent_group_ids'][x.ordinal%512] for x in members]
@@ -156,7 +182,11 @@ def collect(trainer, manager, stream, attempt_identity):
                  source_commit=run['source_commit'],model_revision=run['model_revision'],
                  data_manifest_sha256=run['budget']['common_manifest_sha256'],
                  frozen_probe_version=getattr(trainer.reward_fn,'expected_probe_version',None),
-                 raw_generated_trajectories=len(selector.reserved)*5)
+                 raw_generated_trajectories=len(selector.reserved)*5,
+                 raw_generated_policy_tokens=raw_policy_tokens,
+                 raw_actual_retrieval_calls=raw_retrieval_calls,
+                 candidate_fill_seconds=time.monotonic()-started,
+                 candidate_generation_timings=generation_timings)
     with (directory/(tag+'.json')).open('x') as f:
         json.dump(audit,f);f.flush();os.fsync(f.fileno())
     parents = parents.repeat(repeat_times=5,interleave=True)

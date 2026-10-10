@@ -32,7 +32,9 @@ def formal_mathematics(run=None):
     values = copy.deepcopy(FORMAL_MATHEMATICS)
     values.update(world_size=size, ppo_micro_batch_size=actor_global_micro(run),
                   per_rank_actor_micro_batch=actor_global_micro(run)//size,
-                  per_rank_log_prob_micro_batch=32 // size)
+                  per_rank_log_prob_micro_batch=32 // size,
+                  objective_reduction=('original four-row micro masked_mean'
+                      if actor_global_micro(run)//size == 4 else 'original two-row micro masked_mean'))
     if run is not None and bf16_policy(run):
         values.update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     return values

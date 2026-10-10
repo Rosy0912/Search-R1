@@ -815,9 +815,11 @@ class RayPPOTrainer(object):
                     from search_g1.mixed_runtime import collect
                     batch, mixed_output, behavior_identity, mixed_audit = collect(
                         self, generation_manager, mixed_stream, attempt_identity)
+                    timing_raw["candidate_fill"] = mixed_audit["candidate_fill_seconds"]
                     calibration_parents = None
                     metrics.update({"selection/"+k: mixed_audit[k] for k in
-                        ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories")})
+                        ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
+                         "raw_actual_retrieval_calls", "candidate_fill_seconds")})
                 else:
                     batch: DataProto = DataProto.from_single_dict(batch_dict)
                     behavior_identity = None
@@ -962,6 +964,22 @@ class RayPPOTrainer(object):
                                                   gamma=self.config.algorithm.gamma,
                                                   lam=self.config.algorithm.lam,
                                                   num_repeat=self.config.actor_rollout_ref.rollout.n)
+
+                    if mixed_stream is not None:
+                        sources = batch.non_tensor_batch['selection_source']
+                        response_width = batch.batch['responses'].shape[-1]
+                        response_mask = batch.batch['attention_mask'][:, -response_width:].bool()
+                        rewards = batch.batch['token_level_rewards'].sum(-1)
+                        for source in ('mixed', 'all_correct_fallback'):
+                            rows = torch.as_tensor(sources == source, device=rewards.device)
+                            metrics['selection/'+source+'/trajectories'] = int(rows.sum())
+                            if bool(rows.any()):
+                                metrics['selection/'+source+'/original_reward_mean'] = float(rewards[rows].mean())
+                                valid = response_mask[rows]
+                                advantages = batch.batch['advantages'][rows]
+                                if bool(valid.any()):
+                                    metrics['selection/'+source+'/original_advantage_mean'] = float(advantages[valid].mean())
+                                    metrics['selection/'+source+'/original_advantage_abs_mean'] = float(advantages[valid].abs().mean())
 
                     # update critic
                     if self.use_critic:

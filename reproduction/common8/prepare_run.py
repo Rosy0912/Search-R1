@@ -88,7 +88,7 @@ def prepare(base,model,official_path,commit):
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
-        completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
+        actor_micro_batch_per_rank=4,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
         initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
         source_commit=commit,source_sha256=source,
         source_snapshot_semantics='disk fingerprint before launch; not proof of loaded modules',
