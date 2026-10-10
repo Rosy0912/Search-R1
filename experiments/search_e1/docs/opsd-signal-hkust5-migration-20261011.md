@@ -53,3 +53,7 @@ G_POS/G_NEG的raw15/25检查点、完整四rank状态、共享Adam、adapter、o
 后续只能在真实100行2560分母训练完成、同tmux server3535788/tick643725164、原foreground3550866/session$2/pane%2实际dead-status0、两H组实际wait0、全部原训练进程/GPU释放后评测。持target/home额外资源锁和原V4全部锁；当训练仍运行时不能抢占。若迁移supervisor之后实际故障/换身份，该特定终态绑定需另版恢复，不套用旧退出证据。此准备不是八次评测完成或整体实验验收。
 
 06:15快照同H_POS控制器身份一致，仍7轮/Adam71；第8轮第二wave真实生成文件从约2.2MB增长到3.5–3.9MB，已有新分片正常完成，memory observer年龄5.6秒。小摘要位于 `outputs/opsd-signal-execution-20261010/hkust5-progress-1791670514.json`。当前训练部署仍b77，与新评测852和后续文档HEAD分别记录。
+
+06:40本轮继续验收：H_POS第8轮已完整结束，2560条采样1259 strict正确（49.1796875%，不同TRAIN cohort的更新前表现），P=K309，10次真实Adam71→81，末21对使用实际尾批分母；累计配对曝光2434。原生trainer实际wait0、全部自有GPU进程释放及summary均已落盘。独立原生CPU reader读取CP81（manifest `7b73b21d5674a9462e35d3dbc08d2a713b13ea9f93543c88e6314fd22f1adba2`）：四rank完整Adam81/moments/groups一致且有限，504个FP32适配器tensor全有限且相对共同初始化全部改变，CUDA未初始化。没有声称重新计算历史logits或所有token，也未重训验收前缀。
+
+06:44:54同一控制器已实际生成第9轮新轨迹，第一wave四个generation文件从0增长到约2.2–3.7MB；memory observer年龄3.25秒，below累计0。总58/100（G_POS25、G_NEG25、H_POS8、H_NEG0），正式固定512测试仍0/8。当前训练正常继续；全部训练结束后使用已完成CPU准备的独立评测入口。小型原生完成/退出证明和CP81数值读回分别在 `outputs/opsd-signal-execution-20261010/hkust5-outer8-native-complete.json` 与 `hkust5-cp81-independent-cpu.json`，大状态/轨迹仅在HKUST远端。
