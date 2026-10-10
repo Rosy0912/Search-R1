@@ -79,3 +79,7 @@ CPU补测准备：409dda73d05ee06edd035c6d66e3e2b5ae46342d的batched_eval_v2仅�
 22:08 CST实际里程碑：G_NEG15/25完成、CP148/index14 SHA48a4738999172e2bd21f8bec0e64aa1c4f4aa9033a8d20ba69b74d44e0a95127，真实trainerwait0、P=K299、累计曝光4548。TRAIN更新前1198/2560=46.796875%，全study40/100条完整记录。第16轮直接采样，trace从5573496增长至13628637bytes，无error，没有启动15轮补测。raw15的四rank完整状态已跨HKUST节点备份9成员359785492bytes，实际两端exit0及逐SHA通过；新版本v4/v2都仅CPU准备，不代表八次512或最终分析完成。
 
 22:25 CST实际进展：G_NEG16/25、CP158/index15 SHA40adeea6c8694fa7c45a33e754b7751a36672e0c49454a38c4693e6a6e71f7e3，原生trainer实际exit0；P=K307、累计pair曝光4855，TRAIN更新前1249/2560=48.7890625%。四组41/100完整TRAIN记录；第17轮采样trace从2462209增长至18404567bytes、无error，未GPU测试或新增审核。CP158远端备份9成员359785300bytes/两端SSHexit0和逐SHA完成；native记录/备份不冒充本CP独立全Adam张量CPU实读。训练仍原0146350部署，所有已完成更新未重跑。
+
+22:38 CST实际进展：G_NEG17/25、CP168/index16 SHA090c7aed5ea319d6c839ff417de0be9e51a46615180ef65abc8a55b25a630393，trainer真实exit0；P=K311、累计曝光5166，TRAIN更新前1244/2560=48.59375%，四组42/100。第18轮已实际采样、后续trace继续增长；CP168远端备份9成员359785236bytes/两端exit0及逐SHA完成，无新增GPU测试或审核。
+
+评测保真待处理：原执行goal明确HF SDPA/BF16 base+未合并FP32 LoRA，已CPU准备的v4是vLLM合并BF16，二者数值条件不同。目前GPU测试0/8；不能凭改协议并重评baseline就称原native设置全部满足。下一步CPU检查原冻结SearchAgent的可批量实现，优先保持原LoRA/attention/generation设置完成提速；训练继续，保留v4为未运行候选，不隐藏精度差异、不重复已有更新。
