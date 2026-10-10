@@ -1,0 +1,37 @@
+{
+  "schema": "opsd-signal-debug-retention-prefix15-execution-v1",
+  "request_sha256": "88fccb66c3676f81089d91e218aa899533bd967342e6a44911912faf711cc697",
+  "request_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/debug-retention-prefix15-128a5ef-20261010/request.json",
+  "request_publication_sha256": "3be6551e2ad5badb0722b9d6ffae802191e1e46c058d35489bcf9745b57d61a3",
+  "request_publication_commit": "128a5eff0ba812a4b1679786cc96797243616da5",
+  "reader_source_commit": "9e1d179664573128f42a2fb0f2bbc72f89fb9ed6",
+  "reader_source_manifest_sha256": "8bd9d5d6c46710954e7f9e7d2d71e21943e0ac94a4fa2748e6725a9094d5ef2a",
+  "argv": [
+    "ssh",
+    "-o",
+    "BatchMode=yes",
+    "-o",
+    "ConnectTimeout=15",
+    "-o",
+    "ProxyCommand=none",
+    "-o",
+    "ProxyJump=none",
+    "-o",
+    "ControlMaster=no",
+    "-o",
+    "ControlPath=none",
+    "hkust4",
+    "'env' 'CUDA_VISIBLE_DEVICES=' 'PYTHONDONTWRITEBYTECODE=1' 'E1_RUN_ID=retention-prefix15-128a5ef' '/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python' '-B' '/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/debug-retention-9e1d179/opsd_signal_weight_debug_retention_v1/audit.py' '--request' '/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/debug-retention-prefix15-128a5ef-20261010/request.json' '--request-sha256' '88fccb66c3676f81089d91e218aa899533bd967342e6a44911912faf711cc697'"
+  ],
+  "actual_tool_result": {
+    "chunk_id": "f01855",
+    "wall_time_seconds": 0.0000055,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "started_unix_ms": 1791597036151,
+  "stdout_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-actual-1791597036151.stdout.json",
+  "stderr_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/debug-retention-prefix15-actual-1791597036151.stderr",
+  "scope": "Actual original CPU debug-retention reader, completed G_POS first15 outers only; not complete100, numeric optimizer or native512 evaluation acceptance"
+}
