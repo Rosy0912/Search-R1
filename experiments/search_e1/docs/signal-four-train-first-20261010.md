@@ -51,3 +51,7 @@
 2026-10-10 16:10 CST推进：G_NEG6/25完整outer、累计Adam58；第6轮更新前TRAIN strict EM1229/2560=48.0078125%，P=K305、10次新Adam（48→58），原torchrun实际wait0。原生四rank adapter/Adam摘要一致，没有重复独立CPU张量实读。CP58已HKUST1远端9成员逐SHA备份，两端实际退出0、Mac payload0。第7轮SAMPLING实际生成trace约5.64MB、两原控制进程实读存活，无新错误；此前收尾观察提示自然清除，没有重启或新修复。总TRAIN31/100（G_POS25/G_NEG6/H_POS0/H_NEG0），八次正式512仍后置pending，继续当前训练。
 
 2026-10-10 16:24 CST推进：G_NEG7/25完整outer、累计Adam68；第7轮更新前TRAIN strict EM1224/2560=47.8125%，P=K300、10次新Adam（58→68），原torchrun实际wait0。原生四rank adapter/Adam摘要一致，没有重复独立CPU张量实读。CP68已HKUST1远端9成员逐SHA备份，两端实际退出0、Mac payload0。第8轮从CP68继续SAMPLING，实际生成trace由2.52MB增长到7.22MB、两原控制进程实读存活，无新错误。总TRAIN32/100（G_POS25/G_NEG7/H_POS0/H_NEG0），八次正式512仍后置pending。上一goal回合为verified wait，本回合完成新outer及远端备份，有实际进展；训练与科学配置未变，继续同一run。
+
+2026-10-10 16:38–16:55 CST真实完成、17:02复核：G_NEG第8、9轮均完整结束，累计Adam78、88。第8轮P=K310、10次新Adam（68→78），更新前TRAIN1244/2560=48.59375%；第9轮P=K301、10次新Adam（78→88），更新前TRAIN1195/2560=46.6796875%。两轮实际torchrun wait0、原生四rank adapter/Adam摘要一致；本次不重复独立CPU张量实读。CP78、88已HKUST1远端各9成员逐SHA备份，两端实际退出0、Mac payload0。
+
+同controller1977766已进入第10轮SAMPLING，实际trace15.19→23.97MB继续增长；采样阶段proc/environ及动态memory-live SHA观察提示不等于实际失败，前一提示已自然清除。没有信号、重启或重复更新，冻结科学设置未变。总TRAIN34/100（G_POS25/G_NEG9/H_POS0/H_NEG0），八次完整512仍后置pending。上一goal回合完成GN7与备份，为progress；本回合完成GN8/9与备份，亦为progress，不以单次巡检结束目标。
