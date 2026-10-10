@@ -1,0 +1,62 @@
+{
+  "accepted_execution_prefix": true,
+  "accumulation": {
+    "global_trajectory_batch": 32,
+    "micro": 1,
+    "per_rank": 8,
+    "world": 4
+  },
+  "actual_effective_token_rows_validated": 823139,
+  "adapter_tensor_digest": "2721b267d60bc5dd12a37b27c621a0f382bba891b00cadcc65763c3cc79795ea",
+  "all_four_exact_full_adam": true,
+  "backup": {
+    "accepted": true,
+    "actual_cli_wait": 0,
+    "member_bytes": 359785492,
+    "member_count": 9,
+    "no_cp_payload_on_mac": true,
+    "source_ssh_wait": 0,
+    "source_tar_wait": 0,
+    "staging_pending_publication": true,
+    "stdout_sha256": "53061aaa31be54fd8d53a5a29400cefb452247b205625a5ba30e602f56daba42",
+    "target_commit_wait": 0,
+    "target_marker_sha256": "2a96d4ae9dcb28e7fc13d790f7dc8da7685f1ad990ae2ee96c4e49df8e2681cc",
+    "target_ssh_wait": 0
+  },
+  "complete_training_outers": 15,
+  "completed_chain_optimizer_updates": 150,
+  "current_outer_delta_updates": 10,
+  "current_outer_pairs": 308,
+  "current_outer_tail_pairs": 20,
+  "full_study_complete": false,
+  "last_preupdate_train_correct": 1210,
+  "latest_numeric": {
+    "bytes": 5915,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp150-numeric-actual.json",
+    "sha256": "f9d4343266d801e39f862ba51ce43be2806c65cdf9357b612c1aa20762ba7d16"
+  },
+  "latest_token": {
+    "bytes": 6032,
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/cp150-token-actual.json",
+    "sha256": "3076c618e2737b6c7531ba49be0b9babdb096c7b21ac8bd9dcaca712d40ab119"
+  },
+  "native512_endpoint_accepted": false,
+  "native512_state": "Original evaluator running; actual8logicalwait0/unique512 needed",
+  "pair_exposures": 4568,
+  "raw_checkpoint_finite_and_changed": true,
+  "raw_end_checkpoint": {
+    "bytes": 28980,
+    "ctime_ns": 1791590780710904427,
+    "device": 2081,
+    "inode": 48175279,
+    "mtime_ns": 1791590780678904044,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/runs/checkpoints/update-00000150-outer-00014/manifest.json",
+    "sha256": "fda38c2a8a60fc13512c8a3b29ae2a2c5b4ba02aa732104a02257cc478ba4050"
+  },
+  "schema": "opsd-signal-fifteen-outer-accepted-reference-v1",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "train_denominator": 2560,
+  "train_em": 0.47265625,
+  "train_scope": "All unfiltered actual512x5 fresh sample slots, before this outer training, not heldout or postupdate EM",
+  "variant": "G_POS"
+}

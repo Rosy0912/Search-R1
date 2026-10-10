@@ -1,0 +1,48 @@
+{
+  "accepted": true,
+  "checkpoints": 1,
+  "full_study_complete": false,
+  "node_staging_complete": false,
+  "packets": [
+    {
+      "execution": {
+        "bytes": 4127,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp150-actual.execution.json",
+        "sha256": "4f8333eac4348893487846d4c353f394fffaa495f2b7dd74e5b36eee1148a028"
+      },
+      "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1",
+      "original_target_marker": {
+        "bytes": 28962,
+        "ctime_ns": 1791591002003522085,
+        "device": 2065,
+        "inode": 466787304,
+        "mtime_ns": 1791591002003522085,
+        "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000150-outer-00014/complete-sha-verified.json",
+        "sha256": "2a96d4ae9dcb28e7fc13d790f7dc8da7685f1ad990ae2ee96c4e49df8e2681cc"
+      },
+      "output": {
+        "bytes": 3656,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp150-actual.stdout.json",
+        "sha256": "53061aaa31be54fd8d53a5a29400cefb452247b205625a5ba30e602f56daba42"
+      },
+      "publication": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/backup-publication-556754a.json",
+        "sha256": "518a91a3ac74e9ecc2ff17ce6a4ff295cd450badeb0acb1ccb09a6ca8ace5cf2"
+      },
+      "source_manifest": {
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/backup-556754a/opsd_signal_weight_backup_v1/source-manifest.json",
+        "sha256": "4c5c32c4e3d3b9dc1b22b2c3df57e5408d9e55b675fa927be34d27293ec36946"
+      },
+      "target_marker_copy": {
+        "bytes": 28962,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/backup-evidence-556754a/cp150-target-marker.raw.json",
+        "sha256": "2a96d4ae9dcb28e7fc13d790f7dc8da7685f1ad990ae2ee96c4e49df8e2681cc"
+      }
+    }
+  ],
+  "schema": "opsd-signal-pinned-backup-execution-packets-v1",
+  "scope": "CP150/outer14 actual CLI stdout/wait0 and original target acceptance marker metadata; nine-member checkpoint payload exists only in HKUST remote paths. Byte backup acceptance is independent of 15-outer512 test EM completion.",
+  "state": "PREPARED_LOCAL_PENDING_ROOT_PUBLICATION_AND_NODE_STAGING",
+  "study_id": "signal-four-1fd4da344d9147e7be99c62e5d7c2d26",
+  "variant": "G_POS"
+}
