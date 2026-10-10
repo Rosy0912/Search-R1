@@ -1,0 +1,3468 @@
+{
+  "scope_iterations": [
+    0,
+    150
+  ],
+  "run_id": "f04fe593830c4831918ede872812c016",
+  "actual_observed_cst": "2026-10-10T11:10:54.432311+08:00",
+  "read_only": true,
+  "scope": "originalArchivefirstGRPO, historicalliveTRAINnotreplayorvalidation",
+  "availability": {
+    "grouprewardmean_curve": "availableasglobalbinaryresponse_rewardmean;equalfiveperquestionmakesmean_of_groupmeans_equalthisscalar",
+    "within_group_individual_reward_vectors": "notpersistedinqueriedoriginalstage/outputroots",
+    "groupstd_and_allcorrect_allwrong_mixed_fractions": "NOT_RECOVERABLE fromavailableglobalmean/extrema",
+    "groupadvantagevariance": "NOT_LOGGED;notreconstructed",
+    "critic_adv_mean_extrema": "availablebutnotwithin-groupmean/variance",
+    "rawresponses_asconsoleexamples": "onlynum_examineper-source examples; notall512groups; nofullexportedrows",
+    "queried_output_roots": [
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo",
+        "exists": true,
+        "noncheckpoint_output_files": [
+          {
+            "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runs/archive/round-1-grpo/train.log",
+            "bytes": 58905459
+          }
+        ]
+      },
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/outputs/archive",
+        "exists": false,
+        "noncheckpoint_output_files": []
+      },
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/rollouts/archive",
+        "exists": false,
+        "noncheckpoint_output_files": []
+      },
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/outputs",
+        "exists": false,
+        "noncheckpoint_output_files": []
+      },
+      {
+        "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/rollouts",
+        "exists": false,
+        "noncheckpoint_output_files": []
+      }
+    ],
+    "namedgroupmetric_matches": [],
+    "nativefullscalar_metric_keys1_150": [
+      "actor/entropy_loss",
+      "actor/grad_norm",
+      "actor/kl_coef",
+      "actor/kl_loss",
+      "actor/lr",
+      "actor/pg_clipfrac",
+      "actor/pg_loss",
+      "actor/ppo_kl",
+      "audit/legacy_em",
+      "audit/score_disagreement",
+      "audit/strict_em",
+      "critic/advantages/max",
+      "critic/advantages/mean",
+      "critic/advantages/min",
+      "critic/returns/max",
+      "critic/returns/mean",
+      "critic/returns/min",
+      "critic/rewards/max",
+      "critic/rewards/mean",
+      "critic/rewards/min",
+      "critic/score/max",
+      "critic/score/mean",
+      "critic/score/min",
+      "env/finish_ratio",
+      "env/number_of_actions/max",
+      "env/number_of_actions/mean",
+      "env/number_of_actions/min",
+      "env/number_of_valid_action",
+      "env/number_of_valid_search",
+      "env/ratio_of_valid_action",
+      "global_seqlen/balanced_max",
+      "global_seqlen/balanced_min",
+      "global_seqlen/max",
+      "global_seqlen/mean",
+      "global_seqlen/min",
+      "global_seqlen/minmax_diff",
+      "mfu/actor",
+      "prompt_length/clip_ratio",
+      "prompt_length/max",
+      "prompt_length/mean",
+      "prompt_length/min",
+      "response_length/clip_ratio",
+      "response_length/max",
+      "response_length/mean",
+      "response_length/min",
+      "state_tokens/coverage",
+      "state_tokens/total",
+      "step",
+      "timing_per_token_ms/adv",
+      "timing_per_token_ms/gen",
+      "timing_per_token_ms/ref",
+      "timing_per_token_ms/update_actor",
+      "timing_s/adv",
+      "timing_s/gen",
+      "timing_s/ref",
+      "timing_s/save_checkpoint",
+      "timing_s/step",
+      "timing_s/testing",
+      "timing_s/update_actor",
+      "val/test_score/hotpotqa",
+      "val/test_score/nq"
+    ],
+    "not_exhaustive_every_unrelatedNode_directory": true
+  },
+  "rows": [
+    {
+      "iteration": 0,
+      "training_group_reward_mean_logged": null,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "status": "no_initial_training_groupbatch_record;initial512greedyvalidationisnotfive-rollouttraining"
+    },
+    {
+      "iteration": 1,
+      "training_group_reward_mean_logged": 0.172,
+      "strict_EM_response_mean_logged": 0.172,
+      "critic_advantage_mean_logged": 0.003,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 1618,
+      "source_line_sha256": "fb18037221bab332f9b7a6d1d7addf6d06f35284482b023a53bc05a66de84157",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 2,
+      "training_group_reward_mean_logged": 0.155,
+      "strict_EM_response_mean_logged": 0.155,
+      "critic_advantage_mean_logged": 0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 2696,
+      "source_line_sha256": "254f940e05724bab8ffed77e923843202f2240da5e68d82a87db54d98aa8dd47",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 3,
+      "training_group_reward_mean_logged": 0.155,
+      "strict_EM_response_mean_logged": 0.155,
+      "critic_advantage_mean_logged": 0.003,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 3488,
+      "source_line_sha256": "99f9a9f2af6e426f56af01b0075324e4590cefca3f398e6e2f93ba413b60f65d",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 4,
+      "training_group_reward_mean_logged": 0.13,
+      "strict_EM_response_mean_logged": 0.13,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 4431,
+      "source_line_sha256": "b51cc7ff8f235d313c767fa717fddcae70a543c57b38a11b236c8aa5666d8602",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 5,
+      "training_group_reward_mean_logged": 0.171,
+      "strict_EM_response_mean_logged": 0.171,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 5246,
+      "source_line_sha256": "57346cca0c04c966f90829f395d1ca7f4ab60f0b90870c22b7f68c45afc812f3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 6,
+      "training_group_reward_mean_logged": 0.168,
+      "strict_EM_response_mean_logged": 0.168,
+      "critic_advantage_mean_logged": 0.004,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 6415,
+      "source_line_sha256": "23cc333027fe4cb787e8f9cd54e4474d4140df7b365183e71baf06c1a1be8e9b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 7,
+      "training_group_reward_mean_logged": 0.169,
+      "strict_EM_response_mean_logged": 0.169,
+      "critic_advantage_mean_logged": -0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 7540,
+      "source_line_sha256": "019074307f863091e29c50143882e42e9b8dc9f6e8e0db380e64d04c9efe04a3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 8,
+      "training_group_reward_mean_logged": 0.182,
+      "strict_EM_response_mean_logged": 0.182,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 8745,
+      "source_line_sha256": "38230a96f956401585c5b83dbce61d1c23650b0286f76edb746d6ee1997997ed",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 9,
+      "training_group_reward_mean_logged": 0.192,
+      "strict_EM_response_mean_logged": 0.192,
+      "critic_advantage_mean_logged": 0.001,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 10157,
+      "source_line_sha256": "86dedbdee40ab1a6e9a3de3d2acb3cc420dba1f64705b3c57926fcd212344da5",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 10,
+      "training_group_reward_mean_logged": 0.198,
+      "strict_EM_response_mean_logged": 0.198,
+      "critic_advantage_mean_logged": -0.004,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 11013,
+      "source_line_sha256": "2e76736480fcd856a53d38c17307dba5a13fdd22a7c3529be1cba478613f9519",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 11,
+      "training_group_reward_mean_logged": 0.207,
+      "strict_EM_response_mean_logged": 0.207,
+      "critic_advantage_mean_logged": -0.001,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 12237,
+      "source_line_sha256": "2aeeb2fbdf770d53b463700c51a32c0e370a95e2bec0f177623a3184af3bf611",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 12,
+      "training_group_reward_mean_logged": 0.202,
+      "strict_EM_response_mean_logged": 0.202,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 13229,
+      "source_line_sha256": "c5a8289e880c564a9b6aa5c96f7708ea9ca94d60c49d4a54e92a682d19b1cfcc",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 13,
+      "training_group_reward_mean_logged": 0.204,
+      "strict_EM_response_mean_logged": 0.204,
+      "critic_advantage_mean_logged": 0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 14341,
+      "source_line_sha256": "6d79e0096e6766d5d8e483ed22d362207ce15fbf1225219c2d3fb850fa404ceb",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 14,
+      "training_group_reward_mean_logged": 0.22,
+      "strict_EM_response_mean_logged": 0.22,
+      "critic_advantage_mean_logged": -0.003,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 15363,
+      "source_line_sha256": "3f43e58220be22c50155f25d75c01cdd32b48822eebed7ad2266f213b6411191",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 15,
+      "training_group_reward_mean_logged": 0.213,
+      "strict_EM_response_mean_logged": 0.212,
+      "critic_advantage_mean_logged": -0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 16188,
+      "source_line_sha256": "46664c402372a43870380a66c45300cc55597e0bf896758baef1eb125f157985",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 16,
+      "training_group_reward_mean_logged": 0.236,
+      "strict_EM_response_mean_logged": 0.236,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 17633,
+      "source_line_sha256": "f7c80b9d048ceb933e2b8443c98cdca7935f94b755ab281d76bba64d113aab49",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 17,
+      "training_group_reward_mean_logged": 0.204,
+      "strict_EM_response_mean_logged": 0.204,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 18782,
+      "source_line_sha256": "0c130121f686a2fbb691c089d827bc079e7b59b0543a32e2aff85841b7dbe37c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 18,
+      "training_group_reward_mean_logged": 0.245,
+      "strict_EM_response_mean_logged": 0.245,
+      "critic_advantage_mean_logged": -0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 19760,
+      "source_line_sha256": "82c064b8f8ad5da0f1ee4fefdeb118fab8370b53560879e8d04e34a12370a659",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 19,
+      "training_group_reward_mean_logged": 0.205,
+      "strict_EM_response_mean_logged": 0.205,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 20809,
+      "source_line_sha256": "c6951e57b793ddc44ad752beb37432f1feaa76a0eaf369b0e67a9ba45ffc5f55",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 20,
+      "training_group_reward_mean_logged": 0.195,
+      "strict_EM_response_mean_logged": 0.195,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 22046,
+      "source_line_sha256": "2b4791e275ebac4d1c6610775d5307c8f625f94a65e8d6379ae935e6d9c5eded",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 21,
+      "training_group_reward_mean_logged": 0.229,
+      "strict_EM_response_mean_logged": 0.229,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 22927,
+      "source_line_sha256": "11ff2dd2492fc25965d21d69d24573dbd977a2864ea4eb8ba7089b4c45a68511",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 22,
+      "training_group_reward_mean_logged": 0.213,
+      "strict_EM_response_mean_logged": 0.213,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 23845,
+      "source_line_sha256": "d691ce039ba9673f59b04501657021d6e177e2d9050f49917931d823fdc6bce4",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 23,
+      "training_group_reward_mean_logged": 0.223,
+      "strict_EM_response_mean_logged": 0.223,
+      "critic_advantage_mean_logged": -0.01,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 24899,
+      "source_line_sha256": "8c6553a2e71783a9adaf7edb6260e42d67d5cf2c2ad451df21c956b1861099ed",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 24,
+      "training_group_reward_mean_logged": 0.248,
+      "strict_EM_response_mean_logged": 0.248,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 25751,
+      "source_line_sha256": "7846c86c64f30cf068d5299d943086f4b8060767f29689d9f6b1c0eac3c0062d",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 25,
+      "training_group_reward_mean_logged": 0.243,
+      "strict_EM_response_mean_logged": 0.243,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 26489,
+      "source_line_sha256": "251a5796a82c63336cc8f9409a7fdd117c281e4d0bb41bf60e998ad51931e33f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 26,
+      "training_group_reward_mean_logged": 0.223,
+      "strict_EM_response_mean_logged": 0.223,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 27196,
+      "source_line_sha256": "38b9d0a4f1135a547a04f44c476fc52ec8db96b70859a91c699cffa5d3cdfd7c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 27,
+      "training_group_reward_mean_logged": 0.248,
+      "strict_EM_response_mean_logged": 0.248,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 28267,
+      "source_line_sha256": "77f5c610b1d7de9a7f09872a5b116d593db0b02da08ce9e0643c6573cf65a99e",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 28,
+      "training_group_reward_mean_logged": 0.24,
+      "strict_EM_response_mean_logged": 0.24,
+      "critic_advantage_mean_logged": -0.01,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 29203,
+      "source_line_sha256": "fb0ff973887cc717d9ee32d12919b117493a57528053f893cf8bca30c0aa1049",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 29,
+      "training_group_reward_mean_logged": 0.257,
+      "strict_EM_response_mean_logged": 0.257,
+      "critic_advantage_mean_logged": -0.01,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 30253,
+      "source_line_sha256": "dd6b835a6e5df1704a587136f73e5abcd886b4f051d85e186ccacd8b5741d1a8",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 30,
+      "training_group_reward_mean_logged": 0.232,
+      "strict_EM_response_mean_logged": 0.232,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 31261,
+      "source_line_sha256": "4ab2fde18713e41070deae12f439ee118e0839691e0490d3cf7123482049365e",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 31,
+      "training_group_reward_mean_logged": 0.21,
+      "strict_EM_response_mean_logged": 0.21,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 32322,
+      "source_line_sha256": "2b9b93d6af681da191739d8adedb7b1717aa3f01b7580bd6ebdc0bdafb6bdeab",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 32,
+      "training_group_reward_mean_logged": 0.228,
+      "strict_EM_response_mean_logged": 0.228,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 33255,
+      "source_line_sha256": "9575c972e5c1ec29a378004b1b7ef36d49fe346eb19a5416b0c07b1ae24b9d08",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 33,
+      "training_group_reward_mean_logged": 0.254,
+      "strict_EM_response_mean_logged": 0.254,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 34088,
+      "source_line_sha256": "393ac22d541055dc00a738b39128db02adbf4043ed0c0d671e63c1a29dc54755",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 34,
+      "training_group_reward_mean_logged": 0.252,
+      "strict_EM_response_mean_logged": 0.252,
+      "critic_advantage_mean_logged": -0.004,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 34999,
+      "source_line_sha256": "a6e282b1b8d8ff16f74bdd7ebba1dad8c0ec9f6a725cd8f72f283e45b596c62c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 35,
+      "training_group_reward_mean_logged": 0.24,
+      "strict_EM_response_mean_logged": 0.24,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 36111,
+      "source_line_sha256": "8aa2c15adb323112087cbfc2b5a7de75d1b6a089ea9e03e1c3c594a8e3f05f46",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 36,
+      "training_group_reward_mean_logged": 0.258,
+      "strict_EM_response_mean_logged": 0.258,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 37213,
+      "source_line_sha256": "4713c95f7edd20df6c41d4ff1cdfb8e621c4decc1e0eeedf30ec403c1e545e21",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 37,
+      "training_group_reward_mean_logged": 0.251,
+      "strict_EM_response_mean_logged": 0.251,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 38177,
+      "source_line_sha256": "76e809810105b47e144a52e69508fcec9913befcc72b9022b26f460750740f46",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 38,
+      "training_group_reward_mean_logged": 0.244,
+      "strict_EM_response_mean_logged": 0.244,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 39666,
+      "source_line_sha256": "88420eecb0e08a3306aa77bdca9cde66ed104eb18f92305121af61bdcd1c55f0",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 39,
+      "training_group_reward_mean_logged": 0.256,
+      "strict_EM_response_mean_logged": 0.256,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 40578,
+      "source_line_sha256": "fc1fd4ae4fe3d87243e2df86e219bc96bafc0bf1eccafa5db3221d80485d978d",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 40,
+      "training_group_reward_mean_logged": 0.275,
+      "strict_EM_response_mean_logged": 0.275,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 41699,
+      "source_line_sha256": "d9eec5e37ad8aebfc6757b0ef7c40c47b52947d957ab53bc0d0689f633f81b2f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 41,
+      "training_group_reward_mean_logged": 0.25,
+      "strict_EM_response_mean_logged": 0.25,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 42450,
+      "source_line_sha256": "850f77b70ce79d042dcbfece1d83958f3f509f6438491e3d02a8741d2c7658cd",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 42,
+      "training_group_reward_mean_logged": 0.323,
+      "strict_EM_response_mean_logged": 0.323,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 43315,
+      "source_line_sha256": "f7ab654e1c0dabc689e90712d521f3e4b0efa706fee9b10cf3029633a34d9e89",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 43,
+      "training_group_reward_mean_logged": 0.26,
+      "strict_EM_response_mean_logged": 0.26,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 44190,
+      "source_line_sha256": "d84127495d8e3400b27470b89d30b7e2baa3f04ee3a375cf68f6ff054eea2e43",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 44,
+      "training_group_reward_mean_logged": 0.302,
+      "strict_EM_response_mean_logged": 0.302,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 45087,
+      "source_line_sha256": "33141430b702cbb77d5bf3d4d1c3f58ea1a0d40a21c44c41186be2ec618dbb9b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 45,
+      "training_group_reward_mean_logged": 0.286,
+      "strict_EM_response_mean_logged": 0.286,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 46239,
+      "source_line_sha256": "5fbae89392c718b463a4d28d33f42e1832c066db76e856aaeeb64fab70194721",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 46,
+      "training_group_reward_mean_logged": 0.322,
+      "strict_EM_response_mean_logged": 0.322,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 47329,
+      "source_line_sha256": "aba7b8fcbf87bb7264172b85d57a085081ecf8619931438223debbd01f922a07",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 47,
+      "training_group_reward_mean_logged": 0.309,
+      "strict_EM_response_mean_logged": 0.309,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 48217,
+      "source_line_sha256": "37de78e7aeebaa075272665c20b0bea7d773766ea4d593b8c4153790c39a0626",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 48,
+      "training_group_reward_mean_logged": 0.335,
+      "strict_EM_response_mean_logged": 0.335,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 49108,
+      "source_line_sha256": "cb1b421fa57a162ffdea8b44d69da8ea7a05be8d86e7e5c5d2a7761114902422",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 49,
+      "training_group_reward_mean_logged": 0.319,
+      "strict_EM_response_mean_logged": 0.319,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 49980,
+      "source_line_sha256": "1ac687cd1da5e98b024fbb065fe85dbf358a0f98692c30150e00acd08928826a",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 50,
+      "training_group_reward_mean_logged": 0.338,
+      "strict_EM_response_mean_logged": 0.338,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 51512,
+      "source_line_sha256": "6140f93e4cb59ac4c544ab3d9c9f128eaab38c1231c0f6627efb758f549cc77e",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 51,
+      "training_group_reward_mean_logged": 0.327,
+      "strict_EM_response_mean_logged": 0.327,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 52692,
+      "source_line_sha256": "cb100a024150753a8a7b1173cb14a7cb302dcbb954d055027bb30c579aad2410",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 52,
+      "training_group_reward_mean_logged": 0.333,
+      "strict_EM_response_mean_logged": 0.333,
+      "critic_advantage_mean_logged": -0.022,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 53635,
+      "source_line_sha256": "f2437214535e983a6148970da862ff9f537aefd4ec613372d6e06c81d4d01209",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 53,
+      "training_group_reward_mean_logged": 0.343,
+      "strict_EM_response_mean_logged": 0.343,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 54650,
+      "source_line_sha256": "6af692f44f4cccf88127443d490da28346b401d0698e2c6eed46f88bbd0519db",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 54,
+      "training_group_reward_mean_logged": 0.35,
+      "strict_EM_response_mean_logged": 0.35,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 55587,
+      "source_line_sha256": "3de36375bab2b8537a7dbfbebcf238f1a42d5d29aad3621df1b03155ec6eaf64",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 55,
+      "training_group_reward_mean_logged": 0.366,
+      "strict_EM_response_mean_logged": 0.366,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 56578,
+      "source_line_sha256": "01678f3d0fd5ede8758eb7c6d08b2fc28005aecab26a77f2ff39e2def517e2af",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 56,
+      "training_group_reward_mean_logged": 0.36,
+      "strict_EM_response_mean_logged": 0.36,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 57625,
+      "source_line_sha256": "4421b8763b491648d682a6924dd8e934dd6fd9ffb9661878f51add7138dd5bd3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 57,
+      "training_group_reward_mean_logged": 0.387,
+      "strict_EM_response_mean_logged": 0.387,
+      "critic_advantage_mean_logged": -0.025,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 58671,
+      "source_line_sha256": "d2e9070a849895ea863b707868f0a593c397cb89d6363df8679c60491b35996c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 58,
+      "training_group_reward_mean_logged": 0.332,
+      "strict_EM_response_mean_logged": 0.332,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 59692,
+      "source_line_sha256": "e487a81c19aecb7ba7242058f901167dc16185711fdc95aa9d3da2a883ae1284",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 59,
+      "training_group_reward_mean_logged": 0.376,
+      "strict_EM_response_mean_logged": 0.376,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 60725,
+      "source_line_sha256": "89f0fdd0e77cc235d4814226e049615f59c29fbc4e078c840a2fc72fc4aa5429",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 60,
+      "training_group_reward_mean_logged": 0.405,
+      "strict_EM_response_mean_logged": 0.405,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 61794,
+      "source_line_sha256": "6f3bbc8a1a34ce7bdb3f2d9d608d2c7ef5000cb3fb896b268a1ef87e0af0fde3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 61,
+      "training_group_reward_mean_logged": 0.397,
+      "strict_EM_response_mean_logged": 0.397,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 62862,
+      "source_line_sha256": "cd7e9ab47a17302597d3b39198f3c3a58abca73535d2df14911116f1d4ec1d5f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 62,
+      "training_group_reward_mean_logged": 0.384,
+      "strict_EM_response_mean_logged": 0.384,
+      "critic_advantage_mean_logged": -0.019,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 63611,
+      "source_line_sha256": "ea7fa2a249efdb948fc33bd418d883bd0b59b4cc739dc7429ef2e381bb1d11a1",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 63,
+      "training_group_reward_mean_logged": 0.374,
+      "strict_EM_response_mean_logged": 0.374,
+      "critic_advantage_mean_logged": -0.018,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 64571,
+      "source_line_sha256": "92bee3f592a952374c331009b9a2bab2ff629138c8751693ef68825080aa7630",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 64,
+      "training_group_reward_mean_logged": 0.4,
+      "strict_EM_response_mean_logged": 0.4,
+      "critic_advantage_mean_logged": -0.02,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 65657,
+      "source_line_sha256": "c457003768bb3dcc5bd3402701dda177998b9566f08e3ed6719be032a1be2b65",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 65,
+      "training_group_reward_mean_logged": 0.404,
+      "strict_EM_response_mean_logged": 0.404,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 66623,
+      "source_line_sha256": "afb51f32752fca4048adc8fcbae50792db71338979c31f2b458b053ecea0fc88",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 66,
+      "training_group_reward_mean_logged": 0.421,
+      "strict_EM_response_mean_logged": 0.421,
+      "critic_advantage_mean_logged": -0.004,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 67644,
+      "source_line_sha256": "256f5320bea34b8c1803a7c98b6429636ca6166dd52084fbea0d4c8b49af29c4",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 67,
+      "training_group_reward_mean_logged": 0.44,
+      "strict_EM_response_mean_logged": 0.44,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 68550,
+      "source_line_sha256": "021a6a21d0d772d2e8ec5b66a2847529566d09a7ea9359ee1323aba64c1094f0",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 68,
+      "training_group_reward_mean_logged": 0.402,
+      "strict_EM_response_mean_logged": 0.402,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 69880,
+      "source_line_sha256": "f06eb8f9b0dc750a19a8ec8e5431729ed2a6ce42c5a4d8cd0ed1ed9d912010f0",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 69,
+      "training_group_reward_mean_logged": 0.404,
+      "strict_EM_response_mean_logged": 0.404,
+      "critic_advantage_mean_logged": -0.021,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 70681,
+      "source_line_sha256": "42890c4be363362a51223bd8081019f1532fc4be982a0ed660a351dffc1fd753",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 70,
+      "training_group_reward_mean_logged": 0.43,
+      "strict_EM_response_mean_logged": 0.43,
+      "critic_advantage_mean_logged": -0.024,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 71629,
+      "source_line_sha256": "cbd65dec0eda41113b85431e739d86554baf0018b7f3a4e133aa0d642ac02e2d",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 71,
+      "training_group_reward_mean_logged": 0.413,
+      "strict_EM_response_mean_logged": 0.413,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 72433,
+      "source_line_sha256": "486eceeef851941d861b0889002ce453026e5ebb5dee75e389ff251458f8ab24",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 72,
+      "training_group_reward_mean_logged": 0.436,
+      "strict_EM_response_mean_logged": 0.436,
+      "critic_advantage_mean_logged": -0.017,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 73361,
+      "source_line_sha256": "84a42fcc3255f3bf142467079c8b932110c3f7afe2e58762533de13ee6f1b3a5",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 73,
+      "training_group_reward_mean_logged": 0.454,
+      "strict_EM_response_mean_logged": 0.454,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 74418,
+      "source_line_sha256": "0a115269a5d1f09d0815a94523d895a21b734d50c40cc48c925c50076e8d5243",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 74,
+      "training_group_reward_mean_logged": 0.427,
+      "strict_EM_response_mean_logged": 0.427,
+      "critic_advantage_mean_logged": -0.021,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 75409,
+      "source_line_sha256": "9e2103b2214e5bd5b32dd97931c7680806bdb5cae61794063897804d1f709b9f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 75,
+      "training_group_reward_mean_logged": 0.45,
+      "strict_EM_response_mean_logged": 0.45,
+      "critic_advantage_mean_logged": -0.028,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 76598,
+      "source_line_sha256": "a232d330bf1498295af88800686f8c7e4b3106b8e8d20d180106b15ed649f624",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 76,
+      "training_group_reward_mean_logged": 0.43,
+      "strict_EM_response_mean_logged": 0.43,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 77470,
+      "source_line_sha256": "18863b85f6b4cfc16c3fa05f873e0ae78f5803dbdae52f090be1bca4afe52dae",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 77,
+      "training_group_reward_mean_logged": 0.425,
+      "strict_EM_response_mean_logged": 0.425,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 78666,
+      "source_line_sha256": "de3ff3753979b0a39386d0c08df353420e43d69d9568950cdec70417f4051462",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 78,
+      "training_group_reward_mean_logged": 0.402,
+      "strict_EM_response_mean_logged": 0.402,
+      "critic_advantage_mean_logged": -0.011,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 79573,
+      "source_line_sha256": "efd9a9b0d8e352792d03faac759ca59cc71345ca26e692122e3956f6b6e9f1a9",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 79,
+      "training_group_reward_mean_logged": 0.471,
+      "strict_EM_response_mean_logged": 0.471,
+      "critic_advantage_mean_logged": -0.02,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 80954,
+      "source_line_sha256": "1776e1c52d10d64319d8d8f503a8e437215ad9289847770e1cffa2a71271a77b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 80,
+      "training_group_reward_mean_logged": 0.442,
+      "strict_EM_response_mean_logged": 0.442,
+      "critic_advantage_mean_logged": -0.024,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 81808,
+      "source_line_sha256": "5565dd7ff5dce5973b2797f8766ad3d5934a770b0a9de3d6d4812a2d04dffe59",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 81,
+      "training_group_reward_mean_logged": 0.427,
+      "strict_EM_response_mean_logged": 0.427,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 82602,
+      "source_line_sha256": "608513a679a27610e4a5ccd078753976acdb12b0ba9dc07e86d8b2926f3bcfbd",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 82,
+      "training_group_reward_mean_logged": 0.477,
+      "strict_EM_response_mean_logged": 0.477,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 83675,
+      "source_line_sha256": "33665d423d0810b5656816257f7b09f5739bbcd2222c39f4a34334eeffdaa85c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 83,
+      "training_group_reward_mean_logged": 0.432,
+      "strict_EM_response_mean_logged": 0.432,
+      "critic_advantage_mean_logged": -0.01,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 84770,
+      "source_line_sha256": "b9cef5385c660f923ae568e5c0f224c90679bcf28ec485f11fd86119ebbe0743",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 84,
+      "training_group_reward_mean_logged": 0.445,
+      "strict_EM_response_mean_logged": 0.445,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 85850,
+      "source_line_sha256": "0eaf99e4f8ff0d92b4b17e3f134dbbd6dbe19f2c76722d0ff4995a9d127e9248",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 85,
+      "training_group_reward_mean_logged": 0.437,
+      "strict_EM_response_mean_logged": 0.437,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 87071,
+      "source_line_sha256": "a3af6a8b7038d831ad50421b4ea0ff96f266116c883d8a73881cb813e6059ad3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 86,
+      "training_group_reward_mean_logged": 0.472,
+      "strict_EM_response_mean_logged": 0.472,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 88238,
+      "source_line_sha256": "da05e6d6de101dd6d2fa4366f6f94049c82d32591d131ca6edc573bca309f44a",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 87,
+      "training_group_reward_mean_logged": 0.433,
+      "strict_EM_response_mean_logged": 0.433,
+      "critic_advantage_mean_logged": -0.003,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 89552,
+      "source_line_sha256": "8545fe46a7a8ebca487b254332f6a0fb46ef6d4a3bf0fc7705a8f1925af4ff84",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 88,
+      "training_group_reward_mean_logged": 0.464,
+      "strict_EM_response_mean_logged": 0.464,
+      "critic_advantage_mean_logged": -0.023,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 90857,
+      "source_line_sha256": "1220d5f5308351616209a5014c6545b7e8d3d1dad28a9890e2d1246554f99e32",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 89,
+      "training_group_reward_mean_logged": 0.473,
+      "strict_EM_response_mean_logged": 0.473,
+      "critic_advantage_mean_logged": -0.017,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 92061,
+      "source_line_sha256": "27b84d4bb3c7354345a337e41e8de096aa6f4fe1f1e96082198f5e3d3e3a2fbd",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 90,
+      "training_group_reward_mean_logged": 0.455,
+      "strict_EM_response_mean_logged": 0.455,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 93227,
+      "source_line_sha256": "8691e6f83c6e93999fa4770964f7ad0bdd81c32b44685de672d8e6086a6005e6",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 91,
+      "training_group_reward_mean_logged": 0.481,
+      "strict_EM_response_mean_logged": 0.481,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 94220,
+      "source_line_sha256": "2980858b5958d25b1d510e957fc37de4e8f10feb83e343135717e1163e23d193",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 92,
+      "training_group_reward_mean_logged": 0.465,
+      "strict_EM_response_mean_logged": 0.465,
+      "critic_advantage_mean_logged": -0.019,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 95309,
+      "source_line_sha256": "033fdcf4f25a714e90931e9dc2301ed27754c8bb5766181a80bc101b318e6350",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 93,
+      "training_group_reward_mean_logged": 0.443,
+      "strict_EM_response_mean_logged": 0.443,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 96730,
+      "source_line_sha256": "b3835425639c1350199c1884d87e1737d36792df36c0f4cc661f9eeacac141a9",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 94,
+      "training_group_reward_mean_logged": 0.47,
+      "strict_EM_response_mean_logged": 0.47,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 98010,
+      "source_line_sha256": "90f3fd0caac91203327180a7f942dfe3b85e510723529cc14d574c18ba24b591",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 95,
+      "training_group_reward_mean_logged": 0.471,
+      "strict_EM_response_mean_logged": 0.471,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 99274,
+      "source_line_sha256": "21e6ee654c96af80f026466c284bbbf79f74d77721663aafa0e465eabe283330",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 96,
+      "training_group_reward_mean_logged": 0.469,
+      "strict_EM_response_mean_logged": 0.469,
+      "critic_advantage_mean_logged": -0.015,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 100461,
+      "source_line_sha256": "77147c74c224d4410adc9b2185a0bee2200266c6e8facb1b31311eea24edf434",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 97,
+      "training_group_reward_mean_logged": 0.447,
+      "strict_EM_response_mean_logged": 0.447,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 101643,
+      "source_line_sha256": "c97f8b869939abd6cb2d33385d67fd44580596a6091922c2d81837300a3e9f54",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 98,
+      "training_group_reward_mean_logged": 0.484,
+      "strict_EM_response_mean_logged": 0.484,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 102542,
+      "source_line_sha256": "84129a6494713969a1c98383080e0a05ff1bfb5702fee73f91023c7e3db47401",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 99,
+      "training_group_reward_mean_logged": 0.467,
+      "strict_EM_response_mean_logged": 0.467,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 103446,
+      "source_line_sha256": "2ba16ee317b91363221ff4b2f09e56584d633801a30e746513879f281fc62748",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 100,
+      "training_group_reward_mean_logged": 0.439,
+      "strict_EM_response_mean_logged": 0.439,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 105528,
+      "source_line_sha256": "317666c33ec3991914d776d4d990e82572c23de635cf04ebdd6c3ce266d0022c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 101,
+      "training_group_reward_mean_logged": 0.482,
+      "strict_EM_response_mean_logged": 0.482,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 106919,
+      "source_line_sha256": "e9b30fecb5b8deacbb4766826e7484278d493a86378b4687bd79f8b64d9c28f9",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 102,
+      "training_group_reward_mean_logged": 0.478,
+      "strict_EM_response_mean_logged": 0.478,
+      "critic_advantage_mean_logged": -0.019,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 107977,
+      "source_line_sha256": "f74d7b425248e9b5040c10a1c8bae396a75874f305b9092e4d2db741a1eef162",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 103,
+      "training_group_reward_mean_logged": 0.492,
+      "strict_EM_response_mean_logged": 0.492,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 108838,
+      "source_line_sha256": "4371e209b90975afc0485d8a5f0a94d5145ea96010c364e0fe2401d4fb1b7e1a",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 104,
+      "training_group_reward_mean_logged": 0.48,
+      "strict_EM_response_mean_logged": 0.48,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 110080,
+      "source_line_sha256": "88839ba8cfbb5eb70db63a1f91320aba2af816924a15dd428521c9aebb2b4f94",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 105,
+      "training_group_reward_mean_logged": 0.459,
+      "strict_EM_response_mean_logged": 0.459,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 111246,
+      "source_line_sha256": "e7cb25da096f086b8327adde44d931b8d2908fc793b74027787409980eb58833",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 106,
+      "training_group_reward_mean_logged": 0.481,
+      "strict_EM_response_mean_logged": 0.481,
+      "critic_advantage_mean_logged": -0.003,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 112463,
+      "source_line_sha256": "8398e6f1892858a94f9c4ed495f082b9b56f7cf1a8a52d8e589a7fc3ac69bdb1",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 107,
+      "training_group_reward_mean_logged": 0.504,
+      "strict_EM_response_mean_logged": 0.504,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 113526,
+      "source_line_sha256": "2d3c205f9776e965a5ba9cbc6c2e73a435fa2c5484e51d5b2be54f8f22c54e0b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 108,
+      "training_group_reward_mean_logged": 0.459,
+      "strict_EM_response_mean_logged": 0.459,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 114839,
+      "source_line_sha256": "0240fcb552e36d2f667187ecb129a4e7de4a3317efeda3bcb78e02f53c132878",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 109,
+      "training_group_reward_mean_logged": 0.496,
+      "strict_EM_response_mean_logged": 0.496,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 115977,
+      "source_line_sha256": "8bc71993fc1ca73ce1249a77551c2dada95f00f123012cee51ec908fdc56ee18",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 110,
+      "training_group_reward_mean_logged": 0.455,
+      "strict_EM_response_mean_logged": 0.455,
+      "critic_advantage_mean_logged": -0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 116946,
+      "source_line_sha256": "012c7e24259f02afd4fa58cbafff6d32ad459d4853c7dbcb995fbc5cba04e10e",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 111,
+      "training_group_reward_mean_logged": 0.473,
+      "strict_EM_response_mean_logged": 0.473,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 118253,
+      "source_line_sha256": "aea783e94ec68fa6761ea80437dde2240b6a4101a7a696995725175b577321be",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 112,
+      "training_group_reward_mean_logged": 0.466,
+      "strict_EM_response_mean_logged": 0.466,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 119181,
+      "source_line_sha256": "00b5a590e35863da6e8692327069c580834e04f89f4870045f9c68684b752ccd",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 113,
+      "training_group_reward_mean_logged": 0.468,
+      "strict_EM_response_mean_logged": 0.468,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 120273,
+      "source_line_sha256": "1208b7e7adf3558f763b60a3cf435ef2186f128cb9ed6d42419afc06bf9a91d4",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 114,
+      "training_group_reward_mean_logged": 0.449,
+      "strict_EM_response_mean_logged": 0.449,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 121359,
+      "source_line_sha256": "2f570183738a21a6fac7ce7f4d646ed84a9c61b50660ad9f47caa9b46ec5f236",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 115,
+      "training_group_reward_mean_logged": 0.484,
+      "strict_EM_response_mean_logged": 0.484,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 122602,
+      "source_line_sha256": "86e12406470ce40af84c2f2827d47ae9301f2032dc8876fcb42c1d81be99679a",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 116,
+      "training_group_reward_mean_logged": 0.483,
+      "strict_EM_response_mean_logged": 0.483,
+      "critic_advantage_mean_logged": -0.011,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 123781,
+      "source_line_sha256": "bd48922af223ebf1c2404fee9a8fb965a109f8651fc6249741d872d585f71d67",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 117,
+      "training_group_reward_mean_logged": 0.489,
+      "strict_EM_response_mean_logged": 0.489,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 125137,
+      "source_line_sha256": "05b4b6aab26a0048676bfe26ab313caf8aceabee86aa23ff94706d66ec5b6643",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 118,
+      "training_group_reward_mean_logged": 0.48,
+      "strict_EM_response_mean_logged": 0.48,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 126370,
+      "source_line_sha256": "4911da7fc99e74fd722417824fad64488e42c18bc655e4f50180f07c41ac91b7",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 119,
+      "training_group_reward_mean_logged": 0.478,
+      "strict_EM_response_mean_logged": 0.478,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 127495,
+      "source_line_sha256": "22677f41c430f7b6ca9beda5e82319b082b99d8b2d088eee87574f85b5022aad",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 120,
+      "training_group_reward_mean_logged": 0.46,
+      "strict_EM_response_mean_logged": 0.46,
+      "critic_advantage_mean_logged": -0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 128413,
+      "source_line_sha256": "68e369330222bfe8ddcd35d3da747e1c0a41252ba957a7a36718510fd0a9cb4f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 121,
+      "training_group_reward_mean_logged": 0.388,
+      "strict_EM_response_mean_logged": 0.388,
+      "critic_advantage_mean_logged": 0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 130084,
+      "source_line_sha256": "02b9e2ac89744219a84ecedd04262437f9b6085b6396bbb5593681fde8f2177f",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 122,
+      "training_group_reward_mean_logged": 0.367,
+      "strict_EM_response_mean_logged": 0.367,
+      "critic_advantage_mean_logged": 0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 131545,
+      "source_line_sha256": "6884bb8d3a01b677751fb89aacf2046f732b6cadc55f683f542ebf63a61898e4",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 123,
+      "training_group_reward_mean_logged": 0.341,
+      "strict_EM_response_mean_logged": 0.341,
+      "critic_advantage_mean_logged": 0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 132779,
+      "source_line_sha256": "27a69a92610a521298a5d0faa477eead7cdffabf7894165921b3fbe59edd7d04",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 124,
+      "training_group_reward_mean_logged": 0.35,
+      "strict_EM_response_mean_logged": 0.35,
+      "critic_advantage_mean_logged": 0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 134012,
+      "source_line_sha256": "201aaa7b3abbffca3abb7ddc6b12835f6d65e5b0eeaecf7652b1a76764c60ad2",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 125,
+      "training_group_reward_mean_logged": 0.388,
+      "strict_EM_response_mean_logged": 0.388,
+      "critic_advantage_mean_logged": 0.002,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 135462,
+      "source_line_sha256": "535c59b18a738e8a6e14e3467c4a5b658f09500171ac0d7ddff8731fce28f798",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 126,
+      "training_group_reward_mean_logged": 0.359,
+      "strict_EM_response_mean_logged": 0.359,
+      "critic_advantage_mean_logged": 0.011,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 137101,
+      "source_line_sha256": "c89d81ba3dfcaa0d1d6352b5c9acd7720d4e6545d824ce0919dcad24fa857108",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 127,
+      "training_group_reward_mean_logged": 0.405,
+      "strict_EM_response_mean_logged": 0.405,
+      "critic_advantage_mean_logged": 0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 138292,
+      "source_line_sha256": "676e7938ed2cbedac6119da21e806db67ab130a65ea15b9dab5aa507d08cf121",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 128,
+      "training_group_reward_mean_logged": 0.406,
+      "strict_EM_response_mean_logged": 0.406,
+      "critic_advantage_mean_logged": 0.025,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 140008,
+      "source_line_sha256": "c9b0bf60966d2e35d7df021f392eb47f17681640e3a8e46d1e0b497eb5972435",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 129,
+      "training_group_reward_mean_logged": 0.441,
+      "strict_EM_response_mean_logged": 0.441,
+      "critic_advantage_mean_logged": 0.008,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 141364,
+      "source_line_sha256": "05a45bb72cd74ccb70e6a28666ea62e7947395c10a4e3f0c355eed755bae20aa",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 130,
+      "training_group_reward_mean_logged": 0.448,
+      "strict_EM_response_mean_logged": 0.448,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 142751,
+      "source_line_sha256": "6313c84f1e0eeb99d7586fe4064c2a8eb20e1faf0543969d3f37a12bca6e4914",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 131,
+      "training_group_reward_mean_logged": 0.471,
+      "strict_EM_response_mean_logged": 0.471,
+      "critic_advantage_mean_logged": -0.011,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 144153,
+      "source_line_sha256": "cc51dd2863b75534934bcb5e5885d0d02dcaded638b59093ae55fe33ea91bc66",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 132,
+      "training_group_reward_mean_logged": 0.434,
+      "strict_EM_response_mean_logged": 0.434,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 145495,
+      "source_line_sha256": "86cf7af1beb27e49dc6eabde90e173daae13fc226a7354947652e4d6f5cc87ca",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 133,
+      "training_group_reward_mean_logged": 0.468,
+      "strict_EM_response_mean_logged": 0.468,
+      "critic_advantage_mean_logged": -0.007,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 146674,
+      "source_line_sha256": "49a3a8d6edc14f953394a1b7137a375d5e4c8137f133e953269df758511ee709",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 134,
+      "training_group_reward_mean_logged": 0.483,
+      "strict_EM_response_mean_logged": 0.483,
+      "critic_advantage_mean_logged": -0.004,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 147977,
+      "source_line_sha256": "cef2b2eba6feb343a147e8dcfa3b84927785833f8d2d58cd15ad396dbc76a975",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 135,
+      "training_group_reward_mean_logged": 0.48,
+      "strict_EM_response_mean_logged": 0.48,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 149249,
+      "source_line_sha256": "0ad7664c921bc1c294b4cdb016b25ed12b2eae948dbcf2ef463c7649558f02eb",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 136,
+      "training_group_reward_mean_logged": 0.495,
+      "strict_EM_response_mean_logged": 0.495,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 150888,
+      "source_line_sha256": "e4f86a34ab65223f20a838b71fa7afe0c702113cd654bc728b5317ed329c94aa",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 137,
+      "training_group_reward_mean_logged": 0.443,
+      "strict_EM_response_mean_logged": 0.443,
+      "critic_advantage_mean_logged": -0.03,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 152232,
+      "source_line_sha256": "ee2a368d131dbc838591135360ce6d956c68a56711b4dd0131edb1a353db0c13",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 138,
+      "training_group_reward_mean_logged": 0.489,
+      "strict_EM_response_mean_logged": 0.489,
+      "critic_advantage_mean_logged": -0.017,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 153708,
+      "source_line_sha256": "9af5252dbac992ffc106f4f5d9f53c6a49b1997a3000a3eb70c18ac987a6c8f3",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 139,
+      "training_group_reward_mean_logged": 0.476,
+      "strict_EM_response_mean_logged": 0.476,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 155303,
+      "source_line_sha256": "15f0dc632976793602a0a13311853e2d44b3fe9c13e287d102a53f3b716a35d1",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 140,
+      "training_group_reward_mean_logged": 0.444,
+      "strict_EM_response_mean_logged": 0.444,
+      "critic_advantage_mean_logged": -0.016,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 157157,
+      "source_line_sha256": "f23a444160288f99ab02aefb3e567c07f0dc7e771b070b3d306e3e777eb4ab4b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 141,
+      "training_group_reward_mean_logged": 0.454,
+      "strict_EM_response_mean_logged": 0.454,
+      "critic_advantage_mean_logged": -0.017,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 158266,
+      "source_line_sha256": "be57d85a4fb66729527eebce7eace8e82dde0dbbe9123fe639fe681f9c33fb36",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 142,
+      "training_group_reward_mean_logged": 0.468,
+      "strict_EM_response_mean_logged": 0.468,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 159706,
+      "source_line_sha256": "e5e06fd92d377b32f1e80d9efbb5761d0fc9ef5a320678e16213f80744998c6b",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 143,
+      "training_group_reward_mean_logged": 0.485,
+      "strict_EM_response_mean_logged": 0.485,
+      "critic_advantage_mean_logged": -0.012,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 160915,
+      "source_line_sha256": "d7dbe05ba0fb209688fca637d686476fd8971d26c6e2ec273eac18f34520d6c9",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 144,
+      "training_group_reward_mean_logged": 0.468,
+      "strict_EM_response_mean_logged": 0.468,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 162157,
+      "source_line_sha256": "c7ef4a0d8da2b33d5f34f933f1446621d456898e385b29938fc26cee0713f8d1",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 145,
+      "training_group_reward_mean_logged": 0.466,
+      "strict_EM_response_mean_logged": 0.466,
+      "critic_advantage_mean_logged": -0.009,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 163237,
+      "source_line_sha256": "51ff27add172d30871614ed1760f605a63d0f2bed6ded21667782fc4d5226d54",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 146,
+      "training_group_reward_mean_logged": 0.484,
+      "strict_EM_response_mean_logged": 0.484,
+      "critic_advantage_mean_logged": -0.005,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 164692,
+      "source_line_sha256": "1c414fe4ece2d9efa486c6cf7da39a899839247c92fe1bd59a678ddbfa72e7b0",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 147,
+      "training_group_reward_mean_logged": 0.489,
+      "strict_EM_response_mean_logged": 0.489,
+      "critic_advantage_mean_logged": -0.013,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 165983,
+      "source_line_sha256": "6d89306b0c90cb9c7a8d6c34900276da03b6bc5ad7133d6d13c028169cb6fe02",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 148,
+      "training_group_reward_mean_logged": 0.511,
+      "strict_EM_response_mean_logged": 0.511,
+      "critic_advantage_mean_logged": -0.006,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 167436,
+      "source_line_sha256": "9464ac23b55f3d380c3e5d3b99c2f45e48043b658f468964af41b669a5afa85c",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 149,
+      "training_group_reward_mean_logged": 0.524,
+      "strict_EM_response_mean_logged": 0.524,
+      "critic_advantage_mean_logged": -0.011,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 168640,
+      "source_line_sha256": "b6169769d0dff495eeed33d93175f127abe54124ef238b72e998222f6256e7b4",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    },
+    {
+      "iteration": 150,
+      "training_group_reward_mean_logged": 0.498,
+      "strict_EM_response_mean_logged": 0.498,
+      "critic_advantage_mean_logged": -0.014,
+      "critic_advantage_max_logged": 1.789,
+      "critic_advantage_min_logged": -1.789,
+      "group_std_mean": null,
+      "mixed_group_fraction": null,
+      "zero_std_group_fraction": null,
+      "all_correct_group_fraction": null,
+      "all_wrong_group_fraction": null,
+      "advantage_group_variance_mean": null,
+      "source_line": 171075,
+      "source_line_sha256": "3392b4e8569b090b9cc1fb403b30060d3d7967bbfee1d3cb906ed914846ac6a6",
+      "mixed_group_exists_under_actual_binary_grpo_contract": true
+    }
+  ],
+  "mathematical_definition": {
+    "n": 5,
+    "score": "binarystrictgenerated-onlyEM",
+    "group_mean": "mu=k/5",
+    "reward_sample_std": "s_k=sqrt(k(5-k)/20),torch.std defaultcorrection1",
+    "advantage": "A_i=(R_i-k/5)/(s_k+1e-6)",
+    "advantages_broadcast": "samecoefficientrepeatedtoallresponseattentiontokens;actorobservationmaskseparate",
+    "mixed_reward_group": "1<=k<=4",
+    "zero_reward_std_group": "k=0 or5;allgroupadvantageszero",
+    "hypothetical_table_notobserved_counts": [
+      {
+        "k_correct_out_of_5": 0,
+        "group_mean_reward": 0.0,
+        "sample_reward_std_ddof1": 0.0,
+        "population_reward_variance": 0.0,
+        "correct_response_advantage": null,
+        "wrong_response_advantage": -0.0,
+        "group_advantages_all_zero": true,
+        "sample_advantage_variance_ddof1": 0.0
+      },
+      {
+        "k_correct_out_of_5": 1,
+        "group_mean_reward": 0.2,
+        "sample_reward_std_ddof1": 0.4472135954999579,
+        "population_reward_variance": 0.16,
+        "correct_response_advantage": 1.7888503820087762,
+        "wrong_response_advantage": -0.44721259550219405,
+        "group_advantages_all_zero": false,
+        "sample_advantage_variance_ddof1": 0.9999955278790451
+      },
+      {
+        "k_correct_out_of_5": 2,
+        "group_mean_reward": 0.4,
+        "sample_reward_std_ddof1": 0.5477225575051661,
+        "population_reward_variance": 0.24,
+        "correct_response_advantage": 1.0954431150139836,
+        "wrong_response_advantage": -0.7302954100093225,
+        "group_advantages_all_zero": false,
+        "sample_advantage_variance_ddof1": 0.9999963485262833
+      },
+      {
+        "k_correct_out_of_5": 3,
+        "group_mean_reward": 0.6,
+        "sample_reward_std_ddof1": 0.5477225575051661,
+        "population_reward_variance": 0.24,
+        "correct_response_advantage": 0.7302954100093225,
+        "wrong_response_advantage": -1.0954431150139836,
+        "group_advantages_all_zero": false,
+        "sample_advantage_variance_ddof1": 0.9999963485262833
+      },
+      {
+        "k_correct_out_of_5": 4,
+        "group_mean_reward": 0.8,
+        "sample_reward_std_ddof1": 0.4472135954999579,
+        "population_reward_variance": 0.16,
+        "correct_response_advantage": 0.44721259550219394,
+        "wrong_response_advantage": -1.7888503820087762,
+        "group_advantages_all_zero": false,
+        "sample_advantage_variance_ddof1": 0.9999955278790451
+      },
+      {
+        "k_correct_out_of_5": 5,
+        "group_mean_reward": 1.0,
+        "sample_reward_std_ddof1": 0.0,
+        "population_reward_variance": 0.0,
+        "correct_response_advantage": 0.0,
+        "wrong_response_advantage": null,
+        "group_advantages_all_zero": true,
+        "sample_advantage_variance_ddof1": 0.0
+      }
+    ],
+    "exact_unweighted_group_advantage_mean": 0.0,
+    "logged_critic_advantage_mean_definition": "torch.mean(torch.masked_select(advantages,response_attention_mask)); tokenweighted includingenvironmentobservationpositions, notfive-rowequalmean",
+    "positive_negative_extrema_all150": "printed+1.789/−1.789 showmixedgroups present, cannotgivefraction",
+    "nonidentifiability_example_notactualrun": {
+      "global_reward_mean": 0.4,
+      "caseA": "everyquestionk2→allgroupsmixed,samplewithinstdsqrt(.3)",
+      "caseB": "40%groupsk5+60%groupsk0→nogroupsmixed,withinstd0",
+      "conclusion": "sameglobalmeanandpooledbinaryvariancecannotidentifyconditionalgroupvariance or activegroupfraction"
+    },
+    "mean_within_population_reward_variance": "E_q[p_q(1-p_q)]=p_global(1-p_global)-Var_q(p_q),unknownVar_q preventsrecovery",
+    "normalized_adv_variance": "mixedgroups samplevariance=(s_k/(s_k+epsilon))^2≈1; homogroups0; doesnotretainrewardstdmagnitude"
+  },
+  "source": {
+    "core": {
+      "path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1/verl/trainer/ppo/core_algos.py",
+      "sha256": "f7a0260fcc9dd73a856d358e9da325b74cc24a5e360da08eb31749457f752e33",
+      "lines": [
+        {
+          "line": 111,
+          "text": "def compute_grpo_outcome_advantage(token_level_rewards: torch.Tensor,"
+        },
+        {
+          "line": 112,
+          "text": "                                   eos_mask: torch.Tensor,"
+        },
+        {
+          "line": 113,
+          "text": "                                   index: torch.Tensor,"
+        },
+        {
+          "line": 114,
+          "text": "                                   epsilon: float = 1e-6):"
+        },
+        {
+          "line": 115,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 116,
+          "text": "    Compute advantage for GRPO, operating only on Outcome reward "
+        },
+        {
+          "line": 117,
+          "text": "    (with only one scalar reward for each response)."
+        },
+        {
+          "line": 118,
+          "text": "    Args:"
+        },
+        {
+          "line": 119,
+          "text": "        token_level_rewards: `(torch.Tensor)`"
+        },
+        {
+          "line": 120,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 121,
+          "text": "        eos_mask: `(torch.Tensor)`"
+        },
+        {
+          "line": 122,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 123,
+          "text": "    "
+        },
+        {
+          "line": 124,
+          "text": "    Returns:"
+        },
+        {
+          "line": 125,
+          "text": "        advantages: `(torch.Tensor)`"
+        },
+        {
+          "line": 126,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 127,
+          "text": "        Returns: `(torch.Tensor)`"
+        },
+        {
+          "line": 128,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 129,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 130,
+          "text": "    response_length = token_level_rewards.shape[-1]"
+        },
+        {
+          "line": 131,
+          "text": "    non_zero_mask = (token_level_rewards != 0)"
+        },
+        {
+          "line": 132,
+          "text": "    scores = (token_level_rewards * non_zero_mask).sum(dim=-1)"
+        },
+        {
+          "line": 133,
+          "text": ""
+        },
+        {
+          "line": 134,
+          "text": "    id2score = defaultdict(list)"
+        },
+        {
+          "line": 135,
+          "text": "    id2mean = {}"
+        },
+        {
+          "line": 136,
+          "text": "    id2std = {}"
+        },
+        {
+          "line": 137,
+          "text": ""
+        },
+        {
+          "line": 138,
+          "text": "    with torch.no_grad():"
+        },
+        {
+          "line": 139,
+          "text": "        bsz = scores.shape[0]"
+        },
+        {
+          "line": 140,
+          "text": "        for i in range(bsz):"
+        },
+        {
+          "line": 141,
+          "text": "            id2score[index[i]].append(scores[i])"
+        },
+        {
+          "line": 142,
+          "text": "        for idx in id2score:"
+        },
+        {
+          "line": 143,
+          "text": "            if len(id2score[idx]) == 1:"
+        },
+        {
+          "line": 144,
+          "text": "                id2mean[idx] = torch.tensor(0.0)"
+        },
+        {
+          "line": 145,
+          "text": "                id2std[idx] = torch.tensor(1.0)"
+        },
+        {
+          "line": 146,
+          "text": "            elif len(id2score[idx]) > 1:"
+        },
+        {
+          "line": 147,
+          "text": "                id2mean[idx] = torch.mean(torch.tensor(id2score[idx]))"
+        },
+        {
+          "line": 148,
+          "text": "                id2std[idx] = torch.std(torch.tensor([id2score[idx]]))"
+        },
+        {
+          "line": 149,
+          "text": "            else:"
+        },
+        {
+          "line": 150,
+          "text": "                raise ValueError(f\"no score in prompt index: {idx}\")"
+        },
+        {
+          "line": 151,
+          "text": "        for i in range(bsz):"
+        },
+        {
+          "line": 152,
+          "text": "            scores[i] = (scores[i] - id2mean[index[i]]) / (id2std[index[i]] + epsilon)"
+        },
+        {
+          "line": 153,
+          "text": "        scores = scores.unsqueeze(-1).tile([1, response_length]) * eos_mask"
+        },
+        {
+          "line": 154,
+          "text": ""
+        },
+        {
+          "line": 155,
+          "text": "    return scores, scores"
+        },
+        {
+          "line": 156,
+          "text": ""
+        },
+        {
+          "line": 157,
+          "text": ""
+        },
+        {
+          "line": 158,
+          "text": "def compute_rewards(token_level_scores, old_log_prob, ref_log_prob, kl_ratio):"
+        },
+        {
+          "line": 159,
+          "text": "    kl = old_log_prob - ref_log_prob"
+        },
+        {
+          "line": 160,
+          "text": "    return token_level_scores - kl * kl_ratio"
+        },
+        {
+          "line": 161,
+          "text": ""
+        },
+        {
+          "line": 162,
+          "text": ""
+        },
+        {
+          "line": 163,
+          "text": "def compute_policy_loss(old_log_prob, log_prob, advantages, eos_mask, cliprange):"
+        },
+        {
+          "line": 164,
+          "text": "    \"\"\"Adapted from https://github.com/huggingface/trl/blob/main/trl/trainer/ppo_trainer.py#L1122"
+        },
+        {
+          "line": 165,
+          "text": ""
+        },
+        {
+          "line": 166,
+          "text": "    Args:"
+        },
+        {
+          "line": 167,
+          "text": "        old_log_prob: `(torch.Tensor)`"
+        },
+        {
+          "line": 168,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 169,
+          "text": "        log_prob: `(torch.Tensor)`"
+        },
+        {
+          "line": 170,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 171,
+          "text": "        advantages: `(torch.Tensor)`"
+        },
+        {
+          "line": 172,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 173,
+          "text": "        eos_mask: `(torch.Tensor)`"
+        },
+        {
+          "line": 174,
+          "text": "            shape: (bs, response_length)"
+        },
+        {
+          "line": 175,
+          "text": "        cliprange: (float)"
+        },
+        {
+          "line": 176,
+          "text": "            The clip range used in PPO. See https://arxiv.org/abs/1707.06347"
+        },
+        {
+          "line": 177,
+          "text": ""
+        },
+        {
+          "line": 178,
+          "text": "    Returns:"
+        },
+        {
+          "line": 179,
+          "text": "        pg_loss: `a scalar torch.Tensor`"
+        },
+        {
+          "line": 180,
+          "text": "            policy gradient loss computed via PPO"
+        },
+        {
+          "line": 181,
+          "text": "        pg_clipfrac: (float)"
+        },
+        {
+          "line": 182,
+          "text": "            a float number indicating the fraction of policy gradient loss being clipped"
+        },
+        {
+          "line": 183,
+          "text": ""
+        },
+        {
+          "line": 184,
+          "text": "    \"\"\""
+        },
+        {
+          "line": 185,
+          "text": "    negative_approx_kl = log_prob - old_log_prob"
+        },
+        {
+          "line": 186,
+          "text": "    ratio = torch.exp(negative_approx_kl)"
+        },
+        {
+          "line": 187,
+          "text": "    ppo_kl = verl_F.masked_mean(-negative_approx_kl, eos_mask)"
+        },
+        {
+          "line": 188,
+          "text": ""
+        },
+        {
+          "line": 189,
+          "text": "    pg_losses = -advantages * ratio"
+        },
+        {
+          "line": 190,
+          "text": "    pg_losses2 = -advantages * torch.clamp(ratio, 1.0 - cliprange, 1.0 + cliprange)"
+        },
+        {
+          "line": 191,
+          "text": ""
+        },
+        {
+          "line": 192,
+          "text": "    pg_loss = verl_F.masked_mean(torch.max(pg_losses, pg_losses2), eos_mask)"
+        },
+        {
+          "line": 193,
+          "text": "    pg_clipfrac = verl_F.masked_mean(torch.gt(pg_losses2, pg_losses).float(), eos_mask)"
+        },
+        {
+          "line": 194,
+          "text": "    return pg_loss, pg_clipfrac, ppo_kl"
+        },
+        {
+          "line": 195,
+          "text": ""
+        },
+        {
+          "line": 196,
+          "text": ""
+        }
+      ]
+    },
+    "core_function": "compute_grpo_outcome_advantage lines111–155",
+    "metric_definition_source_path": "/weka_3/shaoshitong/search-e1-config-study-20261004/runtime/archive/upstream/Search-R1/verl/trainer/ppo/ray_trainer.py",
+    "metric_definition_source_SHA256": "9b4d61f06cdad3603c37ff4a5c3dcc0fc073bd91d64319d4de2b214b911a529b",
+    "metric_definition_lines": [
+      179,
+      198,
+      223,
+      228
+    ],
+    "rewardmanager_example_print_source_SHA256": "eddd4e68c45d1ecd1c0ab5e9815f49c55c2d847c6a958ccf792967424661fc3d",
+    "rewardmanager_relevant_lines": [
+      {
+        "line": 30,
+        "text": "    else:"
+      },
+      {
+        "line": 31,
+        "text": "        raise NotImplementedError"
+      },
+      {
+        "line": 32,
+        "text": ""
+      },
+      {
+        "line": 33,
+        "text": ""
+      },
+      {
+        "line": 34,
+        "text": "class RewardManager():"
+      },
+      {
+        "line": 35,
+        "text": "    \"\"\"The reward manager."
+      },
+      {
+        "line": 36,
+        "text": "    \"\"\""
+      },
+      {
+        "line": 37,
+        "text": ""
+      },
+      {
+        "line": 38,
+        "text": "    def __init__(self, tokenizer, num_examine, format_score=0.) -> None:"
+      },
+      {
+        "line": 39,
+        "text": "        self.tokenizer = tokenizer"
+      },
+      {
+        "line": 40,
+        "text": "        self.num_examine = num_examine  # the number of batches of decoded responses to print to the console"
+      },
+      {
+        "line": 41,
+        "text": "        self.format_score = format_score"
+      },
+      {
+        "line": 42,
+        "text": ""
+      },
+      {
+        "line": 43,
+        "text": "    def __call__(self, data: DataProto):"
+      },
+      {
+        "line": 44,
+        "text": "        \"\"\"We will expand this function gradually based on the available datasets\"\"\""
+      },
+      {
+        "line": 45,
+        "text": ""
+      },
+      {
+        "line": 46,
+        "text": "        # If there is rm score, we directly return rm score. Otherwise, we compute via rm_score_fn"
+      },
+      {
+        "line": 47,
+        "text": "        if 'rm_scores' in data.batch.keys():"
+      },
+      {
+        "line": 48,
+        "text": "            return data.batch['rm_scores']"
+      },
+      {
+        "line": 49,
+        "text": ""
+      },
+      {
+        "line": 50,
+        "text": "        reward_tensor = torch.zeros_like(data.batch['responses'], dtype=torch.float32)"
+      },
+      {
+        "line": 51,
+        "text": ""
+      },
+      {
+        "line": 52,
+        "text": "        # all_scores = []"
+      },
+      {
+        "line": 53,
+        "text": ""
+      },
+      {
+        "line": 54,
+        "text": "        already_print_data_sources = {}"
+      },
+      {
+        "line": 55,
+        "text": "        old_scores, new_scores = [], []"
+      },
+      {
+        "line": 56,
+        "text": ""
+      },
+      {
+        "line": 57,
+        "text": "        for i in range(len(data)):"
+      },
+      {
+        "line": 58,
+        "text": "            data_item = data[i]  # DataProtoItem"
+      },
+      {
+        "line": 59,
+        "text": ""
+      },
+      {
+        "line": 60,
+        "text": "            prompt_ids = data_item.batch['prompts']"
+      },
+      {
+        "line": 61,
+        "text": ""
+      },
+      {
+        "line": 62,
+        "text": "            prompt_length = prompt_ids.shape[-1]"
+      },
+      {
+        "line": 63,
+        "text": ""
+      },
+      {
+        "line": 64,
+        "text": "            valid_prompt_length = data_item.batch['attention_mask'][:prompt_length].sum()"
+      },
+      {
+        "line": 65,
+        "text": "            valid_prompt_ids = prompt_ids[-valid_prompt_length:]"
+      },
+      {
+        "line": 66,
+        "text": ""
+      },
+      {
+        "line": 67,
+        "text": "            response_ids = data_item.batch['responses']"
+      },
+      {
+        "line": 68,
+        "text": "            valid_response_length = data_item.batch['attention_mask'][prompt_length:].sum()"
+      },
+      {
+        "line": 69,
+        "text": "            if int(valid_response_length) == 0:"
+      },
+      {
+        "line": 70,
+        "text": "                old_scores.append(0.); new_scores.append(0.)"
+      },
+      {
+        "line": 71,
+        "text": "                continue"
+      },
+      {
+        "line": 72,
+        "text": "            valid_response_ids = response_ids[:valid_response_length]"
+      },
+      {
+        "line": 73,
+        "text": "            if 'info_mask' not in data_item.batch:"
+      },
+      {
+        "line": 74,
+        "text": "                raise ValueError('Search-E1 search rollouts require info_mask provenance')"
+      },
+      {
+        "line": 75,
+        "text": "            model_mask = data_item.batch['info_mask'][prompt_length:prompt_length + int(valid_response_length)]"
+      },
+      {
+        "line": 76,
+        "text": "            model_spans = decode_model_spans(self.tokenizer, valid_response_ids, model_mask)"
+      },
+      {
+        "line": 77,
+        "text": ""
+      },
+      {
+        "line": 78,
+        "text": "            # decode"
+      },
+      {
+        "line": 79,
+        "text": "            sequences = torch.cat((valid_prompt_ids, valid_response_ids))"
+      },
+      {
+        "line": 80,
+        "text": "            sequences_str = self.tokenizer.decode(sequences)"
+      },
+      {
+        "line": 81,
+        "text": ""
+      },
+      {
+        "line": 82,
+        "text": "            ground_truth = data_item.non_tensor_batch['reward_model']['ground_truth']"
+      },
+      {
+        "line": 83,
+        "text": ""
+      },
+      {
+        "line": 84,
+        "text": "            # select rm_score"
+      },
+      {
+        "line": 85,
+        "text": "            data_source = data_item.non_tensor_batch['data_source']"
+      },
+      {
+        "line": 86,
+        "text": "            compute_score_fn = _select_rm_score_fn(data_source)"
+      },
+      {
+        "line": 87,
+        "text": ""
+      },
+      {
+        "line": 88,
+        "text": "            score = compute_score_fn(model_spans=model_spans, ground_truth=ground_truth, format_score=self.format_score)"
+      },
+      {
+        "line": 89,
+        "text": "            old_scores.append(float(historical_qa_em.compute_score_em(sequences_str, ground_truth, format_score=self.format_score)))"
+      },
+      {
+        "line": 90,
+        "text": "            new_scores.append(float(score))"
+      },
+      {
+        "line": 91,
+        "text": ""
+      },
+      {
+        "line": 92,
+        "text": "            reward_tensor[i, valid_response_length - 1] = score"
+      },
+      {
+        "line": 93,
+        "text": "            # all_scores.append(score)"
+      },
+      {
+        "line": 94,
+        "text": ""
+      },
+      {
+        "line": 95,
+        "text": "            if data_source not in already_print_data_sources:"
+      },
+      {
+        "line": 96,
+        "text": "                already_print_data_sources[data_source] = 0"
+      },
+      {
+        "line": 97,
+        "text": ""
+      },
+      {
+        "line": 98,
+        "text": "            if already_print_data_sources[data_source] < self.num_examine:"
+      },
+      {
+        "line": 99,
+        "text": "                already_print_data_sources[data_source] += 1"
+      },
+      {
+        "line": 100,
+        "text": "                print(sequences_str)"
+      },
+      {
+        "line": 101,
+        "text": "        "
+      },
+      {
+        "line": 102,
+        "text": "        # print(f\"[DEBUG] all_scores: {all_scores}\")"
+      },
+      {
+        "line": 103,
+        "text": "        # print(f\"[DEBUG] all_scores shape: {np.array(all_scores).shape}\")"
+      },
+      {
+        "line": 104,
+        "text": "        # print(f\"[DEBUG] all_scores mean: {np.mean(all_scores)}\")"
+      },
+      {
+        "line": 105,
+        "text": "        # print(f\"[DEBUG] all_scores max: {np.max(all_scores)}\")"
+      },
+      {
+        "line": 106,
+        "text": "        # print(f\"[DEBUG] all_scores min: {np.min(all_scores)}\")"
+      },
+      {
+        "line": 107,
+        "text": "        # print(f\"[DEBUG] all_scores std: {np.std(all_scores)}\")"
+      },
+      {
+        "line": 108,
+        "text": ""
+      },
+      {
+        "line": 109,
+        "text": "        self.last_metrics = {'audit/legacy_em': float(np.mean(old_scores)),"
+      },
+      {
+        "line": 110,
+        "text": "                             'audit/strict_em': float(np.mean(new_scores)),"
+      },
+      {
+        "line": 111,
+        "text": "                             'audit/score_disagreement': float(np.mean(np.array(old_scores) != np.array(new_scores)))}"
+      },
+      {
+        "line": 112,
+        "text": "        return reward_tensor"
+      },
+      {
+        "line": 113,
+        "text": ""
+      }
+    ]
+  },
+  "limits": [
+    "No per-groupkcountsinferringfromglobaltrainreward",
+    "Onlyexisting0–150scope; latercollapseintentionallyexcluded",
+    "No b/d ornewgrouptraceinference; no newgeneration/trainingorGPU",
+    "Extremaandtokenweightedadvmeanarenotgroupvar",
+    "Codeformula isactualobserveduidGRPO/ddof1, tinyepsilonretained; statisticalhypotheticaltablenotempirical"
+  ]
+}
