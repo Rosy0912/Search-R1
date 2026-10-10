@@ -19,3 +19,5 @@
 2026-10-10 12:34 CST推进：G_POS18/25完整outer、Adam180，当前第19轮SAMPLING实际trace约13.45MB继续增长，supervisor1861244/controller1861436实读存活、无新错误。第18轮更新前严格TRAIN EM1214/2560=47.421875%，P=K295、10次新Adam，torchrun实际wait0；CP180已HKUST1远端9成员逐SHA备份并两端实际退出0，Mac payload0。其他三组尚未开始，正式八次512仍pending；这不是总体完成验收。继续当前串行训练，不重做已有更新、不启动补测。
 
 2026-10-10 12:50 CST推进：G_POS19/25完整outer、Adam190；第20轮SAMPLING实际生成trace约10.68MB、两原控制进程存活且无新错误。第19轮更新前TRAIN strict EM1198/2560=46.796875%，P=K300、10次新Adam、原torchrun实际wait0。CP190已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。原训练设置不变，其他三组待串行启动，八次正式512仍后置pending；不重复已有更新。
+
+2026-10-10 13:05 CST推进：G_POS20/25完整outer、Adam200；第21轮SAMPLING实际生成trace约5.62MB、两原控制进程实读存活，无新错误。第20轮更新前TRAIN strict EM1146/2560=44.765625%，P=K296、10次新Adam、原torchrun实际wait0；该TRAIN题集不同，不能当作固定测试EM退化。CP200已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。其余三组待串行启动，八次正式512仍后置pending，继续当前训练。
