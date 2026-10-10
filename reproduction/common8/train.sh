@@ -7,7 +7,8 @@ export PATH="$BASE/env/bin:$PATH" PYTHONPATH="$BASE/repo"
 unset PYTHONHOME RAY_ADDRESS
 export C_INCLUDE_PATH="$BASE/bootstrap-tools/python-dev/usr/include/python3.10:$BASE/bootstrap-tools/python-dev/usr/include"
 export TRITON_CACHE_DIR="$BASE/cache/triton" TORCHINDUCTOR_CACHE_DIR="$BASE/cache/inductor"
-export TMPDIR="$BASE/tmp" RAY_TMPDIR="$BASE/ray" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
+export TMPDIR="$BASE/tmp" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
+export RAY_TMPDIR="$(python -c 'import json,os; from pathlib import Path; base=Path(os.environ["SEARCH_G1_BASE"]); print(json.loads((base/"logs/run-manifest.json").read_text()).get("ray_tmp_dir",str(base/"ray")))')"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 OMP_NUM_THREADS=8
 export VLLM_ATTENTION_BACKEND=XFORMERS PYTHONUNBUFFERED=1
 export PROBE_URL=http://127.0.0.1:18012/judge_probe

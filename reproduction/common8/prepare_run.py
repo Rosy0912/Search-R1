@@ -119,6 +119,8 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    from reproduction.common8.native_ray import prepare as prepare_ray
+    prepare_ray(result)
     assert type(allow_existing_gpu_processes) is bool
     assert 0.0 < rollout_memory_utilization <= 0.4
     result['vllm_gpu_memory_utilization'] = rollout_memory_utilization

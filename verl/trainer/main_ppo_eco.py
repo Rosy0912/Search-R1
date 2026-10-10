@@ -690,6 +690,9 @@ def main(config):
         assert resources['num_cpus']==16 and resources['object_store_memory_bytes']==8*1024**3
         local_resources=dict(num_cpus=resources['num_cpus'],
                              object_store_memory=resources['object_store_memory_bytes'])
+    elif run is not None and 'ray_tmp_dir_identity' in run:
+        from reproduction.common8.native_ray import verify as verify_native_ray
+        ray_tmp_dir = verify_native_ray(run, ray_tmp_dir)
     ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=ray_tmp_dir,
              runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}},
              **local_resources)

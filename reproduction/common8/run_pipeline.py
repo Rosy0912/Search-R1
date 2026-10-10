@@ -104,7 +104,7 @@ class Pipeline:
             include=str(base/'bootstrap-tools/python-dev/usr/include/python3.10')+':'+str(base/'bootstrap-tools/python-dev/usr/include')
         self.env=dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=str(base),SEARCH_G1_TRAINING_WORLD_SIZE=str(self.world),PYTHONPATH=str(self.repo),PATH=str(Path(self.python).parent)+':'+os.environ['PATH'],
                       HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',
-                      TMPDIR=str(base/'tmp'),RAY_TMPDIR=str(base/'ray'),HF_HOME=str(base/'cache/hf'),XDG_CACHE_HOME=str(base/'cache'),
+                      TMPDIR=str(base/'tmp'),RAY_TMPDIR=run.get('ray_tmp_dir',str(base/'ray')),HF_HOME=str(base/'cache/hf'),XDG_CACHE_HOME=str(base/'cache'),
                       TRITON_CACHE_DIR=str(base/'cache/triton'),TORCHINDUCTOR_CACHE_DIR=str(base/'cache/inductor'),
                       C_INCLUDE_PATH=include,
                       NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost')
