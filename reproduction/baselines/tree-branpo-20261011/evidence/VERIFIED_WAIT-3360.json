@@ -1,46 +1,11 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "completed_outer": 20,
-  "current_outer": 21,
-  "observed_epoch": 1791674379.2720106,
-  "dev20_complete": {
-    "path": "validation-4011013-4.json",
-    "status": "VALIDATION_COST_COMPLETE",
-    "phase": "periodic",
-    "actual_completed_outer": 20,
-    "evaluated_rows": 512,
-    "dataset_rows": 512,
-    "metrics": {
-      "val/test_score/nq": 0.3125,
-      "val/evaluated_count/nq": 256,
-      "val/test_score/hotpotqa": 0.20703125,
-      "val/evaluated_count/hotpotqa": 256,
-      "val/qa_count/nq": 256,
-      "val/f1/nq": 0.39868542565297893,
-      "val/em/nq": 0.3125,
-      "val/answer_format/nq": 0.796875,
-      "val/format_rate/nq": 0.78515625,
-      "val/generated_tokens/nq": 119.6875,
-      "val/search_calls/nq": 1.0390625,
-      "val/qa_count/hotpotqa": 256,
-      "val/f1/hotpotqa": 0.2434523809523809,
-      "val/em/hotpotqa": 0.20703125,
-      "val/answer_format/hotpotqa": 0.58984375,
-      "val/format_rate/hotpotqa": 0.55078125,
-      "val/generated_tokens/hotpotqa": 177.8671875,
-      "val/search_calls/hotpotqa": 1.1640625,
-      "val/qa_count/all": 512,
-      "val/f1/all": 0.32106890330267984,
-      "val/em/all": 0.259765625,
-      "val/answer_format/all": 0.693359375,
-      "val/format_rate/all": 0.66796875,
-      "val/generated_tokens/all": 148.77734375,
-      "val/search_calls/all": 1.1015625
-    }
-  },
-  "start21_receipts": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 21"
+  "completed_outer": 21,
+  "current_outer": 22,
+  "observed_epoch": 1791675036.975287,
+  "start22_receipts": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 22"
   ],
   "source_commit": "8b6f99d1b3353145200eb3fa7c16a579a79a987c"
 }

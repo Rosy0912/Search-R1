@@ -1,5 +1,5 @@
 {
-  "epoch": 1791674379.2720106,
+  "epoch": 1791675036.975287,
   "job": 3360,
   "rollout_rows": [
     {
@@ -464,6 +464,30 @@
         "raw_inherited_leaf_tokens": 92398,
         "semantic_prefix_scan_cpu_seconds": 24.089357923989155,
         "semantic_prefix_scan_wall_seconds": 24.000419668853283
+      },
+      "error": null
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 21,
+      "candidate_outer": 21,
+      "start_epoch": 1791674272.8785903,
+      "end_epoch": 1791674570.0972006,
+      "wall_seconds": 297.2186107300222,
+      "costs": {
+        "generated_tokens": 528601,
+        "prefill_tokens": 2345855,
+        "retrieval_calls": 1671,
+        "trajectories": 2560,
+        "padded_rows": 31,
+        "context_mismatches": 0,
+        "raw_slots": 2128000,
+        "raw_emitted_tokens": 528601,
+        "raw_retained_tokens": 250602,
+        "raw_discarded_tail_tokens": 277999,
+        "raw_inherited_leaf_tokens": 97244,
+        "semantic_prefix_scan_cpu_seconds": 25.284870573050284,
+        "semantic_prefix_scan_wall_seconds": 25.19564511999488
       },
       "error": null
     }

@@ -1,5 +1,5 @@
 {
-  "observed_epoch": 1791674406.3871257,
+  "observed_epoch": 1791674991.2506192,
   "job": 3360,
   "rows": [
     {
@@ -221,10 +221,21 @@
         "critic/rewards/max": 1.0,
         "critic/rewards/min": 0.0
       }
+    },
+    {
+      "outer": 21,
+      "metrics": {
+        "critic/score/mean": 0.22421875596046448,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.22421875596046448,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
     }
   ],
-  "start21_receipts": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 21"
+  "start22_receipts": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 22"
   ],
   "scope": "Leaf training reward separate from dev EM/F1"
 }
