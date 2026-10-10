@@ -41,3 +41,15 @@ Target CUDA teardown and GPU queries took several minutes while the final rank w
 CUDA初始化/释放和GPU查询仍有数分钟延迟；旧HOLD状态可能在后续真实生成时尚未清除。按实际日志增量、wait返回、状态恢复和GPU释放判断，不能仅凭旧HOLD字样或D态提前停止。未确认硬件根因，不改变科学设置。
 
 全部100轮训练完成后，继续八次raw15/25固定512评测与分析。旧K4 V4评测入口含旧节点/PID/物理4–7的资源检查，须独立发布K5资源适配入口，保持科学生成/评分逻辑；不能直接运行旧资源检查或热改当前训练。GP/GN的raw15/25及评分所需原训练输入引用仍须同集群转移并校验，大产物不落Mac，不让该准备阻塞当前训练。
+
+## 不占训练GPU的评测准备：2026-10-11 06:15 CST
+
+G_POS/G_NEG的raw15/25检查点、完整四rank状态、共享Adam、adapter、outer-old manifest和训练输入四引用，共60文件1451045083bytes，已K4→K5同集群直传。真实pipeline wait0、stderr空；目标先全文件SHA核对，再安装到原路径，既有不同文件拒绝覆盖。另10个原config/部署/存储/检索小文件45437bytes同样通过SHA。源资产全部保留，Mac没有权重或原始轨迹文件。
+
+独立CPU评测适配 `source/hkust5-eval-85201ec/opsd_signal_weight_hkust5_eval_v1` 已发布、部署并逐文件读回，源commit `85201ec34833ce2b852ffc2598f0f3ca9cfadfac`，manifest `398e77a6ca3e6d60ddd2fe6cc92f51a1e7014a967eb6861676dad6c191481301`。原V4 evaluate/metrics/bank源码逐字节保留，仅外部编译映射实际0–3、真实K5训练终态和延长资源释放等待。保持两个四卡wave/八逻辑rank各64、greedy与原预算、raw CPU merge、严格评分和固定common-zero reference bank。
+
+本地及Node CPU测试通过；另真实CPU集成读四组不可变config，并验证四个GP/GN端点完整文件SHA及原科学checkpoint契约，Adam150/250/148/248。没有导入Torch或启动GPU，提前终态明确HOLD_ALL100_NOT_COMPLETE。第一次CPU只读根namespace无法创建/weka_3，错误输出保留；改用现有启动器相同虚拟路径布局后成功，未改变运行中的训练或新评测源码。
+
+后续只能在真实100行2560分母训练完成、同tmux server3535788/tick643725164、原foreground3550866/session$2/pane%2实际dead-status0、两H组实际wait0、全部原训练进程/GPU释放后评测。持target/home额外资源锁和原V4全部锁；当训练仍运行时不能抢占。若迁移supervisor之后实际故障/换身份，该特定终态绑定需另版恢复，不套用旧退出证据。此准备不是八次评测完成或整体实验验收。
+
+06:15快照同H_POS控制器身份一致，仍7轮/Adam71；第8轮第二wave真实生成文件从约2.2MB增长到3.5–3.9MB，已有新分片正常完成，memory observer年龄5.6秒。小摘要位于 `outputs/opsd-signal-execution-20261010/hkust5-progress-1791670514.json`。当前训练部署仍b77，与新评测852和后续文档HEAD分别记录。
