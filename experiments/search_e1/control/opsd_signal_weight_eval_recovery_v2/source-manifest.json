@@ -1,0 +1,43 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 7492,
+      "sha256": "cfedef82d1f20f53cfe3584a017daf76a912fa2cc251c898582186cce49f9310"
+    },
+    "__init__.py": {
+      "bytes": 79,
+      "sha256": "a9321550784c00ff54da3d2a498af06c817067330e83d8f24b19f775834465fc"
+    },
+    "entry.py": {
+      "bytes": 22132,
+      "sha256": "ae35c061a874468dfaa0608e4f2b191a8be9e2d1341d3c37d356db5a823dbfe7"
+    },
+    "evaluation_retry.py": {
+      "bytes": 4131,
+      "sha256": "35832d79d5e8431f28659167986be4b64864d70f27938cc2f78fdc56faeec0b5"
+    },
+    "failure_gate.py": {
+      "bytes": 11114,
+      "sha256": "51c8a105688e956be22d225ffbd072527e80b55ecffa4700cd82cfe0cb8496df"
+    },
+    "preserve.py": {
+      "bytes": 8681,
+      "sha256": "175a1ae6e43bcc7ff5140c1d06743a5be4c5afac607e8ceda292398bc9294513"
+    },
+    "recovery_common.py": {
+      "bytes": 7800,
+      "sha256": "c8c79a99aef3d9196b818b237dbea9d0f09c93b6d7a3b3fbeb6273497c1f6a3a"
+    },
+    "test_eval_recovery.py": {
+      "bytes": 16289,
+      "sha256": "1c496376e2585f8c155897d4065a69edf7a21f2bba8081cac0f0d082fbaf23c5"
+    },
+    "trainer_launcher.py": {
+      "bytes": 7056,
+      "sha256": "32cde05279516c5d474e38676870710b3d352146a971b3fd477c8d7bf05d7784"
+    }
+  },
+  "large_local_products": false,
+  "original_production_changed": false,
+  "schema": "opsd-signal-weight-evaluation-recovery-source-v2"
+}
