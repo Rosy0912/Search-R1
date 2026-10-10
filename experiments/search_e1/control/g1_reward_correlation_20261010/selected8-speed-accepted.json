@@ -1,0 +1,50 @@
+{
+  "observed_utc": "2026-10-10T05:49:55.492489+00:00",
+  "selected_steps": [
+    1,
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140
+  ],
+  "N": 20480,
+  "actual_four_recovery_steps": [
+    60,
+    80,
+    120,
+    140
+  ],
+  "per_step_elapsed_seconds": {
+    "60": 154.7538304803893,
+    "80": 151.91243200469762,
+    "120": 153.11623429786414,
+    "140": 152.7977577317506
+  },
+  "recovery_summed_task_elapsed_seconds": 612.5802545147017,
+  "recovery_launch_utc": "2026-10-10T05:41:35.139279+00:00",
+  "last_scientific_summary_utc": "2026-10-10T05:44:28.315183+00:00",
+  "recovery_actual_launch_to_scientific_accept_seconds": 173.175904,
+  "concurrent_task_work_over_batch_wall_ratio": 3.512435117852199,
+  "same_batch_sequential_benchmark_performed": false,
+  "actual_recovery_trajectory_throughput_per_second": 58.71448735366203,
+  "all_first_parallel_launch_to_all_R_accept_seconds": 1062.60951,
+  "all_first_parallel_launch_utc": "2026-10-10T05:26:45.705673+00:00",
+  "end_to_end_includes_failed_attempt_diagnosis_and_publication": true,
+  "earlier_step1_and_C_preflight_not_in_that_wall_window": true,
+  "old_serial_reference_seconds_per_point": [
+    165,
+    172
+  ],
+  "reference_not_identical_batch_benchmark": true,
+  "GPU_replay_remaining_seconds": 0,
+  "progress_evidence_sha256": "1801f6026b414d2dcaf92f1326211480cc58d95da8b64729d6a571866318d0ed",
+  "original_raw_payloads_exported": false,
+  "last_worker_complete_status_utc": "2026-10-10T05:44:29.542573+00:00",
+  "recovery_actual_launch_to_worker_complete_seconds": 174.403294,
+  "all_first_parallel_launch_to_all_worker_complete_seconds": 1063.8369,
+  "all_first_parallel_launch_to_group_accept_seconds": 1343.576093,
+  "GPU_replay_and_CPU_statistics_complete": true
+}
