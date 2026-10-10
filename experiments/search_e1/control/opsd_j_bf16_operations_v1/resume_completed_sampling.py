@@ -5,6 +5,23 @@ from types import SimpleNamespace
 B=Path('/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-20261010');ref=B/'receipts/training-config.json';cfg=json.loads(ref.read_text());sys.path.insert(0,cfg['paths']['helper_root'])
 from controller import *
 class Recovery(Controller):
+    def cpu_merge(self,outer,index,previous,updates):
+        receipt=outer/'cpu-merge-child.json';canonical=outer/'merged-model.json'
+        if index!=1 or canonical.exists() or not receipt.exists():return super().cpu_merge(outer,index,previous,updates)
+        child,child_ref=checked_json(fileproof(receipt));request_ref=fileproof(outer/'cpu-merge-request.json')
+        require(child.get('accepted') is True and child['request']==request_ref and child['run_id']==self.run_id,'Preserved CPU merge identity differs')
+        identity=child['result'];self.verify_merge_identity(identity,index,previous,updates)
+        candidates=[]
+        for p in (self.output/'phase-exits').glob('*.json'):
+            value=json.loads(p.read_text())
+            if value.get('phase')=='cpu-merge' and len(value['child_exit_evidence'])==1 and str(receipt) in value['child_exit_evidence'][0]['identity']['argv']:candidates.append((p,value))
+        require(len(candidates)==1,'Need unique actual CPU merge terminal')
+        path,terminal=candidates[0];evidence=terminal['child_exit_evidence'];require(evidence[0]['actual_wait_returncode']==0,'CPU merge actual nonzero wait')
+        require(process_identity(evidence[0]['identity']['pid']) is None,'CPU merge child remains')
+        release=self.wait_release([]);exit_proof=dict(accepted=True,child_exit_evidence=evidence,gpu_release=release,actual_terminal=fileproof(path))
+        canonical_ref=exclusive_json(canonical,identity)
+        exclusive_json(outer/'cpu-merge-parent.json',dict(schema='opsd-ablation-cpu-merge-parent-v1',accepted=True,run_id=self.run_id,config_sha256=self.config_ref['sha256'],request=request_ref,child=child_ref,canonical=canonical_ref,actual_terminal=exit_proof['actual_terminal'],exit_proof=exit_proof,parent_cpu=dict(torch_imported=False)))
+        return identity
     def verify_merge_identity(self,identity,index,previous,updates):
         require(identity['checkpoint']==previous and identity['optimizer_updates']==updates
                 and identity['source_model_identity']==self.config['source_model_manifest']['sha256']
