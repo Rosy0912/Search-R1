@@ -12,6 +12,7 @@ def configure(original):
       'data.val_files':'['+RUN+'/data/validation.parquet]',
       'data.train_batch_size':'512','data.val_batch_size':'512',
       'data.filter_overlong_prompts':'False',
+      'data.dataloader_num_workers':'0',
       'trainer.nnodes':'1','trainer.n_gpus_per_node':'4',
       'trainer.total_training_steps':'200','trainer.total_epochs':'1',
       'trainer.resume_mode':'disable','trainer.default_local_dir':RUN+'/checkpoints',

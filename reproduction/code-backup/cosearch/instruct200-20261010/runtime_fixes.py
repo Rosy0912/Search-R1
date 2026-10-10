@@ -25,6 +25,12 @@ def preserve(kind,payload):
 def install_worker():
     from verl.experimental.agent_loop.search_r1_reranker_agent_loop_worker import CoSearchAgentLoopWorker
     worker=CoSearchAgentLoopWorker.__ray_metadata__.modified_class
+    original_init=worker.__init__
+    def init_shared_four(instance,*args,**kwargs):
+        original_init(instance,*args,**kwargs)
+        instance.reranker_n_gpus=4
+        record('reranker_alignment_world_size',{'world_size':4,'shared_gpu_pool':True})
+    worker.__init__=init_shared_four
     import fallback_alignment,empty_ranker,phase_sampling
     fallback_alignment.install(worker,record,preserve)
     empty_ranker.install_worker(worker,record,preserve)
