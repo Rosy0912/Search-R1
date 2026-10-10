@@ -47,7 +47,10 @@ def configure(original):
         key,value=raw.split('=',1);plain=key.lstrip('+')
         if plain in seen:raise ValueError('Duplicate '+plain)
         seen.add(plain)
-        result.append(key+'='+values.pop(plain,value))
+        value = values.pop(plain,value)
+        value = value.replace('/dataset/shaoshitong/search-r1-rl/cosearch/author-native/repo', RUN+'/repo')
+        value = value.replace('/dataset/shaoshitong/search-r1-rl/cosearch/author-native/tools', RUN+'/tools')
+        result.append(key+'='+value)
     result.extend('++'+key+'='+value for key,value in sorted(values.items()))
     return result
 

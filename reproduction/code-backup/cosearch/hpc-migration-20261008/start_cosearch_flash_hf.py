@@ -17,9 +17,10 @@ ctl = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ctl)
 
 def campus(host, command, **kwargs):
+    observation_timeout = kwargs.pop("observation_timeout", 12)
     args = ['ssh', '-T', '-oBatchMode=yes', '-oStrictHostKeyChecking=yes', '-oConnectTimeout=8', host, command]
     try:
-        r = subprocess.run(args, capture_output=True, text=True, timeout=12, **kwargs)
+        r = subprocess.run(args, capture_output=True, text=True, timeout=observation_timeout, **kwargs)
         if r.returncode == 0:
             return r
     except subprocess.TimeoutExpired:
