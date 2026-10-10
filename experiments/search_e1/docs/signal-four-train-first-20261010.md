@@ -35,3 +35,7 @@
 2026-10-10 14:24–14:28 CST组间交接：G_POS完整25/25outer、250真实Adam、累计7598可用pair曝光；25条更新前TRAIN EM全部原生accepted且分母2560、索引0–24连续。末轮TRAIN1187/2560=46.3671875%、P=K303，torchrun和G_POS controller均实际wait0，自有后代释放。CP250远端9成员SHA备份与两端实际退出0通过；复用原audit_state.py独立CPU实读四rank全Adam250/moments/RNG/scaler/cursor一致，504个FP32 adapter张量全有限且相对共同初始全部改变，未初始化CUDA。这里只完成该组训练，raw15/25测试accepted仍false/pending。
 
 同一supervisor1861244已自动进入G_NEG，实际controller1977766/UID1001/tick690962026/runc9a7104f9a874e5eb7efdeac87e855ec；第1轮真实生成trace约14.27MB。采样model为raw-source100、optimizer_updates0、checkpoint=null、共同初始adapter digest836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f，未接入G_POS末权重或Adam；初始Adam还未进入trainer序列化，不能冒充已实读其完整moment。继续G_NEG25，再H_POS/H_NEG25；总25/100与0/8正式测试，补测后置不阻塞。
+
+2026-10-10 14:40–14:43 CST推进：G_NEG第1/25outer完整结束，P=K327，11真实Adam（10×32+7尾批），原torchrun实际wait0；更新前TRAIN1280/2560=50.00%，包含全错/未选轨迹，该指标与G_POS首轮相同，不宣称全轨迹bitwise一致。独立CPU初始CP0实读四rank Adam0、504FP32 adapter与共同初始完全相同；末CP11实读四rank全Adam11/moments/RNG/scaler/cursor一致有限、504adapter全有限且相对初始全部改变，均未初始化CUDA，确认fresh组没有继承G_POS Adam。CP11已HKUST4→HKUST1远端9成员SHA备份，两端实际退出0，Mac payload0。
+
+同controller1977766继续G_NEG第2轮SAMPLING，当前真实生成trace约10.42MB、更新前采样模型CP11、无新错误。当前TRAIN记录26/100（G_POS25、G_NEG1、H_POS/H_NEG0），八次正式512仍后置pending。训练设置与四rank累积8保持，不重做已有更新。
