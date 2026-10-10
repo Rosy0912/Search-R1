@@ -1,0 +1,78 @@
+{
+  "accepted": true,
+  "actual_Node_deployment": false,
+  "actual_new_GPU_evaluation": false,
+  "branch": "search-e1",
+  "files": [
+    {
+      "bytes": 7492,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/README.md",
+      "remote_equal": true,
+      "sha256": "cfedef82d1f20f53cfe3584a017daf76a912fa2cc251c898582186cce49f9310"
+    },
+    {
+      "bytes": 79,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/__init__.py",
+      "remote_equal": true,
+      "sha256": "a9321550784c00ff54da3d2a498af06c817067330e83d8f24b19f775834465fc"
+    },
+    {
+      "bytes": 22132,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/entry.py",
+      "remote_equal": true,
+      "sha256": "ae35c061a874468dfaa0608e4f2b191a8be9e2d1341d3c37d356db5a823dbfe7"
+    },
+    {
+      "bytes": 4131,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/evaluation_retry.py",
+      "remote_equal": true,
+      "sha256": "35832d79d5e8431f28659167986be4b64864d70f27938cc2f78fdc56faeec0b5"
+    },
+    {
+      "bytes": 11114,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/failure_gate.py",
+      "remote_equal": true,
+      "sha256": "51c8a105688e956be22d225ffbd072527e80b55ecffa4700cd82cfe0cb8496df"
+    },
+    {
+      "bytes": 8681,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/preserve.py",
+      "remote_equal": true,
+      "sha256": "175a1ae6e43bcc7ff5140c1d06743a5be4c5afac607e8ceda292398bc9294513"
+    },
+    {
+      "bytes": 7800,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/recovery_common.py",
+      "remote_equal": true,
+      "sha256": "c8c79a99aef3d9196b818b237dbea9d0f09c93b6d7a3b3fbeb6273497c1f6a3a"
+    },
+    {
+      "bytes": 1378,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/source-manifest.json",
+      "remote_equal": true,
+      "sha256": "5ba5b8d93cc02b93fe1a3f62f4fe3038a5080a10cda27f5590ddc95e6745dcbc"
+    },
+    {
+      "bytes": 16289,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/test_eval_recovery.py",
+      "remote_equal": true,
+      "sha256": "1c496376e2585f8c155897d4065a69edf7a21f2bba8081cac0f0d082fbaf23c5"
+    },
+    {
+      "bytes": 7056,
+      "path": "experiments/search_e1/control/opsd_signal_weight_eval_recovery_v2/trainer_launcher.py",
+      "remote_equal": true,
+      "sha256": "32cde05279516c5d474e38676870710b3d352146a971b3fd477c8d7bf05d7784"
+    }
+  ],
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/evaluation-recovery-31e2d74/opsd_signal_weight_eval_recovery_v2",
+  "independent_reviews": [
+    "endpoint_contract_APPROVE",
+    "recovery_scope_APPROVE"
+  ],
+  "original_scientific_source_unchanged": true,
+  "remote_readback_sha": "31e2d74a217aa7749c7de89d7c4a4bb85215c716",
+  "source_commit": "31e2d74a217aa7749c7de89d7c4a4bb85215c716",
+  "source_manifest_sha256": "5ba5b8d93cc02b93fe1a3f62f4fe3038a5080a10cda27f5590ddc95e6745dcbc",
+  "verified_unix": 1791599050.2100968
+}
