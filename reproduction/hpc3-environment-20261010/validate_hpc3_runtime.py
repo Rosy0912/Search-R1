@@ -105,7 +105,7 @@ finally:
     alias.unlink()
 import faiss
 import numpy as np
-from retrieval_server import Encoder
+from retrieval_server import Encoder, load_corpus, load_docs
 assert hasattr(faiss, 'index_cpu_to_gpu')
 encoder = Encoder('e5', str(ROOT / 'assets-root/assets/e5-base-v2'), 'mean', 256, False, 'cpu')
 emb = encoder.encode(['What is the capital of France?'])
@@ -115,15 +115,11 @@ index = faiss.read_index(str(ROOT / 'assets-root/assets/wiki/e5_Flat.index'))
 assert index.d == 768 and index.ntotal == 21015324
 scores, ids = index.search(emb, 3)
 assert ids.shape == (1, 3) and (ids >= 0).all() and np.isfinite(scores).all()
-selected = set(int(i) for i in ids[0]); docs = {}
-with (ROOT / 'assets-root/assets/wiki/wiki-18.jsonl').open() as f:
-    for i, line in enumerate(f):
-        if i in selected:
-            doc = json.loads(line)
-            assert isinstance(doc.get('contents'), str)
-            docs[str(i)] = {'contents_prefix': doc['contents'][:160]}
-            if len(docs) == 3: break
-assert len(docs) == 3
+corpus = load_corpus(str(ROOT / 'assets-root/assets/wiki/wiki-18.jsonl'))
+assert len(corpus) == index.ntotal
+documents = load_docs(corpus, ids[0])
+assert all(isinstance(doc.get('contents'), str) for doc in documents)
+docs = {str(int(i)): {'contents_prefix': doc['contents'][:160]} for i, doc in zip(ids[0], documents)}
 save('full-index-cpu-validation.json', {'status': 'FULL_INDEX_READ_SEARCH_CORPUS_MATCH_PASS',
       'dimension': index.d, 'vectors': index.ntotal, 'ids': ids.tolist(), 'scores': scores.tolist(), 'documents': docs})
 save('runtime-cpu-complete.json', {'status': 'TRAINING_RUNTIME_CPU_VALIDATION_PASS',
