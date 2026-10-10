@@ -1,0 +1,52 @@
+{
+  "scope": "native actual sixth-round completion and subsequent normal seventh-round sampling; no separate numerical re-test",
+  "run_id": "d040ebac9fa24ec28d43976299fd4f71",
+  "config_sha256": "3b3e632813271020d5674da06eecc797df94fd28e55d5c01a7279620734fee09",
+  "prefix_outers": 5,
+  "prefix_Adam": 50,
+  "completed_new_outer": {
+    "accepted": true,
+    "outer_index": 5,
+    "optimizer_updates_delta": 10,
+    "optimizer_updates": 60,
+    "P": 308,
+    "K": 308,
+    "cumulative_pair_exposure": 1805,
+    "global_valid_tokens": 55216,
+    "checkpoint": {
+      "bytes": 31655,
+      "ctime_ns": 1791603937084579086,
+      "device": 2065,
+      "inode": 466751772,
+      "mtime_ns": 1791603937084579086,
+      "path": "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/runs/checkpoints/update-00000060-outer-00005/manifest.json",
+      "sha256": "f45f8601f6f9154e4d43d543060f8e0cb746f5f96bc2928e97d4975acf69aed9"
+    }
+  },
+  "actual_live_owner": {
+    "argv": [
+      "/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/python",
+      "-B",
+      "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-20261010/source/continuation200-842fee6/opsd_j_bf16_200_v1/controller.py",
+      "--config",
+      "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-continuation200-20261010/receipts/training-config.json",
+      "--config-sha256",
+      "3b3e632813271020d5674da06eecc797df94fd28e55d5c01a7279620734fee09",
+      "--run-id",
+      "d040ebac9fa24ec28d43976299fd4f71"
+    ],
+    "euid": 1005,
+    "pgid": 3129173,
+    "pid": 3129175,
+    "ppid": 3129173,
+    "run_id": "d040ebac9fa24ec28d43976299fd4f71",
+    "starttick": 939523776,
+    "uid": 1005
+  },
+  "observed_unix": 1791603951.3804607,
+  "goal_complete": false,
+  "total_budget": 200,
+  "no512_evaluation": true,
+  "source_commit": "842fee6cd749459f0f802c846bd58411f6b418ac",
+  "local_evidence_sha256": "0e02656f57810ebef119ab5cef47075ccb8d0d1d63911a904691b384dd0d070a"
+}
