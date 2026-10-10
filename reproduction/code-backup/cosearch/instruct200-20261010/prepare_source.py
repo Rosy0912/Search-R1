@@ -47,6 +47,13 @@ def patch_trainer(trainer):
         if trainer.count(before) != 1:
             raise ValueError('Unexpected trainer source: ' + before)
         trainer = trainer.replace(before, after)
+    before = '    batch.meta_info["global_token_num"] ='
+    if trainer.count(before) != 1: raise ValueError("Missing PPO metadata point")
+    trainer = trainer.replace(before, '    batch.meta_info["cosearch_outer_step"] = global_steps\n' + before)
+    before = '                    if reranker_train_enabled:\n                        # Safe check: only pass reranker_ref_policy_wg'
+    if trainer.count(before) != 1: raise ValueError("Missing shared-pool ordering point")
+    trainer = trainer.replace(before, '                    main_results = ray.get(main_futures)\n' + before)
+    trainer = trainer.replace('main_results, reranker_results = ray.get([main_futures, reranker_futures])', 'reranker_results = ray.get(reranker_futures)')
     ast.parse(trainer)
     return trainer
 
