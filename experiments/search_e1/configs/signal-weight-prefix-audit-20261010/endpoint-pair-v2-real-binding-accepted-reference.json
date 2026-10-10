@@ -1,0 +1,177 @@
+{
+  "accepted": true,
+  "endpoint_accepted": false,
+  "full_study_accepted": false,
+  "actual_CLI_wait_returncode": 0,
+  "mode": "bind-only",
+  "source_commit": "a53f9a64cacafad2a8bd6145904098de211f1d84",
+  "request": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/analysis/endpoint-pair-v2-a53f9a6/request-bindings-only-49a17301.json",
+    "sha256": "49a173012e0ae62aeba86aeb3e5ebcaf55ddc824d152c410fd45812d35391ea5",
+    "bytes": 4751
+  },
+  "analysis_run_id": "endpoint-bindings-851c99fee2cf40e3805eee4faa2a6234",
+  "preflight_stdout": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/endpoint-v2-actual-bindings-1791593107113835000-preflight.stdout",
+    "bytes": 9962,
+    "sha256": "15645e9fcc4c60f91dff163f1c45832e6a75e7ae02cecd7d9d1d141b0b7c9be4"
+  },
+  "execution_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/opsd-signal-execution-20261010/endpoint-v2-actual-bindings-1791593107113835000.execution.json",
+  "four_group_publications": {
+    "G_NEG": {
+      "admission": {
+        "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+        "source_manifest_sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+      },
+      "reference": {
+        "bytes": 8527,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/publication.json",
+        "sha256": "8b86a97424d8d1b7df7a0ba7421991f93b75c3b94073c6f8a5e0e76e8cbedb8f"
+      }
+    },
+    "G_POS": {
+      "admission": {
+        "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+        "source_manifest_sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+      },
+      "reference": {
+        "bytes": 8527,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_POS/receipts/publication.json",
+        "sha256": "6c4b2e54b4fc09eadab1c1968aba50ec8b684b9a4f9d0a398c2eae5685170a7a"
+      }
+    },
+    "H_NEG": {
+      "admission": {
+        "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+        "source_manifest_sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+      },
+      "reference": {
+        "bytes": 8527,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_NEG/receipts/publication.json",
+        "sha256": "1bf5a32db3784def4b8a3e307ebb4baf4958ab83a5df55df50695c34181768d4"
+      }
+    },
+    "H_POS": {
+      "admission": {
+        "source_commit": "00fec71f6e2481f9e1bc4576d956748bdda77aaa",
+        "source_manifest_sha256": "af16f6e53e96ac7aba383e51570ef28a1595b206431c6458cc4ac39942b78314"
+      },
+      "reference": {
+        "bytes": 8527,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-H_POS/receipts/publication.json",
+        "sha256": "4282c03ede699a592101650788710c90166c65c1fc81c892de19c1bdf8b45f10"
+      }
+    }
+  },
+  "binding_checks": {
+    "common": {
+      "cohort": {
+        "accepted": true,
+        "frozen_sha256": "4a68d0cfd1e02662339dd1b3063e5d19238a22453118216b377bbf2cc88703d6",
+        "outer_count": 25,
+        "selected_questions": 12800,
+        "validation_overlap": 0,
+        "version": "search-e1-opsd-25-train-cohorts-seed42-v1"
+      },
+      "cohort_manifest": {
+        "bytes": 4665475,
+        "ctime_ns": 1791567513411726793,
+        "device": 2081,
+        "inode": 48112343,
+        "mtime_ns": 1791567513411726793,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-cohorts.json",
+        "sha256": "d1be6ec72ee30c5cc3ae349fc5cfe8c554fd90c6b87162b5ddc48aefa7e381c7"
+      },
+      "common_initial_manifest": {
+        "bytes": 1124,
+        "ctime_ns": 1791567511583675640,
+        "device": 2081,
+        "inode": 48112342,
+        "mtime_ns": 1791567511583675640,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/common-initial-adapter.json",
+        "sha256": "4d3ea3bdd7a301ae8815265b75eb83182da02bab809a6e989c6214a7d518988d"
+      },
+      "payload": [
+        {
+          "bytes": 782,
+          "ctime_ns": 1791565435295036776,
+          "device": 2081,
+          "inode": 48112284,
+          "mtime_ns": 1791565435295036776,
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/assets/common-initial/adapter_config.json",
+          "sha256": "b30b7758c00a5010d0de1fe6aae667443406b676860c00b994b1f6cfe0974ccb"
+        },
+        {
+          "bytes": 119801528,
+          "ctime_ns": 1791565421734918282,
+          "device": 2081,
+          "inode": 48105209,
+          "mtime_ns": 1791565421734918282,
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/assets/common-initial/adapter_model.safetensors",
+          "sha256": "8cbebc6cb10203bf93a2c8b7271d31020ab1d1e7f1958a6f94f5890af3206c3d"
+        }
+      ],
+      "scope": "CPU file identity; trainer/merge child separately verifies actual504 finite FP32 tensors and zero B"
+    },
+    "runtime": {
+      "all305_equal": true,
+      "files": 305,
+      "manifest": {
+        "bytes": 37563,
+        "ctime_ns": 1791565435795041151,
+        "device": 2081,
+        "inode": 48112285,
+        "mtime_ns": 1791565435795041151,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/frozen-runtime-manifest.json",
+        "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+      },
+      "scoring_identity": {
+        "accepted": true,
+        "actual_imported_scoring_files": [
+          {
+            "bytes": 2984,
+            "ctime_ns": 1791565412346836417,
+            "device": 2081,
+            "inode": 48112214,
+            "mtime_ns": 1791564805002379248,
+            "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/runtime/frozen-305/upstream/Search-R1/search_r1/qa_protocol.py",
+            "sha256": "9a825a7b222b5a3fd2c1de7f63ed38e157258fcf858e773ff64c963a4b6daddd"
+          },
+          {
+            "bytes": 0,
+            "ctime_ns": 1791565412346836417,
+            "device": 2081,
+            "inode": 48112215,
+            "mtime_ns": 1791564805001648997,
+            "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/runtime/frozen-305/upstream/Search-R1/search_r1/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "bytes": 3998,
+            "ctime_ns": 1791565412370836626,
+            "device": 2081,
+            "inode": 48112254,
+            "mtime_ns": 1791564804982474555,
+            "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/runtime/frozen-305/search_e1/core.py",
+            "sha256": "0fbfbe63d0aafb41f79db702e08c9a0efc5f9bbf29a2964310594ec2ec0a83fc"
+          }
+        ],
+        "runtime_manifest": {
+          "bytes": 37563,
+          "ctime_ns": 1791565435795041151,
+          "device": 2081,
+          "inode": 48112285,
+          "mtime_ns": 1791565435795041151,
+          "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/frozen-runtime-manifest.json",
+          "sha256": "3c05be8e2ae52278eaa7f28f40f4fc07a87c847fd67a7bb2217777f4f78467bc"
+        },
+        "scope": "Unchanged authored-final strict scorer; original executor/source compiled from SHA-checked bytes, never pyc",
+        "source_only_compile": true
+      },
+      "verified_file_bytes": 4964671
+    }
+  },
+  "source100_weight_payload_fresh_SHA": false,
+  "no_sampling": true,
+  "no_output_files_written": true
+}
