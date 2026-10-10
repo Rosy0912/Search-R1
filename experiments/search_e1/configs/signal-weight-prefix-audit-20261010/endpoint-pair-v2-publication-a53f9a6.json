@@ -1,0 +1,50 @@
+{
+  "accepted": true,
+  "branch": "search-e1",
+  "checked_unix": 1791592697.1568158,
+  "fetch_readback_proof_sha256": "b0d6bdfe3956a284901dde877b508f2a646fd97edaf35ed7c560b67af0f36403",
+  "files": [
+    {
+      "bytes": 10452,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/README.md",
+      "sha256": "a69f837f9b2d851a1845c751f5faecc47aadd0a9a9b2d3d00d280e06fa490add"
+    },
+    {
+      "bytes": 83,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/__init__.py",
+      "sha256": "d8660ea755ec15e85b7de3d879ce946b86707b545c24e428785206a570e2cdec"
+    },
+    {
+      "bytes": 7582,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/common.py",
+      "sha256": "097360f0bc31e7b990f57581f21c1f3854838e23b9abbe5f1ad6a6211002d04a"
+    },
+    {
+      "bytes": 20322,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/reader.py",
+      "sha256": "87b799ba3757673d9478891bbd7221bf552fc6772232dd6bc45ab4836be6d11a"
+    },
+    {
+      "bytes": 895,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/source-manifest.json",
+      "sha256": "582b8869d11654b433fcac40ede4a230910b69f78bcc4f14bc1dbabdea27d337"
+    },
+    {
+      "bytes": 16721,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/test_publication_topology.py",
+      "sha256": "bac7b2f5aacccf5219e1d8903e1835daced050296d9675e9efc52958b9b3acdf"
+    },
+    {
+      "bytes": 23606,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2/test_reader.py",
+      "sha256": "3103f2586de3a9c58bdc9866451d7590007f2169a5c9d93ad162d0eb96d36587"
+    }
+  ],
+  "helper_root": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/endpoint-pair-v2-a53f9a6/opsd_signal_weight_endpoint_pair_v2",
+  "production_endpoint_executed": false,
+  "remote_readback_sha": "a53f9a64cacafad2a8bd6145904098de211f1d84",
+  "schema": "opsd-signal-endpoint-pair-publication-v2",
+  "source_commit": "a53f9a64cacafad2a8bd6145904098de211f1d84",
+  "source_manifest_sha256": "582b8869d11654b433fcac40ede4a230910b69f78bcc4f14bc1dbabdea27d337",
+  "tests_are_separate_acceptance": true
+}

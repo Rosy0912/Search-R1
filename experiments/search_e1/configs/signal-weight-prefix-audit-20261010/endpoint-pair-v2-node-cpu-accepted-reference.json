@@ -1,0 +1,21 @@
+{
+  "schema": "opsd-signal-endpoint-reader-v2-node-fixture-reference-v1",
+  "accepted_scope": "Published source deployment and original-env CPU fixtures only",
+  "source_commit": "a53f9a64cacafad2a8bd6145904098de211f1d84",
+  "helper_manifest_sha256": "582b8869d11654b433fcac40ede4a230910b69f78bcc4f14bc1dbabdea27d337",
+  "publication": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/endpoint-pair-v2-publication-a53f9a6.json",
+    "sha256": "de30df596d3bce7ce58767470a4d71fe9960025b08677750fa8db7dc893b4b4d",
+    "bytes": 2684
+  },
+  "deployment_execution_sha256": "a45eddefb321124ceb39210223e8057aaf51e7b3165f1ff8bcbcf5d61be32184",
+  "new_source_files_SHA_bytes_equal": 7,
+  "canonical_dependency_source_publication_files_before_after_equal": 75,
+  "Node_CPU_tests": 46,
+  "skips": 0,
+  "actual_SSH_wait_returncode": 0,
+  "actual_endpoint_accepted": false,
+  "actual_binding_preflight_accepted": false,
+  "full_study_accepted": false,
+  "production_changed": false
+}
