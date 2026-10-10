@@ -25,7 +25,7 @@ def startup(repair,configs,gates):
         'Original last committed CP88/outer8 required')
     require(audit['accepted'] and audit['optimizer_updates']==88 and audit['outer_index']==8
         and audit['all_four_exact_full_adam'] and audit['adapter_finite_fp32']
-        and audit['checkpoint']['sha256']==repair['resume_checkpoint']['sha256'],
+        and audit['checkpoint']['manifest']['sha256']==repair['resume_checkpoint']['sha256'],
         'Independent full CP88 CPU readback missing')
     cfg=next(c for c,ref in configs.values() if c['variant']=='G_NEG')
     output=Path(cfg['paths']['output_root']);pending=output/'outers/outer-00009'
