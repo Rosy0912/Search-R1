@@ -55,3 +55,9 @@
 2026-10-10 16:38–16:55 CST真实完成、17:02复核：G_NEG第8、9轮均完整结束，累计Adam78、88。第8轮P=K310、10次新Adam（68→78），更新前TRAIN1244/2560=48.59375%；第9轮P=K301、10次新Adam（78→88），更新前TRAIN1195/2560=46.6796875%。两轮实际torchrun wait0、原生四rank adapter/Adam摘要一致；本次不重复独立CPU张量实读。CP78、88已HKUST1远端各9成员逐SHA备份，两端实际退出0、Mac payload0。
 
 同controller1977766已进入第10轮SAMPLING，实际trace15.19→23.97MB继续增长；采样阶段proc/environ及动态memory-live SHA观察提示不等于实际失败，前一提示已自然清除。没有信号、重启或重复更新，冻结科学设置未变。总TRAIN34/100（G_POS25/G_NEG9/H_POS0/H_NEG0），八次完整512仍后置pending。上一goal回合完成GN7与备份，为progress；本回合完成GN8/9与备份，亦为progress，不以单次巡检结束目标。
+
+2026-10-10第10轮端口冲突恢复：17:06:29 CST G_NEG outer9训练器在init_process_group以EADDRINUSE退出1，尚未加载模型/没有本轮Adam；教师诊断实际exit0、完整2560采样保留。原controller1977766及supervisor1861244实际退出1，旧110子进程全部ABSENT，日志/源代码/失败票据均保留。独立CPU实读CP88：四rank完整Adam88/moments/groups一致，504FP32 adapter全有限，未初始化CUDA。
+
+20:35 CST新独立port-resume-0146350入口启动；源码0146350f7a77b87644d5639a3dac1802b6a54c79已发布与逐文件readback，仅通信启动改static c10d agent TCPStore/OS空闲本地端口；原四rank/累积8/global32/science/config原字节不变。新supervisor2297236/tick693190113、GNcontroller2300905/tick693209228、原GNrun不变、tmux%48/pane2297233。先读回已完成G_POS状态，无新增GP训练，然后复用第10轮原sampling/teacher文件SHA继续。旧5eac816候选仅CPU部署因audit嵌套字段未正确绑定而停止、没有GPU/训练启动，保留；0146350修正后实际运行。
+
+20:45–20:47 CST真实验收：第10轮P=K308、88→98共10新Adam；原failed attempt0=1，retry attempt1实际torchrun wait0，actual argv明确static/4rank。sampling-complete/teacher-complete原SHA完全不变，没有重做采样或已完成更新。本轮更新前TRAIN1263/2560=49.3359375%。CP98已HKUST1远端9成员逐SHA备份，两端实际exit0、Mac payload0。第11轮从CP98继续采样，实际trace增长；总TRAIN35/100，正式512仍0/8pending。恢复后完整一轮通过而非仅启动。后置a48评估原终态guard绑定旧失败supervisor1861244，全部100完成后必须在独立已发布副本绑定新真实终态，不能伪造旧exit0。
