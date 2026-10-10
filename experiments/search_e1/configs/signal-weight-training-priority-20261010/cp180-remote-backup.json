@@ -1,0 +1,25 @@
+{
+  "accepted": true,
+  "actual_transfer_wait_codes": [
+    0,
+    0
+  ],
+  "elapsed_seconds": 47.338855266571045,
+  "local_checkpoint_payload_files_created": 0,
+  "remote_backup": {
+    "accepted": true,
+    "destination": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000180-outer-00017",
+    "member_bytes": 359785236,
+    "member_count": 9,
+    "receipt": {
+      "bytes": 28960,
+      "ctime_ns": 1791606813199544622,
+      "device": 2065,
+      "inode": 466753929,
+      "mtime_ns": 1791606813199544622,
+      "path": "/data/shaoshitong/search-e1-opsd-signal-weight-backup-20261010/G_POS/59de0d17968b4955b97f312cb2387429/checkpoints/update-00000180-outer-00017/complete-sha-verified.json",
+      "sha256": "ef220ac925effa70e265e7e7acb7319310b73f1cfa6535387c73f7e900ba7ceb"
+    },
+    "state": "COMPLETE_FRESH_SHA_READBACK"
+  }
+}
