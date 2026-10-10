@@ -1,0 +1,106 @@
+{
+  "epoch": 1791664828.6183074,
+  "job": 3360,
+  "rows": [
+    {
+      "outer": 1,
+      "metrics": {
+        "critic/score/mean": 0.16093750298023224,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.16093750298023224,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 2,
+      "metrics": {
+        "critic/score/mean": 0.16757813096046448,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.16757813096046448,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 3,
+      "metrics": {
+        "critic/score/mean": 0.154296875,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.154296875,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 4,
+      "metrics": {
+        "critic/score/mean": 0.14765624701976776,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.14765624701976776,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 5,
+      "metrics": {
+        "critic/score/mean": 0.15742187201976776,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.15742187201976776,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 6,
+      "metrics": {
+        "critic/score/mean": 0.19062499701976776,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.19062499701976776,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 7,
+      "metrics": {
+        "critic/score/mean": 0.16289062798023224,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.16289062798023224,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 8,
+      "metrics": {
+        "critic/score/mean": 0.17617186903953552,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.17617186903953552,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 9,
+      "metrics": {
+        "critic/score/mean": 0.17148438096046448,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.17148438096046448,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    }
+  ],
+  "scope": "Original completed-step metrics over 2560 leaf sequence scores/rewards; EM/F1 separately measured on fixeddev512"
+}
