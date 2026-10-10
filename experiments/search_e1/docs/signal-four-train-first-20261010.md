@@ -31,3 +31,7 @@
 最终CPU汇总接口4f13ffbcdbf86ffb2ba115772fe2ff34762f3c13已独立发布部署，Mac/Node各3项CPU检查通过；没有额外GPU任务或新审查轮。它仅将新批量评测九端点的完整4608行转换给原result_analysis.analyze，复用第25轮G_POS−G_NEG、H_POS−H_NEG两项exact McNemar/Holm家族和seed42/10000次共享分层配对bootstrap；旧HF239不混入新vLLM指标，TRAIN信号关系另报。当前八端点评测尚未开始，此准备不代表效果验收。
 
 2026-10-10 14:08 CST推进：G_POS24/25完整outer、Adam240；第24轮更新前TRAIN strict EM1205/2560=47.0703125%，P=K301、10次新Adam、原torchrun实际wait0。CP240已HKUST1远端逐成员SHA备份，两端实际退出0、Mac payload0。第25轮进入SAMPLING准备，仍确认真实新生成；其余三组待串行启动，八次正式512仍后置pending。采样收尾时短暂Zombie观察提示随后自然清除，未重启、未发信号，没有实际采样失败。
+
+2026-10-10 14:24–14:28 CST组间交接：G_POS完整25/25outer、250真实Adam、累计7598可用pair曝光；25条更新前TRAIN EM全部原生accepted且分母2560、索引0–24连续。末轮TRAIN1187/2560=46.3671875%、P=K303，torchrun和G_POS controller均实际wait0，自有后代释放。CP250远端9成员SHA备份与两端实际退出0通过；复用原audit_state.py独立CPU实读四rank全Adam250/moments/RNG/scaler/cursor一致，504个FP32 adapter张量全有限且相对共同初始全部改变，未初始化CUDA。这里只完成该组训练，raw15/25测试accepted仍false/pending。
+
+同一supervisor1861244已自动进入G_NEG，实际controller1977766/UID1001/tick690962026/runc9a7104f9a874e5eb7efdeac87e855ec；第1轮真实生成trace约14.27MB。采样model为raw-source100、optimizer_updates0、checkpoint=null、共同初始adapter digest836590b798434f21160418c6471cbce3bdfac5bf4a9947c1e3e7723d057baf2f，未接入G_POS末权重或Adam；初始Adam还未进入trainer序列化，不能冒充已实读其完整moment。继续G_NEG25，再H_POS/H_NEG25；总25/100与0/8正式测试，补测后置不阻塞。
