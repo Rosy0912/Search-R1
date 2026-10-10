@@ -18,5 +18,12 @@ def run(proof):
     out,err=b.communicate();ac=a.wait();thread.join()
     value=dict(source='HKUST4',target='HKUST5',destination=DEST,members=MEMBERS,source_wait=ac,target_wait=b.returncode,source_stderr=errors,target_stderr=err.decode(errors='replace'),started=started,ended=time.time(),large_local_files_created=0,accepted=ac==b.returncode==0)
     Path(proof).write_text(json.dumps(value,indent=2)+'\n');print(json.dumps(value));assert value['accepted']
+def direct(proof):
+    remote_source=shlex.join(['tar','-cf','-','-C','/']+MEMBERS)
+    remote_target=shlex.join(['ssh','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=12','shaoshitong@10.123.4.12',shlex.join(['tar','-xf','-','-C',DEST])])
+    command='set -o pipefail; '+remote_source+' | '+remote_target
+    started=time.time();r=subprocess.run(SSH[:1]+['-A']+SSH[1:]+['hkust4','bash -c '+shlex.quote(command)],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    value=dict(source='HKUST4',target='HKUST5',destination=DEST,members=MEMBERS,actual_pipeline_wait=r.returncode,stderr=r.stderr.decode(errors='replace'),started=started,ended=time.time(),large_local_files_created=0,payload_route='HKUST4 direct SSH to HKUST5; existing SSH agent forwarding, no key copy',accepted=r.returncode==0)
+    Path(proof).write_text(json.dumps(value,indent=2)+'\n');print(json.dumps(value));assert value['accepted']
 if __name__=='__main__':
-    import sys;run(sys.argv[1])
+    import sys;(direct if '--direct' in sys.argv else run)(sys.argv[1])
