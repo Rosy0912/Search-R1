@@ -1,0 +1,50 @@
+{
+  "batch_core_source_commit": "0f226d21998ae70326b14be8587a83638b99f9ff",
+  "files": {
+    "README.md": {
+      "bytes": 2955,
+      "sha256": "da961f9dbe058a35322cdabc4ce090fcf5db225688b200dc6d9ff084730bac94"
+    },
+    "backend_cpu_fixture.py": {
+      "bytes": 1902,
+      "sha256": "6a7fd21c924c985e8e83cf45e492a7e15dda4aca33b4c9cbf6728b6ae20e0985"
+    },
+    "bank_adapter.py": {
+      "bytes": 7361,
+      "sha256": "7dcac715f6672404795bae513e737aa332129a0c8deeeb8aa09030deefc21014"
+    },
+    "dependencies.py": {
+      "bytes": 1602,
+      "sha256": "0350104fd4dea2f4d8b9e78eac5fe3ddac8ade649c912ec05d9fa196d566adca"
+    },
+    "evaluate.py": {
+      "bytes": 12805,
+      "sha256": "fd3181d324db4d2489cdd02b77d0956fb6ff9ed65f2f1b01a59bce833f563364"
+    },
+    "metrics.py": {
+      "bytes": 2405,
+      "sha256": "8888a0f08a66e3c23dbf73108d7600517186d380f03d42d52bc14c7962729c2f"
+    },
+    "test_bank_adapter.py": {
+      "bytes": 2307,
+      "sha256": "3595d1fee94c8a8ae696aa6930531733fb36a1f75ac799951ca101e314eaa779"
+    },
+    "test_layout.py": {
+      "bytes": 2682,
+      "sha256": "2cb3461c4b56838e898e08339fae73a0dbf940607f8bbd830b07db236722e587"
+    },
+    "test_metrics.py": {
+      "bytes": 1973,
+      "sha256": "db4223dcbc0ffe66c0773ca8cdfc6c7740fdd0f6b4295326dcc32d84799ef984"
+    },
+    "test_terminal.py": {
+      "bytes": 1587,
+      "sha256": "1d2fe72d42c22d8df3eadd73a9ece7c0a97c42bdb9b4ca6218e07201d461f1c3"
+    },
+    "worker.py": {
+      "bytes": 9888,
+      "sha256": "3cdef6f9bb23a6830b0a53e7e347bf6735aa9f5bbfa85701e30f6db2a5936f4e"
+    }
+  },
+  "schema": "opsd-hf-batch-eval-source-v1"
+}
