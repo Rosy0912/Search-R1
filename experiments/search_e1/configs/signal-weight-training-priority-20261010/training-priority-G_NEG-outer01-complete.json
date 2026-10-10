@@ -1,0 +1,67 @@
+{
+  "K": 327,
+  "P": 327,
+  "accepted": true,
+  "checkpoint": {
+    "bytes": 19785,
+    "ctime_ns": 1791614419973007426,
+    "device": 2081,
+    "inode": 48241486,
+    "mtime_ns": 1791614419945006704,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/runs/checkpoints/update-00000011-outer-00000/manifest.json",
+    "sha256": "9f5c6dd4ee44fc139607417de611fa955bc9fa222fbd69d2e49eb0326bef905c"
+  },
+  "completed_outers": 1,
+  "exits": [
+    {
+      "accepted": true,
+      "codes": [
+        0
+      ],
+      "ref": {
+        "bytes": 89661,
+        "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/runs/outers/outer-00000/trainer-logs/attempt-00000-exit.json",
+        "sha256": "ac39afb1300ee385fd2fd01d7659a6da3cc0e5bfc833ee87b8783d468a03cbb6"
+      }
+    }
+  ],
+  "latest_status": {
+    "error": null,
+    "outer_index": 0,
+    "phase": "OUTER_COMPLETE"
+  },
+  "native_four_Adam_sha": [
+    "2ba7562b15676752c9d708304730aeb4dee190f56a1bd84c8f2cd54e3e5ba7b5",
+    "2ba7562b15676752c9d708304730aeb4dee190f56a1bd84c8f2cd54e3e5ba7b5",
+    "2ba7562b15676752c9d708304730aeb4dee190f56a1bd84c8f2cd54e3e5ba7b5",
+    "2ba7562b15676752c9d708304730aeb4dee190f56a1bd84c8f2cd54e3e5ba7b5"
+  ],
+  "native_four_adapter_sha": [
+    "6d3548397ba1ddf499b78f5af5f4390ab4132316f19c1845335a19dbdf2b9b32",
+    "6d3548397ba1ddf499b78f5af5f4390ab4132316f19c1845335a19dbdf2b9b32",
+    "6d3548397ba1ddf499b78f5af5f4390ab4132316f19c1845335a19dbdf2b9b32",
+    "6d3548397ba1ddf499b78f5af5f4390ab4132316f19c1845335a19dbdf2b9b32"
+  ],
+  "next_outer_exists": true,
+  "observed_unix": 1791614478.2311847,
+  "optimizer_updates": 11,
+  "outer_complete": {
+    "bytes": 4011,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/runs/outers/outer-00000/training/outer-complete.json",
+    "sha256": "2a5a622e9cba104a5522d3fcf59d0110b06e2466dc40807500b8e9df9f5b6d1b"
+  },
+  "preupdate_model": 0,
+  "total_TRAIN_records": 26,
+  "train_em": {
+    "denominator": 2560,
+    "em": 0.5,
+    "no_executed_search": 1,
+    "strict_correct": 1280,
+    "termination": {
+      "answer": 2554,
+      "invalid_or_budget": 6
+    },
+    "trajectories": 2560
+  },
+  "variant": "G_NEG"
+}

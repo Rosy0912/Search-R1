@@ -1,0 +1,142 @@
+{
+  "accepted": true,
+  "actual_successful_trainer": {
+    "actual_wait_returncode": 0,
+    "identity": {
+      "argv": [
+        "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--rdzv_backend=static",
+        "--master_addr=127.0.0.1",
+        "--master_port=34271",
+        "--rdzv_id=signal-port-382656668790494ab6a1f794c8af975f",
+        "--nproc_per_node=4",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/port-resume-0146350/opsd_signal_weight_port_resume_v1/entry.py",
+        "--mode",
+        "trainer",
+        "--recovery-ref",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/port-resume-input-0146350.json",
+        "--recovery-sha256",
+        "10d94f6a413924c4f869846989e8fdb7cd34274d9ca8f0a6661111949781f828",
+        "--",
+        "--config",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+        "--config-sha256",
+        "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d",
+        "--outer-manifest",
+        "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/runs/outers/outer-00009/outer-manifest.json",
+        "--outer-manifest-sha256",
+        "3634078c4fd06acadac6021dececa71fe39d1eef1c6cc8e9cd431daf2ad92299"
+      ],
+      "euid": 1001,
+      "pgid": 2301954,
+      "pid": 2301954,
+      "ppid": 2300905,
+      "run_id": "c9a7104f9a874e5eb7efdeac87e855ec",
+      "starttick": 693216149,
+      "uid": 1001
+    },
+    "log": {
+      "bytes": 21132,
+      "ctime_ns": 1791636313861322081,
+      "device": 2081,
+      "inode": 49876569,
+      "mtime_ns": 1791636313861322081,
+      "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/runs/outers/outer-00009/trainer-logs/attempt-00001.log",
+      "sha256": "bdd1d51e9bb468795ca886f7f8f6fdb25d46f22ed4768dd94360b2506b664fb7"
+    }
+  },
+  "actual_updates_after_full_outer": 98,
+  "actual_updates_before_recovery": 88,
+  "checked_unix": 1791636572.8244715,
+  "completed_outers": 10,
+  "controller": {
+    "argv": [
+      "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/port-resume-0146350/opsd_signal_weight_port_resume_v1/entry.py",
+      "--mode",
+      "controller",
+      "--recovery-ref",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/port-resume-input-0146350.json",
+      "--recovery-sha256",
+      "10d94f6a413924c4f869846989e8fdb7cd34274d9ca8f0a6661111949781f828",
+      "--",
+      "--config",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/group-G_NEG/receipts/config.json",
+      "--config-sha256",
+      "2c37c851193dbc9a2d2512a72dd49310b9b8bcc14ac903159af4a491ef773a0d",
+      "--run-id",
+      "c9a7104f9a874e5eb7efdeac87e855ec",
+      "--resume"
+    ],
+    "euid": 1001,
+    "pgid": 2300905,
+    "pid": 2300905,
+    "ppid": 2297236,
+    "run_id": "c9a7104f9a874e5eb7efdeac87e855ec",
+    "starttick": 693209228,
+    "uid": 1001
+  },
+  "formal_test_completed": 0,
+  "independent_CP88_state_audit": {
+    "bytes": 5909,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/G_NEG-cp88-port-recovery-audit-0146350.json",
+    "sha256": "ff0d9507c0200f0d563032b67fbf08cf2ffc1ceb1323a00d6946bf37c9557489"
+  },
+  "input": {
+    "bytes": 7588,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/port-resume-input-0146350.json",
+    "sha256": "10d94f6a413924c4f869846989e8fdb7cd34274d9ca8f0a6661111949781f828"
+  },
+  "launch": {
+    "bytes": 792,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/launch-port-resume-0146350.sh",
+    "sha256": "6ec21b0a6f061d10466f395995f356ab3099a3151d04c644ab3791b7538c9b02"
+  },
+  "next_generation_bytes": 15057027,
+  "next_outer_index": 10,
+  "no_signals_sent_by_recovery": true,
+  "pane": "%48|2297233|0|",
+  "previous_controller": {
+    "bytes": 1434,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/sequence-attempts/G_NEG-15a17b99703540129af716229ba3fb02/actual-controller-exit.json",
+    "sha256": "5a5f03a09af800e86e958a7e858ad037438bafbe16369934d99336d949ae782c"
+  },
+  "publication": {
+    "bytes": 314,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/port-resume-publication-0146350.json",
+    "sha256": "62e436dc3057c7fdc5065140b76ebc5cdda28945bf580de79778bbf6ebd20187"
+  },
+  "run_id": "c9a7104f9a874e5eb7efdeac87e855ec",
+  "same_run": true,
+  "science_config_unchanged": true,
+  "source_commit": "0146350f7a77b87644d5639a3dac1802b6a54c79",
+  "supervisor": {
+    "argv": [
+      "/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/source/port-resume-0146350/opsd_signal_weight_port_resume_v1/entry.py",
+      "--mode",
+      "study",
+      "--recovery-ref",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/port-resume-input-0146350.json",
+      "--recovery-sha256",
+      "10d94f6a413924c4f869846989e8fdb7cd34274d9ca8f0a6661111949781f828",
+      "--",
+      "--study-manifest",
+      "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+      "--study-manifest-sha256",
+      "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e",
+      "--resume"
+    ],
+    "euid": 1001,
+    "pgid": 2297233,
+    "pid": 2297236,
+    "ppid": 2297233,
+    "run_id": "signal-study-port-resume-84064393f92b476ea78f7b0b13b52889",
+    "starttick": 693190113,
+    "uid": 1001
+  },
+  "tmux_session": "e1-signal-port-resume-0146350-20261010",
+  "total_TRAIN_records": 35
+}

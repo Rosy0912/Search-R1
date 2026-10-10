@@ -1,0 +1,24 @@
+{
+  "verified_utc": "2026-10-10T07:37:35.168271+00:00",
+  "source_commit": "9b2839b45a151e802a87e3e4ba29e01cad2cb937",
+  "remote_readback": "9b2839b45a151e802a87e3e4ba29e01cad2cb937",
+  "files": [
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/pairwise_order_concordance.py",
+      "sha256": "bd4f61ea77c1e1f628eec432d66f4c032b82cef088390fcf1000c437eb2a765c",
+      "bytes": 12774
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/test_pairwise_order_concordance.py",
+      "sha256": "0b0add49e9d4e68e715eb54a597bc0c1307a79382d27a9dca2efe0bdb56a169b",
+      "bytes": 7772
+    },
+    {
+      "path": "experiments/search_e1/control/g1_reward_correlation_20261010/read_pairwise_order_concordance.py",
+      "sha256": "21a3f0e7d8b6ba7067797642fd6231d24e30203829739a6d744e1fee46bb9ff5",
+      "bytes": 2613
+    }
+  ],
+  "checkout_preserved": true,
+  "no_force_push": true
+}

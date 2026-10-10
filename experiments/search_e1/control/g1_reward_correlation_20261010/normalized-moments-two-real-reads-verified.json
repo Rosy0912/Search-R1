@@ -1,0 +1,33 @@
+{
+  "verified_utc": "2026-10-10T08:09:36.276067+00:00",
+  "actual_reads": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/normalized-advantage-20261010T080020915154Z.stdout.json",
+      "sha256": "b788ce8df27897fc86dfb46861b83c4534fe80cc06cf7694a23e9fb040eaa162",
+      "actual_rc": 0,
+      "stderr_bytes": 100
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/normalized-advantage-20261010T080052647708Z.stdout.json",
+      "sha256": "b788ce8df27897fc86dfb46861b83c4534fe80cc06cf7694a23e9fb040eaa162",
+      "actual_rc": 0,
+      "stderr_bytes": 100
+    }
+  ],
+  "equal_bytes": true,
+  "raw_not_exported": true,
+  "remote_original_group_file_fresh_sha": "2fadf346927a6ed1ca634b5f691e38049971f4fb48b1c6d40c3b4d5814708f17",
+  "native_GRPO_source_proof": {
+    "core_file_sha256": "adff53255d8ba659077be57d892c7f058ac41f64b588f1be49016322bc3d2a27",
+    "compute_grpo_outcome_advantage_AST_sha256": "3289eeb5b20239288e4f863f6f97b0fec593f1b6c748e8b291d7a0dc8f11f777",
+    "epsilon_default": 1e-06,
+    "std_call_uses_default_correction1": true,
+    "std_call_has_no_correction_or_unbiased_override": true,
+    "sample_std_denominator_for_five": 4,
+    "shared_scalar_tiled_then_eos_mask": true,
+    "return_advantages_and_returns_same": true,
+    "source_checked_by_AST_only_not_imported": true,
+    "native_torch_arithmetic_not_executed": true
+  },
+  "source_commit": "c2463b26e17550af3cdb15b174c12340ccced476"
+}
