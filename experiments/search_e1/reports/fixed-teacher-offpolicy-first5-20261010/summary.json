@@ -1,0 +1,134 @@
+{
+  "accepted_initial_five": true,
+  "full_goal_complete": false,
+  "total_budget": 200,
+  "run": "5dd5f0d68c4249ae9cb273bed38dabe3",
+  "config_sha256": "1a14d19772893e7ceb325de976125e92fba31c50b12afe430ecc7a476ed98d9f",
+  "rows": [
+    {
+      "outer": 1,
+      "K": 327,
+      "updates": 11,
+      "policy_tokens": 62314,
+      "checkpoint": {
+        "bytes": 22507,
+        "ctime_ns": 1791639017471286064,
+        "device": 2065,
+        "inode": 466791799,
+        "mtime_ns": 1791639017471286064,
+        "path": "/data/shaoshitong/search-e1-opsd-fixed-teacher-bf16-rwm200-20261010/runs/checkpoints/update-00000011-outer-00000/manifest.json",
+        "sha256": "4512e3c1d522f5affe5f0bf386cbd0c800921c71668750bc6b9683473e2a575f"
+      },
+      "native_all_rank_adapter_digest": "2a74ff77b7dbbf4c8ab11c4f6b00a50130a2fac61c343c01726329f4b510bb08",
+      "native_all_rank_optimizer_digest": "ecf032622ba73316a84db333ba0032a3bdc3cce13836fcf778581df390483385",
+      "fixed_teacher_sampling": true,
+      "outer_old_previous_student": true,
+      "native_successful_wait_release": true,
+      "diagnostic_cases": 1,
+      "recorded_raw_trajectory_mean": 0.006361609259408105,
+      "recorded_weighted_post_trajectory_mean": 0.006107441777113027
+    },
+    {
+      "outer": 2,
+      "K": 302,
+      "updates": 21,
+      "policy_tokens": 56097,
+      "checkpoint": {
+        "bytes": 22225,
+        "ctime_ns": 1791639408916439299,
+        "device": 2065,
+        "inode": 466792346,
+        "mtime_ns": 1791639408888434351,
+        "path": "/data/shaoshitong/search-e1-opsd-fixed-teacher-bf16-rwm200-20261010/runs/checkpoints/update-00000021-outer-00001/manifest.json",
+        "sha256": "ddf37242e11de5a24520c535388885804dc1c3a9f609eb0848a94ada38134588"
+      },
+      "native_all_rank_adapter_digest": "787e750fe06aae587e92a0b27ed2877316592e7809c8ab021d92122de61563d8",
+      "native_all_rank_optimizer_digest": "5af377a85098c9d6dbfab981564f710c677ab1240c09f1f1e06fc618a92379c1",
+      "fixed_teacher_sampling": true,
+      "outer_old_previous_student": true,
+      "native_successful_wait_release": true,
+      "diagnostic_cases": 1,
+      "recorded_raw_trajectory_mean": 0.006389420500105357,
+      "recorded_weighted_post_trajectory_mean": 0.006323240990766868
+    },
+    {
+      "outer": 3,
+      "K": 294,
+      "updates": 31,
+      "policy_tokens": 54495,
+      "checkpoint": {
+        "bytes": 22225,
+        "ctime_ns": 1791639782166378141,
+        "device": 2065,
+        "inode": 466792910,
+        "mtime_ns": 1791639782142373900,
+        "path": "/data/shaoshitong/search-e1-opsd-fixed-teacher-bf16-rwm200-20261010/runs/checkpoints/update-00000031-outer-00002/manifest.json",
+        "sha256": "c819925aeea27220d527790c70294d449ac9d7d772a9d03237a24bbe656ad067"
+      },
+      "native_all_rank_adapter_digest": "0e1c6357dce9a5f966d888b5843ca2ead9dc5809dfd9fe5486c4551907bafae9",
+      "native_all_rank_optimizer_digest": "d38b9815b301abc56b24b02d90b81ccd1e622259816ead90174065087d375f56",
+      "fixed_teacher_sampling": true,
+      "outer_old_previous_student": true,
+      "native_successful_wait_release": true,
+      "diagnostic_cases": 1,
+      "recorded_raw_trajectory_mean": 0.006531259533828153,
+      "recorded_weighted_post_trajectory_mean": 0.006314089923493641
+    },
+    {
+      "outer": 4,
+      "K": 291,
+      "updates": 41,
+      "policy_tokens": 52606,
+      "checkpoint": {
+        "bytes": 22226,
+        "ctime_ns": 1791640195055319663,
+        "device": 2065,
+        "inode": 466793349,
+        "mtime_ns": 1791640195055319663,
+        "path": "/data/shaoshitong/search-e1-opsd-fixed-teacher-bf16-rwm200-20261010/runs/checkpoints/update-00000041-outer-00003/manifest.json",
+        "sha256": "90189b41dd40e42db0d08f836d72ee782bfda5f9742a85354a370bb618b94f12"
+      },
+      "native_all_rank_adapter_digest": "7df893ed15fcff97d0e3681e3893cc297e5e3b3e8b2c4ca4d9f25bf360fef351",
+      "native_all_rank_optimizer_digest": "4407cc075a60c970a12348d73ed8fd8836d61dc238a0cc2ab453972629ef7f03",
+      "fixed_teacher_sampling": true,
+      "outer_old_previous_student": true,
+      "native_successful_wait_release": true,
+      "diagnostic_cases": 1,
+      "recorded_raw_trajectory_mean": 0.006657507791905865,
+      "recorded_weighted_post_trajectory_mean": 0.0066571881801307155
+    },
+    {
+      "outer": 5,
+      "K": 294,
+      "updates": 51,
+      "policy_tokens": 54169,
+      "checkpoint": {
+        "bytes": 22226,
+        "ctime_ns": 1791640606059928296,
+        "device": 2065,
+        "inode": 466793791,
+        "mtime_ns": 1791640606055927589,
+        "path": "/data/shaoshitong/search-e1-opsd-fixed-teacher-bf16-rwm200-20261010/runs/checkpoints/update-00000051-outer-00004/manifest.json",
+        "sha256": "a79b48c872383873de593742dc3753cfdaaa344d2bcffcbe7c5c2205039c6e89"
+      },
+      "native_all_rank_adapter_digest": "b56f975bbfb53ecd4d3e21f436c84738ac4acf117fd7e9845321987f3928efa9",
+      "native_all_rank_optimizer_digest": "1ffc4998982ba128ff331bf5378b05d952b1340d0262aeba41b2c9d7497ec4fe",
+      "fixed_teacher_sampling": true,
+      "outer_old_previous_student": true,
+      "native_successful_wait_release": true,
+      "diagnostic_cases": 1,
+      "recorded_raw_trajectory_mean": 0.006463071810635077,
+      "recorded_weighted_post_trajectory_mean": 0.0066570727648530646
+    }
+  ],
+  "total_pairs": 1508,
+  "total_policy_tokens": 279681,
+  "real_Adam": 51,
+  "checked_unix": 1791640834.7021742,
+  "scope": "Native receipt/scalar readback; no independent optimizer tensor deserialization, no logits recomputation, no population EM",
+  "sixth_actual_progress": {
+    "rows": 2560,
+    "phase": "TRAINING",
+    "observed_unix": 1791640931.6257987
+  }
+}
