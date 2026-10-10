@@ -6,5 +6,9 @@
   "verl/verl/workers/fsdp_workers.py": {
     "source_sha256": "acd67eabf63c13342db8e28a0a3848ba0c99a5e9cf07a9f4019db6ceea8e22f2",
     "patched_sha256": "ea87a18bbbbe7161c9a568614e60d59e4b4839b341ac40aff1c03862b83c0d45"
+  },
+  "verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py": {
+    "source_sha256": "9b136601b0585cc69b437a0949eae90377ce1d19287e8a180cd1d18e2f5e4d8a",
+    "patched_sha256": "98b5be0da58cd53348b8ea66b71214f8eebcf72baf7e73d42d1d8061e9e786ee"
   }
 }
