@@ -16,7 +16,7 @@ for key in unset+['USE_TORCH','USE_TF','USE_FLAX']:args+=['-u',key]
 args+=['CUDA_VISIBLE_DEVICES=5','OMP_NUM_THREADS=8','PYTHONDONTWRITEBYTECODE=1','PYTHONUNBUFFERED=1','HF_HUB_OFFLINE=1','TRANSFORMERS_OFFLINE=1',
        'setsid','--wait',c['base']+'/env/bin/python','-B',source+'/replay_gpu.py','--config',source+'/run-config.json','--config-sha256',config_sha,
        '--source-manifest',source+'/source-manifest.json','--source-manifest-sha256',manifest_sha]
-foreground='exec '+shlex.join(args)+' > '+shlex.quote(parent+'/logs/R-'+rid+'.stdout.jsonl')+' 2> '+shlex.quote(parent+'/logs/R-'+rid+'.stderr.log')
+foreground='tmux set-window-option -t "$TMUX_PANE" remain-on-exit on && exec '+shlex.join(args)+' > '+shlex.quote(parent+'/logs/R-'+rid+'.stdout.jsonl')+' 2> '+shlex.quote(parent+'/logs/R-'+rid+'.stderr.log')
 session='g1-full-pair-R-'+rid
 remote=r'''
 import datetime,hashlib,json,os,pathlib,socket,subprocess
