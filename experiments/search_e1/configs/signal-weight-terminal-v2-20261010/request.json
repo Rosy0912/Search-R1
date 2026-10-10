@@ -1,0 +1,36 @@
+{
+  "accepted": true,
+  "launch_input_publication": {
+    "bytes": 1036,
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/terminal-v2-launch-input-publication-da3890b.json",
+    "sha256": "da3890bf411fd739a954ffe5fa4e03d517fcace8c7bfe946e1f12e7d65b1aae2"
+  },
+  "launch_script": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/launch-evaluation-recovery-31e2d74.sh",
+    "sha256": "0f50705a162a43c7138f03916dcb4063455b9a3f232270799f6caff880a57772"
+  },
+  "log_path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/logs/evaluation-recovery-31e2d74.log",
+  "owner": {
+    "pid": 1811163,
+    "starttick": 689575157,
+    "uid": 1001
+  },
+  "recovery_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/evaluation-recovery-input-31e2d74.json",
+    "sha256": "ff44d73effa3a40ff5ed1f3d6b5049002b6b8937aa491a761b00266d74f1863e"
+  },
+  "schema": "opsd-signal-weight-terminal-request-v2",
+  "study_manifest": {
+    "path": "/weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/study-manifest.json",
+    "sha256": "86db5c8e1a86f6b5fd27f880ca062d193b4623e29869e8fa2aa3dba0e8e46c8e"
+  },
+  "supervisor_run_id": "signal-study-eval-recovery-4e1e70d464834408b43cf00e9fd030a5",
+  "tmux": {
+    "pane_id": "%46",
+    "pane_pid": 1811163,
+    "server_pid": 1100668,
+    "session": "e1-signal-eval-recovery-31e2d74-20261010",
+    "session_id": "$46",
+    "start_command": "bash -lc 'tmux set-option -w remain-on-exit on; exec bash /weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/receipts/launch-evaluation-recovery-31e2d74.sh > /weka_3/shaoshitong/search-e1-opsd-signal-weight-4gpu-20261010/logs/evaluation-recovery-31e2d74.log 2>&1'"
+  }
+}
