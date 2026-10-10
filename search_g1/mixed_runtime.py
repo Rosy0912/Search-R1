@@ -102,6 +102,7 @@ def collect(trainer, manager, stream, attempt_identity):
         repeated = parent.repeat(repeat_times=5,interleave=True)
         gen = repeated.pop(batch_keys=['input_ids','attention_mask','position_ids'])
         attach_generation_identity(gen, identity, do_sample=True)
+        manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
             initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
         vectors = strict_vectors(parent, output, trainer.tokenizer)
