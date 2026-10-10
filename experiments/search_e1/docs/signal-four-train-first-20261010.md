@@ -7,3 +7,5 @@
 新调度源码ed7f9769564436b115e1a58812f7f893f7dce8e2；HKUST4入口与配置见configs/signal-weight-training-priority-20261010。启动时已确认上一失败进程退出、仅原检索占用自有GPU7；原失败输出和状态保留。新supervisor1861244/controller1861436。后台启动不算训练完成，后续继续核实采样和真实更新。
 
 八次完整512测试及最终结果仍待完成，不能用256题补测、训练EM或四组训练完成状态代替效果验收。原239/512共同zero仅适用于原HF协议；今后若改为vLLM批量评测，须统一端点条件并说明协议差异，不能混用指标。
+
+2026-10-10 12:00 CST实测：同一G_POS第16轮完整结束，P=K307，10次新Adam（150→160），实际torchrun wait0。该轮更新前TRAIN严格EM1222/2560=47.734375%，累计pair曝光4875；末checkpoint160原生四rank adapter/optimizer摘要一致。这里只报告原生状态，不重复声称独立CPU全量tensor检查。control已创建第17轮目录，supervisor1861244仍运行，无补测启动。实际小型证明见first-resumed-outer-complete.json；全部轨迹、token和状态仍远端。
