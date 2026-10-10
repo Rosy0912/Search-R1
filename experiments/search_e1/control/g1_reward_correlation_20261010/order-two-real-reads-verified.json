@@ -1,0 +1,23 @@
+{
+  "verified_utc": "2026-10-10T07:38:54.966559+00:00",
+  "actual_reads": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/pairwise-order-20261010T073759964060Z.stdout.json",
+      "stdout_sha256": "a7e1535d12375545df1162e9c6672208dab8ab7ced3f37c81c4fb2b836b57a3b",
+      "actual_rc": 0,
+      "stderr_bytes": 100
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/g1-reward-correlation-20261010/pairwise-order-20261010T073820634746Z.stdout.json",
+      "stdout_sha256": "a7e1535d12375545df1162e9c6672208dab8ab7ced3f37c81c4fb2b836b57a3b",
+      "actual_rc": 0,
+      "stderr_bytes": 100
+    }
+  ],
+  "equal_bytes": true,
+  "original_group_artifact_sha256": "2fadf346927a6ed1ca634b5f691e38049971f4fb48b1c6d40c3b4d5814708f17",
+  "read_remote_only": true,
+  "raw_not_exported": true,
+  "helper_source_sha256": "bd4f61ea77c1e1f628eec432d66f4c032b82cef088390fcf1000c437eb2a765c",
+  "source_commit": "9b2839b45a151e802a87e3e4ba29e01cad2cb937"
+}
