@@ -36,10 +36,17 @@ def main():
     inputs=json.loads(checked.stdout)
     if inputs['status']!='FRESH_MODEL_AND_FIXED_DATA_SHA_PASS':raise RuntimeError('Initial inputs not verified')
     (ROOT/'inputs-verified-at-launch.json').write_text(json.dumps(inputs,indent=2)+'\n')
+    if not str(ROOT.resolve()).startswith('/data/'):raise RuntimeError('Outputs must resolve to HPC shared storage')
+    probe={'job':os.environ['SLURM_JOB_ID'],'host':socket.gethostname(),'root':str(ROOT.resolve()),'epoch':time.time()}
+    payload=(json.dumps(probe)+'\n').encode();path=ROOT/'shared-storage-probe.json'
+    with path.open('wb') as stream:stream.write(payload);stream.flush();os.fsync(stream.fileno())
+    if path.read_bytes()!=payload:raise RuntimeError('Shared storage readback differs')
     leases=acquire(ROOT)
     for name in ('logs','tmp','cache','evidence'):(ROOT/name).mkdir(exist_ok=True)
     env=dict(os.environ,COSEARCH_RUN_ROOT=str(ROOT),COSEARCH_AUDIT_ROOT=str(ROOT/'evidence'),TMPDIR=str(ROOT/'tmp'),HF_HOME=str(ROOT/'cache/hf-training'),HF_DATASETS_CACHE=str(ROOT/'cache/datasets-training'),TRITON_CACHE_DIR=str(ROOT/'cache/triton'),TORCH_EXTENSIONS_DIR=str(ROOT/'cache/torch-extensions'),HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
-    env.pop('RAY_ADDRESS',None)
+    for key in ('RAY_ADDRESS','RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES','RAY_EXPERIMENTAL_NOSET_ROCR_VISIBLE_DEVICES','ROCR_VISIBLE_DEVICES','HIP_VISIBLE_DEVICES','GPU_DEVICE_ORDINAL'):
+        env.pop(key,None)
+        os.environ.pop(key,None)
     env['PYTHONPATH']=':'.join([str(ROOT/'tools'),str(ROOT/'repo'),str(ROOT/'repo/verl'),str(BASE/'runtime/flash-attn-281-hpc-build/lib'),str(BASE/'source/author-native/env/lib/python3.11/site-packages')])
     python=str(BASE/'source/author-native/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11')
     children=[];logs=[]
