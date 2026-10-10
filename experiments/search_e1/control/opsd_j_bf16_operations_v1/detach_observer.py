@@ -3,7 +3,7 @@ import json,os,signal,time,shlex,subprocess,hashlib,shutil
 from pathlib import Path
 B=Path('/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-20261010')
 cfgpath=B/'receipts/training-config.json';raw=cfgpath.read_bytes();cfg=json.loads(raw);import sys;sys.path.insert(0,cfg['paths']['helper_root']);import gates
-binding=json.loads((B/'receipts/memory-binding.json').read_text());old=binding['observer_identity'];actual=old;assert int(Path('/proc/'+str(old['pid'])+'/stat').read_text().split()[21])==old['starttick'] and actual['uid']==1005;assert actual['run_id']!=cfg['run_id'];source=Path(cfg['paths']['helper_root'])/'memory_observer.py';assert str(source) in actual['argv']
+binding=json.loads((B/'receipts/memory-binding.json').read_text());old=binding['observer_identity'];actual=json.loads((B/'receipts/scoped-cpu-processes.json').read_text())['roles'][0]['identity'];assert int(Path('/proc/'+str(old['pid'])+'/stat').read_text().split()[21])==old['starttick'] and actual['uid']==1005;assert actual['run_id']!=cfg['run_id'];source=Path(cfg['paths']['helper_root'])/'memory_observer.py';assert str(source) in actual['argv']
 assert actual['pid'] not in {a['pid'] for a in gates.inventory()[1]},'Observer holds GPU; do not signal'
 controller=json.loads((B/'runs/status.json').read_text())['owner'];assert actual['ppid']==controller['pid'],'Only the exact accidental child-observer case is authorized'
 fd=os.pidfd_open(controller['pid']);signal.pidfd_send_signal(fd,signal.SIGTERM) # Exact zero-Adam held controller only; releases orphan CPU zombie
