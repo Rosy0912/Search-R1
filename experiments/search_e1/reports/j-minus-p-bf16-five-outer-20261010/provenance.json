@@ -1,0 +1,18 @@
+{
+  "final-cpu-acceptance.json": {
+    "bytes": 879,
+    "sha256": "95ddf001893861a511e3d55a7dacbb332c40a7e8382dbd9b1d555bf676ef343b"
+  },
+  "final-terminal-snapshot.json": {
+    "bytes": 10811,
+    "sha256": "f8732e65fe81933a2f64974f6f06da5fae6a430f972d88e277b6f4e0d8fdb0a2"
+  },
+  "old-pr-stop-delete.json": {
+    "bytes": 8359,
+    "sha256": "d44b7843a66866a00cc017895ac9abae19f98409d708d568a9f11f7daa7cc54f"
+  },
+  "observer-finished.json": {
+    "bytes": 913,
+    "sha256": "961aded5947b053309dda85f8e89333a1011bed1beadf70ce28ece51ef934cdb"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "accepted": true,
+  "run_id": "d040ebac9fa24ec28d43976299fd4f71",
+  "precision": "bf16",
+  "mechanisms": [
+    "R",
+    "W",
+    "M"
+  ],
+  "outers": 5,
+  "real_Adam": 50,
+  "pair_exposure": 1497,
+  "each_outer": [
+    {
+      "outer": 0,
+      "K": 327,
+      "Adam": 11
+    },
+    {
+      "outer": 1,
+      "K": 307,
+      "Adam": 10
+    },
+    {
+      "outer": 2,
+      "K": 289,
+      "Adam": 10
+    },
+    {
+      "outer": 3,
+      "K": 279,
+      "Adam": 9
+    },
+    {
+      "outer": 4,
+      "K": 295,
+      "Adam": 10
+    }
+  ],
+  "final_checkpoint": {
+    "bytes": 31015,
+    "ctime_ns": 1791602092989527362,
+    "device": 2065,
+    "inode": 466751225,
+    "mtime_ns": 1791602092985527238,
+    "path": "/data/shaoshitong/search-e1-opsd-j-minus-p-bf16-20261010/runs/checkpoints/update-00000050-outer-00004/manifest.json",
+    "sha256": "5bf7588f3182a0b46f858f7f85b6699a461665f566366eec6a3832cba06b46c4"
+  },
+  "eight_rank_saved_state_finite_equal": true,
+  "adapter_FP32_tensors": 504,
+  "adapter_finite_changed": 504,
+  "CUDA_initialized": false,
+  "observed_unix": 1791602136.2485638
+}
