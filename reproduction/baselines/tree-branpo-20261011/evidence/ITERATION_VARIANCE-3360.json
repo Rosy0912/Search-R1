@@ -1,0 +1,35 @@
+{
+  "observed_epoch": 1791659741.4964242,
+  "job": 3360,
+  "source_commit": "8b6f99d1b3353145200eb3fa7c16a579a79a987c",
+  "rows": [
+    {
+      "outer": 1,
+      "intra_adv_population_variance": 0.08203097944424355,
+      "intra_adv_leaf_mass_population_variance": 0.08984345025679029,
+      "raw_within_root_reward_variance": 0.030924479166666612,
+      "mixed_question_fraction": 0.2734375,
+      "mixed_tree_fraction": 0.1337890625,
+      "inherited_prefix_verified_fraction": 1.0
+    },
+    {
+      "outer": 2,
+      "intra_adv_population_variance": 0.08268201673447854,
+      "intra_adv_leaf_mass_population_variance": 0.09140594273928147,
+      "raw_within_root_reward_variance": 0.030815972222222168,
+      "mixed_question_fraction": 0.271484375,
+      "mixed_tree_fraction": 0.1337890625,
+      "inherited_prefix_verified_fraction": 1.0
+    },
+    {
+      "outer": 3,
+      "intra_adv_population_variance": 0.06917294902213789,
+      "intra_adv_leaf_mass_population_variance": 0.0753903734180251,
+      "raw_within_root_reward_variance": 0.026231553819444406,
+      "mixed_question_fraction": 0.220703125,
+      "mixed_tree_fraction": 0.11328125,
+      "inherited_prefix_verified_fraction": 1.0
+    }
+  ],
+  "scope": "actual logged completed iterations; finite sampling does not guarantee mixed rewards"
+}

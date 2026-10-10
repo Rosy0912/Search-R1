@@ -1,0 +1,70 @@
+{
+  "epoch": 1791659903.6129441,
+  "job": 3360,
+  "rollout_rows": [
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 1,
+      "candidate_outer": 1,
+      "wall_seconds": 322.53042032942176,
+      "costs": {
+        "generated_tokens": 618857,
+        "prefill_tokens": 2500904,
+        "retrieval_calls": 1720,
+        "trajectories": 2560,
+        "padded_rows": 31,
+        "context_mismatches": 0,
+        "raw_slots": 2184000,
+        "raw_emitted_tokens": 618857,
+        "raw_retained_tokens": 322189,
+        "raw_discarded_tail_tokens": 296668,
+        "raw_inherited_leaf_tokens": 110168,
+        "semantic_prefix_scan_cpu_seconds": 29.26016153100018,
+        "semantic_prefix_scan_wall_seconds": 29.124522402882576
+      }
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 2,
+      "candidate_outer": 2,
+      "wall_seconds": 328.62968434020877,
+      "costs": {
+        "generated_tokens": 641151,
+        "prefill_tokens": 2559498,
+        "retrieval_calls": 1753,
+        "trajectories": 2560,
+        "padded_rows": 31,
+        "context_mismatches": 0,
+        "raw_slots": 2204000,
+        "raw_emitted_tokens": 641151,
+        "raw_retained_tokens": 335137,
+        "raw_discarded_tail_tokens": 306014,
+        "raw_inherited_leaf_tokens": 108021,
+        "semantic_prefix_scan_cpu_seconds": 30.998323989007076,
+        "semantic_prefix_scan_wall_seconds": 30.871253542602062
+      }
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 3,
+      "candidate_outer": 3,
+      "wall_seconds": 337.87252194806933,
+      "costs": {
+        "generated_tokens": 628070,
+        "prefill_tokens": 2561997,
+        "retrieval_calls": 1718,
+        "trajectories": 2560,
+        "padded_rows": 33,
+        "context_mismatches": 0,
+        "raw_slots": 2188000,
+        "raw_emitted_tokens": 628070,
+        "raw_retained_tokens": 329372,
+        "raw_discarded_tail_tokens": 298698,
+        "raw_inherited_leaf_tokens": 112373,
+        "semantic_prefix_scan_cpu_seconds": 30.83106594499941,
+        "semantic_prefix_scan_wall_seconds": 30.710211902856827
+      }
+    }
+  ],
+  "scope": "sampling costs include in-flight outer if rollout completed; optimizer totals separate"
+}
