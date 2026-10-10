@@ -53,6 +53,8 @@ def install():
     original_init=Worker.init_model
     @functools.wraps(original_init)
     def init(worker,*args,**kwargs):
+        from worker_device import bind
+        record(worker,'device_bound_before_init',bind())
         result=original_init(worker,*args,**kwargs)
         if worker._is_actor:
             import torch
