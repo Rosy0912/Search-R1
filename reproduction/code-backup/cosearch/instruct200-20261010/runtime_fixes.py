@@ -23,6 +23,9 @@ def preserve(kind,payload):
     return path
 
 def install_worker():
+    from verl.experimental.agent_loop.co_search_agent_loop import CoSearchAgentLoop
+    import question_metadata
+    question_metadata.install(CoSearchAgentLoop)
     from verl.experimental.agent_loop.search_r1_reranker_agent_loop_worker import CoSearchAgentLoopWorker
     worker=CoSearchAgentLoopWorker.__ray_metadata__.modified_class
     original_init=worker.__init__
