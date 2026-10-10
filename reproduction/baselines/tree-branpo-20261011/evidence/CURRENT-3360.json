@@ -1,5 +1,5 @@
 {
-  "observed_epoch": 1791675666.0287025,
+  "observed_epoch": 1791676398.5332448,
   "job_id": "3360",
   "run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360",
   "read_only": true,
@@ -7,7 +7,7 @@
   "large_outputs_downloaded": false,
   "queue": {
     "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|5:08:32|h100-10\n",
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|5:20:44|h100-10\n",
     "stderr": ""
   },
   "sacct": {
@@ -19,23 +19,23 @@
   "logs": {
     "stage": {
       "last_lines": [
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 549 & 500",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 518 & 500",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 640 & 500",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 547 & 500",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 511 & 500",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_22/manifest.json",
-        "ean:-0.012134823016822338 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.012134823016822338 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:646.1519775390625 - response_length/max:2482 - response_length/min:72 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.25 - prompt_length/max:259 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0835937499999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.0703125 - env/ratio_of_valid_action:0.99625651041666663 - env/number_of_valid_search:1.0777343749999999 - timing_s/gen:298.30996719375253 - timing_s/ref:9.8709855377674103 - timing_s/adv:10.447957571595907 - timing_s/update_actor:230.63078609108925 - timing_s/stage_testing:39.455827012658119 - timing_s/step:674.30408670753241 - timing_per_token_ms/ref:0.0049156605364494002 - timing_per_token_ms/update_actor:0.11485202256052419 - timing_per_token_ms/adv:0.0052029873334013457 - timing_per_token_ms/gen:0.18034044526445472",
-        "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 23"
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 693 & 500",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_23/manifest.json",
+        "080725774168968201 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0080725774168968201 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:644.53790283203125 - response_length/max:2580 - response_length/min:88 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.455078125 - prompt_length/max:213 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0734374999999998 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.9921875 - env/number_of_valid_action:2.0687500000000001 - env/ratio_of_valid_action:0.99850260416666659 - env/number_of_valid_search:1.0765625000000001 - timing_s/gen:293.64298770576715 - timing_s/ref:9.965869065374136 - timing_s/adv:10.361206442117691 - timing_s/update_actor:229.82141578570008 - timing_s/stage_testing:40.792060468345881 - timing_s/step:670.36741245910525 - timing_per_token_ms/ref:0.0049782002642357794 - timing_per_token_ms/update_actor:0.11480153163626396 - timing_per_token_ms/adv:0.0051756811482868243 - timing_per_token_ms/gen:0.17796361352990131",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 24",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 862 & 500",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 595 & 500",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 582 & 500",
+        "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 548 & 500"
       ],
       "errors": [
-        "066400337964296341 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0066400337964296341 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:691.97344970703125 - response_length/max:2549 - response_length/min:49 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.2421875 - prompt_length/max:200 - prompt_length/min:127 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.1363281249999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.98398437500000002 - env/number_of_valid_action:2.1234375000000001 - env/ratio_of_valid_action:0.99654947916666659 - env/number_of_valid_search:1.139453125 - timing_s/gen:317.435257807374 - timing_s/ref:10.531403671950102 - timing_s/adv:11.312184311449528 - timing_s/update_actor:237.69383771345019 - timing_s/stage_testing:41.404402993619442 - timing_s/step:711.10604393482208 - timing_per_token_ms/ref:0.0049611095538093708 - timing_per_token_ms/update_actor:0.11197226940437414 - timing_per_token_ms/adv:0.0053289179116227719 - timing_per_token_ms/gen:0.17919495295801072",
         "tages/mean:-0.0084570404142141342 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0084570404142141342 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:685.90704345703125 - response_length/max:2622 - response_length/min:28 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.701171875 - prompt_length/max:248 - prompt_length/min:125 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.140625 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99101562499999996 - env/number_of_valid_action:2.130859375 - env/ratio_of_valid_action:0.99736328124999996 - env/number_of_valid_search:1.13984375 - timing_s/gen:302.95506585389376 - timing_s/ref:10.345939040184021 - timing_s/adv:11.075199939310551 - timing_s/update_actor:236.92860275134444 - timing_s/stage_testing:41.501706127077341 - timing_s/step:694.22269083559513 - timing_per_token_ms/ref:0.004906923488908619 - timing_per_token_ms/update_actor:0.11237167757506837 - timing_per_token_ms/adv:0.0052528009797354865 - timing_per_token_ms/gen:0.17253332770697888",
         "4447069093585014 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0084447069093585014 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:680.1409912109375 - response_length/max:2676 - response_length/min:60 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.240234375 - prompt_length/max:220 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.134765625 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.98867187499999998 - env/number_of_valid_action:2.1257812500000002 - env/ratio_of_valid_action:0.99742838541666679 - env/number_of_valid_search:1.1371093750000001 - timing_s/gen:312.90008432045579 - timing_s/ref:10.415504593402147 - timing_s/adv:10.913967620581388 - timing_s/update_actor:235.42492442950606 - timing_s/stage_testing:40.00238986313343 - timing_s/step:700.70773785561323 - timing_per_token_ms/ref:0.0049775505393568958 - timing_per_token_ms/update_actor:0.11250913952977977 - timing_per_token_ms/adv:0.0052157651056830637 - timing_per_token_ms/gen:0.17970772623580231",
         "\u001b[36m(measured_task pid=4011013)\u001b[0m ['<think>\\nTo answer this question, I need to find out how many kills Lyudmila Pavlichenko, the most successful female sniper in history, is credited with in a biographical war film.\\n</think>\\n<search>\\nbiographical war film Lyudmila Pavlichenko kills\\n</search>', ' joined the Red Army in 1939 and became a sniper. She was sent to the front in 1941 and fought in the Siege of Sevastopol, where she became the most successful female sniper in history, killing 309 enemy soldiers. She was awarded the title Hero of the Soviet Union and the Order of Lenin, and was the first woman to receive the Order of the Red Banner of Labour. She was also the first woman to receive the Order of the Red Star. She was demobilized in 1942 and became a sports shooter, winning a gold medal at the 1948 Summer Olympics in the 100-meter rifle prone event. She was awarded the Order of the Red Banner of Labour and the Order of the Badge of Honour. She died on 10 October 1974 in Kiev, Ukraine. </information>\\n<answer>309</answer>']",
         "vantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0041900528594851494 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:650.89373779296875 - response_length/max:2647 - response_length/min:88 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.15625 - prompt_length/max:229 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.099609375 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99648437499999998 - env/number_of_valid_action:2.0933593749999999 - env/ratio_of_valid_action:0.99814453125000002 - env/number_of_valid_search:1.096875 - timing_s/gen:298.43030981346965 - timing_s/ref:10.114830482751131 - timing_s/adv:10.311101153492928 - timing_s/update_actor:226.97095665335655 - timing_s/testing:596.3847942315042 - timing_s/stage_testing:6.4965337514877319e-05 - timing_s/step:1230.4632956124842 - timing_per_token_ms/ref:0.0050074211486276672 - timing_per_token_ms/update_actor:0.11236363974743983 - timing_per_token_ms/adv:0.005104586386265984 - timing_per_token_ms/gen:0.17909887715297093",
         "2792129517 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0060207992792129517 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:663.9078369140625 - response_length/max:3061 - response_length/min:81 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.54296875 - prompt_length/max:212 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.1097656250000001 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.98945312500000004 - env/number_of_valid_action:2.0992187499999999 - env/ratio_of_valid_action:0.99726562500000004 - env/number_of_valid_search:1.1097656250000001 - timing_s/gen:297.48430171236396 - timing_s/ref:10.871708076447248 - timing_s/adv:10.655611149966717 - timing_s/update_actor:237.70544543117285 - timing_s/stage_testing:40.990904271602631 - timing_s/step:691.25622267276049 - timing_per_token_ms/ref:0.0052988418836383867 - timing_per_token_ms/update_actor:0.11585700805822491 - timing_per_token_ms/adv:0.0051935168108063392 - timing_per_token_ms/gen:0.1750315377654818",
-        "ean:-0.012134823016822338 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.012134823016822338 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:646.1519775390625 - response_length/max:2482 - response_length/min:72 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.25 - prompt_length/max:259 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0835937499999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.0703125 - env/ratio_of_valid_action:0.99625651041666663 - env/number_of_valid_search:1.0777343749999999 - timing_s/gen:298.30996719375253 - timing_s/ref:9.8709855377674103 - timing_s/adv:10.447957571595907 - timing_s/update_actor:230.63078609108925 - timing_s/stage_testing:39.455827012658119 - timing_s/step:674.30408670753241 - timing_per_token_ms/ref:0.0049156605364494002 - timing_per_token_ms/update_actor:0.11485202256052419 - timing_per_token_ms/adv:0.0052029873334013457 - timing_per_token_ms/gen:0.18034044526445472"
+        "ean:-0.012134823016822338 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.012134823016822338 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:646.1519775390625 - response_length/max:2482 - response_length/min:72 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.25 - prompt_length/max:259 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0835937499999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.0703125 - env/ratio_of_valid_action:0.99625651041666663 - env/number_of_valid_search:1.0777343749999999 - timing_s/gen:298.30996719375253 - timing_s/ref:9.8709855377674103 - timing_s/adv:10.447957571595907 - timing_s/update_actor:230.63078609108925 - timing_s/stage_testing:39.455827012658119 - timing_s/step:674.30408670753241 - timing_per_token_ms/ref:0.0049156605364494002 - timing_per_token_ms/update_actor:0.11485202256052419 - timing_per_token_ms/adv:0.0052029873334013457 - timing_per_token_ms/gen:0.18034044526445472",
+        "080725774168968201 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0080725774168968201 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:644.53790283203125 - response_length/max:2580 - response_length/min:88 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.455078125 - prompt_length/max:213 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0734374999999998 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.9921875 - env/number_of_valid_action:2.0687500000000001 - env/ratio_of_valid_action:0.99850260416666659 - env/number_of_valid_search:1.0765625000000001 - timing_s/gen:293.64298770576715 - timing_s/ref:9.965869065374136 - timing_s/adv:10.361206442117691 - timing_s/update_actor:229.82141578570008 - timing_s/stage_testing:40.792060468345881 - timing_s/step:670.36741245910525 - timing_per_token_ms/ref:0.0049782002642357794 - timing_per_token_ms/update_actor:0.11480153163626396 - timing_per_token_ms/adv:0.0051756811482868243 - timing_per_token_ms/gen:0.17796361352990131"
       ]
     },
     "guard": {
@@ -44,14 +44,14 @@
     },
     "retriever": {
       "last_lines": [
-        "Retrieval process: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 29.14it/s]",
-        "INFO:     127.0.0.1:51676 - \"POST /retrieve HTTP/1.1\" 200 OK",
         "",
-        "Retrieval process: : 0it [00:00, ?it/s]",
-        "Retrieval process: : 0it [00:00, ?it/s]",
-        "INFO:     127.0.0.1:39920 - \"POST /retrieve HTTP/1.1\" 200 OK",
+        "Retrieval process:   0%|          | 0/1 [00:00<?, ?it/s]",
+        "Retrieval process: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 22.52it/s]",
+        "INFO:     127.0.0.1:53258 - \"POST /retrieve HTTP/1.1\" 200 OK",
         "",
-        "Retrieval process:   0%|          | 0/2 [00:00<?, ?it/s]"
+        "Retrieval process:   0%|          | 0/1 [00:00<?, ?it/s]",
+        "Retrieval process: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 24.16it/s]",
+        "INFO:     127.0.0.1:42836 - \"POST /retrieve HTTP/1.1\" 200 OK"
       ],
       "errors": []
     },
@@ -72,14 +72,14 @@
     },
     "slurm_out": {
       "last_lines": [
-        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11045.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10459.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10027.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11045.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10459.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10027.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11045.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10459.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10027.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "PU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 14849.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 14233.0, \"utilization\": 38.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 14263.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 14233.0, \"utilization\": 54.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 14233.0, \"utilization\": 49.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 14233.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 14233.0, \"utilization\": 69.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 14021.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 43495.0, \"utilization\": 44.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 42843.0, \"utilization\": 40.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 43087.0, \"utilization\": 46.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 42839.0, \"utilization\": 42.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 43031.0, \"utilization\": 41.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 42839.0, \"utilization\": 1.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 42875.0, \"utilization\": 48.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 42881.0, \"utilization\": 48.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 12437.0, \"utilization\": 100.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 42843.0, \"utilization\": 45.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 11851.0, \"utilization\": 100.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 42839.0, \"utilization\": 47.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 43031.0, \"utilization\": 48.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 42839.0, \"utilization\": 45.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 11559.0, \"utilization\": 55.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 11533.0, \"utilization\": 74.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 13941.0, \"utilization\": 76.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 13361.0, \"utilization\": 61.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 13191.0, \"utilization\": 76.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 13913.0, \"utilization\": 64.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 13209.0, \"utilization\": 60.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 14047.0, \"utilization\": 57.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 13983.0, \"utilization\": 75.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 13625.0, \"utilization\": 76.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
-        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11047.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10461.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9865.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10029.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}"
+        "3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 18439.0, \"utilization\": 84.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 15175.0, \"utilization\": 82.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 19699.0, \"utilization\": 84.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 13795.0, \"utilization\": 79.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 18055.0, \"utilization\": 77.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 14977.0, \"utilization\": 80.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 15689.0, \"utilization\": 82.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 14813.0, \"utilization\": 83.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11051.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9869.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10463.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9867.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9867.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9867.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9867.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10033.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        " \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 43157.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 42417.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 42787.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 42415.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 42417.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 42417.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 42415.0, \"utilization\": 27.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 42465.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 43321.0, \"utilization\": 49.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 42749.0, \"utilization\": 47.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 42955.0, \"utilization\": 47.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 42581.0, \"utilization\": 44.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 42583.0, \"utilization\": 47.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 42583.0, \"utilization\": 43.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 11591.0, \"utilization\": 100.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 11489.0, \"utilization\": 100.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 16015.0, \"utilization\": 23.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 15437.0, \"utilization\": 37.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 15429.0, \"utilization\": 23.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 15439.0, \"utilization\": 80.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 15437.0, \"utilization\": 32.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 15437.0, \"utilization\": 74.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 15437.0, \"utilization\": 93.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 15187.0, \"utilization\": 27.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 43343.0, \"utilization\": 53.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 42581.0, \"utilization\": 46.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 42945.0, \"utilization\": 53.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 42577.0, \"utilization\": 44.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 11553.0, \"utilization\": 100.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 11553.0, \"utilization\": 100.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 42557.0, \"utilization\": 54.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 42651.0, \"utilization\": 55.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11045.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10459.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10027.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}",
+        "6726\", \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 4012621\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4006726\", \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 4012622\"], \"inventory\": {\"0\": {\"memory_total\": 81559.0, \"memory_used\": 11045.0, \"utilization\": 0.0, \"uuid\": \"GPU-2c3bdc08-b976-0fb5-79bd-04def458046b\"}, \"1\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-6e00764e-3916-65f2-436e-568aa0c70fc5\"}, \"2\": {\"memory_total\": 81559.0, \"memory_used\": 10459.0, \"utilization\": 0.0, \"uuid\": \"GPU-db94211b-42d5-88d0-f626-60e777af3be6\"}, \"3\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-308b13c1-44ea-47b7-7b33-01a928099618\"}, \"4\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-525a9efc-446e-333d-11ff-e1f2213d15c8\"}, \"5\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-d61d94cd-3d24-fa07-8761-33961a14d995\"}, \"6\": {\"memory_total\": 81559.0, \"memory_used\": 9863.0, \"utilization\": 0.0, \"uuid\": \"GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b\"}, \"7\": {\"memory_total\": 81559.0, \"memory_used\": 10027.0, \"utilization\": 0.0, \"uuid\": \"GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5\"}}}"
       ],
       "errors": []
     },
@@ -89,93 +89,11 @@
     }
   },
   "attempts": {
-    "record_count": 22,
-    "completed_outer_count": 22,
+    "record_count": 23,
+    "completed_outer_count": 23,
     "all_skipped_attempt_count": 0,
     "unknown_attempt_count": 0,
     "latest": [
-      {
-        "path": "attempt-000015.json",
-        "status": "COMPLETED_OPPORTUNITIES_OUTER_CREDITED",
-        "attempt_id": 15,
-        "accepted_outer": 15,
-        "actual_completed_optimizer_calls_per_rank": {
-          "0": 300,
-          "1": 300,
-          "2": 300,
-          "3": 300,
-          "4": 300,
-          "5": 300,
-          "6": 300,
-          "7": 300
-        },
-        "ranks": [
-          {
-            "rank": 0,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 1,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 2,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 3,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 4,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 5,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 6,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          },
-          {
-            "rank": 7,
-            "optimizer_calls": 20,
-            "opportunities_processed": 20,
-            "opportunities_skipped": 0,
-            "scheduler_before": 14,
-            "scheduler_after": 15
-          }
-        ]
-      },
       {
         "path": "attempt-000016.json",
         "status": "COMPLETED_OPPORTUNITIES_OUTER_CREDITED",
@@ -749,96 +667,178 @@
             "scheduler_after": 22
           }
         ]
+      },
+      {
+        "path": "attempt-000023.json",
+        "status": "COMPLETED_OPPORTUNITIES_OUTER_CREDITED",
+        "attempt_id": 23,
+        "accepted_outer": 23,
+        "actual_completed_optimizer_calls_per_rank": {
+          "0": 460,
+          "1": 460,
+          "2": 460,
+          "3": 460,
+          "4": 460,
+          "5": 460,
+          "6": 460,
+          "7": 460
+        },
+        "ranks": [
+          {
+            "rank": 0,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 1,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 2,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 3,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 4,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 5,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 6,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          },
+          {
+            "rank": 7,
+            "optimizer_calls": 20,
+            "opportunities_processed": 20,
+            "opportunities_skipped": 0,
+            "scheduler_before": 22,
+            "scheduler_after": 23
+          }
+        ]
       }
     ]
   },
   "cumulative_accounting": {
     "complete_outer_only_per_rank": {
       "0": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "1": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "2": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "3": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "4": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "5": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "6": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "7": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       }
     },
     "all_finalized_attempts_per_rank": {
       "0": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "1": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "2": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "3": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "4": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "5": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "6": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       },
       "7": {
-        "adam_writes": 440,
-        "opportunities": 440,
+        "adam_writes": 460,
+        "opportunities": 460,
         "skips": 0
       }
     },
-    "complete_outer_count": 22,
-    "finalized_attempt_count": 22,
+    "complete_outer_count": 23,
+    "finalized_attempt_count": 23,
     "all_skipped_attempt_count": 0,
     "accounting_errors": [],
     "complete_totals_valid": true,
@@ -847,117 +847,117 @@
     "scope": "Current attempt and unfinalized partial writes excluded and unknown; completed credits differ from consumed attempts"
   },
   "rank_records": {
-    "count": 176,
+    "count": 184,
     "latest": [
       {
-        "path": "outer-000022-attempt-000022-rank00.json",
+        "path": "outer-000023-attempt-000023-rank00.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 0,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank01.json",
+        "path": "outer-000023-attempt-000023-rank01.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 1,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank02.json",
+        "path": "outer-000023-attempt-000023-rank02.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 2,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank03.json",
+        "path": "outer-000023-attempt-000023-rank03.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 3,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank04.json",
+        "path": "outer-000023-attempt-000023-rank04.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 4,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank05.json",
+        "path": "outer-000023-attempt-000023-rank05.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 5,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank06.json",
+        "path": "outer-000023-attempt-000023-rank06.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 6,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       },
       {
-        "path": "outer-000022-attempt-000022-rank07.json",
+        "path": "outer-000023-attempt-000023-rank07.json",
         "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
         "rank": 7,
-        "observed_outer": 22,
-        "attempt_id": 22,
+        "observed_outer": 23,
+        "attempt_id": 23,
         "actual_optimizer_calls": 20,
         "opportunities_processed": 20,
         "opportunities_skipped": 0,
-        "scheduler_step_before": 21,
-        "scheduler_step_after": 22,
+        "scheduler_step_before": 22,
+        "scheduler_step_after": 23,
         "local_before_error": null,
         "local_scheduler_error": null
       }
@@ -2580,115 +2580,183 @@
         "tree_variance/tree_count": 1024.0,
         "tree_variance/empty_loss_row_count": 0.0
       }
+    },
+    {
+      "logger_step": 23,
+      "completed_outer": 23.0,
+      "attempt_id": 23.0,
+      "metrics": {
+        "tree_sampling/action_depth_mean": 0.736328125,
+        "tree_sampling/backoff_actions_mean": 0.3138020833333333,
+        "tree_sampling/inherited_response_tokens_mean": 407.2962239583333,
+        "tree_sampling/inherited_observation_tokens_mean": 348.3229166666667,
+        "tree_sampling/continuations": 1536.0,
+        "tree_sampling/inherited_prefix_verified_fraction": 1.0,
+        "tree_sampling/same_reward_branch_fraction": 0.919921875,
+        "tree_sampling/same_reward_branch_count": 1413.0,
+        "tree_sampling/different_reward_branch_count": 123.0,
+        "tree_sampling/action_depth_0_count": 469.0,
+        "tree_sampling/action_depth_1_count": 1015.0,
+        "tree_sampling/action_depth_2_count": 40.0,
+        "tree_sampling/action_depth_3_count": 12.0,
+        "tree_sampling/action_depth_4_count": 0.0,
+        "tree_sampling/earliest_state_clamp_count": 3.0,
+        "tree_variance/group_raw_reward_population_variance": 0.05093749999999994,
+        "tree_variance/group_actual_adv_population_variance": 0.4586844300680894,
+        "tree_variance/group_inter_normalized_component_population_variance": 0.1984366998288946,
+        "tree_variance/same_reward_question_fraction": 0.751953125,
+        "tree_variance/mixed_reward_question_fraction": 0.248046875,
+        "tree_variance/exact_reward_one_question_count": 45.0,
+        "tree_variance/exact_reward_zero_question_count": 340.0,
+        "tree_variance/mixed_question_count": 127.0,
+        "tree_variance/within_root_raw_reward_population_variance": 0.024251302083333294,
+        "tree_variance/within_root_actual_adv_population_variance": 0.3325242722325671,
+        "tree_variance/within_root_raw_centered_adv_population_variance": 0.024251302083333294,
+        "tree_variance/within_root_normalized_component_population_variance": 0.06738258609905169,
+        "tree_variance/intra_adv_population_variance": 0.06738258609905169,
+        "tree_variance/intra_adv_sample_variance": 0.1064449573212662,
+        "tree_variance/intra_adv_zero_variance_tree_fraction": 0.8935546875,
+        "tree_variance/same_reward_tree_fraction": 0.8935546875,
+        "tree_variance/mixed_reward_tree_fraction": 0.1064453125,
+        "tree_variance/exact_reward_one_tree_count": 149.0,
+        "tree_variance/exact_reward_zero_tree_count": 766.0,
+        "tree_variance/mixed_tree_count": 109.0,
+        "tree_variance/root0_raw_reward_population_variance": 0.037760416666666595,
+        "tree_variance/root0_actual_adv_population_variance": 0.5315776021264472,
+        "tree_variance/root0_intra_adv_population_variance": 0.11328085950734848,
+        "tree_variance/root0_intra_adv_zero_variance_fraction": 0.830078125,
+        "tree_variance/root0_mixed_reward_fraction": 0.169921875,
+        "tree_variance/root0_same_reward_fraction": 0.830078125,
+        "tree_variance/root0_exact_reward_one_count": 65.0,
+        "tree_variance/root0_exact_reward_zero_count": 360.0,
+        "tree_variance/root0_mixed_count": 87.0,
+        "tree_variance/root1_raw_reward_population_variance": 0.0107421875,
+        "tree_variance/root1_actual_adv_population_variance": 0.13347094233868678,
+        "tree_variance/root1_intra_adv_population_variance": 0.021484312690754848,
+        "tree_variance/root1_intra_adv_zero_variance_fraction": 0.95703125,
+        "tree_variance/root1_mixed_reward_fraction": 0.04296875,
+        "tree_variance/root1_same_reward_fraction": 0.95703125,
+        "tree_variance/root1_exact_reward_one_count": 84.0,
+        "tree_variance/root1_exact_reward_zero_count": 406.0,
+        "tree_variance/root1_mixed_count": 22.0,
+        "tree_variance/between_root_actual_adv_population_variance_equal_tree": 0.0899473873507771,
+        "tree_variance/between_root_actual_adv_population_variance_leaf_mass": 0.08634949185674605,
+        "tree_variance/within_root_actual_adv_population_variance_leaf_mass": 0.37233493821134267,
+        "tree_variance/intra_adv_population_variance_leaf_mass": 0.07656224078071108,
+        "tree_variance/adv_variance_decomposition_abs_error": 7.273641324662128e-17,
+        "tree_variance/question_count": 512.0,
+        "tree_variance/tree_count": 1024.0,
+        "tree_variance/empty_loss_row_count": 0.0
+      }
     }
   ],
   "latest_complete_outer_timing": {
-    "completed_outer": 22,
-    "attempt_id": 22,
+    "completed_outer": 23,
+    "attempt_id": 23,
     "timing_seconds": {
-      "timing_s/gen": 298.3099671937525,
-      "timing_s/ref": 9.87098553776741,
-      "timing_s/adv": 10.447957571595907,
-      "timing_s/update_actor": 230.63078609108925,
-      "timing_s/stage_testing": 39.45582701265812,
-      "timing_s/step": 674.3040867075324
+      "timing_s/gen": 293.64298770576715,
+      "timing_s/ref": 9.965869065374136,
+      "timing_s/adv": 10.361206442117691,
+      "timing_s/update_actor": 229.82141578570008,
+      "timing_s/stage_testing": 40.79206046834588,
+      "timing_s/step": 670.3674124591053
     },
     "scope": "Original trainer completed step timer including validation/checkpoint when scheduled; joined to credited attempt",
     "rollout_cost": {
       "status": "TRAINING_ROLLOUT_COST_COMPLETE",
-      "attempt_id": 22,
-      "candidate_outer": 22,
-      "start_epoch": 1791674964.6680863,
-      "end_epoch": 1791675262.6911128,
-      "wall_seconds": 298.0230270847678,
+      "attempt_id": 23,
+      "candidate_outer": 23,
+      "start_epoch": 1791675639.4927468,
+      "end_epoch": 1791675932.8470232,
+      "wall_seconds": 293.3542771972716,
       "costs": {
-        "generated_tokens": 515710,
-        "prefill_tokens": 2245638,
-        "retrieval_calls": 1621,
+        "generated_tokens": 506816,
+        "prefill_tokens": 2232659,
+        "retrieval_calls": 1628,
         "trajectories": 2560,
-        "padded_rows": 29,
+        "padded_rows": 31,
         "context_mismatches": 0,
-        "raw_slots": 2108000,
-        "raw_emitted_tokens": 515710,
-        "raw_retained_tokens": 247797,
-        "raw_discarded_tail_tokens": 267913,
-        "raw_inherited_leaf_tokens": 91396,
-        "semantic_prefix_scan_cpu_seconds": 24.29786944307307,
-        "semantic_prefix_scan_wall_seconds": 24.21258346363902
+        "raw_slots": 2104000,
+        "raw_emitted_tokens": 506816,
+        "raw_retained_tokens": 251198,
+        "raw_discarded_tail_tokens": 255618,
+        "raw_inherited_leaf_tokens": 90583,
+        "semantic_prefix_scan_cpu_seconds": 23.300484967974626,
+        "semantic_prefix_scan_wall_seconds": 23.21669551357627
       },
       "error": null
     }
   },
   "tree_audit": {
-    "rollout_json_count": 44
+    "rollout_json_count": 46
   },
   "checkpoints": {
     "milestones": [
       "global_step_5"
     ],
     "rolling": [
-      "global_step_21",
-      "global_step_22"
+      "global_step_22",
+      "global_step_23"
     ],
     "partial_attempts": []
   },
   "guard": {
-    "epoch": 1791675664.3637965,
+    "epoch": 1791676398.2168727,
     "job_id": "3360",
-    "age_seconds": 1.7214484214782715,
+    "age_seconds": 0.4192676544189453,
     "gpus": [
       {
         "uuid": "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
-        "total_used_memory_bytes": 12084510720,
+        "total_used_memory_bytes": 12082413568,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
-        "total_used_memory_bytes": 10845224960,
+        "total_used_memory_bytes": 10843127808,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
-        "total_used_memory_bytes": 11470110720,
+        "total_used_memory_bytes": 11468013568,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
-        "total_used_memory_bytes": 10845159424,
+        "total_used_memory_bytes": 10843062272,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
-        "total_used_memory_bytes": 10845159424,
+        "total_used_memory_bytes": 10843062272,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
-        "total_used_memory_bytes": 10845159424,
+        "total_used_memory_bytes": 10843062272,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
-        "total_used_memory_bytes": 10845159424,
+        "total_used_memory_bytes": 10843062272,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
       },
       {
         "uuid": "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5",
-        "total_used_memory_bytes": 11017125888,
+        "total_used_memory_bytes": 11015028736,
         "total_gpu_util": 0,
         "foreign_memory_fraction": 0.0,
         "foreign_sm_upper": 0
@@ -2696,8 +2764,8 @@
     ]
   },
   "storage": {
-    "f_bavail_bytes": 5596592209920,
-    "f_bfree_bytes": 6364758851584,
+    "f_bavail_bytes": 5595684225024,
+    "f_bfree_bytes": 6363850866688,
     "realpath": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360"
   }
 }
