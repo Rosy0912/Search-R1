@@ -1,42 +1,13 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791698235.2423005,
-  "second_observed_epoch": 1791698470.5547817,
-  "completed_outer": 53,
-  "direct_rank_record_count": 424,
-  "queue_first": {
-    "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|11:24:41|h100-10\n",
-    "stderr": ""
-  },
-  "queue_second": {
-    "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|11:28:36|h100-10\n",
-    "stderr": ""
-  },
-  "gpu_first": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
+  "first_observed_epoch": 1791699624.9675756,
+  "second_observed_epoch": 1791699683.2782686,
+  "first_completed_outer": 54,
+  "second_completed_outer": 55,
+  "direct_rank_records": 440,
+  "save55_lines": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_55/manifest.json"
   ],
-  "gpu_second": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  ],
-  "cpu_first": "    PID STAT     ELAPSED     TIME %CPU %MEM WCHAN                    COMMAND\n4011013 RNl     11:22:17 08:11:52 72.0  0.3 -                        ray::measured_t\n",
-  "cpu_second": "    PID STAT     ELAPSED     TIME %CPU %MEM WCHAN                    COMMAND\n4011013 RNl     11:25:53 08:12:51 71.8  0.2 -                        ray::measured_t\n",
-  "evidence": "Actual53 completed, rolling53 saved and outer54 started; see OUTER54_STARTED-3360.json.",
-  "run_result": null
+  "scope": "Actual credited outer55 and rolling55 save. Dev55 and complete step timing not yet available."
 }
