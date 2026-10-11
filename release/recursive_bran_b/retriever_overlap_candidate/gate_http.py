@@ -8,7 +8,8 @@ proc=Path('/proc',str(pid));assert proc.stat().st_uid==1001 and os.getuid()==100
 starttick=int((proc/'stat').read_text().rsplit(') ',1)[1].split()[19])
 token=(b/'receipts/private-probe-token').read_text().strip()
 original_health=requests.get(a.oracle+'/health',timeout=10).json()
-assert original_health['ready'] and original_health['ntotal']==21015324 and original_health['d']==768 and original_health['tf32'] is False
+from search_r1.baselines.recursive_admission_hkust5 import EXPECTED_HEALTH
+assert all(original_health.get(k)==v for k,v in EXPECTED_HEALTH.items()), 'Original remote oracle numeric/source receipt changed'
 # Remote oracle identity must be supplied by its separately checked process/source receipt.
 
 health=requests.get(a.candidate+'/health',timeout=5).json();assert health['gpu_ready'] and health['gpu_shards']==8 and health['pid']==pid and health['source_identity_sha256']==identity['source_identity_sha256']

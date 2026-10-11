@@ -249,7 +249,9 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True, proo
     # device wait for every row/field before doing the same Python comparisons.
     cpu_rows = {key: data.batch[key].detach().cpu().tolist()
                 for key in names + (TENSOR, 'response_mask', 'loss_mask') if key in data.batch}
-    validation_context = {}
+    require(proof_cache is None or type(proof_cache) is BehaviorMuProofCache, 'Invalid per-outer behavior proof cache')
+    validation_context = {} if proof_cache is None else proof_cache.contexts
+    for context in validation_context.values():context.check_runtime()
     seen, total = {}, 0
     for row in range(rows):
         from .recursive_transport import is_zero_policy_slot
