@@ -1,5 +1,5 @@
 """Small full-index HTTP equality gate. No training predictions or pressure load."""
-import argparse,hashlib,json,os,time
+import argparse,hashlib,json,os,time,subprocess
 from pathlib import Path
 import requests
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--oracle',default='http://10.120.17.101:18004');p.add_argument('--candidate',default='http://10.120.17.101:18006');a=p.parse_args()
@@ -23,7 +23,15 @@ for selected in (queries[:1],queries):
  proof['tests'].append(dict(queries=len(selected),topk=3,full_scan=True,complete_json_equal=True,
   oracle_seconds=ot,candidate_seconds=ct,json_sha256=hashlib.sha256(json.dumps(cj,sort_keys=True).encode()).hexdigest()))
  print(json.dumps(proof['tests'][-1]),flush=True)
-worker=requests.get(a.candidate+'/health',timeout=5).json()['gpu_worker_pid'];assert worker is not None
+last_health=requests.get(a.candidate+'/health',timeout=5).json();worker=last_health['gpu_worker_pid'];assert worker is not None
+profile=last_health['last_scan_profile'];assert profile['tiles_merged']==642 and len(profile['actual_worker_shapes'])==8
+assert {x['gpu'] for x in profile['actual_worker_shapes']}==set(range(8))
+assert sorted(t for x in profile['actual_worker_shapes'] for t in x['tile_starts'])==list(range(0,21015324,32768))
+proof['actual_scan_profile']=profile
+apps=[line.split(',') for line in subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True).splitlines()]
+owned=[row for row in apps if int(row[1])==worker];assert len({row[0].strip() for row in owned})==8
+assert {int(row[1]) for row in apps}<={2239529,worker}
+proof['actual_gpu_apps']=owned
 wp=Path('/proc',str(worker));assert wp.stat().st_uid==1005
 proof['gpu_worker_pid']=worker;proof['gpu_worker_starttick']=int((wp/'stat').read_text().rsplit(') ',1)[1].split()[19])
 proof.update(accepted=True,finished_at=time.time(),limitations='66 queries across two requests; not exhaustive queries or training effect proof')

@@ -19,6 +19,7 @@ def main():
     partition='round-robin whole original 32768-row tiles',resident_index=False)
    result.update(gpu_worker_pid=self.scan.worker_pid if self.scan is not None else None,
     gpu_worker_active=self.scan.worker_pid is not None if self.scan is not None else False)
+   result['last_scan_profile']=self.scan.last_scan_profile if self.scan is not None else None
    return result
   def admitted(self):
    c=self.read_bound_control(self.admission)
