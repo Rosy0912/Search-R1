@@ -81,6 +81,7 @@ def begin_validation(step,folder,config):
     for name in ['inputs-verified-at-launch.json','deployment-manifest.json','full-retriever-query.json','tools/tool.yaml','data/manifest.json']:
         p=root()/name
         if p.exists():evidence[name]={'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'content':p.read_text() if p.stat().st_size<250000 else None}
+    evidence['source_checkpoint_kind']='historical_verified_checkpoint5' if folder=='common-historical-validation' else 'current_complete_outer'
     ck=root()/'checkpoints'/('global_step_'+str(step))/'full-sha-receipt.json'
     evidence['checkpoint_receipt_sha256']=hashlib.sha256(ck.read_bytes()).hexdigest() if ck.exists() else None
     (root()/folder/(str(step)+'.config.json')).write_text(json.dumps(evidence,indent=2,default=str)+'\n')
@@ -95,7 +96,7 @@ def verify_validation(step,folder,expected_rows):
         expected.append(identity(d['question'],d['answers']))
     if len(rows)!=expected_rows or Counter(x['question_answer_sha256'] for x in rows)!=Counter(expected):raise RuntimeError('Common evaluation question/answer identity mismatch')
     if not all(x.get('model_actions') is not None for x in rows):raise RuntimeError('Missing model author boundaries')
-    receipt=summarize(rows);receipt.update(step=step,job=os.environ['SLURM_JOB_ID'],status='ONLINE_COMMON_SCORER_FULL_IDENTITIES_PASS',path=str(root()/folder/(str(step)+'.jsonl')))
+    receipt=summarize(rows);receipt.update(step=step,job=os.environ['SLURM_JOB_ID'],status='ONLINE_COMMON_SCORER_FULL_IDENTITIES_PASS',path=str(root()/folder/(str(step)+'.jsonl')),per_question_sha256=hashlib.sha256((root()/folder/(str(step)+'.jsonl')).read_bytes()).hexdigest(),question_answer_manifest_sha256=hashlib.sha256(json.dumps(sorted(expected)).encode()).hexdigest())
     if expected_rows==512:
         counts=sorted(x['questions'] for x in receipt['datasets'].values())
         if counts!=[256,256]:raise RuntimeError('Validation must be NQ256 plus Hotpot256')

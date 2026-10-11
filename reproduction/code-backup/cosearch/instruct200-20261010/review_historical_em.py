@@ -1,5 +1,5 @@
 """Review historical mixed text without pretending unknown author boundaries are verified."""
-import argparse,json,re
+import argparse,hashlib,json,re
 from pathlib import Path
 from common_em import score,normalize,aliases,identity,VERSION
 
@@ -25,7 +25,7 @@ def review(root):
             record={'question_id':d['question_id'],'question':question,'references':refs,'question_answer_sha256':identity(question,refs),'old_text_rescore_em':legacy,'strict_terminal_text_proxy_em':proxy['em'],'strict_terminal_text_reason':proxy['answer_reason'],'online_common_em':None,'status':'NOT_FULLY_VERIFIED_MISSING_MODEL_RETRIEVAL_BOUNDARIES','scorer_version':VERSION,'old_native_reward':x['score']}
             if legacy!=proxy['em']:disagreements.append(record)
             f.write(json.dumps(record,ensure_ascii=False)+'\n')
-    summary={'rows':512,'question_reference_identities_verified':identity_pass,'old_text_correct':legacy_correct,'old_text_em':legacy_correct/512,'strict_terminal_text_proxy_correct':proxy_correct,'strict_terminal_text_proxy_em':proxy_correct/512,'text_extraction_disagreements':len(disagreements),'boundary_unverified_rows':512,'online_common_em':None,'acceptance':'REQUIRES_NEW_GENERATION_FROM_THIS_HISTORICAL_CHECKPOINT_WITH_AUTHOR_BOUNDARIES','per_question_path':str(out/'iter5-per-question.jsonl')}
+    summary={'historical_prediction_sha256':hashlib.sha256((root/'validation/5.jsonl').read_bytes()).hexdigest(),'rows':512,'question_reference_identities_verified':identity_pass,'old_text_correct':legacy_correct,'old_text_em':legacy_correct/512,'strict_terminal_text_proxy_correct':proxy_correct,'strict_terminal_text_proxy_em':proxy_correct/512,'text_extraction_disagreements':len(disagreements),'boundary_unverified_rows':512,'online_common_em':None,'acceptance':'REQUIRES_NEW_GENERATION_FROM_THIS_HISTORICAL_CHECKPOINT_WITH_AUTHOR_BOUNDARIES','per_question_path':str(out/'iter5-per-question.jsonl')}
     (out/'iter5-disagreements.json').write_text(json.dumps(disagreements,ensure_ascii=False,indent=2)+'\n')
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n');return summary
 if __name__=='__main__':
