@@ -129,6 +129,12 @@ def prepare_behavior_mu_old_policy(data, actor_config):
             raise ValueError('Omitted full actor beta must not have a fabricated substitute')
         if not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.:
             raise ValueError('Omitted full beta requires reference KL loss zero')
+        # Native behavior-mu validation above proves every sampled distribution
+        # is plain temperature 1. The omitted HF path must not be a metadata producer.
+        temperature = data.meta_info.get('temperature', 1.)
+        if type(temperature) not in (int, float) or temperature != 1.:
+            raise ValueError('Actor temperature differs from actual captured behavior-mu distribution')
+        data.meta_info['temperature'] = 1.
         data.batch['old_log_probs'] = sampled.detach().clone()
         data.meta_info['tree_behavior_mu_corrected_profile'] = True
         return True

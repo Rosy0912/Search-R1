@@ -44,6 +44,7 @@ class MuOnlyTests(unittest.TestCase):
         if omitted:
             del data.batch['old_log_probs']
             del data.batch['actor_old_log_probs']
+            del data.meta_info['temperature']
             data.meta_info['tree_full_actor_beta_available'] = False
             f.trainer['prepare_behavior_mu_old_policy'](data, self.cfg)
         return data
@@ -72,6 +73,7 @@ class MuOnlyTests(unittest.TestCase):
             self.assertTrue(torch.equal(lhs, rhs))
         self.assertNotIn('actor_old_log_probs', omitted.batch)
         self.assertTrue(torch.equal(omitted.batch['old_log_probs'], omitted.batch['sampled_old_log_probs']))
+        self.assertEqual(omitted.meta_info['temperature'], 1.)
 
     def test_sampler_safety_still_runs_and_missing_full_beta_metrics_are_null(self):
         data = self.data(True)

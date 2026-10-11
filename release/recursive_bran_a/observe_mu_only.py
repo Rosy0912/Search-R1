@@ -12,10 +12,12 @@ p.add_argument('--owner', required=True, type=int)
 p.add_argument('--tick', required=True, type=int)
 p.add_argument('--run', required=True)
 p.add_argument('--source', required=True)
+p.add_argument('--output', default='output-sparse-mu-only-resume4')
+p.add_argument('--log', default='logs/mu-only-resume4-20261012.log')
 p.add_argument('--seconds', type=int, default=3600)
 a = p.parse_args()
 b = Path(a.base)
-out = b/'output-sparse-mu-only-resume4'
+out = b/a.output
 deadline = time.monotonic() + a.seconds
 previous = None
 while time.monotonic() < deadline:
@@ -55,7 +57,7 @@ while time.monotonic() < deadline:
         row['safety'] = {k: safety[k] for k in ('outer_step', 'rank', 'phase', 'committed_optimizer_calls')}
         row['safety']['decision'] = {k: safety['decision'].get(k) for k in
             ('allowed', 'reasons', 'probability_denominator', 'full_actor_beta_available')}
-    log = (b/'logs/mu-only-resume4-20261012.log').read_text(errors='replace')
+    log = (b/a.log).read_text(errors='replace')
     lines = log.splitlines()
     row['errors'] = [s[-500:] for s in lines if any(k in s for k in ('Traceback', 'ValueError:', 'RuntimeError:'))][-3:]
     row['cache_release_lines'] = [s[s.index('RECURSIVE_WEIGHT_CACHE_PHASE='):] for s in lines if 'RECURSIVE_WEIGHT_CACHE_PHASE=' in s][-8:]
