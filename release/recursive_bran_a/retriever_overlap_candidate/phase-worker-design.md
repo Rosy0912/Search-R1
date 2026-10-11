@@ -1,0 +1,13 @@
+# Phase-scoped eight-GPU retrieval worker
+
+`gpu_phase_proxy.PhaseGpuScanner(original, index_path, oracle_source=None)` exposes the existing `search_many`, `search`, `last_scan_profile`, plus `worker_pid` and `release_gpu`. The HTTP parent retains its CPU encoder/index/corpus. This module does not import Torch or the GPU backend in the parent. The runtime uses Python `spawn`, never `fork` a CUDA context.
+
+First query lazily starts one private child. Subsequent queries reuse its eight CUDA contexts and double buffers until an explicit phase release. Only NumPy queries, small top-k results and profile metadata cross the private pipe. The worker checks the four-file implementation manifest before importing the backend. Each spawn derives a FAISS FlatIP header from tiny runtime same-class probes and compares the actual header, exact file size and index metadata. Its read-only memmap covers the original vectors without allocating another 64.56GB vector heap. No full-file SHA or vector digest is claimed; the frozen source index identity still requires the external gate.
+
+`release_gpu()` serializes with scans, asks the child to close, and joins the actual private Process handle before returning `released=True, gpu_worker_pid=None`. It includes previous PID, exitcode, graceful status and receipt identity. A bounded-timeout fallback can terminate/kill only that owned child handle; it never signals the original oracle or any unrelated PID. A failure to join raises and must block HF. Root must also confirm the child's GPU contexts have disappeared using live GPU process/free-memory checks before HF allocation. Parent health and CPU fixtures are not a numerical admission or GPU-release proof.
+
+Child vectors remain FP32, TF32 disabled, original 32768 tile boundaries and query-micro64 unchanged. The eight-GPU backend retains global tile-order top-k merging on GPU7. Each GPU has 192MiB pinned CPU buffers and 192MiB GPU vector buffers, plus score/query/top-k/context/allocator overhead. All-GPU H2D scan traffic remains 64,559,075,328 bytes/request scan; sharding and overlap reduce elapsed time rather than total bytes. Actual peak memory and numerical equivalence require the root's cold GPU gate.
+
+Six CPU tests exercise real spawn, repeated same-child requests, actual exit/join, new-child restart, fault cleanup, no-op release, dynamically proven tiny serialization layout, read-only map, zero vector hashing, and malformed-header/size refusal. They do not allocate CUDA or establish GPU performance. Run:
+
+    python3 -m unittest release.recursive_bran_a.retriever_overlap_candidate.test_phase_proxy_cpu -v
