@@ -1,4 +1,4 @@
-Actual progress:95/200 full outers;760 directrank records,1900 successful Adam/rank,zero skips;rolling95 SAVED,actual96 sampled logs progressing. Outer95 total1470.257399887s(24.504290min),including dev700.856099751s. Reward0.460156262,pure intra variance0.066243271325,mixed108/512. Dev95 actual512(NQ256/Hotpot256):F150.484251%,EM42.578125%;vs90 F1+0.334821pp,EM+1.562500pp. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
+Actual progress:96/200 full outers;768 directrank records,1920 successful Adam/rank,zero skips;rolling96 SAVED,actual97 started. Outer96 total799.108721875s(13.318479min). Reward0.515625,pure intra variance0.069986749031,mixed121/512. Dev95 unchanged:F150.484251%,EM42.578125%;vs90 F1+0.334821pp,EM+1.562500pp. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
 
 # Tree-GRPO BranPO sampling：执行准备与证据
 

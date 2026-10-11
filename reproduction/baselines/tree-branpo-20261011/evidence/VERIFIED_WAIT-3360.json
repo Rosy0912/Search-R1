@@ -1,28 +1,29 @@
 {
-  "classification": "verified_wait",
+  "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791735209.7803538,
-  "second_observed_epoch": 1791735320.5832164,
-  "complete_outer": 95,
+  "first_observed_epoch": 1791735938.7649667,
+  "second_observed_epoch": 1791736016.2642422,
+  "first_complete_outer": 95,
+  "complete_outer": 96,
   "gpu_first": [
-    0,
-    21,
-    26,
-    71,
-    88,
-    89,
     64,
-    69
+    64,
+    62,
+    64,
+    62,
+    58,
+    55,
+    63
   ],
   "gpu_second": [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
+    50,
+    54,
+    51,
+    53,
+    52,
+    51,
+    51,
+    52
   ],
-  "evidence": "Actual96 started in first poll; sampled log outputs changed by second poll; first GPUcompute0\u201389%,second all idle snapshot; no terminal/restart."
+  "evidence": "Two actual observations95 to96 credited;768 directrank,1920Adam/rank0skip;rolling96 SAVED and97 started verifiedremote."
 }
