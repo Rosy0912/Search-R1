@@ -17,16 +17,17 @@ def binding(environ=None):
  raw=Path(e['RECURSIVE_A_CONTINUATION_BINDING']).read_bytes()
  require(hashlib.sha256(raw).hexdigest()==e['RECURSIVE_A_CONTINUATION_SHA256'],'binding bytes changed')
  b=json.loads(raw)
- require(b['protocol']==PROTOCOL and b['parent_completed_step']==4,'only approved completed4 boundary')
- require(b['parent_commit']=='5045430e67860102c304ef8098e4862ddcdf6e3e' and
- b['parent_config_sha256']=='622e3c083cd8e2db5f6ef3ba126cd6d4f71babd85c97feb46f839a20fe593d03','wrong parent chain')
+ require(b['protocol']==PROTOCOL and b['parent_completed_step'] in (4,5),'only pinned completed4/5 boundary')
+ expected={4:('5045430e67860102c304ef8098e4862ddcdf6e3e','622e3c083cd8e2db5f6ef3ba126cd6d4f71babd85c97feb46f839a20fe593d03'),
+           5:('43a209a5ba3f7f1211c18d03c9362d85b3f5cd1b','c5be8a8e679684fbb8bb5ca360d99188a1b88d5a7ab4eff0b08fa6f3bc029553')}
+ require((b['parent_commit'],b['parent_config_sha256'])==expected[b['parent_completed_step']],'wrong parent chain')
  require(socket.gethostname().split('.')[0]=='xielab1' and os.getuid()==1005,'wrong host/UID')
  return b
 
 def _bind():
  global PARENT_MANIFEST,PARENT_MANIFEST_SHA256,PARENT_OPTIMIZER_CALLS,PARENT_COMPLETED_STEP
  b=binding();PARENT_MANIFEST=Path(b['parent_manifest']);PARENT_MANIFEST_SHA256=b['parent_manifest_sha256']
- PARENT_COMPLETED_STEP=4;PARENT_OPTIMIZER_CALLS=80
+ PARENT_COMPLETED_STEP=b['parent_completed_step'];PARENT_OPTIMIZER_CALLS=20*PARENT_COMPLETED_STEP
  return b
 
 def validate_entry(config=None,environ=None,initialized=False):
@@ -52,16 +53,16 @@ def parent_manifest():
  require(hashlib.sha256(raw).hexdigest()==PARENT_MANIFEST_SHA256,'manifest changed')
  m=json.loads(raw);i=m['identity']
  require(m['status']=='COMPLETE_SAME_WORLD_STATE_SAVED' and i==b['parent_identity'],'parent identity/status changed')
- require(i['completed_step']==4 and i['actual_update_limit']==200,'parent counters changed')
- g=i['guard_continue_accounting'];counts={str(r):80 for r in range(8)}
+ require(i['completed_step']==PARENT_COMPLETED_STEP and i['actual_update_limit']==200,'parent counters changed')
+ g=i['guard_continue_accounting'];counts={str(r):PARENT_OPTIMIZER_CALLS for r in range(8)}
  require(g['completed_optimizer_calls_per_rank']==counts and g['total_optimizer_calls_per_rank']==counts
- and g['completed_outer_updates']==4 and g['training_attempts']==4 and g['refused_attempts']==0
+ and g['completed_outer_updates']==PARENT_COMPLETED_STEP and g['training_attempts']==PARENT_COMPLETED_STEP and g['refused_attempts']==0
  and not g['partial_evidence'],'parent incomplete writes')
  ws=m['worker_states'];require(len(ws)==8 and {r['identity']['rank'] for r in ws}==set(range(8)),'rank coverage')
  for r in ws:
-  require(r['actual_total_optimizer_calls']==80 and r['observed_adam_steps']==[80]
-   and r['scheduler_last_epoch']==4 and r['full_worker_state_finite'] is True,'rank counters/finite')
- require(m['driver']['next_step']==5,'driver cursor boundary')
+  require(r['actual_total_optimizer_calls']==PARENT_OPTIMIZER_CALLS and r['observed_adam_steps']==[PARENT_OPTIMIZER_CALLS]
+   and r['scheduler_last_epoch']==PARENT_COMPLETED_STEP and r['full_worker_state_finite'] is True,'rank counters/finite')
+ require(m['driver']['next_step']==PARENT_COMPLETED_STEP+1,'driver cursor boundary')
  return m
 
 def state_record(record,filename):
@@ -133,21 +134,21 @@ def migrate_trainer(trainer):
  require(validate_entry(trainer.config,initialized=True),'missing scope')
  b=_bind();m=parent_manifest();workers=trainer.actor_rollout_wg.load_current_chain_training_state()
  require(len(workers)==8 and {r['rank'] for r in workers}==set(range(8)) and
- all(r['actual_cold_native_state_equal'] and r['adam_steps']==[80] and r['scheduler_step']==4 for r in workers),'cold worker state differs')
+ all(r['actual_cold_native_state_equal'] and r['adam_steps']==[PARENT_OPTIMIZER_CALLS] and r['scheduler_step']==PARENT_COMPLETED_STEP for r in workers),'cold worker state differs')
  r=state_record(m['driver'],'driver.pt');saved=verified_state_file(r)
  require(saved['identity']==m['identity'] and digest(saved)==r['logical_state_sha256'],'driver bytes/identity')
- require(saved['completed_step']==4 and saved['actual_outer_updates']==4 and saved['next_step']==5
- and saved['sampler']['cursor']==2048 and saved['sampler']['epoch']==0,'driver counters/cursor')
+ require(saved['completed_step']==PARENT_COMPLETED_STEP and saved['actual_outer_updates']==PARENT_COMPLETED_STEP and saved['next_step']==PARENT_COMPLETED_STEP+1
+ and saved['sampler']['cursor']==512*PARENT_COMPLETED_STEP and saved['sampler']['epoch']==0,'driver counters/cursor')
  restore_driver(trainer,saved,m['identity'])
  require(digest(driver_snapshot(trainer,m['identity']))==r['logical_state_sha256'],'cold driver/RNG differs')
  provenance=dict(protocol=PROTOCOL,parent_identity=m['identity'],parent_manifest_path=str(PARENT_MANIFEST),
- parent_manifest_sha256=PARENT_MANIFEST_SHA256,parent_completed_step=4,parent_cursor=2048,parent_epoch=0,
+ parent_manifest_sha256=PARENT_MANIFEST_SHA256,parent_completed_step=PARENT_COMPLETED_STEP,parent_cursor=512*PARENT_COMPLETED_STEP,parent_epoch=0,
  new_batch_size=512,child_code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
  child_config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],executor_equivalence=False,
  scope='same-world state restored; vLLM restart not claimed bitwise; sparse recording and unused per-action HF scoring removal bound by child source commit')
  trainer.recovery_provenance=provenance;trainer.acceptance_released=True
  receipt=dict(status='COLD_RECURSIVE_A_STATE_MIGRATED',protocol=PROTOCOL,workers=workers,
- driver_actual_state_equal=True,next_outer=5,provenance=provenance)
+ driver_actual_state_equal=True,next_outer=PARENT_COMPLETED_STEP+1,provenance=provenance)
  atomic_save(receipt,Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'sparse-schedule-migrated.json',json_format=True)
- print('RECURSIVE_A_STATE_MIGRATED=4',flush=True)
+ print('RECURSIVE_A_STATE_MIGRATED='+str(PARENT_COMPLETED_STEP),flush=True)
  return receipt

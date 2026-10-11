@@ -14,6 +14,8 @@
 
 import os
 import logging
+import json
+import time
 import torch
 from torch.distributed.fsdp.fully_sharded_data_parallel import FullyShardedDataParallel as FSDP
 from torch.distributed.fsdp.api import ShardingStrategy, ShardedStateDictConfig, StateDictType, FullStateDictConfig
@@ -43,6 +45,13 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         self.inference_engine = inference_engine
         self.model_config = model_config
         self.device_mesh = device_mesh
+        self.retain_model_weights = False
+        self.weights_resident = False
+        self.cached_policy_version = None
+        self.requested_policy_version = None
+        self.weight_sync_calls = 0
+        self.cache_phase_calls = 0
+        self.cache_phase_sync_wall_seconds = 0.
 
         # Full params
         self.full_params = full_params
@@ -66,25 +75,55 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         else:
             self.gen_random_states = None
 
+    def prepare_policy_cache(self, enabled, version):
+        """Reuse only a pinned, unchanged actor version during recursive sampling."""
+        if self.weights_resident and (not enabled or self.cached_policy_version != version):
+            self.release_model_weights()
+        if enabled and not self.weights_resident:
+            self.cache_phase_calls = 0
+            self.cache_phase_sync_wall_seconds = 0.
+        self.retain_model_weights = bool(enabled)
+        self.requested_policy_version = version if enabled else None
+
+    def release_model_weights(self):
+        if self.weights_resident:
+            self.inference_engine.offload_model_weights()
+            if self.retain_model_weights:
+                print('RECURSIVE_WEIGHT_CACHE_PHASE='+json.dumps(dict(
+                    policy_version=self.cached_policy_version,
+                    generation_calls=self.cache_phase_calls, weight_sync_calls=1,
+                    sync_wall_seconds=self.cache_phase_sync_wall_seconds,
+                    released_before_hf_or_policy_change=True)),flush=True)
+        self.weights_resident = False
+        self.cached_policy_version = None
+
     def __enter__(self):
-        log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
-        params = self.module.state_dict()
-        log_gpu_memory_usage('After state_dict() in sharding manager memory', logger=logger)
-        # Copy, not share memory
-        load_format = 'hf' if self.full_params else 'dtensor'
-        self.inference_engine.sync_model_weights(params, load_format=load_format)
-        log_gpu_memory_usage('After sync model weights in sharding manager', logger=logger)
-
-        del params
-        torch.cuda.empty_cache()
-        log_gpu_memory_usage('After del state_dict and empty_cache in sharding manager', logger=logger)
-
-        # TODO: offload FSDP model weights
-        # self.module.cpu()
-        # torch.cuda.empty_cache()
-        # if torch.distributed.get_rank() == 0:
-        # print(f'after model to cpu in sharding manager memory allocated: {torch.cuda.memory_allocated() / 1e9}GB, reserved: {torch.cuda.memory_reserved() / 1e9}GB')
-
+        if not self.weights_resident:
+            sync_started = time.perf_counter()
+            log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
+            params = self.module.state_dict()
+            log_gpu_memory_usage('After state_dict() in sharding manager memory', logger=logger)
+            # Copy, not share memory
+            load_format = 'hf' if self.full_params else 'dtensor'
+            self.inference_engine.sync_model_weights(params, load_format=load_format)
+            log_gpu_memory_usage('After sync model weights in sharding manager', logger=logger)
+    
+            del params
+            torch.cuda.empty_cache()
+            log_gpu_memory_usage('After del state_dict and empty_cache in sharding manager', logger=logger)
+    
+            # TODO: offload FSDP model weights
+            # self.module.cpu()
+            # torch.cuda.empty_cache()
+            # if torch.distributed.get_rank() == 0:
+            # print(f'after model to cpu in sharding manager memory allocated: {torch.cuda.memory_allocated() / 1e9}GB, reserved: {torch.cuda.memory_reserved() / 1e9}GB')
+    
+            self.weights_resident = True
+            self.cached_policy_version = self.requested_policy_version
+            self.weight_sync_calls += 1
+            self.cache_phase_sync_wall_seconds += time.perf_counter()-sync_started
+        if self.retain_model_weights:
+            self.cache_phase_calls += 1
         # important: need to manually set the random states of each tp to be identical.
         if self.device_mesh is not None:
             self.torch_random_states = torch.cuda.get_rng_state()
@@ -92,8 +131,9 @@ class FSDPVLLMShardingManager(BaseShardingManager):
 
     def __exit__(self, exc_type, exc_value, traceback):
         log_gpu_memory_usage('Before vllm offload in sharding manager', logger=logger)
-        self.inference_engine.offload_model_weights()
-        log_gpu_memory_usage('After vllm offload in sharding manager', logger=logger)
+        if exc_type is not None or not self.retain_model_weights:
+            self.release_model_weights()
+        log_gpu_memory_usage('After vllm offload or retained cache in sharding manager', logger=logger)
 
         # self.module.to('cuda')
         # if torch.distributed.get_rank() == 0:

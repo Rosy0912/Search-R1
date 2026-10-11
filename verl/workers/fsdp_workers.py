@@ -552,6 +552,9 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         data = data.to('cuda')
 
         assert self._is_actor
@@ -640,6 +643,9 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         data = data.to('cuda')
 
         assert self._is_rollout
@@ -685,7 +691,18 @@ class ActorRolloutRefWorker(Worker):
             generation_preflight(self, prompts)
 
         assert self._is_rollout
-        if self._is_offload_param:
+        cache_enabled = (bool(os.environ.get('RECURSIVE_A_CONTINUATION_BINDING'))
+                         and self.config.rollout.get('tree_raw_emission', False)
+                         and not recompute_log_prob and prompts.meta_info.get('do_sample', True))
+        cache_version = (self.actor._fresh_total_committed_optimizer_calls,
+                         self.actor_lr_scheduler.last_epoch) if cache_enabled else None
+        manager = self.rollout_sharding_manager
+        if hasattr(manager, 'prepare_policy_cache'):
+            manager.prepare_policy_cache(cache_enabled, cache_version)
+        elif cache_enabled:
+            raise RuntimeError('Native recursive policy cache requires FSDP-vLLM manager')
+        actor_loaded = self._is_offload_param and not getattr(manager, 'weights_resident', False)
+        if actor_loaded:
             load_fsdp_param_and_grad(module=self.actor_module_fsdp,
                                      device_id=torch.cuda.current_device(),
                                      load_grad=self._is_offload_grad)
@@ -763,6 +780,9 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         assert self._is_actor
         import torch
         if self._is_offload_param:
