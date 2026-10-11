@@ -123,12 +123,13 @@ class SearchRollout:
                                   (self.config.force_final_answer and not state.final_used))
 
     def timed_rewards(self, states):
-        started=time.perf_counter()
+        started=time.perf_counter();successful=False
         self.timing("reward_callback_start", rows=len(states))
         try:
-            return self.reward_callback(states)
+            result=self.reward_callback(states);successful=True
+            return result
         finally:
-            self.timing("reward_callback_complete", rows=len(states), wall_seconds=time.perf_counter()-started)
+            self.timing("reward_callback_complete",successful=successful, rows=len(states), wall_seconds=time.perf_counter()-started)
 
     def timing(self, event, **fields):
         # Compact always-on telemetry, separate from sparse full tree dumps.
@@ -351,15 +352,18 @@ class SearchRollout:
 
     def compose(self, states):
         started=time.perf_counter()
+        successful=False
         self.timing("compose_start", rows=len(states))
         try:
             if self.token_preservation is not None:
                 from .tree_raw_tokens import tokenizer_validation_scope
                 with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
-                    return self._compose(states)
-            return self._compose(states)
+                    result=self._compose(states);successful=True
+                    return result
+            result=self._compose(states);successful=True
+            return result
         finally:
-            self.timing('compose_complete', rows=len(states), wall_seconds=time.perf_counter()-started)
+            self.timing('compose_complete', successful=successful,rows=len(states), wall_seconds=time.perf_counter()-started)
 
     def _compose(self, states):
         from verl import DataProto

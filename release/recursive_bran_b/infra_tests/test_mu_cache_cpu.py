@@ -28,6 +28,6 @@ class ProofCache(unittest.TestCase):
   validate_behavior_mu_batch(data,expected_provenance=e,proof_cache=cache)
   bad=copy.deepcopy(data);bad.non_tensor_batch[raw.FIELD][0]['raw_ledger'][0]['observation_token_ids']=[6]
   with self.assertRaises(ValueError):validate_behavior_mu_batch(bad,expected_provenance=e,proof_cache=cache)
-  self.f.tok.backend_padding={'changed':True}
+  self.f.tok.backend_normalizer={'changed':True}
   with self.assertRaises(ValueError):validate_behavior_mu_batch(data,expected_provenance=e,proof_cache=cache)
 if __name__=='__main__':unittest.main()

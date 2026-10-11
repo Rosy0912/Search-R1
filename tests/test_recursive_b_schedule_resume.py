@@ -9,9 +9,9 @@ import search_r1.baselines.recursive_b_schedule_resume as resume
 class ResumeTests(unittest.TestCase):
  def test_only_schedule_changes_allowed(self):
   with tempfile.TemporaryDirectory() as tmp:
-   p=Path(tmp)/'parent.yaml';old=OmegaConf.create(dict(trainer=dict(evaluation_steps=None,checkpoint_save_steps=None,total_training_steps=201),actor_rollout_ref=dict(actor=dict(optim=dict(lr=1e-6,total_training_steps=200))),critic=dict(optim=dict(total_training_steps=0))))
+   p=Path(tmp)/'parent.yaml';old=OmegaConf.create(dict(trainer=dict(evaluation_steps=None,checkpoint_save_steps=None,total_training_steps=201),actor_rollout_ref=dict(actor=dict(optim=dict(lr=1e-6,total_training_steps=200)),rollout=dict(tree_action_tag_stop=False)),critic=dict(optim=dict(total_training_steps=0))))
    p.write_text(OmegaConf.to_yaml(old));b=dict(parent_config=str(p),parent_config_sha256=hashlib.sha256(p.read_bytes()).hexdigest())
-   new=copy.deepcopy(old);new.trainer.evaluation_steps=[5,50,100,150,200];new.trainer.checkpoint_save_steps=[5,50,100,150,200]
+   new=copy.deepcopy(old);new.trainer.evaluation_steps=[5,50,100,150,200];new.trainer.checkpoint_save_steps=[5,50,100,150,200];new.actor_rollout_ref.rollout.tree_action_tag_stop=True;new.actor_rollout_ref.rollout.tree_action_stop_mode='search_only'
    with patch.object(resume,'binding',return_value=b),patch.dict(os.environ,RECURSIVE_B_CONTINUATION_BINDING='present'):
     self.assertTrue(resume.validate_entry(new));new.actor_rollout_ref.actor.optim.lr=2e-6
     with self.assertRaises(ValueError):resume.validate_entry(new)

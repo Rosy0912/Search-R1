@@ -12,7 +12,7 @@ from search_r1.baselines.candidate_qa_reward import candidate_qa_rewards
 from search_r1.baselines.tree_raw_tokens import FIELD,tokenizer_identity
 saved=torch.load(a.input,map_location='cpu',weights_only=False)
 tok=AutoTokenizer.from_pretrained(a.model,local_files_only=True)
-data=DataProto.from_dict(tensors=saved['batch'],non_tensors=saved['non_tensor_batch'],meta_info=saved['meta_info'])[:16]
+data=DataProto.from_dict(tensors=saved['batch'],non_tensors=saved['non_tensor_batch'],meta_info=saved['meta_info']).select_idxs(list(range(16)))
 identity=data.non_tensor_batch[FIELD][0]['raw_ledger'][0]['action']['tokenizer_identity']
 assert tokenizer_identity(tok,identity['tokenizer_json_sha256'])==identity
 engine=NS(tokenizer=tok,tokenizer_identity=identity,token_preservation={},config=NS(max_prompt_length=4096))

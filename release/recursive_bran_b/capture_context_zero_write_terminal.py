@@ -8,10 +8,10 @@ for r in known:assert not Path('/proc/%d'%r['pid']).exists(), 'previous PID stil
 proc=subprocess.run(['tmux','display-message','-p','-t','%6','#{session_id}|#{pane_id}|#{pane_dead}|#{pane_dead_status}'],capture_output=True,text=True,check=True)
 assert proc.stdout.strip()=='$6|%6|1|1'
 partial=root/'checkpoints/training_state/partial_attempt_000004_outer_000004_run_f2771900501d4c8b825f2a7edaa6e7e9/manifest.json'
-record=dict(protocol='recursive-b-zero-write-speed-retry-terminal-v1',time=time.time(),failed_source='7260c45fb4275651fd5ee52a104b1db80b59d5ec',failed_run='f2771900501d4c8b825f2a7edaa6e7e9',controller=known[0],tmux=dict(session_id='$5',pane_id='%6',dead=1,dead_status=1),all_known_owned_absent=True,known_owned=known,partial_manifest=str(partial),partial_manifest_sha256=hashlib.sha256(partial.read_bytes()).hexdigest(),failure='Actual all-rank partial context directory refusal before update_policy; no new optimizer write, absent worker snapshots explicitly retained',training_rc=1,no_new_completed_outer=True)
+record=dict(protocol='recursive-b-zero-write-speed-retry-terminal-v1',time=time.time(),failed_source='7260c45fb4275651fd5ee52a104b1db80b59d5ec',failed_run='f2771900501d4c8b825f2a7edaa6e7e9',controller=known[0],tmux=dict(session_id=proc.stdout.strip().split('|')[0],pane_id=proc.stdout.strip().split('|')[1],dead=1,dead_status=1),all_known_owned_absent=True,known_owned=known,partial_manifest=str(partial),partial_manifest_sha256=hashlib.sha256(partial.read_bytes()).hexdigest(),failure='Actual all-rank partial context directory refusal before update_policy; no new optimizer write, absent worker snapshots explicitly retained',training_rc=1,no_new_completed_outer=True)
 restore=root/'output-speed-resume3-f2771900501d4c8b825f2a7edaa6e7e9/sparse-schedule-migrated.json'
 record.update(restore_proof=str(restore),restore_proof_sha256=hashlib.sha256(restore.read_bytes()).hexdigest(),worker_tensor_snapshot_accepted=False)
-p=root/'receipts/speed726-context-zero-write-failure-terminal.json'
+p=root/'receipts/speed726-context-zero-write-failure-terminal-v2.json'
 raw=json.dumps(record,sort_keys=True).encode()
 with p.open('xb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
 from search_r1.baselines.recursive_b_retry import validate_retry_terminal
