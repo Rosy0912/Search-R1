@@ -166,6 +166,8 @@ def run_condition(llm, tokenizer, raw_module, identity, prompts, args, size, sto
              **{k: v for k, v in row.items() if k != 'cprofile_top_cumulative'})
         if args.executor=='current':
             emit('interaction_start',trajectories=size,turn=turn,active=len(active))
+            interaction_profile = cProfile.Profile()
+            interaction_profile.enable()
             started=time.perf_counter()
             observations,dones,valid,searches=manager.execute_predictions(canonical,tokenizer.pad_token,
                 torch.ones(len(active),dtype=torch.bool),do_search=True)
@@ -174,8 +176,10 @@ def run_condition(llm, tokenizer, raw_module, identity, prompts, args, size, sto
                 state['context'].extend(tokens)
                 state['context'].extend(observation_ids[pos][observation_mask[pos].bool()].tolist())
                 state['search_calls']+=int(searches[pos]);state['done']=bool(dones[pos])
+            interaction_profile.disable()
             row.update(interaction_wall_seconds=time.perf_counter()-started,
-                retrieval_http_json_wall_seconds=getattr(manager,'retrieval_http_json_wall_seconds',0.),
+                retrieval_http_json_wall_seconds=getattr(manager,'retrieval_http_json_wall_seconds',None),
+                interaction_cprofile_top_cumulative=profile_table(interaction_profile),
                 valid_actions=sum(valid),search_actions=sum(searches))
             emit('interaction_complete',trajectories=size,turn=turn,**{k:row[k] for k in
                 ('interaction_wall_seconds','retrieval_http_json_wall_seconds','valid_actions','search_actions')})
