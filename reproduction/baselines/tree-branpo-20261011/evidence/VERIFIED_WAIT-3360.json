@@ -1,28 +1,28 @@
 {
   "classification": "verified_wait",
   "job": 3360,
-  "first_observed_epoch": 1791734710.4133086,
-  "second_observed_epoch": 1791734804.0652328,
+  "first_observed_epoch": 1791735209.7803538,
+  "second_observed_epoch": 1791735320.5832164,
   "complete_outer": 95,
   "gpu_first": [
-    100,
-    93,
-    91,
-    100,
+    0,
+    21,
     26,
-    73,
-    55,
-    100
+    71,
+    88,
+    89,
+    64,
+    69
   ],
   "gpu_second": [
-    54,
-    54,
     0,
     0,
-    55,
-    80,
-    54,
-    56
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   ],
-  "evidence": "Two live job3360 observations during dev95; stage sampled outputs changed, rolling95 SAVED; no restart/source modification."
+  "evidence": "Actual96 started in first poll; sampled log outputs changed by second poll; first GPUcompute0\u201389%,second all idle snapshot; no terminal/restart."
 }
