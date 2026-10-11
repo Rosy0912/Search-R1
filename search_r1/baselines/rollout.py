@@ -170,7 +170,7 @@ class SearchRollout:
             raise
         finally:
             if started is not None:
-                print('TREE_ACTION_TIMING='+json.dumps(dict(outer=self.rollout_outer,
+                print('TREE_ACTION_TIMING='+json.dumps(dict(outer=getattr(self,'rollout_outer',None),
                     successful=successful,active_requests=len(states),
                     wall_seconds=time.perf_counter()-started[0],
                     driver_cpu_seconds=time.process_time()-started[1],
