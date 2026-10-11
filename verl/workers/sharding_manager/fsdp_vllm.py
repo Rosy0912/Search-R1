@@ -82,10 +82,19 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         if enabled and not self.weights_resident:
             self.cache_phase_calls = 0
             self.cache_phase_sync_wall_seconds = 0.
+            self.inference_engine._recursive_kv_init_calls = 0
+            self.inference_engine._recursive_kv_init_wall_seconds = 0.
         self.retain_model_weights = bool(enabled)
         self.requested_policy_version = version if enabled else None
+        # KV allocations are reusable too: free_cache_engine otherwise rebuilds
+        # the entire cache at every recursive action, even with resident weights.
+        self.inference_engine._recursive_retain_kv_cache = bool(enabled)
 
     def release_model_weights(self):
+        if getattr(self.inference_engine, '_recursive_kv_cache_initialized', False):
+            self.inference_engine.free_cache_engine()
+            self.inference_engine._recursive_kv_cache_initialized = False
+        self.inference_engine._recursive_retain_kv_cache = False
         if self.weights_resident:
             self.inference_engine.offload_model_weights()
             if self.retain_model_weights:
@@ -93,6 +102,8 @@ class FSDPVLLMShardingManager(BaseShardingManager):
                     policy_version=self.cached_policy_version,
                     generation_calls=self.cache_phase_calls, weight_sync_calls=1,
                     sync_wall_seconds=self.cache_phase_sync_wall_seconds,
+                    kv_init_calls=getattr(self.inference_engine, '_recursive_kv_init_calls', 0),
+                    kv_init_wall_seconds=getattr(self.inference_engine, '_recursive_kv_init_wall_seconds', 0.),
                     released_before_hf_or_policy_change=True)),flush=True)
         self.weights_resident = False
         self.cached_policy_version = None

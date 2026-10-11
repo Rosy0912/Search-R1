@@ -26,6 +26,7 @@ When working with Megatron:
 """
 from typing import List
 from contextlib import contextmanager
+import time
 from omegaconf import DictConfig
 import torch
 import torch.distributed
@@ -124,9 +125,14 @@ class vLLMRollout(BaseRollout):
             max_tokens=config.response_length,
         )
 
+        action_stop = self.config.get('tree_action_tag_stop', False)
         # we may detokenize the result all together later
         if vllm_version in ('0.4.2', '0.5.4', '0.6.3'):
             kwargs['detokenize'] = False
+
+        if action_stop:
+            assert self.config.get('tree_raw_emission', False), 'Action tag stop requires native emission capture'
+            kwargs.update(stop=['</search>', '</answer>'], include_stop_str_in_output=True, detokenize=True)
 
         # supporting adding any sampling params from the config file
         for k in config.keys():
@@ -157,8 +163,15 @@ class vLLMRollout(BaseRollout):
     @torch.no_grad()
     def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto:
         # rebuild vllm cache engine
-        if self.config.free_cache_engine:
+        retain_kv = bool(getattr(self.inference_engine, '_recursive_retain_kv_cache', False))
+        if self.config.free_cache_engine and not (retain_kv and
+                getattr(self.inference_engine, '_recursive_kv_cache_initialized', False)):
+            kv_started = time.perf_counter()
             self.inference_engine.init_cache_engine()
+            if retain_kv:
+                self.inference_engine._recursive_kv_cache_initialized = True
+                self.inference_engine._recursive_kv_init_calls += 1
+                self.inference_engine._recursive_kv_init_wall_seconds += time.perf_counter() - kv_started
 
         idx = prompts.batch['input_ids']  # (bs, prompt_length)
         # left-padded attention_mask
@@ -271,7 +284,7 @@ class vLLMRollout(BaseRollout):
             metadata['__sampling_distribution'] = sampling_distribution
 
         # free vllm cache engine
-        if self.config.free_cache_engine:
+        if self.config.free_cache_engine and not retain_kv:
             self.inference_engine.free_cache_engine()
 
         return DataProto(batch=batch, non_tensor_batch=non_tensors, meta_info=metadata)

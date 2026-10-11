@@ -105,9 +105,11 @@ def _emission(action, context, expected_provenance):
     validate_distribution({key: settings[key] for key in PLAIN_DISTRIBUTION})
     require(settings['min_tokens'] == 0 and settings['max_tokens'] == 500 and
             type(settings['min_tokens']) is int and type(settings['max_tokens']) is int and
-            settings['ignore_eos'] is False and settings['stop'] in (None, []) and
+            settings['ignore_eos'] is False and ((settings['stop'] in (None, []) and
+            settings['include_stop_str_in_output'] is False) or
+            (settings['stop']==['</search>','</answer>'] and settings['include_stop_str_in_output'] is True)) and
             settings['stop_token_ids'] in (None, []) and
-            settings['include_stop_str_in_output'] is False and settings['logprobs'] == 1 and
+            settings['logprobs'] == 1 and
             type(settings['logprobs']) is int and
             settings['prompt_logprobs'] is None and settings['seed'] is None,
             'Unsupported stop/length/logprob/seed settings')

@@ -121,6 +121,8 @@ class SearchRollout:
                                   (self.config.force_final_answer and not state.final_used))
 
     def advance(self, states, meta):
+        before_cost=self.cost.copy()
+        successful=False
         started=None
         if self.token_preservation is not None:
             import time
@@ -131,8 +133,12 @@ class SearchRollout:
             if self.token_preservation is not None:
                 from .tree_raw_tokens import tokenizer_validation_scope
                 with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
-                    return self._advance(states,meta)
-            return self._advance(states, meta)
+                    result=self._advance(states,meta)
+                    successful=True
+                    return result
+            result=self._advance(states, meta)
+            successful=True
+            return result
         except Exception as exc:
             if self.token_preservation is not None and os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
                 from .training_state import atomic_save
@@ -145,6 +151,15 @@ class SearchRollout:
                     rejected_advance_cpu_seconds=time.process_time()-started[1]),
                     os.path.join(directory,uuid.uuid4().hex+'.json'),json_format=True)
             raise
+        finally:
+            if started is not None and self.record_details:
+                print('TREE_ACTION_TIMING='+json.dumps(dict(outer=self.rollout_outer,
+                    successful=successful,active_requests=len(states),
+                    wall_seconds=time.perf_counter()-started[0],
+                    driver_cpu_seconds=time.process_time()-started[1],
+                    cost_delta={key:self.cost[key]-value for key,value in before_cost.items()
+                        if isinstance(value,(int,float)) and isinstance(self.cost.get(key),(int,float))}),
+                    allow_nan=False),flush=True)
 
     def _advance(self, states, meta):
         from verl import DataProto
@@ -571,45 +586,74 @@ class SearchRollout:
             planner=Planner(record(root,nodes,reward=score),self.rng,emit,
                             target=tree.leaves,budget=tree.continuation_budget_per_question)
             holder['planner']=planner;planners.append(planner)
+        # One outstanding branch per question, but no whole-trajectory wave barrier.
+        # Request creation and completion processing remain in stable question order.
+        # Interleaving the shared RNG differs from the old wave executor; uniform
+        # parent/position choices are unchanged, not a bitwise replay guarantee.
+        jobs = [None] * len(planners)
         while True:
-            requests=[]
-            for planner in planners:
-                request=planner.next_request()
-                if request is not None:requests.append((planner,request))
-            if not requests:break
-            children=[]
-            for planner,(parent,index,attempt) in requests:
-                snapshot=parent.snapshots[index];child=snapshot.branch()
-                if state_signature(snapshot)!=state_signature(child):
-                    raise ValueError('Branch changed executor state or inherited probabilities')
-                children.append(child)
-            started=time.time()
             try:
-                suffixes=self.complete(children,meta)
-                rewards=self.reward_callback(children)
+                for question, planner in enumerate(planners):
+                    if jobs[question] is not None:
+                        continue
+                    request = planner.next_request()
+                    if request is None:
+                        continue
+                    parent, index, attempt = request
+                    snapshot = parent.snapshots[index]
+                    child = snapshot.branch()
+                    if state_signature(snapshot) != state_signature(child):
+                        raise ValueError('Branch changed executor state or inherited probabilities')
+                    jobs[question] = dict(parent=parent, index=index, attempt=attempt,
+                        snapshot=snapshot, child=child, suffix=[], started=time.time())
+                active = [(question, job) for question, job in enumerate(jobs) if job is not None]
+                if not active:
+                    break
+                advancing = [(question, job) for question, job in active if self.pending(job['child'])]
+                for _, job in advancing:
+                    job['suffix'].append(copy.deepcopy(job['child']))
+                if advancing:
+                    self.advance([job['child'] for _, job in advancing], meta)
+                completed = [(question, job) for question, job in active if not self.pending(job['child'])]
+                if not completed:
+                    continue
+                rewards = self.reward_callback([job['child'] for _, job in completed])
+                if len(rewards) != len(completed):
+                    raise ValueError('Misaligned completed branch rewards')
+                for (question, job), reward in zip(completed, rewards):
+                    parent, index, snapshot = job['parent'], job['index'], job['snapshot']
+                    child, suffix = job['child'], job['suffix']
+                    n = len(snapshot.response)
+                    if (child.response[:n] != snapshot.response or
+                        child.model_mask[:n] != snapshot.model_mask or
+                        fingerprint(child.raw_ledger[:index]) != fingerprint(snapshot.raw_ledger)):
+                        raise ValueError('Continuation changed inherited prefix')
+                    result = record(child, parent.snapshots[:index] + suffix, parent, reward)
+                    result.cost = dict(new_generated_tokens=sum(
+                        x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
+                        retrieval_calls=int(child.valid_searches - snapshot.valid_searches),
+                        model_calls=len(suffix), branch_wall_seconds=time.time() - job['started'],
+                        full_training_model_tokens=sum(child.model_mask),
+                        execution_schedule='cross_question_action_pipeline_v1')
+                    trajectory_path = directory / str(child.source) / (child.trajectory + '.json')
+                    if self.record_details:
+                        with trajectory_path.open('x') as f:
+                            json.dump(dict(state=dataclasses.asdict(child), cost=result.cost), f, allow_nan=False)
+                            f.flush(); os.fsync(f.fileno())
+                    planners[question].accept_result(result)
+                    self.cost['trajectories'] += 1
+                    jobs[question] = None
             except Exception as exc:
-                for planner,_ in requests:planner.accept_result(error=exc)
+                for planner in planners:
+                    if planner.pending is not None:
+                        planner.accept_result(error=exc)
                 for planner in planners:
                     if planner.reason is None:
-                        planner.reason='batch_execution_aborted'
+                        planner.reason = 'batch_execution_aborted'
                         planner.end_search(planner.reason)
                     planner.finish()
-                # Full search/pool terminal evidence precedes refusing this training outer.
+                # Refuse the whole outer: no partial completed pool is trained.
                 raise
-            for (planner,(parent,index,attempt)),child,suffix,reward in zip(requests,children,suffixes,rewards):
-                snapshot=parent.snapshots[index];n=len(snapshot.response)
-                if (child.response[:n]!=snapshot.response or child.model_mask[:n]!=snapshot.model_mask or
-                    fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
-                    raise ValueError('Continuation changed inherited prefix')
-                result=record(child,parent.snapshots[:index]+suffix,parent,reward)
-                result.cost=dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
-                    retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
-                    batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
-                trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
-                if self.record_details:
-                    with trajectory_path.open('x') as f:
-                        json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
-                planner.accept_result(result)
         selected=[]
         self.recursive_summaries=[]
         for planner in planners:
