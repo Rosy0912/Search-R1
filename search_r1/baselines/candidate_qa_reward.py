@@ -1,10 +1,10 @@
 """Opt-in recursive candidate QA reward without assembling policy tensors.
 
 Final training compose/probability validation remains unchanged. Candidate
-semantics are rebuilt with the existing original-token/ByteLevel contract.
+semantics consume action-time validated canonical IDs; final compose retains
+the complete original-token/ByteLevel proof reconstruction.
 """
-from .tree_raw_tokens import (_trajectory_values, tokenizer_validation_scope,
-                              require, tokenizer_identity)
+from .tree_raw_tokens import require, tokenizer_identity
 
 
 def _decoded_model_spans(tokens, marks, tokenizer):
@@ -15,6 +15,22 @@ def _decoded_model_spans(tokens, marks, tokenizer):
             spans.append(tokenizer.decode(tokens[start:index]));start=None
     if start is not None:spans.append(tokenizer.decode(tokens[start:]))
     return spans
+
+
+def _candidate_model_spans(state, cap, tokenizer):
+    """Reward projection only; action emission and final compose own proof checks."""
+    tokens=[];marks=[]
+    for ledger in state.raw_ledger:
+        action=ledger['action']['canonical_semantic_token_ids']
+        observation=ledger['observation_token_ids']
+        require(type(action) is list and type(observation) is list and
+                all(type(token) is int and token>=0 for token in action+observation),
+                'Candidate canonical/observation token IDs are malformed')
+        tokens.extend(action);tokens.extend(observation)
+        marks.extend([1]*len(action));marks.extend([0]*len(observation))
+    require(len(state.response)<=cap and len(tokens)<=cap,
+            'Candidate policy/semantic response exceeds frozen cap')
+    return _decoded_model_spans(tokens,marks,tokenizer)
 
 
 def candidate_qa_rewards(engine, qa_batch, states, reward_fn):
@@ -29,24 +45,21 @@ def candidate_qa_rewards(engine, qa_batch, states, reward_fn):
             'Light candidate scoring requires strict binary QA and raw-token preservation')
     require(engine.config.max_prompt_length==4096,
             'Light candidate scoring requires the frozen semantic response cap')
-    contexts={};scores=[]
-    with tokenizer_validation_scope(engine.tokenizer,engine.tokenizer_identity):
-        for state in states:
-            source=state.source
-            require(type(source) is int and 0<=source<len(qa_batch),
-                    'Candidate source is outside the original question batch')
-            source_name=qa_batch.non_tensor_batch['data_source'][source]
-            score_fn=_select_rm_score_fn(source_name)
-            require(score_fn is qa_em.compute_score_generated_em,
-                    'Light candidate scoring cannot substitute a different reward function')
-            value=_trajectory_values(state,engine.config.max_prompt_length,contexts)
-            spans=_decoded_model_spans(value['semantic_response_token_ids'],
-                                      value['semantic_model_mask'],engine.tokenizer)
-            # RewardManager leaves an empty-response row at exactly zero.
-            score=(score_fn(model_spans=spans,
-                 ground_truth=qa_batch.non_tensor_batch['reward_model'][source]['ground_truth'],
-                 format_score=reward_fn.format_score) if len(state.response) else 0.)
-            require(type(score) in (int,float) and score in (0.,1.),
-                    'Candidate strict QA reward is not binary')
-            scores.append(float(score))
+    scores=[]
+    for state in states:
+        source=state.source
+        require(type(source) is int and 0<=source<len(qa_batch),
+                'Candidate source is outside the original question batch')
+        source_name=qa_batch.non_tensor_batch['data_source'][source]
+        score_fn=_select_rm_score_fn(source_name)
+        require(score_fn is qa_em.compute_score_generated_em,
+                'Light candidate scoring cannot substitute a different reward function')
+        spans=_candidate_model_spans(state,engine.config.max_prompt_length,engine.tokenizer)
+        # RewardManager leaves an empty-response row at exactly zero.
+        score=(score_fn(model_spans=spans,
+             ground_truth=qa_batch.non_tensor_batch['reward_model'][source]['ground_truth'],
+             format_score=reward_fn.format_score) if len(state.response) else 0.)
+        require(type(score) in (int,float) and score in (0.,1.),
+                'Candidate strict QA reward is not binary')
+        scores.append(float(score))
     return scores
