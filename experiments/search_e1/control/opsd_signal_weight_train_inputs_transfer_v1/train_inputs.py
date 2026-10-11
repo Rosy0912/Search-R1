@@ -28,6 +28,15 @@ def digest(path):
     return h.hexdigest()
 
 
+def within(path, root):
+    # HKUST4 system Python is 3.8; keep this stdlib-only helper compatible.
+    try:
+        Path(path).relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
 def safe(path):
     p = Path(path)
     require(p.is_absolute() and '..' not in p.parts and not any(c in str(p) for c in '\n\r\x00'), 'Absolute non-traversing path required')
@@ -135,7 +144,7 @@ def install(value, stage):
         p = safe(ref['path'])
         relative = str(p).lstrip('/')
         src, dst = stage / relative, T / relative
-        require(src.resolve().is_relative_to(stage) and dst.resolve().is_relative_to(target_root)
+        require(within(src.resolve(), stage) and within(dst.resolve(), target_root)
                 and dst.resolve() == dst, 'Stage/destination escapes or aliases root')
         verify_file(src, ref)
         if dst.exists() or dst.is_symlink():
@@ -167,10 +176,10 @@ def main():
     require(output.is_absolute() and not output.exists(), 'Fresh remote output required')
     require(os.getuid() == 1001 and os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'CPU owner required')
     if a.mode == 'inventory':
-        require(output.is_relative_to(S / 'analysis'), 'Source inventory stays in independent analysis directory')
+        require(within(output, S / 'analysis'), 'Source inventory stays in independent analysis directory')
         value = inventory()
     else:
-        require(output.is_relative_to(T), 'Target receipt stays remote')
+        require(within(output, T), 'Target receipt stays remote')
         require(digest(a.inventory) == a.inventory_sha256, 'Pinned inventory SHA differs')
         value = install(json.loads(Path(a.inventory).read_text()), a.stage)
     output.parent.mkdir(parents=True, exist_ok=True)
