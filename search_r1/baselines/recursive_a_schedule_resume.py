@@ -4,6 +4,7 @@ from pathlib import Path
 from .training_state import (atomic_save,cpu_copy,digest,driver_snapshot,prepare_cold_fsdp_layout,
  restore_driver,restore_worker,verified_state_file,worker_snapshot)
 PROTOCOL='recursive_a_sparse_schedule_continuation_v1'
+HANDOFF='search_only_and_no_repeated_candidate_proof_v1'
 
 def enabled(environ=None):
  e=os.environ if environ is None else environ
@@ -20,14 +21,21 @@ def binding(environ=None):
  require(b['protocol']==PROTOCOL and b['parent_completed_step'] in (4,5),'only pinned completed4/5 boundary')
  expected={4:('5045430e67860102c304ef8098e4862ddcdf6e3e','622e3c083cd8e2db5f6ef3ba126cd6d4f71babd85c97feb46f839a20fe593d03'),
            5:('43a209a5ba3f7f1211c18d03c9362d85b3f5cd1b','c5be8a8e679684fbb8bb5ca360d99188a1b88d5a7ab4eff0b08fa6f3bc029553')}
- require((b['parent_commit'],b['parent_config_sha256'])==expected[b['parent_completed_step']],'wrong parent chain')
+ if b.get('handoff_contract')==HANDOFF and b['parent_completed_step']==5:
+  require(b['parent_commit']=='d5542fe5fad12abd672926e67fbfd9df53bb7187' and
+   b['parent_config_sha256']=='c5be8a8e679684fbb8bb5ca360d99188a1b88d5a7ab4eff0b08fa6f3bc029553' and
+   b['parent_identity']['run_id']=='3bdfeb78c2a7480980f190a5c1c96bdf','wrong live5 optimization handoff')
+  require(type(b.get('parent_optimizer_calls')) is int and 80<=b['parent_optimizer_calls']<=100,'wrong observed5 Adam count')
+ else:
+  require((b['parent_commit'],b['parent_config_sha256'])==expected[b['parent_completed_step']],'wrong parent chain')
  require(socket.gethostname().split('.')[0]=='xielab1' and os.getuid()==1005,'wrong host/UID')
  return b
 
 def _bind():
  global PARENT_MANIFEST,PARENT_MANIFEST_SHA256,PARENT_OPTIMIZER_CALLS,PARENT_COMPLETED_STEP
  b=binding();PARENT_MANIFEST=Path(b['parent_manifest']);PARENT_MANIFEST_SHA256=b['parent_manifest_sha256']
- PARENT_COMPLETED_STEP=b['parent_completed_step'];PARENT_OPTIMIZER_CALLS=20*PARENT_COMPLETED_STEP
+ PARENT_COMPLETED_STEP=b['parent_completed_step'];PARENT_OPTIMIZER_CALLS=(b['parent_optimizer_calls']
+  if b.get('handoff_contract')==HANDOFF and PARENT_COMPLETED_STEP==5 else 20*PARENT_COMPLETED_STEP)
  return b
 
 def validate_entry(config=None,environ=None,initialized=False):
@@ -41,11 +49,19 @@ def validate_entry(config=None,environ=None,initialized=False):
   expected=json.loads(json.dumps(old))
   expected['trainer']['evaluation_steps']=[5,50,100,150,200]
   expected['trainer']['checkpoint_save_steps']=[5,50,100,150,200]
+  if b.get('handoff_contract')==HANDOFF:
+   expected['actor_rollout_ref']['rollout']['tree_action_tag_stop']=True
+   expected['actor_rollout_ref']['rollout']['tree_action_stop_mode']='search_only'
+   if b.get('eight_gpu_retrieval_gate'):
+    gate=Path(b['eight_gpu_retrieval_gate']);require(hashlib.sha256(gate.read_bytes()).hexdigest()==b['eight_gpu_retrieval_gate_sha256'],'eight GPU retrieval gate changed')
+    g=json.loads(gate.read_text());require(g.get('accepted') is True and g.get('scope')=='eight_gpu_full_scan_and_http_oracle_equality','eight GPU retrieval not admitted')
+    require(b['child_retrieval_url']=='http://10.120.17.101:18006/retrieve','wrong new retrieval endpoint')
+    expected['retriever']['url']=b['child_retrieval_url']
   if initialized:
    # Native _create_dataloader injects these scheduler counters before fit.
    expected['actor_rollout_ref']['actor']['optim']['total_training_steps']=200
    expected['critic']['optim']['total_training_steps']=201
-  require(new==expected,'change exceeds explicit schedule fields')
+  require(new==expected,'change exceeds explicit schedule/search-only performance fields')
  return True
 
 def parent_manifest():
@@ -140,7 +156,8 @@ def migrate_trainer(trainer):
  require(saved['completed_step']==PARENT_COMPLETED_STEP and saved['actual_outer_updates']==PARENT_COMPLETED_STEP and saved['next_step']==PARENT_COMPLETED_STEP+1
  and saved['sampler']['cursor']==512*PARENT_COMPLETED_STEP and saved['sampler']['epoch']==0,'driver counters/cursor')
  # Validate the old checkpoint with its exact old accounting schema first.
- trainer._guard_round_contract_active=False
+ trainer._guard_round_contract_active=(m['identity']['guard_continue_accounting'].get(
+  'round_progress_contract')=='consumed_sampling_rounds_separate_adam_v1')
  restore_driver(trainer,saved,m['identity'])
  require(digest(driver_snapshot(trainer,m['identity']))==r['logical_state_sha256'],'cold driver/RNG differs')
  from .tree_guard_continue import round_progress_enabled
