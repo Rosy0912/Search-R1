@@ -97,7 +97,8 @@ class SearchRollout:
                     'Frozen actual PAD/EOS identity changed')
             self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
-                         trajectories=0, padded_rows=0, context_mismatches=0)
+                         trajectories=0, padded_rows=0, context_mismatches=0,
+                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.)
         if token_preservation is not None:
             self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
                 raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
@@ -165,7 +166,10 @@ class SearchRollout:
             self.cost['prefill_tokens'] += extra * len(states[0].rolling)
             tensors = {k: torch.cat((v, v[:1].repeat(extra, 1)), 0) for k, v in batch.batch.items()}
             batch = DataProto.from_dict(tensors, meta_info=meta.copy())
+        generation_rpc_started = time.perf_counter()
         output = self.manager.actor_rollout_wg.generate_sequences(batch)
+        self.cost['generation_rpc_calls'] += 1
+        self.cost['generation_rpc_wall_seconds'] += time.perf_counter() - generation_rpc_started
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
