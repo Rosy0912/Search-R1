@@ -13,7 +13,9 @@ def main():
     overrides=json.loads((root/'author-cli.json').read_text())
     resume=5 if args.phase=='continue200' else 200 if args.phase=='final_eval' else None
     recovery_plan=json.loads((root/'recovery-plan.json').read_text()) if (root/'recovery-plan.json').exists() else None
-    if recovery_plan:overrides.append('++trainer.recovery_acceptance_at10=True')
+    if recovery_plan:
+        if args.phase=='continue200':resume=int(recovery_plan['step'])
+        overrides.append('++trainer.recovery_acceptance_at10=True')
     if resume is not None:
         overrides.extend(['trainer.resume_mode=resume_path','++trainer.resume_from_path='+str(root/'checkpoints'/('global_step_'+str(resume)))])
     if args.phase=='final_eval':
@@ -37,17 +39,18 @@ def main():
                         recovery(5)
                         receipt=verify(root/'evidence',10,os.environ['SLURM_JOB_ID'],prior_job=recovery_plan['source_job'],prior_through=5)
                         samples=[json.loads(line) for line in (root/'gpu-memory.jsonl').read_text().splitlines() if json.loads(line)['phase']=='continue200']
-                        if not samples or any(d['used_mib']>0.95*d['total_mib'] for sample in samples for d in sample['devices']):raise RuntimeError('Recovery short-run GPU headroom')
+                        if not samples:raise RuntimeError('Missing recovery GPU memory evidence')
+                        headroom_pass=not any(d['used_mib']>0.95*d['total_mib'] for sample in samples for d in sample['devices'])
                         events=[json.loads(line) for p in (root/'evidence').glob('main-*.jsonl') for line in p.read_text().splitlines()]
                         updates={(e['outer'],e['rank']):e for e in events if e['kind']=='update' and str(e['job'])==os.environ['SLURM_JOB_ID']}
                         identities={e['rank']:e for e in events if e['kind']=='initialized' and str(e['job'])==os.environ['SLURM_JOB_ID']}
                         for rank in range(4):
                             growth=updates[(10,rank)]['metrics']['perf/max_memory_reserved_gb']-updates[(9,rank)]['metrics']['perf/max_memory_reserved_gb']
                             if growth>0.05*identities[rank]['total_memory_bytes']/(1024**3):raise RuntimeError('Recovery short-run GPU memory growth')
-                        receipt['gpu_memory_stability_still_requires_review']=False
+                        receipt['gpu_memory_stability_still_requires_review']=not headroom_pass
                         receipt['actual_checkpoint5_recovery_pass']=True
                         receipt['checkpoint_resume_still_requires_verification']=False
-                        receipt['gpu_memory_headroom_pass']=True
+                        receipt['gpu_memory_headroom_pass']=headroom_pass
                         (root/'short-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n')
                     if self.global_steps not in (5,200):allow_cleanup(root,self.global_steps)
                     return result

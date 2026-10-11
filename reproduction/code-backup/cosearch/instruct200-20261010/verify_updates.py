@@ -8,7 +8,7 @@ def finite(value):
     if isinstance(value,(float,int)):return math.isfinite(value)
     return value is None or isinstance(value,(str,bool))
 
-def verify(root,through,job,prior_job=None,prior_through=0,require_joint=True):
+def verify(root,through,job,prior_job=None,prior_through=0,require_joint=True,prior_history=None):
     root=Path(root);events=[]
     for path in root.glob('main-*.jsonl'):
         events.extend(json.loads(line) for line in path.read_text().splitlines() if line)
@@ -17,7 +17,7 @@ def verify(root,through,job,prior_job=None,prior_through=0,require_joint=True):
     if prior_job is not None:
         if str(prior_job)==str(job) or not 0<prior_through<through:
             raise RuntimeError('Invalid recovery provenance interval')
-        historical=verify(root,prior_through,prior_job,require_joint=False)
+        historical=verify(root,prior_through,prior_job,require_joint=False,**(prior_history or {}))
     elif prior_through:
         raise RuntimeError('Missing historical job identity')
     identities=[e for e in events if e['kind']=='initialized' and str(e['job'])==str(job)]
@@ -32,7 +32,8 @@ def verify(root,through,job,prior_job=None,prior_through=0,require_joint=True):
     updates=[e for e in events if e['kind']=='update' and str(e['job'])==str(job) and e['outer']<=through]
     if any(e['outer']<=prior_through for e in updates):raise RuntimeError('Recovery repeated completed iterations')
     if prior_job is not None:
-        updates += [e for e in events if e['kind']=='update' and str(e['job'])==str(prior_job) and e['outer']<=prior_through]
+        for segment in historical['provenance_intervals']:
+            updates += [e for e in events if e['kind']=='update' and str(e['job'])==segment['job'] and segment['start']<=e['outer']<=segment['end']]
     main=[e for e in updates if e['role']=='main']
     expected={(step,rank) for step in range(1,through+1) for rank in range(4)}
     actual=[(e['outer'],e['rank']) for e in main]
@@ -53,6 +54,7 @@ def verify(root,through,job,prior_job=None,prior_through=0,require_joint=True):
     result={'status':'ACTUAL_UPDATE_SHORT_RUN_PASS','through_outer':through,'job':str(job),'main_updates_per_rank':through*20,'joint_iterations':joint,'gpu_memory_stability_still_requires_review':True,'checkpoint_resume_still_requires_verification':True}
     if not require_joint:result['status']='ACTUAL_MAIN_UPDATES_VERIFIED_JOINT_ACCEPTANCE_PENDING'
     if prior_job is not None:result['recovered_from_job']=str(prior_job);result['recovered_through_outer']=prior_through
+    result['provenance_intervals']=(historical['provenance_intervals'] if prior_job is not None else [])+[{'job':str(job),'start':prior_through+1,'end':through}]
     return result
 if __name__=='__main__':
     import argparse

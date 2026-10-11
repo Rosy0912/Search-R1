@@ -109,15 +109,15 @@ def main():
         recovery_plan=json.loads((ROOT/'recovery-plan.json').read_text()) if (ROOT/'recovery-plan.json').exists() else None
         prior={}
         if recovery_plan:
-            if recovery_plan.get('step')!=5:raise RuntimeError('Only verified step5 repair continuation is supported')
-            saved_path=ROOT/'checkpoints/global_step_5/full-sha-receipt.json'
+            if recovery_plan.get('step') not in (5,10):raise RuntimeError('Unsupported verified recovery step')
+            saved_path=ROOT/'checkpoints'/('global_step_'+str(recovery_plan['step']))/'full-sha-receipt.json'
             if hashlib.sha256(saved_path.read_bytes()).hexdigest()!=recovery_plan['receipt_sha256']:raise RuntimeError('Recovery source receipt changed')
             saved=json.loads(saved_path.read_text())
             for item in saved['files']:
                 p=Path(item['path'])
                 if p.stat().st_size!=item['bytes'] or file_sha(p)!=item['sha256']:raise RuntimeError('Recovery source file differs')
-            verify_updates(ROOT/'evidence',5,recovery_plan['source_job'],require_joint=False)
-            prior={'prior_job':recovery_plan['source_job'],'prior_through':5}
+            verify_updates(ROOT/'evidence',recovery_plan['step'],recovery_plan['source_job'],require_joint=False,**recovery_plan.get('prior_history',{}))
+            prior={'prior_job':recovery_plan['source_job'],'prior_through':recovery_plan['step'],'prior_history':recovery_plan.get('prior_history',{})}
         else:
             short=launch([python,str(ROOT/'tools/launch_training.py'),'short5'],'short5.log',env);wait(short,'short5',service)
             update_receipt=verify_updates(ROOT/'evidence',5,env['SLURM_JOB_ID'])
@@ -137,7 +137,7 @@ def main():
             (ROOT/'short-acceptance.json').write_text(json.dumps(update_receipt,indent=2)+'\n')
             verify_checkpoint(ROOT,5);verify_evaluation(ROOT/'validation/5.jsonl',512,5)
         continuation=launch([python,str(ROOT/'tools/launch_training.py'),'continue200'],'continue200.log',env);wait(continuation,'continue200',service)
-        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'],**prior);recovery(5)
+        verify_updates(ROOT/'evidence',200,env['SLURM_JOB_ID'],**prior);recovery(recovery_plan['step'] if recovery_plan else 5)
         from archive_checkpoint import allow_cleanup
         allow_cleanup(ROOT,5)
         for step in ((5,10,50,100,150,200) if recovery_plan else (5,50,100,150,200)):
