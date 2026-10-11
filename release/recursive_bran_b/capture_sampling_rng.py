@@ -20,6 +20,8 @@ def capture(worker, step, output, capture_sha):
     assert worker.world_size == 4 and worker._is_actor
     assert worker.actor._fresh_total_committed_optimizer_calls == step * 20
     assert worker.actor_lr_scheduler.last_epoch == step
+    checkpoint = pathlib.Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/checkpoints/training_state') / ('global_step_%d' % step) / 'manifest.json'
+    assert not checkpoint.exists(), 'Capture must precede this checkpoint commit and next sampling'
     manager = worker.rollout_sharding_manager
     state = manager.gen_random_states
     assert state is not None and state.dtype == torch.uint8 and state.device.type == 'cpu'
@@ -57,10 +59,11 @@ def main():
     ray.init(address=a.ray_address,log_to_driver=False)
     expected={412273,412683,412684,412685}
     actors=[]
+    names = {x['name']:x['namespace'] for x in ray.util.list_named_actors(all_namespaces=True)}
     for record in ray._private.state.actors().values():
         if record.get('Pid') in expected and record.get('State')=='ALIVE':
-            assert record.get('Name') and record.get('ActorClassName')=='WorkerDict'
-            actors.append(ray.get_actor(record['Name'],namespace=record['RayNamespace']))
+            assert record.get('Name') and record.get('ActorClassName')=='create_colocated_worker_cls.<locals>.WorkerDict'
+            actors.append(ray.get_actor(record['Name'],namespace=names[record['Name']]))
     if len(actors)!=4:
         raise ValueError('Expected all four exact original owned actor PIDs')
     digest=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
