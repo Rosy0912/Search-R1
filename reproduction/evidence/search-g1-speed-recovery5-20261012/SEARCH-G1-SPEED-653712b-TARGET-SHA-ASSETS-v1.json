@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-11T17:30:35.134398+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"verified_files\\\": 822, \\\"full_file_sha256_match\\\": true, \\\"asset_binding\\\": {\\\"base\\\": \\\"/mnt/data/shaoshitong/search-g1-speed-resume5-653712b-20261012\\\", \\\"outputs_remote\\\": \\\"/mnt/data/shaoshitong/search-g1-speed-resume5-653712b-20261012/checkpoints\\\", \\\"links\\\": {\\\"env\\\": \\\"/dataset/shaoshitong/Search-G1-common8/env\\\", \\\"bootstrap-tools\\\": \\\"/dataset/shaoshitong/Search-G1-common8/bootstrap-tools\\\", \\\"bootstrap-assets\\\": \\\"/dataset/shaoshitong/Search-G1-common8/bootstrap-assets\\\", \\\"assets\\\": \\\"/dataset/shaoshitong/Search-G1-common8/assets\\\", \\\"retriever-gpu-lib\\\": \\\"/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib\\\"}, \\\"training_started\\\": false, \\\"created_unix\\\": 1791739834.986375}, \\\"ordinary_free_bytes\\\": 385456361472, \\\"physical_free_bytes\\\": 1153623003136}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-11T17:30:35.301901+00:00\"}\n",
+  "stderr": ""
+}
