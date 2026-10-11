@@ -1,7 +1,7 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "observed_epoch": 1791712438.739484,
-  "receipt": "OUTER71_STARTED-3360.json",
-  "evidence": "Dev70 complete512 and full70 timer; actual step71 started; native70 saved."
+  "observed_epoch": 1791713199.841636,
+  "receipt": "OUTER72_STARTED-3360.json",
+  "evidence": "Full71 timer/native save;568 direct ranks; next start observed=True"
 }
