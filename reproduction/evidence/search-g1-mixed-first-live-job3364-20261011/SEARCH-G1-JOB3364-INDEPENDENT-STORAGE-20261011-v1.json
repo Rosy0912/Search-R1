@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-11T07:17:53.970198+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-11T07:17:53.704579+00:00\\\", \\\"hostname\\\": \\\"h100-10\\\", \\\"ordinary_free_bytes\\\": 5501897752576, \\\"physical_free_bytes\\\": 6270064394240, \\\"destination_device\\\": 64768, \\\"source_base_exists\\\": true, \\\"destination_mount\\\": \\\"/dev/mapper/data-data ext4\\\", \\\"source_device\\\": 50, \\\"source_mount\\\": \\\"systemd-1           autofs\\\\n10.32.0.8:/mnt/data nfs4\\\", \\\"source_run\\\": {\\\"run_id\\\": \\\"15bb15365346401da1d919e9cde8f813\\\", \\\"source_commit\\\": \\\"2de313e3e455e005e0d7db83104942bad8bd977a\\\", \\\"checkpoint_dir\\\": \\\"/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/checkpoints/search-g1-common8\\\", \\\"profile\\\": \\\"common8\\\", \\\"mixed_first_selection\\\": true}}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-11T07:17:53.837323+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}
