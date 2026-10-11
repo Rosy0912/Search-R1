@@ -826,6 +826,30 @@
         "semantic_prefix_scan_wall_seconds": 22.525077424943447
       },
       "error": null
+    },
+    {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 36,
+      "candidate_outer": 36,
+      "start_epoch": 1791685784.3161585,
+      "end_epoch": 1791686046.5066833,
+      "wall_seconds": 262.1905249655247,
+      "costs": {
+        "generated_tokens": 436684,
+        "prefill_tokens": 2069358,
+        "retrieval_calls": 1532,
+        "trajectories": 2560,
+        "padded_rows": 31,
+        "context_mismatches": 0,
+        "raw_slots": 2068000,
+        "raw_emitted_tokens": 436684,
+        "raw_retained_tokens": 209137,
+        "raw_discarded_tail_tokens": 227547,
+        "raw_inherited_leaf_tokens": 77163,
+        "semantic_prefix_scan_cpu_seconds": 18.71000864098096,
+        "semantic_prefix_scan_wall_seconds": 18.632057797163725
+      },
+      "error": null
     }
   ],
   "rank_keys": [
@@ -870,5 +894,5 @@
     "zero_lr_optimizer_calls_are_real": true
   },
   "scope": "Completed rollout costs through attempt9; next10 in flight excluded",
-  "observed_epoch": 1791685991.0894973
+  "observed_epoch": 1791686433.3144817
 }
