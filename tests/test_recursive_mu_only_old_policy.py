@@ -6,6 +6,8 @@ import unittest
 from unittest.mock import patch
 
 import torch
+# Load the native transport before the legacy collector temporarily stubs verl.
+import search_r1.baselines.recursive_transport
 import test_tree_behavior_mu_actor_cpu as f
 import search_r1.baselines.tree_raw_tokens as raw
 from search_r1.baselines.policy_safety_runtime import PolicySafetyRuntime, PolicySafetyRefusal, validate_actor_probability_profile
