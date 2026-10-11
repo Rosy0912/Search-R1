@@ -1,9 +1,10 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "completed_outer": 24,
-  "current_outer": 25,
-  "first_epoch": 1791676997.7584043,
-  "second_epoch": 1791677153.8552248,
-  "source_commit": "8b6f99d1b3353145200eb3fa7c16a579a79a987c"
+  "first_observed_epoch": 1791678154.8732016,
+  "second_observed_epoch": 1791678213.8675363,
+  "completed_outer": 25,
+  "current_outer": 26,
+  "dev25_complete": true,
+  "same_live_instance": true
 }
