@@ -1,9 +1,9 @@
 {
   "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791728974.700195,
-  "second_observed_epoch": 1791729048.95321,
-  "first_complete_outer": 88,
-  "second_complete_outer": 89,
-  "evidence": "Outer89 updates finalized; full timer, rolling89 SAVED, actual90 started"
+  "first_observed_epoch": 1791729788.042043,
+  "second_observed_epoch": 1791729871.5182285,
+  "first_complete_outer": 89,
+  "second_complete_outer": 90,
+  "evidence": "90 credited8rank/720direct records,1800Adam/rank0skip;rolling90actualSAVED;dev90/fulltimernotpublished"
 }
