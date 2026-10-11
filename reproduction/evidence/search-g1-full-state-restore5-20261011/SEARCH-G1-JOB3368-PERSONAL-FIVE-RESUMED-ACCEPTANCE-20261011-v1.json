@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-11T16:28:56.140122+00:00",
+  "job_id": "3368",
+  "node": "h100-8",
+  "run_id": "15bb15365346401da1d919e9cde8f813",
+  "accepted_five": {
+    "accepted": true,
+    "run_id": "15bb15365346401da1d919e9cde8f813",
+    "source_completed_outer": 5,
+    "source_actual_optimizer_writes_per_rank": 100,
+    "first_resumed_outer": 6,
+    "last_resumed_outer": 10,
+    "next_outer": 11,
+    "total_budget": 200,
+    "checked_unix": 1791736073.6155806,
+    "full_receipt_sha256": "305940ed191a9967efffaa916a876daf8fb6bc187ae5d694dc17ef248e2ae6e9"
+  },
+  "personal_verified_complete_steps": [
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "actual_adam_per_rank": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "next_outer_started_console": true,
+  "raw_observer_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-JOB3368-ACTUAL-20261011T162844862841Z.json",
+  "raw_observer_sha256": "26e41f8ae475f37e3db916f9795c9dbc5b363d155120965696256fdc2ff22e24",
+  "whole_goal_complete": false,
+  "latest_complete_checkpoint_step": 5
+}
