@@ -4,6 +4,7 @@ Only new algorithms use this engine. The original GRPO/validation path is kept.
 All metadata is row-local, so DataProto permutations also permute provenance.
 """
 import time
+import json
 from dataclasses import dataclass, field
 import copy
 import hashlib
@@ -121,6 +122,20 @@ class SearchRollout:
         return not state.done and (state.turns < self.config.max_turns or
                                   (self.config.force_final_answer and not state.final_used))
 
+    def timed_rewards(self, states):
+        started=time.perf_counter()
+        try:
+            return self.reward_callback(states)
+        finally:
+            self.timing("reward_callback_complete", rows=len(states), wall_seconds=time.perf_counter()-started)
+
+    def timing(self, event, **fields):
+        # Compact always-on telemetry, separate from sparse full tree dumps.
+        payload = dict(event=event, unix_time=time.time(),
+            outer=getattr(self, 'rollout_outer', None),
+            run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'), **fields)
+        print('TREE_TIMING=' + json.dumps(payload, allow_nan=False), flush=True)
+
     def advance(self, states, meta):
         before_cost=self.cost.copy()
         successful=False
@@ -153,7 +168,7 @@ class SearchRollout:
                     os.path.join(directory,uuid.uuid4().hex+'.json'),json_format=True)
             raise
         finally:
-            if started is not None and self.record_details:
+            if started is not None:
                 print('TREE_ACTION_TIMING='+json.dumps(dict(outer=self.rollout_outer,
                     successful=successful,active_requests=len(states),
                     wall_seconds=time.perf_counter()-started[0],
@@ -187,6 +202,9 @@ class SearchRollout:
         output = self.manager.actor_rollout_wg.generate_sequences(batch)
         self.cost['generation_rpc_calls'] += 1
         self.cost['generation_rpc_wall_seconds'] += time.perf_counter() - generation_rpc_started
+        self.timing('generation_rpc_complete', shared_batch_wall_seconds=time.perf_counter()-generation_rpc_started,
+            active_requests=len(states), padded_requests=extra,
+            time_scope='shared_batch_not_individual_latency')
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
@@ -255,7 +273,15 @@ class SearchRollout:
                 observations, return_attention_mask=True)
         else:
             obs_tokens = self.manager._process_next_obs(observations)
+        interaction_wall=time.perf_counter()-interaction_started
         for i, s in enumerate(states):
+            self.timing('trajectory_action', trajectory_id=s.trajectory, source_index=s.source,
+                turn_before=s.turns, active_requests=len(states),
+                shared_interaction_wall_seconds=interaction_wall,
+                time_scope='shared_batch_not_individual_latency',
+                prefix_scan_wall_seconds=(prepared_actions[i][1]['prefix_scan_wall_seconds']
+                    if prepared_actions is not None else None),
+                retrieved=bool(searches[i]), terminal=bool(dones[i]))
             action = tokens[i][tokens[i] != pad].tolist() if prepared_actions is None else prepared_actions[i][0]
             obs = (obs_tokens[i][obs_attention[i].bool()].tolist() if prepared_actions is not None
                    else obs_tokens[i][obs_tokens[i] != pad].tolist())
@@ -302,6 +328,8 @@ class SearchRollout:
 
     def complete(self, states, meta):
         snapshots = [[] for _ in states]
+        started=time.perf_counter()
+        reported=set()
         while True:
             active_indices = [i for i, s in enumerate(states) if self.pending(s)]
             if not active_indices:
@@ -309,15 +337,27 @@ class SearchRollout:
             for i in active_indices:
                 snapshots[i].append(copy.deepcopy(states[i]))
             self.advance([states[i] for i in active_indices], meta)
+            for i in active_indices:
+                if not self.pending(states[i]) and i not in reported:
+                    reported.add(i)
+                    self.timing('trajectory_complete', trajectory_id=states[i].trajectory,
+                        source_index=states[i].source, kind='initial',
+                        wall_seconds=time.perf_counter()-started,
+                        time_scope='trajectory_elapsed_including_shared_batch_wait',
+                        model_calls=len(snapshots[i]), policy_tokens=sum(states[i].model_mask))
         self.cost['trajectories'] += len(states)
         return snapshots
 
     def compose(self, states):
-        if self.token_preservation is not None:
-            from .tree_raw_tokens import tokenizer_validation_scope
-            with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
-                return self._compose(states)
-        return self._compose(states)
+        started=time.perf_counter()
+        try:
+            if self.token_preservation is not None:
+                from .tree_raw_tokens import tokenizer_validation_scope
+                with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
+                    return self._compose(states)
+            return self._compose(states)
+        finally:
+            self.timing('compose_complete', rows=len(states), wall_seconds=time.perf_counter()-started)
 
     def _compose(self, states):
         from verl import DataProto
@@ -474,7 +514,7 @@ class SearchRollout:
             raise ValueError('Tail backoff requires the actual training reward callback')
         if any(not nodes for nodes in snapshots):
             raise ValueError('Tail branching requires at least one original model-action state')
-        base_rewards = self.reward_callback(roots)
+        base_rewards = self.timed_rewards(roots)
         if len(base_rewards) != len(roots) or not np.isfinite(base_rewards).all():
             raise ValueError('Nonfinite or misaligned original-root rewards')
         leaves = [[root] for root in roots]
@@ -523,7 +563,7 @@ class SearchRollout:
                 if key in before_cost:
                     name = 'branch_' + key
                     self.cost[name] = self.cost.get(name, 0) + self.cost[key]-before_cost[key]
-            scores = self.reward_callback(children)
+            scores = self.timed_rewards(children)
             if len(scores) != len(children) or not np.isfinite(scores).all():
                 raise ValueError('Nonfinite or misaligned branch rewards')
             previous = list(base_rewards)
@@ -552,7 +592,7 @@ class SearchRollout:
         directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
         if self.record_details:
             directory.mkdir(parents=True)
-        scores = self.reward_callback(roots)
+        scores = self.timed_rewards(roots)
         if len(scores)!=len(roots) or any(float(r) not in (0.,1.) for r in scores):
             raise ValueError('Recursive search requires actual binary strict EM')
         def steps(state):
@@ -612,7 +652,7 @@ class SearchRollout:
                     if state_signature(snapshot) != state_signature(child):
                         raise ValueError('Branch changed executor state or inherited probabilities')
                     jobs[question] = dict(parent=parent, index=index, attempt=attempt,
-                        snapshot=snapshot, child=child, suffix=[], started=time.time())
+                        snapshot=snapshot, child=child, suffix=[], started=time.perf_counter())
                 active = [(question, job) for question, job in enumerate(jobs) if job is not None]
                 if not active:
                     break
@@ -624,7 +664,7 @@ class SearchRollout:
                 completed = [(question, job) for question, job in active if not self.pending(job['child'])]
                 if not completed:
                     continue
-                rewards = self.reward_callback([job['child'] for _, job in completed])
+                rewards = self.timed_rewards([job['child'] for _, job in completed])
                 if len(rewards) != len(completed):
                     raise ValueError('Misaligned completed branch rewards')
                 for (question, job), reward in zip(completed, rewards):
@@ -639,9 +679,14 @@ class SearchRollout:
                     result.cost = dict(new_generated_tokens=sum(
                         x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
                         retrieval_calls=int(child.valid_searches - snapshot.valid_searches),
-                        model_calls=len(suffix), branch_wall_seconds=time.time() - job['started'],
+                        model_calls=len(suffix), branch_wall_seconds=time.perf_counter() - job['started'],
                         full_training_model_tokens=sum(child.model_mask),
                         execution_schedule='cross_question_action_pipeline_v1')
+                    self.timing('trajectory_complete', trajectory_id=child.trajectory,
+                        source_index=child.source, kind='recursive_branch', attempt=job['attempt'],
+                        wall_seconds=result.cost['branch_wall_seconds'],
+                        time_scope='trajectory_elapsed_including_shared_batch_wait',
+                        model_calls=len(suffix), new_generated_tokens=result.cost['new_generated_tokens'])
                     trajectory_path = directory / str(child.source) / (child.trajectory + '.json')
                     if self.record_details:
                         with trajectory_path.open('x') as f:
