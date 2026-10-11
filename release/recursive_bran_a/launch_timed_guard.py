@@ -1,12 +1,12 @@
 """Publish a new immutable resume launch on HKUST1; no process signals or hot edits."""
 import argparse, hashlib, json, os, socket, subprocess, time, uuid
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--source',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--source',required=True);p.add_argument('--previous-owner',type=int,required=True);p.add_argument('--previous-session',required=True);a=p.parse_args()
 b=Path(a.base).resolve();source=Path(a.source).resolve()
 assert socket.gethostname().split('.')[0]=='xielab1' and os.getuid()==1005
 assert source.parent==b and source.name.startswith('source-timed-guard-')
-assert not Path('/proc/3620055').exists(),'Previous failed driver remains present'
-old=subprocess.check_output(['tmux','display-message','-pt','recursive-bran-a-mu-meta-20261012','#{pane_dead}:#{pane_dead_status}'],text=True).strip()
+assert not Path('/proc/'+str(a.previous_owner)).exists(),'Previous failed driver remains present'
+old=subprocess.check_output(['tmux','display-message','-pt',a.previous_session,'#{pane_dead}:#{pane_dead_status}'],text=True).strip()
 assert old=='1:1',old
 apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True)
 assert set(apps.split())<={'2239529'},apps
@@ -41,5 +41,6 @@ pane=subprocess.check_output(['tmux','display-message','-pt',session,'#{session_
 proof=dict(time=time.time(),run_id=run,source_commit=commit,source=str(source),config=str(receipt),
  config_sha256=hashlib.sha256(receipt.read_bytes()).hexdigest(),launch=str(launch),
  launch_sha256=hashlib.sha256(launch.read_bytes()).hexdigest(),log=str(log),session=session,pane=pane,
- status='LAUNCHED_NOT_ACCEPTED',parent_completed_step=4,parent_actual_adam=80)
+ status='LAUNCHED_NOT_ACCEPTED',parent_completed_step=4,parent_actual_adam=80,
+ previous_failed_owner=a.previous_owner,previous_failed_session=a.previous_session)
 (b/'receipts'/('timed-guard-launch-'+run+'.json')).write_text(json.dumps(proof,indent=2));print(json.dumps(proof),flush=True)
