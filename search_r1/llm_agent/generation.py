@@ -468,7 +468,14 @@ If I want to give the final answer, I should put the answer between <answer> and
             "return_scores": True
         }
         
-        return requests.post(self.config.search_url, json=payload).json()
+        import time
+        started=time.perf_counter()
+        try:
+            return requests.post(self.config.search_url, json=payload).json()
+        finally:
+            self.retrieval_http_json_wall_seconds=getattr(self,'retrieval_http_json_wall_seconds',0.)+time.perf_counter()-started
+            self.retrieval_http_calls=getattr(self,'retrieval_http_calls',0)+1
+
 
     def _passages2string(self, retrieval_result):
         format_reference = ''

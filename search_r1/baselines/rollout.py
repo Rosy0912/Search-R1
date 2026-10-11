@@ -99,7 +99,8 @@ class SearchRollout:
             self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
                          trajectories=0, padded_rows=0, context_mismatches=0,
-                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.)
+                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.,retrieval_http_calls=0,
+                         retrieval_http_json_wall_seconds=0.,interaction_wall_seconds=0.)
         if token_preservation is not None:
             self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
                 raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
@@ -229,6 +230,9 @@ class SearchRollout:
                 self.cost['semantic_prefix_scan_wall_seconds'] += ledger['prefix_scan_wall_seconds']
             self.cost['raw_discarded_tail_tokens'] += sum(record['true_emitted_length'] for record in emissions[len(states):])
         # A batch can contain normal and final-only steps. Never search for the latter.
+        interaction_started=time.perf_counter()
+        http_before=getattr(self.manager,'retrieval_http_json_wall_seconds',0.)
+        http_calls_before=getattr(self.manager,'retrieval_http_calls',0)
         normal = [s.turns < self.config.max_turns for s in states]
         observations, dones, valid, searches = [''] * len(states), [0] * len(states), [0] * len(states), [0] * len(states)
         for do_search in (True, False):
@@ -243,6 +247,9 @@ class SearchRollout:
                 result = self.ranker.execute(self.manager, predictions, [states[i] for i in indices], do_search)
             for j, i in enumerate(indices):
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
+        self.cost['interaction_wall_seconds']+=time.perf_counter()-interaction_started
+        self.cost['retrieval_http_json_wall_seconds']+=getattr(self.manager,'retrieval_http_json_wall_seconds',0.)-http_before
+        self.cost['retrieval_http_calls']+=getattr(self.manager,'retrieval_http_calls',0)-http_calls_before
         if self.token_preservation is not None:
             obs_tokens, obs_attention = self.manager._process_next_obs(
                 observations, return_attention_mask=True)
