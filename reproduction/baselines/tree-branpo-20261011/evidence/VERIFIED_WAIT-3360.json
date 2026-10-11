@@ -1,16 +1,16 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791701597.3018327,
-  "second_observed_epoch": 1791701658.1517518,
-  "completed_outer": 57,
-  "stage": "full outer57 and outer58 running",
+  "first_observed_epoch": 1791702174.5811305,
+  "second_observed_epoch": 1791702233.9025602,
+  "first_completed_outer": 57,
+  "second_completed_outer": 58,
   "queue": {
     "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|12:21:44|h100-10\n",
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|12:31:19|h100-10\n",
     "stderr": ""
   },
-  "direct_rank_records": 456,
-  "full_step57_seconds": 654.6240157783031,
-  "scope": "Complete logger57/rolling57 and live continuation; no restart/source change."
+  "direct_rank_records": 464,
+  "full_step58_seconds": 668.1376893520355,
+  "scope": "Actual complete outer58/logger58/rolling58 and step59 started; no restart/source change."
 }
