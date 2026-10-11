@@ -99,7 +99,7 @@ def verify_validation(step,folder,expected_rows):
     receipt=summarize(rows);receipt.update(step=step,job=os.environ['SLURM_JOB_ID'],status='ONLINE_COMMON_SCORER_FULL_IDENTITIES_PASS',path=str(root()/folder/(str(step)+'.jsonl')),per_question_sha256=hashlib.sha256((root()/folder/(str(step)+'.jsonl')).read_bytes()).hexdigest(),question_answer_manifest_sha256=hashlib.sha256(json.dumps(sorted(expected)).encode()).hexdigest())
     if expected_rows==512:
         counts=sorted(x['questions'] for x in receipt['datasets'].values())
-        if counts!=[256,256]:raise RuntimeError('Validation must be NQ256 plus Hotpot256')
+        if counts!=[256,256] or set(receipt['datasets'])!={'nq','hotpotqa'}:raise RuntimeError('Validation must be NQ256 plus Hotpot256')
     elif len(receipt['datasets'])!=7:raise RuntimeError('Final evaluation must cover seven datasets')
     (root()/folder/(str(step)+'.receipt.json')).write_text(json.dumps(receipt,indent=2)+'\n')
     return receipt

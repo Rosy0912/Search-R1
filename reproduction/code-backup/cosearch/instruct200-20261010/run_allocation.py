@@ -114,6 +114,13 @@ def main():
                 if p.stat().st_size!=item['bytes'] or file_sha(p)!=item['sha256']:raise RuntimeError('Historical checkpoint5 differs from verified archive')
             histenv=dict(env,COSEARCH_AUDIT_ROOT=str(ROOT/'historical-evidence'))
             revalidation=launch([python,str(ROOT/'tools/launch_training.py'),'validation5'],'validation5-common.log',histenv);wait(revalidation,'historical5_revalidation',service)
+            records=[json.loads(line) for p in (ROOT/'historical-evidence').glob('*.jsonl') for line in p.read_text().splitlines()]
+            loaded=[e for e in records if e.get('kind')=='recovery_state_equal' and str(e.get('job'))==env['SLURM_JOB_ID'] and '/global_step_5/' in e.get('path','')]
+            if len(loaded)!=8 or {(e['role'],e['rank']) for e in loaded}!={(role,rank) for role in ('main','reranker') for rank in range(4)}:raise RuntimeError('Historical5 lacks all8 actual equal recovery records')
+            if any(e.get('kind')=='update' for e in records):raise RuntimeError('Historical evaluation must have zero PPO')
+            data=json.loads((ROOT/'data-recovery-5.json').read_text())
+            if not data['equal']:raise RuntimeError('Historical5 data state mismatch')
+            (ROOT/'common-historical-validation/5.recovery.json').write_text(json.dumps({'source_step':5,'actual_equal_role_rank_count':len(loaded),'zero_ppo':True,'data_state':data},indent=2)+'\n')
             import shutil
             old=ROOT/'historical-checkpoints';old.mkdir(exist_ok=True)
             shutil.move(str(historical),str(old/'global_step_5'))
