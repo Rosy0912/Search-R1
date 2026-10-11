@@ -57,6 +57,8 @@ def validate_entry(config=None,environ=None,initialized=False):
     g=json.loads(gate.read_text());require(g.get('accepted') is True and g.get('scope')=='eight_gpu_full_scan_and_http_oracle_equality','eight GPU retrieval not admitted')
     require(b['child_retrieval_url']=='http://10.120.17.101:18006/retrieve','wrong new retrieval endpoint')
     expected['retriever']['url']=b['child_retrieval_url']
+    expected['retriever']['gpu_release_url']='http://10.120.17.101:18006/release-gpu'
+    expected['retriever']['control_token_file']=g['control_token_file']
   if initialized:
    # Native _create_dataloader injects these scheduler counters before fit.
    expected['actor_rollout_ref']['actor']['optim']['total_training_steps']=200

@@ -10,7 +10,7 @@ token=(b/'receipts/private-probe-token').read_text().strip()
 old=Path('/proc/2239529');assert old.stat().st_uid==1005 and int((old/'stat').read_text().rsplit(') ',1)[1].split()[19])==914664099
 health=requests.get(a.candidate+'/health',timeout=5).json();assert health['gpu_ready'] and health['gpu_shards']==8 and health['pid']==pid and health['source_identity_sha256']==identity['source_identity_sha256']
 proof=dict(scope='eight_gpu_full_scan_and_http_oracle_equality',candidate_pid=pid,candidate_starttick=starttick,
- source_identity_sha256=identity['source_identity_sha256'],started_at=time.time(),accepted=False,
+ source_identity_sha256=identity['source_identity_sha256'],started_at=time.time(),accepted=False,control_token_file=str(b/'receipts/private-probe-token'),
  ntotal=health['ntotal'],d=health['d'],tf32=health['tf32'],tests=[])
 assert (proof['ntotal'],proof['d'],proof['tf32'])==(21015324,768,False)
 queries=['What is the capital of France?']+['History of '+x for x in ('London','Paris','Tokyo','Beijing','Rome','Athens','Berlin','Cairo')]*8
@@ -23,7 +23,12 @@ for selected in (queries[:1],queries):
  proof['tests'].append(dict(queries=len(selected),topk=3,full_scan=True,complete_json_equal=True,
   oracle_seconds=ot,candidate_seconds=ct,json_sha256=hashlib.sha256(json.dumps(cj,sort_keys=True).encode()).hexdigest()))
  print(json.dumps(proof['tests'][-1]),flush=True)
+worker=requests.get(a.candidate+'/health',timeout=5).json()['gpu_worker_pid'];assert worker is not None
+wp=Path('/proc',str(worker));assert wp.stat().st_uid==1005
+proof['gpu_worker_pid']=worker;proof['gpu_worker_starttick']=int((wp/'stat').read_text().rsplit(') ',1)[1].split()[19])
 proof.update(accepted=True,finished_at=time.time(),limitations='66 queries across two requests; not exhaustive queries or training effect proof')
 gate=b/'receipts/full-scan-http-gate.json';assert not gate.exists();gate.write_text(json.dumps(proof,indent=2))
 admission=dict(pid=pid,source_identity_sha256=identity['source_identity_sha256'],accepted=True,gate_path=str(gate),gate_sha256=hashlib.sha256(gate.read_bytes()).hexdigest())
-(b/'receipts/admit-requests.json').write_text(json.dumps(admission,indent=2));print(json.dumps(dict(accepted=True,gate=str(gate))))
+(b/'receipts/admit-requests.json').write_text(json.dumps(admission,indent=2));response=requests.post(a.candidate+'/release-gpu',headers={'x-e1-probe-token':token},timeout=60);response.raise_for_status();released=response.json();assert released['released'] and released['gpu_worker_pid'] is None and not Path('/proc',str(worker)).exists()
+(b/'receipts/post-gate-gpu-release.json').write_text(json.dumps(released,indent=2))
+print(json.dumps(dict(accepted=True,gate=str(gate),gpu_released=True)))

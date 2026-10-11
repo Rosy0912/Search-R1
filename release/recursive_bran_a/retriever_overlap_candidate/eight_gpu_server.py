@@ -12,11 +12,13 @@ def main():
  a=p.parse_args();sys.path.insert(0,a.oracle_source)
  spec=importlib.util.spec_from_file_location('frozen_oracle_server',Path(a.oracle_source)/'server.py')
  old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
- from eight_gpu_streaming import EightGpuStreamingFlatIP
+ from gpu_phase_proxy import PhaseGpuScanner
  class EightCandidate(old.Candidate):
   def health(self):
    result=super().health();result.update(index='full FP32 eight-GPU tiled FlatIP',gpu_shards=8,
     partition='round-robin whole original 32768-row tiles',resident_index=False)
+   result.update(gpu_worker_pid=self.scan.worker_pid if self.scan is not None else None,
+    gpu_worker_active=self.scan.worker_pid is not None if self.scan is not None else False)
    return result
   def admitted(self):
    c=self.read_bound_control(self.admission)
@@ -32,7 +34,7 @@ def main():
     while self.read_bound_control(self.activation) is None:time.sleep(.5)
     if old.torch.cuda.device_count()!=8:raise RuntimeError('Expose exactly the eight authorized GPUs')
     original=old.SegmentedStreamingFlatIP(self.retriever.index,'cuda:7',vector_rows=32768,query_micro=64)
-    self.scan=EightGpuStreamingFlatIP(original)
+    self.scan=PhaseGpuScanner(original, index_path=str(Path(a.assets)/'index/e5_Flat.index'), oracle_source=a.oracle_source)
     self.gpu_ready=True;self.record_event(dict(event='eight_gpu_probe_enabled',cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES')))
     while True:
      batch=self.queue.next_batch()
@@ -56,6 +58,11 @@ def main():
  def health():return candidate.health()
  @app.post('/retrieve')
  def retrieve(request:old.original_server.QueryRequest):return candidate.retrieve(request)
+ @app.post('/release-gpu')
+ def release_gpu(x_e1_probe_token:str=old.Header(default='')):
+  if not old.secrets.compare_digest(x_e1_probe_token,candidate.probe_token):raise old.HTTPException(403,'Invalid private control token')
+  if candidate.scan is None:return dict(released=True,gpu_worker_pid=None,previous_gpu_worker_pid=None)
+  return candidate.scan.release_gpu()
  @app.post('/probe/retrieve')
  def probe(request:old.original_server.QueryRequest,x_e1_probe_token:str=old.Header(default='')):
   return candidate.retrieve(request,probe_token=x_e1_probe_token)

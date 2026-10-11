@@ -709,6 +709,8 @@ class RayPPOTrainer(object):
             metric_dict.update(aggregate_answer_metrics(qa_rows))
         if self.config.get('baselines'):
             print('BASELINE_EVALUATION_METRICS_JSON=' + json.dumps(metric_dict, sort_keys=True), flush=True)
+        from search_r1.baselines.retriever_phase import release_retriever_gpu
+        release_retriever_gpu(self.config,'after_validation')
         return metric_dict
 
 
@@ -1035,6 +1037,8 @@ class RayPPOTrainer(object):
                                     or self.config.algorithm.kl_ctrl.kl_coef != 0.):
                                 raise ValueError('No-full-beta profile exceeds authorized zero-KL behavior-mu scope')
                             self.actor_rollout_wg.release_rollout_policy_cache()
+                            from search_r1.baselines.retriever_phase import release_retriever_gpu
+                            release_retriever_gpu(self.config,'after_tree_sampling_before_hf')
                             final_gen_batch_output.meta_info['tree_full_actor_beta_available'] = False
                         else:
                             with torch.no_grad():

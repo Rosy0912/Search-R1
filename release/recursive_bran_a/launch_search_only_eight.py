@@ -21,6 +21,7 @@ old=json.loads((b/'receipts/timed-guard-config-3bdfeb78c2a7480980f190a5c1c96bdf.
 parent=Path(old['config']);assert hashlib.sha256(parent.read_bytes()).hexdigest()==m['identity']['config_sha256']
 config=OmegaConf.load(parent);config.actor_rollout_ref.rollout.tree_action_tag_stop=True
 config.actor_rollout_ref.rollout.tree_action_stop_mode='search_only';config.retriever.url='http://10.120.17.101:18006/retrieve'
+config.retriever.gpu_release_url='http://10.120.17.101:18006/release-gpu';config.retriever.control_token_file=g['control_token_file']
 folder=b/'receipts'/('eight-search-'+run);folder.mkdir()
 configpath=folder/'resolved.yaml';OmegaConf.save(config,configpath)
 binding=dict(protocol='recursive_a_sparse_schedule_continuation_v1',handoff_contract='search_only_and_no_repeated_candidate_proof_v1',

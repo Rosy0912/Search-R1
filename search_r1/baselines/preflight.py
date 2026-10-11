@@ -136,6 +136,8 @@ def validate_assets_and_retriever(config):
     for doc in results[0]:
         if not isinstance(doc, dict) or not isinstance(doc.get('document'), dict) or not isinstance(doc['document'].get('contents'), str):
             raise ValueError('Retriever response lacks document.contents')
+    from .retriever_phase import release_retriever_gpu
+    release_retriever_gpu(config,'after_asset_preflight')
     print('BASELINE_ASSET_RETRIEVER_PREFLIGHT_OK', flush=True)
 
 
