@@ -13,3 +13,15 @@ The vLLM policy cache is bounded by actual committed optimizer calls and schedul
 `resume_hkust5.py` requires an explicit parent technical terminal, all original owned processes absent or kernel-exited zombies with zero open descriptors; zombies are explicitly recorded and never treated as a wait0 exit, immutable binding/config/source and a new output directory. The ordinary four GPU leases, hardware UUID/free/foreign checks and current remote retriever gate remain mandatory. No historical OPSD or HKUST4 waiter is restarted. No active deployed source is hot-patched.
 
 Targeted checks cover cache lifetime (4), actual mu loss/gradient/one Adam update plus retained safety and refusal contracts (3), sparse-only YAML changes and independent sampling RNG byte restore (3). Local macOS has no Torch/omegaconf runtime available for the numerical tests; they must run in the original Node environment with CVD empty. AST and cache mock tests can run locally. CPU checks do not establish GPU speed or full-round numerical equivalence. A complete new GPU outer and real next advancement are required before acceleration acceptance.
+
+
+The first 17fa speed run completed sampling (44 generation calls/rank and one
+weight synchronization) but refused before its first Adam write. The actual
+TensorDict raised on `.get` without an explicit fallback for omitted beta;
+ordinary-dict CPU fixtures missed that API difference. The fix uses an explicit
+key-presence check and a real TensorDict startup/safety/native-update CPU test.
+Four focused CPU checks passed on the Node. The failed run is preserved with
+all four local write counts zero, scheduler3, total Adam60 and actual tmux rc1.
+A new immutable run restores complete3; its failure evidence is named by run ID
+so it cannot overwrite the prior failed attempt. No complete speedup or healthy
+new outer is claimed by the sampling counter or CPU tests alone.
