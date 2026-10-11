@@ -4,9 +4,9 @@
 #SBATCH --nodelist=h100-11
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=32
-#SBATCH --gres=gpu:h100:8
-#SBATCH --mem=512G
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=256G
+#SBATCH --time=08:00:00
 #SBATCH --no-requeue
 #SBATCH --export=NONE
 #SBATCH --chdir=/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009
