@@ -1,14 +1,15 @@
 {
   "job": 3360,
   "classification": "progress",
-  "first_epoch": 1791743105.0865183,
-  "second_epoch": 1791743257.5643675,
-  "completed_outer_before": 103,
-  "completed_outer_after": 104,
-  "direct_rank_records": 832,
-  "adam_per_rank": 2080,
+  "first_epoch": 1791743981.6438518,
+  "second_epoch": 1791744049.5145652,
+  "completed_outer": 105,
+  "direct_rank_records": 840,
+  "adam_per_rank": 2100,
   "skips_per_rank": 0,
-  "rolling104_saved": true,
-  "outer105_started": true,
+  "rolling105_saved": true,
+  "outer106_started": false,
+  "dev105_pending": true,
+  "last_complete_timer_outer": 104,
   "source_unchanged": true
 }

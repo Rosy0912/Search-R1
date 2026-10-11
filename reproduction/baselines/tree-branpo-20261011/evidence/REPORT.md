@@ -1,4 +1,4 @@
-Current: job3360 on h100-10/10.33.0.18 completed104/200, actual105 started;832 direct rank records,2080 successful Adam/rank,0 skips,scheduler104. Rolling104 SAVED. Outer104 810.678455s (13.511308min), leaf reward0.476953119040, pure intra variance0.063964632896,mixed100/512. Dev100 unchanged:F1 53.226531%,EM44.140625%. HF100 saved;cold reload pending. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
+Current: job3360 on h100-10/10.33.0.18 credited105/200 outer updates, dev105 in progress;840 direct rank records,2100 successful Adam/rank,0 skips,scheduler105. Rolling105 SAVED. Full timer/reward/variance latest104:810.678455s (13.511308min), leaf reward0.476953119040,pure intra variance0.063964632896,mixed100/512. Dev100 unchanged:F1 53.226531%,EM44.140625%;no dev105 result yet. Actual106 not observed. HF100 saved;cold reload pending. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
 
 # Tree-GRPO BranPO sampling：执行准备与证据
 

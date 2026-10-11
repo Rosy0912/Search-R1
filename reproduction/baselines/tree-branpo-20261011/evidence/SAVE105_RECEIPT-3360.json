@@ -1,0 +1,18 @@
+{
+  "epoch": 1791744070.968057,
+  "job": 3360,
+  "save105_lines": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_105/manifest.json"
+  ],
+  "next106_lines": [],
+  "tail": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 539 & 500",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_105/manifest.json",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 566 & 500",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 535 & 500",
+    "[36m(measured_task pid=4011013)\u001b[0m [\"<think>\\nTo find out who inducted The Who into the Rock and Roll Hall of Fame, I should search for information about The Who's induction into the Rock and Roll Hall of Fame.\\n</think>\\n<search>\\nwho inducted the who into the rock and roll hall of fame\\n</search>\", \"From the search results, it is clear that The Who were inducted into the Rock and Roll Hall of Fame in 1990. To find out who inducted them, I need to search for information about The Who's induction into the Rock and Roll Hall of Fame.\\n\\n<search>\\nwho inducted the who into the rock and roll hall of fame in 1990\\n</search>\", 'From the search results, it is clear that The Who were inducted into the Rock and Roll Hall of Fame in 1990. To find out who inducted them, I need to search for information about the inductees in 1990.\\n\\n<search>\\nwho inducted the who into the rock and roll hall of fame in 1990\\n</search>', 'From the search results, it is clear that the inductees in 1990 were The Who. To find out who specifically inducted them, I need to search for information about the inductees in 1990.\\n\\n<search>\\nwho inducted the who into the rock and roll hall of fame in 1990\\n</search>']",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 569 & 500",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 552 & 500",
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 569 & 500"
+  ]
+}
