@@ -1,13 +1,51 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791699624.9675756,
-  "second_observed_epoch": 1791699683.2782686,
-  "first_completed_outer": 54,
-  "second_completed_outer": 55,
+  "first_observed_epoch": 1791700274.6792061,
+  "second_observed_epoch": 1791700352.9393995,
+  "completed_outer": 55,
+  "stage": "dev55 complete and outer56 started",
+  "queue": {
+    "returncode": 0,
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|11:59:58|h100-10\n",
+    "stderr": ""
+  },
   "direct_rank_records": 440,
-  "save55_lines": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_55/manifest.json"
-  ],
-  "scope": "Actual credited outer55 and rolling55 save. Dev55 and complete step timing not yet available."
+  "latest_dev512": {
+    "path": "validation-4011013-11.json",
+    "status": "VALIDATION_COST_COMPLETE",
+    "phase": "periodic",
+    "actual_completed_outer": 55,
+    "evaluated_rows": 512,
+    "dataset_rows": 512,
+    "metrics": {
+      "val/test_score/nq": 0.3828125,
+      "val/evaluated_count/nq": 256,
+      "val/test_score/hotpotqa": 0.390625,
+      "val/evaluated_count/hotpotqa": 256,
+      "val/qa_count/nq": 256,
+      "val/f1/nq": 0.5056215052308803,
+      "val/em/nq": 0.3828125,
+      "val/answer_format/nq": 0.984375,
+      "val/format_rate/nq": 0.78125,
+      "val/generated_tokens/nq": 113.40234375,
+      "val/search_calls/nq": 1.015625,
+      "val/qa_count/hotpotqa": 256,
+      "val/f1/hotpotqa": 0.4308035714285714,
+      "val/em/hotpotqa": 0.390625,
+      "val/answer_format/hotpotqa": 0.921875,
+      "val/format_rate/hotpotqa": 0.6328125,
+      "val/generated_tokens/hotpotqa": 206.7890625,
+      "val/search_calls/hotpotqa": 1.109375,
+      "val/qa_count/all": 512,
+      "val/f1/all": 0.46821253832972604,
+      "val/em/all": 0.38671875,
+      "val/answer_format/all": 0.953125,
+      "val/format_rate/all": 0.70703125,
+      "val/generated_tokens/all": 160.095703125,
+      "val/search_calls/all": 1.0625
+    }
+  },
+  "full_step55_seconds": 1185.3740889243782,
+  "scope": "Complete dev55, logger55 and actual step56 continuation; no restart/source change."
 }
