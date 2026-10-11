@@ -18,7 +18,7 @@ if keys:args+=['-o','KnownHostsCommand='+shlex.join(['/bin/echo','\\n'.join(keys
 '''.replace('target=TARGET;', 'target='+repr(a.target)+';')+ 'TIMEOUT='+repr(a.timeout)+'\ncommand='+repr(command)+'''\np=subprocess.run(args+[user+'@'+ip,command],capture_output=True,text=True,timeout=TIMEOUT)
 print(json.dumps({'observed_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'exit_code':p.returncode,'stdout':p.stdout,'stderr':p.stderr}),flush=True)
 '''
-args=['ssh','-o','ServerAliveInterval=20','-o','ServerAliveCountMax=3','-T','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','ConnectTimeout=15','-o','ProxyCommand=/usr/bin/nc -X 5 -x 127.0.0.1:7892 %h %p','mgmt-host','env -u LD_LIBRARY_PATH python3 -']
+args=['ssh','-o','ServerAliveInterval=20','-o','ServerAliveCountMax=3','-T','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','ConnectTimeout=15','-o','ProxyCommand=none','-o','ProxyJump=none','mgmt-host','env -u LD_LIBRARY_PATH python3 -']
 r=subprocess.run(args,input=code,capture_output=True,text=True,timeout=a.timeout+25)
 base=Path(a.output);base.parent.mkdir(parents=True,exist_ok=True)
 Path(str(base)+'.transport.stderr').write_text(r.stderr)
