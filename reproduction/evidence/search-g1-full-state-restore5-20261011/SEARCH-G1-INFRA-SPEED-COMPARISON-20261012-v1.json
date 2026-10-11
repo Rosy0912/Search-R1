@@ -1,0 +1,123 @@
+{
+  "checked_utc": "2026-10-11T16:49:55.671908+00:00",
+  "scope": "Read-only comparison; no live runtime/config change or GPU benchmark",
+  "live_job": 3368,
+  "live_node": "h100-8",
+  "live_frozen_source": "475fbb60fbc39bb632abb5cbe177b306aa950ef7",
+  "comparisons": {
+    "H100_SearchG1": {
+      "actor_update_seconds": [
+        1260.082,
+        1185.689,
+        1249.823,
+        1329.072
+      ],
+      "ref_seconds": [
+        279.755,
+        264.053,
+        276.685,
+        291.328
+      ],
+      "candidate_fill_seconds": [
+        1095.844,
+        1059.117,
+        1009.661,
+        1027.123
+      ],
+      "actor_compute": "float32",
+      "ref_compute": "float32",
+      "rollout_dtype": "float32",
+      "tf32": false,
+      "padding_removed": false,
+      "actor_local_micro": 2,
+      "adam_writes_per_outer_per_rank": 20
+    },
+    "A800_SearchG1": {
+      "actor_update_seconds": [
+        622.906,
+        865.995,
+        634.205,
+        744.335,
+        622.247
+      ],
+      "ref_seconds": [
+        129.466,
+        182.185,
+        131.944,
+        139.592,
+        128.765
+      ],
+      "outer_seconds": [
+        1097.569,
+        1424.138,
+        1111.66,
+        1236.962,
+        1084.723
+      ],
+      "actual_policy_forward_dtype": "bfloat16",
+      "actual_master_parameter_dtype": "float32",
+      "actual_selected_log_prob_dtype": "float32",
+      "padding_removed": false,
+      "actor_local_micro": 2,
+      "world_size": 4,
+      "behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+      "rollout_cache_utilization": 0.25
+    },
+    "Tree_H100_outer96": {
+      "node": "h100-10",
+      "actor_update_seconds": 266.1283760070801,
+      "ref_seconds": 12.72570675984025,
+      "outer_seconds": 799.1087218746543,
+      "gen_seconds": 349.91914908215404,
+      "padding_removed": true,
+      "rollout_dtype": "bfloat16",
+      "source_actor_autocast": "bfloat16",
+      "world_size": 8,
+      "actor_global_micro": 16,
+      "actor_local_micro": 2,
+      "comparison_scope": "Historical completed outer96; different tree generation/advantages and monitoring paths; not algorithm quality comparison"
+    }
+  },
+  "confirmed_differences": [
+    "H100 whole actor/reference/sampler FP32 differs from A800 BF16 policy with FP32 master/loss",
+    "Tree uses remove-padding; live SearchG1 processes full padded sequences",
+    "H100 adds complete selected2560 trajectory HF old-policy parity forward; A800 uses actual sampling-journal denominator without extra HF forward",
+    "H100 and Tree both use local micro2/global16; accumulation alone cannot explain the 4.5-5x actor update difference",
+    "H100 pre/post minibatch32global old-policy monitor costs80 extra forward micro calls per rank per outer on top of160 training forward/backward micro calls; A800 also has monitors so not unique differential"
+  ],
+  "inference": "Whole FP32/TF32-disabled math plus padded sequence processing and extra old-policy parity are leading software causes; per-component causal speedup not yet profiled",
+  "hardware_observed": {
+    "all8_nvlink": "NV18",
+    "sm_clock_mhz": 1980,
+    "gpu_utilization_percent": 100,
+    "power_watts_range": [
+      655,
+      684
+    ],
+    "cuda_launch_blocking_unset": true,
+    "nccl_debug": "WARN",
+    "no_foreign_processes_seen_in_compute_app_snapshot": true,
+    "scope": "One readonly snapshot during old actor log-prob phase; not full-run performance profile"
+  },
+  "correction_candidates": [
+    "Manifest-bound eight-rank BF16 policy/ref/sampler with FP32 master Adam/reward/probe/logprob/loss, adapting current four-rank-only BF16 admission",
+    "Validated remove-padding path preserving actual token/position/mask/logprob and loss weighting",
+    "Explicitly decide whether keep full HF parity audit; cannot silently remove behavior-probability guard",
+    "Retain128mini/512groups/G5/20writes, current actual optimizer/scheduler/RNG/cursor/probe; no official0 reset or partial checkpoint fiction"
+  ],
+  "implementation_status": "DIAGNOSIS_COMPLETE; corrections not applied to healthy runtime",
+  "evidence_full_sha256": {
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-INFRA-CONFIG-20261011T164428426453Z.json": "e73c824967ebe3a8be5a72cc2f887e0607b30047c1070f832c4ab6bc4f3e89ab",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-INFRA-CONFIG-20261011T164508209289Z.json": "a04552cf4b488d82f2af67546beddd038307d094fb68b547a27b6fee60384598",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-INFRA-DIAG-20261011T164345381373Z.json": "771cc4e7054da3e901c79300dc3b6a5b6b8d2a3d2e9c1e49ad94eabe1a2dbe1c",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-INFRA-LIVE-20261011T164619786835Z.json": "ffe25a1449148ea629c1e9bb0290dc755323f7c516fd548fd480f38af47330a2",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-INFRA-MANIFEST-20261011T164849845892Z.json": "41b2c91ecd3829884ac68c8c859465b44b85e4363f262176fc8f797a727b294b",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-A800-INFRA-COMPARISON-20261012-v1.json": "a1b1b9e6b018feac1594d9da0a7f7cdc36ae8830701e1c887e7f1b94cc71231d",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-A800-INFRA-CONFIG-20261012-v1.json": "4bc848273c17ed73464640855e45c24094cce96f4fb9f92712ac3060991783ba",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-A800-INFRA-CONFIG-20261012-v2.json": "8d1576af9a2758997b084e90806c31475b78abacbed241382f38187e57a4dff6",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-A800-INFRA-MANIFEST-20261012-v1.json": "b091b44fa583cf51d3407b6a4b412f25dcbff4d37bb433bcbd601b75f37b027a",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-A800-ACTUAL-PRECISION-20261012-v1.json": "4f0c871667687b226b8b37b7b2ebd3dedda39ab38d5015e59f1e9b52f778fa78",
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/outputs/gigpo-e1-instruct200/SEARCH-G1-TREE-INFRA-CONFIG-20261012-v1.json": "33d7820256e627026136b082da0fd138852177473edb9aca6e1fe6a6ecc671cf"
+  },
+  "health": "Two actual observations: step11 candidates1024 at16:36; current8workers old-policy GPU forward at16:46; same birth and no observed training exit"
+}
