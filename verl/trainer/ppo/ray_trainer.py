@@ -1165,8 +1165,10 @@ class RayPPOTrainer(object):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
+                    recursive_rolling = (self.config.get('baselines') is not None and
+                        self.config.baselines.tree.get('branch_sampling') == 'recursive_uniform_v1')
                     if self.config.trainer.save_freq > 0 and \
-                            (self.global_steps % self.config.trainer.save_freq == 0 or
+                            (recursive_rolling or self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
                              self.global_steps + 1 >= self.total_training_steps):
                         # Save the final updated policy before the counter advances.
@@ -1174,6 +1176,11 @@ class RayPPOTrainer(object):
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
+                            if recursive_rolling:
+                                from search_r1.baselines.recursive_rolling import prune
+                                prune(self.config.trainer.default_local_dir, self.global_steps,
+                                      os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
+                                      os.environ['SEARCH_R1_BASELINE_COMMIT'])
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
