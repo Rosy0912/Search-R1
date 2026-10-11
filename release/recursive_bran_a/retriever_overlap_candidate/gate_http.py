@@ -8,7 +8,7 @@ proc=Path('/proc',str(pid));assert proc.stat().st_uid==1005 and os.getuid()==100
 starttick=int((proc/'stat').read_text().rsplit(') ',1)[1].split()[19])
 token=(b/'receipts/private-probe-token').read_text().strip()
 old=Path('/proc/2239529');assert old.stat().st_uid==1005 and int((old/'stat').read_text().rsplit(') ',1)[1].split()[19])==914664099
-health=requests.get(a.candidate+'/health',timeout=5).json();assert health['gpu_ready'] and health['gpu_shards']==8
+health=requests.get(a.candidate+'/health',timeout=5).json();assert health['gpu_ready'] and health['gpu_shards']==8 and health['pid']==pid and health['source_identity_sha256']==identity['source_identity_sha256']
 proof=dict(scope='eight_gpu_full_scan_and_http_oracle_equality',candidate_pid=pid,candidate_starttick=starttick,
  source_identity_sha256=identity['source_identity_sha256'],started_at=time.time(),accepted=False,
  ntotal=health['ntotal'],d=health['d'],tf32=health['tf32'],tests=[])
