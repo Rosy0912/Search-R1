@@ -15,12 +15,14 @@ def main():
  if sha(r['config'])!=r['config_sha256'] or sha(r['binding'])!=r['binding_sha256']:raise ValueError('Config/binding changed')
  if sha(r['parent_terminal'])!=r['parent_terminal_sha256']:raise ValueError('Parent terminal changed')
  terminal=json.loads(Path(r['parent_terminal']).read_text())
- if terminal['protocol']!='recursive-b-speed-parent-terminal-v1' or terminal['status']!='TECHNICAL_SWITCH_ALL_OWNED_ABSENT':raise ValueError('No actual technical terminal')
- if terminal['original_controller']!={'pid':401228,'uid':1001,'tick':651299742} or not terminal['all_original_owned_absent']:raise ValueError('Wrong parent owner/release')
+ if terminal['protocol']!='recursive-b-speed-parent-terminal-v1' or terminal['status'] not in ('TECHNICAL_SWITCH_ALL_OWNED_ABSENT','TECHNICAL_SWITCH_ALL_OWNED_KERNEL_EXITED'):raise ValueError('No actual technical terminal')
+ if terminal['original_controller']!={'pid':401228,'uid':1001,'tick':651299742} or not terminal['all_original_owned_kernel_exited']:raise ValueError('Wrong parent owner/release')
  for identity in terminal['owned_processes']:
   if Path('/proc/%d'%identity['pid']).exists():
    raw=Path('/proc/%d/stat'%identity['pid']).read_text();tick=int(raw.rsplit(')',1)[1].split()[19])
-   if tick==identity['tick']:raise ValueError('Original owner still exists')
+   if tick==identity['tick']:
+    state=raw.rsplit(')',1)[1].split()[0]
+    if state!='Z' or list(Path('/proc/%d/fd'%identity['pid']).glob('*')):raise ValueError('Original owner still alive or has open descriptors')
  out=Path(r['output']);out.relative_to(root)
  if out.exists():raise ValueError('No blind restart/overwrite of speed output')
  os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=r['binding'],RECURSIVE_B_CONTINUATION_SHA256=r['binding_sha256'],

@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 p=argparse.ArgumentParser();p.add_argument('--terminal',type=Path,required=True);a=p.parse_args()
 root=Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011');repo=Path(__file__).parents[2].resolve();source=(repo/'SOURCE_COMMIT').read_text().strip()
-terminal=json.loads(a.terminal.read_text());assert terminal['status']=='TECHNICAL_SWITCH_ALL_OWNED_ABSENT' and terminal['all_original_owned_absent']
+terminal=json.loads(a.terminal.read_text());assert terminal['status'] in ('TECHNICAL_SWITCH_ALL_OWNED_ABSENT','TECHNICAL_SWITCH_ALL_OWNED_KERNEL_EXITED') and terminal['all_original_owned_kernel_exited']
 parent=root/'checkpoints/training_state/global_step_3/manifest.json';m=json.loads(parent.read_text());assert m['identity']['completed_step']==3
 old=root/'receipts/configuration-d79908be70f74dd2a0ce38b5ef880f1e/resolved.yaml';assert sha(old)=='95d9f8f2195a35f189ff06af8e449d419040ae96c4cde4fc50f9d7062db414f7'
 run=uuid.uuid4().hex;target=root/'receipts'/('speed-resume3-'+run);target.mkdir(exist_ok=False)
