@@ -1,9 +1,7 @@
 {
   "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791732751.19971,
-  "second_observed_epoch": 1791733017.6782265,
-  "first_complete_outer": 92,
-  "second_complete_outer": 93,
-  "evidence": "Outer93 actual updates finalized; full timer, rolling93SAVED, actual94 started"
+  "first_observed_epoch": 1791733716.415584,
+  "second_observed_epoch": 1791733803.2781496,
+  "evidence": "Outer94 actual updates finalized; full timer, rolling94SAVED, actual95 started"
 }
