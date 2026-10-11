@@ -23,14 +23,17 @@ def check():
  ready=oracle is not None and not foreign and all(x['free_mib']>=40000 and x['utilization']<=15 for x in selected)
  return dict(ready=ready,gpus=selected,foreign=foreign,oracle=oracle)
 def main():
- p=argparse.ArgumentParser();p.add_argument('--base',type=Path,required=True);p.add_argument('--source',type=Path,required=True);p.add_argument('--configuration',type=Path,required=True);p.add_argument('--proof',type=Path,required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--base',type=Path,required=True);p.add_argument('--source',type=Path,required=True);p.add_argument('--configuration',type=Path,required=True);p.add_argument('--proof',type=Path,required=True);p.add_argument('--receipt-dir',type=Path);a=p.parse_args()
  b=a.base.resolve();source=a.source.resolve();assert source.is_relative_to(b) and os.getuid()==1001 and socket.gethostname().split('.')[0]=='xielab5'
  config=json.loads(a.configuration.read_text());proof=json.loads(a.proof.read_text())
  assert config['source']==str(source) and config['source_commit']==proof['source_commit']==(source/'SOURCE_COMMIT').read_text().strip()
  assert hashlib.sha256(Path(config['config']).read_bytes()).hexdigest()==config['config_sha256']
  for name,sha in proof['files'].items():assert hashlib.sha256((source/name).read_bytes()).hexdigest()==sha,name
  if (b/'receipts/start.json').exists():raise RuntimeError('A launch already happened; explicit state recovery required')
- r=b/'receipts';record=dict(time=time.time(),identity=process(os.getpid()),run_id=config['run_id'],configuration=str(a.configuration),source=str(source),source_commit=config['source_commit'],waiter_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+ r=(a.receipt_dir or b/'receipts').resolve()
+ assert r.is_relative_to(b/'receipts')
+ r.mkdir(parents=True,exist_ok=True)
+ record=dict(time=time.time(),identity=process(os.getpid()),run_id=config['run_id'],configuration=str(a.configuration),source=str(source),source_commit=config['source_commit'],waiter_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
  with (r/'card-waiter-binding.json').open('x') as f:json.dump(record,f)
  while True:
   try:

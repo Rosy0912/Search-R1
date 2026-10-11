@@ -121,7 +121,7 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         if type(outer) is not int or outer < 1:
             raise ValueError('Fresh outer must be a positive direct driver counter')
         if continuing_guard:
-            validate_ledger(ledger, writes, allow_zero=False)
+            validate_ledger(ledger, writes, allow_zero=False, world_size=world)
             if returned_writes != writes or metrics.get('actor/optimizer_opportunities_processed') != 20:
                 raise ValueError('Fresh completed opportunity accounting differs from actual actor ledger')
         elif (type(writes) is not int or writes != 20 or type(returned_writes) is not int

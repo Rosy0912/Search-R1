@@ -84,7 +84,7 @@ def _validate_workers(envelope, context, world_size):
     for r in workers:
         if 'attempt_id' in context['identity'] and envelope.get('continuation_decision') == 'CONTINUE_FRESH_ROLLOUT':
             from .tree_guard_continue import validate_ledger
-            validate_ledger(r.get('optimizer_opportunity_ledger'), r.get('committed_optimizer_calls'))
+            validate_ledger(r.get('optimizer_opportunity_ledger'), r.get('committed_optimizer_calls'), world_size=world_size)
         if (type(r['rank']) is not int or type(r['world_size']) is not int or r['world_size'] != world_size
                 or r['identity'] != dict(context['identity'], rank=r['rank'], world_size=world_size)
                 or type(r['committed_optimizer_calls']) is not int or not 0 <= r['committed_optimizer_calls'] <= 20

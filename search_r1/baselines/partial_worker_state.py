@@ -165,7 +165,7 @@ def persist_matched_partial_worker(worker,data,refusal,scheduler_before):
     if enabled(worker.config.actor) and all_saved:
         try:
             for entry in workers:
-                validate_ledger(entry['optimizer_opportunity_ledger'], entry['committed_optimizer_calls'])
+                validate_ledger(entry['optimizer_opportunity_ledger'], entry['committed_optimizer_calls'], world_size=world)
             ledger_complete = len({entry['committed_optimizer_calls'] for entry in workers}) == 1
         except ValueError:
             pass

@@ -42,7 +42,11 @@ def accounting(trainer):
                 partial_evidence=copy.deepcopy(getattr(trainer, 'partial_attempt_evidence', [])))
 
 
-def validate_ledger(ledger, writes, allow_zero=True):
+def validate_ledger(ledger, writes, allow_zero=True, *, world_size=8):
+    if type(world_size) is not int or world_size not in (4,8):
+        raise ValueError("Fresh200 requires an explicit four/eight-rank world")
+    local_mini=128//world_size
+    local_rows=2560//world_size
     if (not isinstance(ledger, list) or len(ledger) != 20 or type(writes) is not int
             or not (0 if allow_zero else 1) <= writes <= 20):
         raise ValueError('Incomplete twenty-opportunity ledger or invalid actual writes')
@@ -50,7 +54,7 @@ def validate_ledger(ledger, writes, allow_zero=True):
     for index, entry in enumerate(ledger, 1):
         if (type(entry.get('index')) is not int or entry.get('index') != index
                 or type(entry.get('actual_writes')) is not int or entry.get('actual_writes') not in (0, 1)
-                or type(entry.get('rows')) is not int or entry['rows'] != 16
+                or type(entry.get('rows')) is not int or entry['rows'] != local_mini
                 or entry.get('local_row_indices') != list(range(len(seen), len(seen)+entry['rows']))
                 or entry.get('status') not in ('SUCCESS_ADAM_WRITE', 'SUCCESS_ADAM_WRITE_BRAKE_AFTER_WRITE',
                     'SKIPPED_EMPTY', 'SKIPPED_SAFETY_GUARD_BEFORE_WRITE', 'SKIPPED_BY_PRIOR_ROLLOUT_BRAKE')
@@ -59,7 +63,7 @@ def validate_ledger(ledger, writes, allow_zero=True):
         seen.extend(entry['local_row_indices'])
     if sum(entry['actual_writes'] for entry in ledger) != writes:
         raise ValueError('Opportunity ledger does not sum to successful optimizer returns')
-    if seen != list(range(320)):
+    if seen != list(range(local_rows)):
         raise ValueError('Complete fresh opportunity ledger must enumerate every actual local row exactly once')
 
 
@@ -81,7 +85,7 @@ def validate_completed_result(trainer, output):
     if not isinstance(ranks, list) or len(ranks) != trainer.actor_rollout_wg.world_size:
         raise ValueError('Incomplete explicit completed rank result')
     for rank, value in enumerate(ranks):
-        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=False)
+        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=False, world_size=trainer.actor_rollout_wg.world_size)
         if any(type(value.get(key)) is not int for key in ('rank','attempt_id','accepted_outer',
                 'completed_outer_before','optimizer_calls','total_optimizer_calls',
                 'opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after')):
