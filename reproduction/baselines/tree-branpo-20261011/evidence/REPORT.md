@@ -1,4 +1,4 @@
-Actual progress:100/200 credited full-update outers;800 directrank records,2000 successful Adam/rank,zero skips. Rolling100 actual SAVED;dev100 in progress,outer101 not observed;HF100 milestone not yet saved. Latest full timing remains outer99:811.070894666s(13.517848min),reward/variance99. Latest complete dev95 unchanged:F1 50.484251%,EM42.578125%;vs90 F1+0.334821pp,EM+1.562500pp. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
+Actual progress:100/200 full outers;800 directrank records,2000 successful Adam/rank,zero skips;rolling100 SAVED,actual101 started. Outer100 total1523.548684228s(25.392478min),including dev688.975554738s and HFsave64.751298267s. Reward0.467968762,pure intra variance0.058756315554,mixed108/512. Dev100 actual512(NQ256/Hotpot256):F153.226531%,EM44.140625%;vs95 F1+2.742281pp,EM+1.562500pp. HF100 save returned,three shards/tokenizer present;not coldreload acceptance. Final200,51713,HF/tokenizer,costs,cleanup incomplete.
 
 # Tree-GRPO BranPO sampling：执行准备与证据
 

@@ -1,9 +1,10 @@
 {
   "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791739216.3867974,
-  "second_observed_epoch": 1791739308.6292396,
+  "first_observed_epoch": 1791739832.6871004,
+  "second_observed_epoch": 1791740004.5707438,
   "complete_outer": 100,
-  "stage_output_changed": true,
-  "evidence": "Two live100update observations;rolling100 SAVED verifiedremote;dev100 sampleoutputs change;fulltimer99/dev95 remainlatest. HF100 milestone pending."
+  "first_dev_outer": 95,
+  "second_dev_outer": 100,
+  "evidence": "Actualdev100 complete512 rows;step100 fulltimer/HFsave returned andactual101 start;rolling100 SAVED,3HF shards/tokenizer metadata present;coldreload notperformed."
 }
