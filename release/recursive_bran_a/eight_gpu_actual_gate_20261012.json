@@ -1,0 +1,79 @@
+{
+  "scope": "Recursive Bran A infrastructure deployment; full-training acceptance incomplete",
+  "training_commit": "0daae20b015db14e16c3af75bf54f9707edf8bf7",
+  "retriever_commit": "267f856a3489306c96c60e8579dc9322ffbb6376",
+  "source_branch": "codex/recursive-bran-a-hkust1-20261011",
+  "implemented_and_deployed": [
+    "Native search-only stop; SEARCH-first/raw IDs/behavior mu retained",
+    "Lightweight candidate reward without duplicate tensor/mu/proof construction",
+    "Per-outer proof cache with tensor/mu/mask/order checks retained",
+    "Eight-GPU roundrobin original32768 tiles FP32/TF32false/query64 and CPU E5 batch128",
+    "Phase-owned CUDA child; release before HF/model/checkpoint",
+    "Keypoint full-state checkpoint before scheduled evaluator; separate actual post-evaluation snapshot"
+  ],
+  "full_index_gate": {
+    "accepted": true,
+    "queries": 66,
+    "requests": 2,
+    "ntotal": 21015324,
+    "dimension": 768,
+    "tests": [
+      {
+        "queries": 1,
+        "topk": 3,
+        "full_scan": true,
+        "complete_json_equal": true,
+        "oracle_seconds": 8.561455372720957,
+        "candidate_seconds": 4.5342632327228785,
+        "json_sha256": "6561edf4bff546565b8b0523531f009bffd4077ad61775d48b186b3a109a9217"
+      },
+      {
+        "queries": 65,
+        "topk": 3,
+        "full_scan": true,
+        "complete_json_equal": true,
+        "oracle_seconds": 8.150373712182045,
+        "candidate_seconds": 1.6545231249183416,
+        "json_sha256": "5c0732f7a3839c4ab5b57c1bc1c14deaf5f3985493b4ca6c508986500f0db5c2"
+      }
+    ],
+    "whole_original_tiles": 642,
+    "gpu_workers": 8,
+    "actual_gemm_calls_last_request": 1284,
+    "gate_sha256": "e5a90a3c441bd50d2e590147c71a98977a6d839a5ca20f2a04948b55f26f79b1"
+  },
+  "memory_evidence": {
+    "per_device_compute_process_snapshot_mib": [
+      690,
+      690,
+      690,
+      690,
+      690,
+      690,
+      690,
+      692
+    ],
+    "peak_measured": false,
+    "limits": "nvidia-smi snapshot after first request; not continuous peak or full model coexistence admission",
+    "post_release_directfree_min_mib": 23628,
+    "cuda_child_actual_exitcode": 0,
+    "cuda_child_graceful": true,
+    "release_sha256": "41b337dd51732e22fb8a7d319ca7acbe8adfe28c5713676d07bddafc0bdb7ed9"
+  },
+  "training": {
+    "run": "08232126c92d4ff184d00fdb1f1a069c",
+    "session": "rba-eight-search-08232126",
+    "resume_complete_outer": 4,
+    "resume_complete_adam": 80,
+    "checkpoint_sha256": "4d781f6920ce8ea8d56bff7c488ea960aa5b60e7b99a7635d19961bbfa06816f",
+    "latest_observed": "preflight GPU occupancy checks succeeded; later SSH read timed out",
+    "accepted_complete_outer_after_recovery": null,
+    "goal_complete": false
+  },
+  "unresolved": [
+    "Current-node connection for actual restoration/iteration evidence",
+    "Actual sampling and HF coexistence peak memory",
+    "Complete iteration timing and restored five complete outers plus next progress",
+    "Healthy complete10 and continuing200"
+  ]
+}
