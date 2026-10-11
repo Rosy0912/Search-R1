@@ -1,29 +1,7 @@
 {
-  "classification": "VERIFIED_WAIT",
+  "classification": "PROGRESS",
   "job_id": 3360,
-  "completed_outer": 80,
-  "first_observed_epoch": 1791720475.9830434,
-  "second_observed_epoch": 1791720551.0926936,
-  "first_gpu_util": [
-    41,
-    45,
-    96,
-    83,
-    94,
-    31,
-    37,
-    51
-  ],
-  "second_gpu_util": [
-    85,
-    78,
-    91,
-    91,
-    85,
-    70,
-    21,
-    89
-  ],
-  "stage_tail_changed": true,
-  "evidence": "80 credited with640 directrank records; rolling80 SAVED receipt appeared between polls. Periodic dev80 still pending; last total timer79."
+  "first_observed_epoch": 1791721091.6034803,
+  "second_observed_epoch": 1791721161.4443154,
+  "evidence": "Dev80 finalized512 rows, timer80 completed, actual epoch0step81 appeared between polls."
 }
