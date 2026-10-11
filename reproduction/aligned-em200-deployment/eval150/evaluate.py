@@ -42,6 +42,8 @@ def evaluate(config,run):
     t.val_reward_fn=RewardManager(tokenizer,num_examine=0)
     t.val_dataloader=batches();t.global_steps=150
     t.init_workers()
+    # Only the validation metadata branch; native training initialization stays disabled.
+    config.trainer.fresh200_enabled=True
     result=t._validate()
     assert result['val/qa_count/all']==51713
     (Path(run)/'final51713.json').write_text(json.dumps(dict(checkpoint_outer=150,metrics=result),indent=2))
