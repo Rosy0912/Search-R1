@@ -108,3 +108,86 @@ def search(initial, continue_from, rng, emit, target=5, budget=10):
          same_reward_candidates=len(pool), fill_count=len(fill),
          complete_group=len(final)==target, stop_reason=reason)
     return final, attempts, reason
+
+
+class Planner:
+    """One question state machine; many planners can share a generation batch."""
+    def __init__(self, initial, rng, emit, target=5, budget=10):
+        self.accepted, self.pool = [initial], []
+        self.rng, self.emit, self.target, self.budget = rng, emit, target, budget
+        self.attempts, self.pending, self.backoff = 0, None, []
+        self.reason = None
+        self.search_open = False
+        emit('question_start', root_id=initial.root_id, initial_reward=initial.reward,
+             target=target, budget=budget)
+
+    def next_request(self):
+        if self.pending is not None:
+            raise RuntimeError('Previous request has not completed')
+        if self.reason or len(self.accepted) == self.target or self.attempts == self.budget:
+            self.reason = self.reason or ('target_reached' if len(self.accepted)==self.target else 'budget_exhausted')
+            self.end_search(self.reason)
+            return None
+        if not self.backoff:
+            history = self.accepted + self.pool
+            eligible = [(r, legal_positions(r, history)) for r in self.accepted]
+            eligible = [(r,p) for r,p in eligible if p[0]]
+            if not eligible:
+                self.reason = 'no_expandable_record'
+                return None
+            self.parent, (positions, self.boundary, lcps) = self.rng.choice(eligible)
+            self.start = self.rng.choice(positions)
+            self.backoff = list(reversed([p for p in positions if p <= self.start]))
+            self.search_open = True
+            self.emit('search_start', eligible=[dict(id=r.trajectory_id,generation=r.generation,
+                weight=1,probability=1/len(eligible)) for r,_ in eligible],
+                parent_id=self.parent.trajectory_id,lcps=lcps,boundary=self.boundary,
+                legal_positions=positions,start=self.start)
+        index = self.backoff.pop(0)
+        self.attempts += 1
+        self.pending = self.parent, index, self.attempts
+        self.emit('branch_start',attempt=self.attempts,parent_id=self.parent.trajectory_id,
+                  action_index=index,boundary=self.boundary,backoff=index!=self.start)
+        return self.pending
+
+    def accept_result(self, child=None, error=None):
+        parent, index, attempt = self.pending
+        self.pending = None
+        if error is not None:
+            self.reason = 'execution_error'
+            self.emit('branch_end',attempt=attempt,status='error',error=repr(error))
+            self.end_search('execution_error')
+            return
+        if (child.parent_id!=parent.trajectory_id or child.root_id!=parent.root_id
+            or child.generation!=parent.generation+1 or child.reward not in (0,1)
+            or child.steps[:index]!=parent.steps[:index]
+            or child.trajectory_id in {r.trajectory_id for r in self.accepted+self.pool}):
+            raise ValueError('Continuation violates identity, generation or prefix')
+        different = child.reward != parent.reward
+        child.source = 'contrast_accept' if different else 'same_reward'
+        (self.accepted if different else self.pool).append(child)
+        self.emit('branch_end',attempt=attempt,status='complete',id=child.trajectory_id,
+                  parent_reward=parent.reward,reward=child.reward,generation=child.generation,
+                  source=child.source)
+        if different or not self.backoff:
+            self.end_search('contrast_accept' if different else 'boundary_reached')
+        if different:
+            self.backoff = []
+
+    def end_search(self, reason):
+        if self.search_open:
+            self.emit('search_end', attempts=self.attempts,accepted=len(self.accepted),pool=len(self.pool),reason=reason)
+            self.search_open=False
+
+    def finish(self):
+        if self.pending is not None or self.reason is None:
+            raise RuntimeError('Search not terminal')
+        fill=self.rng.sample(self.pool,min(self.target-len(self.accepted),len(self.pool)))
+        for r in fill:r.source='failure_fill'
+        result=self.accepted+fill
+        self.emit('fill_end',pool_ids=[r.trajectory_id for r in self.pool],
+                  selected_ids=[r.trajectory_id for r in fill],fill_count=len(fill))
+        self.emit('question_end',final_ids=[r.trajectory_id for r in result],attempts=self.attempts,
+                  accepted_branches=len(self.accepted)-1,same_reward_candidates=len(self.pool),
+                  fill_count=len(fill),complete_group=len(result)==self.target,stop_reason=self.reason)
+        return result

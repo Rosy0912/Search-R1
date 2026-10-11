@@ -383,7 +383,7 @@ class DataParallelPPOActor(BasePPOActor):
                         pg_loss, pg_clipfrac, ppo_kl = weighted_policy_loss(
                             old_log_prob, log_prob, advantages, response_mask, policy_weights,
                             clip_ratio, denominator, data.get('step_ids', None),
-                            dual_clip=safety_config['dual_clip'] if safety is not None else None)
+                            dual_clip=safety_config['dual_clip'] if safety is not None and not self.config.get('recursive_document_objective',False) else None)
                     elif topd_token_mean:
                         pg_loss, pg_clipfrac, ppo_kl = token_mean_ppo(
                             old_log_prob, log_prob, advantages, response_mask, clip_ratio, denominator)

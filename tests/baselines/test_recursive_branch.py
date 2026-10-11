@@ -34,3 +34,20 @@ class RecursiveTests(unittest.TestCase):
         def cont(p,d,a):return m.Record(str(a),p.trajectory_id,p.root_id,p.generation+1,1-p.reward,None,p.snapshots,[*p.steps[:d],str(a)],"contrast_accept")
         result,n,reason=m.search(self.record(),cont,random.Random(1),lambda *a,**k:None)
         self.assertEqual((len(result),n),(5,4));self.assertTrue(any(r.generation>1 for r in result))
+
+    def test_planner_budget_closes_search_before_fill(self):
+        events=[]
+        planner=m.Planner(self.record(),random.Random(42),lambda e,**k:events.append((e,k)),budget=1)
+        parent,index,attempt=planner.next_request()
+        child=m.Record("c",parent.trajectory_id,parent.root_id,1,0,None,parent.snapshots,[*parent.steps[:index],"new"],"same_reward")
+        planner.accept_result(child)
+        self.assertIsNone(planner.next_request());result=planner.finish()
+        self.assertEqual(len(result),2)
+        self.assertEqual(len([e for e,_ in events if e=="search_end"]),1)
+        self.assertEqual(events[-1][0],"question_end")
+    def test_planner_execution_error_closes_and_fills(self):
+        events=[]
+        planner=m.Planner(self.record(),random.Random(42),lambda e,**k:events.append((e,k)))
+        planner.next_request();planner.accept_result(error=RuntimeError("executor"))
+        self.assertIsNone(planner.next_request());self.assertEqual(len(planner.finish()),1)
+        self.assertEqual([e for e,_ in events][-3:],["search_end","fill_end","question_end"])

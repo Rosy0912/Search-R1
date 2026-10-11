@@ -73,7 +73,7 @@ def validate_behavior_mu_config(config):
     if (config.max_turns != 4 or config.force_final_answer is not False
             or (config.data.max_start_length, config.data.max_prompt_length,
                 config.data.max_response_length, config.data.max_obs_length) != (2048, 4096, 500, 500)
-            or (tree.roots, tree.leaves) != (2, 3)
+            or (tree.roots, tree.leaves) != ((1,5) if option(tree,'branch_sampling')=='recursive_uniform_v1' else (2,3))
             or config.data.train_batch_size != batch or actor.ppo_mini_batch_size != mini
             or actor.ppo_micro_batch_size != 16 or actor.ppo_epochs != 1
             or actor.optim.lr != 1e-6
@@ -144,7 +144,7 @@ def validate_config(config):
             require(config.max_turns==4 and config.force_final_answer is False and
                     (config.data.max_start_length,config.data.max_prompt_length,
                      config.data.max_response_length,config.data.max_obs_length)==(2048,4096,500,500) and
-                    (tree.roots,tree.leaves)==(2,3), 'Fixed Tree search budgets/caps changed')
+                    (tree.roots,tree.leaves)==((1,5) if option(tree,'branch_sampling')=='recursive_uniform_v1' else (2,3)), 'Fixed Tree search budgets/caps changed')
         if config.actor_rollout_ref.rollout.n_agent != tree.roots:
             raise ValueError('Tree roots must equal rollout.n_agent')
         if min(tree.roots, tree.leaves, tree.expansions, tree.rounds) < 1:
@@ -280,12 +280,12 @@ class Controller:
             self.ranker.validation = False
             self.ranker.events.clear()
         tree = self.config.tree if self.method == 'tree_grpo' else None
-        if tree is not None and option(tree, 'branch_sampling') == 'branpo_tail_v1':
+        if tree is not None and option(tree, 'branch_sampling') in ('branpo_tail_v1','recursive_uniform_v1'):
             def training_rewards(states):
                 return self.tree_training_rewards(engine, qa_batch, states)
             engine.reward_callback = training_rewards
         audit_dir = os.environ.get('SEARCH_R1_TREE_AUDIT_DIR')
-        if tree is not None and audit_dir:
+        if tree is not None and audit_dir and option(tree,'branch_sampling')!='recursive_uniform_v1':
             from .tree_audit import TreeAudit
             self.tree_audit_sequence = getattr(self, 'tree_audit_sequence', 0) + 1
             engine.audit = TreeAudit(audit_dir, os.environ.get('SEARCH_R1_BASELINE_OUTPUT'),

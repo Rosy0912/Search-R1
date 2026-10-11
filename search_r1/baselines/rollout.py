@@ -374,6 +374,10 @@ class SearchRollout:
         if tree is not None:
             from .tree_fresh200 import leaf_quotas, tree_option
             quotas = leaf_quotas(tree)
+            if tree_option(tree, 'branch_sampling') == 'recursive_uniform_v1':
+                states = self._recursive_branches(states, snapshots, tree, gen_batch.meta_info)
+                self.last_states = states
+                return self.compose(states)
             if tree_option(tree, 'branch_sampling') == 'branpo_tail_v1':
                 states = self._tail_branches(states, snapshots, quotas, tree, gen_batch.meta_info)
                 self.last_states = states
@@ -505,3 +509,86 @@ class SearchRollout:
                 continuation=0, sampled_reward=float(base_rewards[index]), stop_reason='original_root')
         self.tree_candidate_counts = [len(nodes) for nodes in snapshots]
         return [leaf for rows in leaves for leaf in rows]
+
+    def _recursive_branches(self, roots, snapshots, tree, meta):
+        """Execute one pending branch per question in each shared GPU batch."""
+        import dataclasses
+        import json
+        from pathlib import Path
+        from .recursive_branch import Record, Planner
+        from .tree_audit import state_signature, fingerprint
+        if tree.roots != 1 or self.reward_callback is None:
+            raise ValueError('Recursive search requires one root and strict reward callback')
+        directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
+        directory.mkdir(parents=True)
+        scores = self.reward_callback(roots)
+        def steps(state):
+            return [(tuple(x['action']['action_token_ids']),tuple(x['observation_token_ids']))
+                    for x in state.raw_ledger]
+        def record(state,nodes,parent=None,reward=0):
+            return Record(state.trajectory,parent.trajectory_id if parent else None,state.tree,
+                          parent.generation+1 if parent else 0,int(reward),state,nodes,steps(state),'initial')
+        planners=[]
+        for index,(root,nodes,score) in enumerate(zip(roots,snapshots,scores)):
+            question_dir=directory/str(index);question_dir.mkdir()
+            holder={};sequence=[0]
+            def emit(event,_dir=question_dir,_holder=holder,_seq=sequence,**fields):
+                _seq[0]+=1
+                if event=='branch_start':
+                    parent=_holder['planner'].parent
+                    snapshot=parent.snapshots[fields['action_index']]
+                    snapshot_path=_dir/('snapshot-%d.json'%fields['attempt'])
+                    payload=json.dumps(dataclasses.asdict(snapshot),allow_nan=False)
+                    with snapshot_path.open('x') as f:
+                        f.write(payload);f.flush();os.fsync(f.fileno())
+                    fields.update(snapshot=str(snapshot_path),snapshot_sha256=hashlib.sha256(payload.encode()).hexdigest())
+                with (_dir/'events.jsonl').open('a') as f:
+                    f.write(json.dumps(dict(event=event,event_seq=_seq[0],**fields),allow_nan=False)+'\n')
+                    f.flush();os.fsync(f.fileno())
+            planner=Planner(record(root,nodes,reward=score),self.rng,emit,
+                            target=tree.leaves,budget=tree.continuation_budget_per_question)
+            holder['planner']=planner;planners.append(planner)
+        while True:
+            requests=[]
+            for planner in planners:
+                request=planner.next_request()
+                if request is not None:requests.append((planner,request))
+            if not requests:break
+            children=[]
+            for planner,(parent,index,attempt) in requests:
+                snapshot=parent.snapshots[index];child=snapshot.branch()
+                if state_signature(snapshot)!=state_signature(child):
+                    raise ValueError('Branch changed executor state or inherited probabilities')
+                children.append(child)
+            try:
+                suffixes=self.complete(children,meta)
+                rewards=self.reward_callback(children)
+            except Exception as exc:
+                for planner,_ in requests:planner.accept_result(error=exc)
+                for planner in planners:
+                    if planner.reason is None:
+                        planner.reason='batch_execution_aborted'
+                        planner.end_search(planner.reason)
+                    planner.finish()
+                # Full search/pool terminal evidence precedes refusing this training outer.
+                raise
+            for (planner,(parent,index,attempt)),child,suffix,reward in zip(requests,children,suffixes,rewards):
+                snapshot=parent.snapshots[index];n=len(snapshot.response)
+                if (child.response[:n]!=snapshot.response or child.model_mask[:n]!=snapshot.model_mask or
+                    fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
+                    raise ValueError('Continuation changed inherited prefix')
+                result=record(child,parent.snapshots[:index]+suffix,parent,reward)
+                planner.accept_result(result)
+        selected=[]
+        self.recursive_summaries=[]
+        for planner in planners:
+            final=planner.finish()
+            self.recursive_summaries.append(dict(attempts=planner.attempts,selected=len(final),
+                accepted=len(planner.accepted)-1,same=len(planner.pool),
+                filled=sum(r.source=='failure_fill' for r in final),reason=planner.reason))
+            for r in final:
+                r.state.branch_metadata=dict(protocol='recursive_uniform_v1',generation=r.generation,
+                    parent_id=r.parent_id,root_id=r.root_id,source=r.source,sampled_reward=r.reward)
+                selected.append(r.state)
+        self.tree_candidate_counts=[x['attempts'] for x in self.recursive_summaries]
+        return selected
