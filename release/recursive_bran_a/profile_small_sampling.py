@@ -258,7 +258,14 @@ def main():
     start = time.perf_counter()
     llm = LLM(model=args.model, dtype='bfloat16', tensor_parallel_size=1,
         gpu_memory_utilization=args.memory_util, max_model_len=args.context, enforce_eager=True, seed=args.seed)
-    tokenizer = llm.get_tokenizer()
+    # Standard vLLM wraps its tokenizer and exposes special IDs as a set. The
+    # production Tree driver uses the original HF tokenizer, whose identity
+    # protocol deliberately requires the native ordered HF special-ID list.
+    # Load that real tokenizer rather than fabricating fields on vLLM's wrapper.
+    from transformers import AutoTokenizer
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    emit('tokenizer_identity', engine_tokenizer_class=type(llm.get_tokenizer()).__qualname__,
+         cpu_tokenizer_class=type(tokenizer).__qualname__, identity_source='original_hf_model_tokenizer')
     identity = raw_module.tokenizer_identity(tokenizer, args.tokenizer_sha)
     sizes = [int(x) for x in args.sizes.split(',')]
     if not sizes or any(x not in (16,32) for x in sizes): raise ValueError('Only fixed16/32 diagnostic cohorts')
