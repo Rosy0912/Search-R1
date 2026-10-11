@@ -29,7 +29,7 @@ def _bind():
  PARENT_COMPLETED_STEP=4;PARENT_OPTIMIZER_CALLS=80
  return b
 
-def validate_entry(config=None,environ=None):
+def validate_entry(config=None,environ=None,initialized=False):
  if not enabled(environ):return False
  b=binding(environ)
  if config is not None:
@@ -40,6 +40,10 @@ def validate_entry(config=None,environ=None):
   expected=json.loads(json.dumps(old))
   expected['trainer']['evaluation_steps']=[5,50,100,150,200]
   expected['trainer']['checkpoint_save_steps']=[5,50,100,150,200]
+  if initialized:
+   # Native _create_dataloader injects these scheduler counters before fit.
+   expected['actor_rollout_ref']['actor']['optim']['total_training_steps']=200
+   expected['critic']['optim']['total_training_steps']=201
   require(new==expected,'change exceeds explicit schedule fields')
  return True
 
@@ -126,7 +130,7 @@ def load_worker(worker):
 
 
 def migrate_trainer(trainer):
- require(validate_entry(trainer.config),'missing scope')
+ require(validate_entry(trainer.config,initialized=True),'missing scope')
  b=_bind();m=parent_manifest();workers=trainer.actor_rollout_wg.load_current_chain_training_state()
  require(len(workers)==8 and {r['rank'] for r in workers}==set(range(8)) and
  all(r['actual_cold_native_state_equal'] and r['adam_steps']==[80] and r['scheduler_step']==4 for r in workers),'cold worker state differs')
@@ -140,7 +144,7 @@ def migrate_trainer(trainer):
  parent_manifest_sha256=PARENT_MANIFEST_SHA256,parent_completed_step=4,parent_cursor=2048,parent_epoch=0,
  new_batch_size=512,child_code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
  child_config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],executor_equivalence=False,
- scope='same-world state restored; vLLM restart not claimed bitwise; only schedule changed')
+ scope='same-world state restored; vLLM restart not claimed bitwise; sparse recording and unused per-action HF scoring removal bound by child source commit')
  trainer.recovery_provenance=provenance;trainer.acceptance_released=True
  receipt=dict(status='COLD_RECURSIVE_A_STATE_MIGRATED',protocol=PROTOCOL,workers=workers,
  driver_actual_state_equal=True,next_outer=5,provenance=provenance)
