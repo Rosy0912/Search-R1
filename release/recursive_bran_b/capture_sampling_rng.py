@@ -5,6 +5,7 @@ update returns, before the driver can enqueue the next sampling RPC. No model,
 optimizer, scheduler, or RNG is modified. Full RNG bytes stay on the node.
 """
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -67,7 +68,7 @@ def main():
     if len(actors)!=4:
         raise ValueError('Expected all four exact original owned actor PIDs')
     digest=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    tasks=[x.actor_rollout_execute_with_func_generator.remote(capture,a.step,a.output,digest) for x in actors]
+    tasks=[x.actor_rollout_execute_with_func_generator.remote(functools.partial(capture,step=a.step,output=a.output,capture_sha=digest)) for x in actors]
     result=ray.get(tasks)
     assert {r['rank'] for r in result}==set(range(4))
     print(json.dumps(dict(status='FOUR_SAMPLING_STREAMS_CAPTURED',step=a.step,workers=result)))
