@@ -673,6 +673,13 @@ class ActorRolloutRefWorker(Worker):
         prompts = prompts.to('cuda')
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)
+        # Native recursive trajectories retain emitted behavior-mu directly.
+        # The trainer scores the assembled trajectory once; a per-action actor
+        # pass is only needed when the sampler/actor diagnostic is enabled.
+        if (self.config.rollout.get('tree_raw_emission', False)
+                and 'sampling_consistency' in self.config.rollout
+                and not self.config.rollout.sampling_consistency.enabled):
+            recompute_log_prob = False
         if 'sampling_consistency' in self.config.rollout:
             from search_r1.baselines.sampling_consistency import generation_preflight
             generation_preflight(self, prompts)
