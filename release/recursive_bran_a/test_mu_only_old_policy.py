@@ -54,6 +54,8 @@ class MuOnlyTests(unittest.TestCase):
         f.trainer['validate_final_behavior_mu_batch'](omitted, self.cfg)
         results = []
         for data in (full, omitted):
+            from tensordict import TensorDict
+            data.batch=TensorDict(dict(data.batch.items()),batch_size=[len(data)])
             actor = f.Actor(self.cfg)
             self.assertTrue(validate_actor_probability_profile(actor, data, self.cfg.policy_safety))
             current = actor.actor_module(torch.ones(len(data), 1)).expand_as(data.batch['responses'])

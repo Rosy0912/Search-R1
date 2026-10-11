@@ -251,7 +251,10 @@ def main():
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     emit('load_start', vllm_version=vllm.__version__, cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))
-    if vllm.__version__ != '0.6.3': raise ValueError('This helper is for actual vLLM0.6.3 only')
+    import importlib.metadata
+    installed=importlib.metadata.version('vllm')
+    emit('vllm_identity',installed_version=installed,reported_version=vllm.__version__,module=vllm.__file__)
+    if installed != '0.6.3': raise ValueError('This helper requires installed vLLM0.6.3; source builds can report dev')
     start = time.perf_counter()
     llm = LLM(model=args.model, dtype='bfloat16', tensor_parallel_size=1,
         gpu_memory_utilization=args.memory_util, max_model_len=args.context, enforce_eager=True, seed=args.seed)

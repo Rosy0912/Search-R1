@@ -118,7 +118,7 @@ def validate_actor_probability_profile(actor, data, config, *, return_context=Fa
             validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
             sampled, old = (data.batch[key] for key in ('sampled_old_log_probs', 'old_log_probs'))
             available = full_actor_beta_available(data.meta_info)
-            beta = data.batch.get('actor_old_log_probs')
+            beta = data.batch['actor_old_log_probs'] if 'actor_old_log_probs' in data.batch.keys() else None
             if available != (beta is not None):
                 raise ValueError('Actual beta presence differs from declared availability')
             if not available and (not actor.config.use_kl_loss or actor.config.kl_loss_coef != 0.):
