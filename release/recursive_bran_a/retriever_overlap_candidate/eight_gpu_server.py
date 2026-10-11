@@ -16,7 +16,7 @@ def main():
  class EightCandidate(old.Candidate):
   def health(self):
    result=super().health();result.update(index='full FP32 eight-GPU tiled FlatIP',gpu_shards=8,
-    partition='whole original tiles, contiguous balanced shard ranges',resident_index=False)
+    partition='round-robin whole original 32768-row tiles',resident_index=False)
    return result
   def admitted(self):
    c=self.read_bound_control(self.admission)
