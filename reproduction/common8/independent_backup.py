@@ -79,6 +79,24 @@ def paced_read(path, target=None, progress=None, rate=RATE):
     return total, digest.hexdigest()
 
 
+def external_validation_hashes(validation, original, raw):
+    """Use the separately authenticated actual CPU readback; preserve original complete.json."""
+    require(validation['status']=='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS' and validation['run_id']==RUN_ID and validation['step']==5,
+            'Unexpected external validation identity')
+    ranks=validation['ranks'];require(len(ranks)==8 and sorted(v['rank'] for v in ranks)==list(range(8)), 'Missing CPU rank readbacks')
+    require(all(v['actual_optimizer_writes']==100 and v['scheduler_last_epoch']==5 and v['optimizer_tensors_finite'] for v in ranks), 'Source actual Adam/scheduler validation differs')
+    require(validation['hf_saved_tensor_count']==435 and validation['driver_state']['completed_outer']==5 and validation['driver_state']['source_consumed']==10240, 'Source model/driver validation differs')
+    hashes={}
+    for row in validation['files']:
+        relative=Path(row['relative_path'])
+        require(not relative.is_absolute() and '..' not in relative.parts and str(Path(row['path']))==str(original/relative), 'Invalid source validation path')
+        sha=row['full_read_sha256'];require(len(sha)==64 and all(c in '0123456789abcdef' for c in sha), 'Malformed full SHA')
+        require(str(relative) not in hashes, 'Duplicate source validation file')
+        hashes[str(relative)]=sha
+    require(len(hashes)==23 and hashes['complete.json']==hashlib.sha256(raw).hexdigest(), 'Actual source file set/complete receipt differs')
+    return hashes
+
+
 def admit(step, root):
     require(step in (5, 50, 100, 150, 200), 'Unrequested save point')
     require(socket.gethostname() == 'h100-10', 'Backup must run on h100-10')
@@ -98,14 +116,25 @@ def admit(step, root):
     raw = (source / 'complete.json').read_bytes()
     complete = json.loads(raw)
     require(complete['run_id'] == RUN_ID and complete['step'] == step, 'Complete receipt identity differs')
-    require(complete['finite_all_saved_tensors'] is True and complete.get('training_state_readback'), 'Full state save is not complete')
+    external=(root/'INTENT.json')
+    intent=json.loads(external.read_text())
+    expected_hashes=None
+    if step==5 and not complete.get('training_state_readback'):
+        path=SOURCE_BASE/'diagnostics/checkpoint5-cpu-validation-once-v1/RESULT.json'
+        validation_raw=path.read_bytes()
+        require(hashlib.sha256(validation_raw).hexdigest()==intent.get('source_cpu_validation_sha256'), 'Separate actual CPU validation is not bound to backup intent')
+        expected_hashes=external_validation_hashes(json.loads(validation_raw),original,raw)
+    else:
+        require(complete.get('training_state_readback'), 'Full state readback missing')
+    require(complete['finite_all_saved_tensors'] is True, 'HF state is not finite')
     manifest = json.loads((source / 'training_state/manifest.json').read_text())
     require(manifest['completed_outer'] == step, 'Training state step differs')
     proofs = manifest['worker_files']
     require(sorted(p['rank'] for p in proofs) == list(range(8)), 'Missing actual rank state')
-    writes = complete['actual_optimizer_writes_per_rank']
+    uses_external_validation=expected_hashes is not None
+    writes = 100 if uses_external_validation else complete['actual_optimizer_writes_per_rank']
     require(writes > 0 and all(p['actual_optimizer_writes'] == writes and p['run_id'] == RUN_ID for p in proofs), 'Adam receipt differs')
-    expected_hashes = dict(complete['files_sha256'])
+    if expected_hashes is None:expected_hashes = dict(complete['files_sha256'])
     expected_hashes['complete.json'] = hashlib.sha256(raw).hexdigest()
     for proof in proofs + [manifest['driver_file']]:
         relative = str(Path(proof['path']).relative_to(original))
@@ -119,7 +148,8 @@ def admit(step, root):
         relative = str(path.relative_to(source))
         files.append(dict(relative_path=relative, bytes=path.stat().st_size,
                           expected_sha256=expected_hashes.get(relative)))
-    require(set(expected_hashes) <= {p['relative_path'] for p in files}, 'Receipt references absent files')
+    actual_names={p['relative_path'] for p in files}
+    require((set(expected_hashes)==actual_names if uses_external_validation else set(expected_hashes)<=actual_names), 'Full source file set differs from verified receipt')
     need = sum(p['bytes'] for p in files)
     fs = os.statvfs(root)
     free = fs.f_bavail * fs.f_frsize

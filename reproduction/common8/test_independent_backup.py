@@ -85,5 +85,26 @@ class IndependentBackupTests(unittest.TestCase):
             self.assertEqual(result['status'], 'FAILED_PRESERVE_SOURCE_AND_PARTIAL')
 
 
+class ExternalValidationTests(unittest.TestCase):
+    def fixture(self):
+        original=backup.ORIGINAL_BASE/'checkpoints/search-g1-common8/actor/global_step_5'
+        raw=b'{"HF_only_original":true}'
+        files=[dict(relative_path='complete.json',path=str(original/'complete.json'),full_read_sha256=hashlib.sha256(raw).hexdigest())]
+        for i in range(22):files.append(dict(relative_path='file-'+str(i),path=str(original/('file-'+str(i))),full_read_sha256='a'*64))
+        proof=dict(status='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS',run_id=backup.RUN_ID,step=5,
+            ranks=[dict(rank=i,actual_optimizer_writes=100,scheduler_last_epoch=5,optimizer_tensors_finite=True) for i in range(8)],
+            hf_saved_tensor_count=435,driver_state=dict(completed_outer=5,source_consumed=10240),files=files)
+        return proof,original,raw
+    def test_external_actual_state_hashes_preserve_original_hf_only_receipt(self):
+        proof,original,raw=self.fixture();hashes=backup.external_validation_hashes(proof,original,raw)
+        self.assertEqual(len(hashes),23);self.assertEqual(hashes['complete.json'],hashlib.sha256(raw).hexdigest())
+        self.assertEqual(raw,b'{"HF_only_original":true}')
+    def test_wrong_actual_counter_or_changed_receipt_rejected(self):
+        proof,original,raw=self.fixture();proof['ranks'][0]['actual_optimizer_writes']=0
+        with self.assertRaises(ValueError):backup.external_validation_hashes(proof,original,raw)
+        proof,original,raw=self.fixture()
+        with self.assertRaises(ValueError):backup.external_validation_hashes(proof,original,raw+b'changed')
+
+
 if __name__ == '__main__':
     unittest.main()
