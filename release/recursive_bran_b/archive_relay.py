@@ -1,5 +1,6 @@
 """Local control and small receipts only; large payloads stay in an SSH pipe."""
 import argparse
+import hashlib
 import json
 import pathlib
 import shlex
@@ -54,8 +55,12 @@ def run_once(a, proofdir):
         if (d/'pruned.json').exists():
             continue
         inv = ssh('hkust5',a.source_helper,'inventory',options=['--kind',item['kind'],'--step',str(item['step'])])
-        # Inventory contains only paths/bytes/hashes, no tensors or raw trajectories.
-        save(d/'inventory.json',inv)
+        # Full inventories stay in RAM and on the remote source/destination.
+        # Local control retains only a small audit summary.
+        save(d/'inventory-summary.json', dict(kind=inv['kind'],step=inv['step'],
+            run_id=inv['run_id'],source_commit=inv['source_commit'],
+            members=len(inv['members']),bytes=sum(x['bytes'] for x in inv['members']),
+            inventory_sha256=hashlib.sha256(json.dumps(inv,sort_keys=True,separators=(',',':')).encode()).hexdigest()))
         target = ssh('hkust4',a.target_helper,'verify',json.dumps(inv).encode())
         if target['exists']:
             receipt = target['receipt']
