@@ -18,7 +18,7 @@ replacements={'baselines.local_runtime_host':socket.gethostname().split('.')[0],
  'data.final_val_files':str(data/'final.parquet'),'baselines.holdout.manifest_path':str(data/'manifest.json'),
  'baselines.holdout.manifest_sha256':hashlib.sha256((data/'manifest.json').read_bytes()).hexdigest(),
  'baselines.holdout.data_root':str(data),'trainer.acceptance_gate_enabled':'false',
- 'trainer.experiment_name':'recursive-bran-a-hkust1-200','retriever.url':'http://127.0.0.1:18004/retrieve',
+ 'trainer.experiment_name':'recursive-bran-a-hkust1-200','retriever.url':'http://10.120.17.101:18004/retrieve',
  'trainer.default_local_dir':str(b/'checkpoints')}
 overrides=[k+'='+str(replacements.get(k,v)) for k,v in [x.split('=',1) for x in overrides]]
 with initialize_config_dir(config_dir=str(repo/'verl/trainer/config'),version_base=None):
