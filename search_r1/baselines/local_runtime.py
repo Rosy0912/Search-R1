@@ -18,14 +18,20 @@ def check_local_runtime(config, ray_nodes=None):
     expected = config.baselines.local_runtime_host
     if not expected or socket.gethostname().split('.')[0] != expected:
         raise ValueError('Runtime is not on the expected local host')
-    if os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
+    direct=os.environ.get('SEARCH_R1_EXECUTION_BACKEND')=='hkust_direct'
+    if direct:
+        if expected!='xielab1' or os.getuid()!=1005 or not os.environ.get('SEARCH_R1_BASELINE_RUN_ID'):
+            raise ValueError('Direct HKUST runtime identity changed')
+        from .preflight import validate_inherited_gpu_leases
+        validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
+    elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
         raise ValueError('Local runtime requires the matching Slurm allocation')
     parsed = urlparse(config.retriever.url)
     if (parsed.scheme != 'http' or not loopback(parsed.hostname or '') or parsed.username
             or parsed.password or parsed.path != '/retrieve'):
         raise ValueError('Retriever must be a local loopback HTTP service')
     address = os.environ.get('RAY_ADDRESS', '')
-    if not loopback(urlparse('http://' + address).hostname or ''):
+    if not (direct and address=='local') and not loopback(urlparse('http://' + address).hostname or ''):
         raise ValueError('Ray must use an explicit local loopback address')
     proxies = ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy')
     if any(os.environ.get(name) for name in proxies):
