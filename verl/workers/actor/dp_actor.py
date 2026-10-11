@@ -276,7 +276,7 @@ class DataParallelPPOActor(BasePPOActor):
                 audit = ActorAudit(self.actor_module, batch, data.meta_info, self.config.ppo_epochs)
         elif self.config.get('baseline_method') == 'tree_grpo':
             from search_r1.baselines.tree_rank_audit import enabled, TreeRankAudit
-            if enabled():
+            if enabled(data.meta_info['baseline_outer_step']):
                 audit = TreeRankAudit(self.actor_module, batch, data.meta_info, self.config, __file__)
 
         # Split to make minibatch iterator for updating the actor

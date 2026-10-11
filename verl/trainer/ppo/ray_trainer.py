@@ -1087,7 +1087,8 @@ class RayPPOTrainer(object):
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
                                 audit_controller.audit_actor_batch(batch)
-                            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+                            from search_r1.baselines.recording_schedule import record_details
+                            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR') and record_details(self.global_steps):
                                 from search_r1.baselines.trajectory_log import save_rollouts
                                 save_rollouts(batch,self.tokenizer,self.global_steps,
                                               os.environ['SEARCH_R1_TRAJECTORY_DIR'])

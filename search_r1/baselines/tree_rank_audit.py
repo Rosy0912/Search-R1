@@ -9,8 +9,9 @@ from pathlib import Path
 import torch
 
 
-def enabled():
-    return bool(os.environ.get('SEARCH_R1_TREE_RANK_AUDIT_DIR'))
+def enabled(step=None):
+    from .recording_schedule import record_details
+    return bool(os.environ.get('SEARCH_R1_TREE_RANK_AUDIT_DIR')) and (step is None or record_details(step))
 
 
 class TreeRankAudit:
