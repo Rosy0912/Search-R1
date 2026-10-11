@@ -108,10 +108,40 @@ def generation_source(model_config, loader, *, run=None):
         run = _json(_read(Path(os.environ['SEARCH_G1_BASE']) / 'logs/run-manifest.json'))
     _require(run['profile'] == 'common8' and run['source_sha256'], 'missing actual common8 run')
     model = Path(model_config.model).resolve()
-    _require(model == Path(run['initial_model']) and model.is_absolute(), 'loader uses a different model')
+    expected_model = Path(run['initial_model']).resolve()
+    restore = run.get('full_state_restore')
+    if restore:
+        # Admit only the independently validated checkpoint of this experiment.
+        # Sampling metadata must still match the original official file below.
+        from search_g1.full_state_restore import source, digest as file_digest
+        receipt, verified, checkpoint, _, parent = source(restore['source_receipt'])
+        _require(file_digest(receipt) == restore['source_receipt_sha256'] and
+                 checkpoint == Path(restore['source_checkpoint']).resolve() and
+                 parent['run_id'] == run['run_id'] and
+                 parent['initial_model_sha256'] == run['initial_model_sha256'],
+                 'restored sampling source binding changed')
+        expected_model = checkpoint
+    _require(model == expected_model and model.is_absolute(), 'loader uses a different model')
     path = model / 'generation_config.json'
     raw = _read(path); sha = hashlib.sha256(raw).hexdigest()
-    _require(sha == run['initial_model_sha256']['generation_config.json'], 'original generation file changed')
+    if restore:
+        original_raw = _read(Path(run['initial_model']) / 'generation_config.json')
+        _require(hashlib.sha256(original_raw).hexdigest() ==
+                 run['initial_model_sha256']['generation_config.json'], 'original generation file changed')
+        saved = next(value for value in verified['files']
+                     if value['relative_path'] == 'generation_config.json')
+        _require(sha == saved['full_read_sha256'], 'saved generation file changed')
+        # save_pretrained updates this serialization-version field. Every
+        # actual sampling field, including EOS IDs, must remain exactly equal.
+        original_fields = _json(original_raw)
+        saved_fields = _json(raw)
+        for fields in (original_fields, saved_fields):
+            _require(type(fields) is dict, 'generation file is not a document')
+            fields.pop('transformers_version', None)
+        _require(canonical(saved_fields) == canonical(original_fields),
+                 'saved generation sampling fields changed')
+    else:
+        _require(sha == run['initial_model_sha256']['generation_config.json'], 'original generation file changed')
     document = _json(raw)
     _require(type(document) is dict, 'generation file is not a document')
     eos = _ids(document.get('eos_token_id'), 'generation EOS', optional=True)

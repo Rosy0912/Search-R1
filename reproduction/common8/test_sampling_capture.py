@@ -463,6 +463,32 @@ class ActualGroupCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'actual loader fields'):
             stop_capture.loaded_generation(self.generation, {'eos_token_id': 7}, self.document)
 
+    def test_restored_loader_accepts_only_verified_checkpoint_and_original_metadata(self):
+        checkpoint = self.model.parent / 'checkpoint5'; checkpoint.mkdir()
+        saved_document = dict(self.document, transformers_version='4.46.3')
+        (checkpoint / 'generation_config.json').write_text(json.dumps(saved_document))
+        run = copy.deepcopy(self.run)
+        run['full_state_restore'] = dict(source_receipt='/cpu-fixture/receipt.json',
+            source_receipt_sha256='e' * 64, source_checkpoint=str(checkpoint))
+        bound = (Path('/cpu-fixture/receipt.json'), {'files': [dict(relative_path='generation_config.json', full_read_sha256=hashlib.sha256((checkpoint / 'generation_config.json').read_bytes()).hexdigest())]}, checkpoint, self.model.parent, self.run)
+        with patch.dict(os.environ, {'SLURM_JOB_ID': '12345'}), \
+             patch('search_g1.full_state_restore.source', return_value=bound), \
+             patch('search_g1.full_state_restore.digest', return_value='e' * 64):
+            document, record = stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+            self.assertEqual(record['model_path'], str(checkpoint))
+            self.assertEqual(document, saved_document)
+            with self.assertRaisesRegex(ValueError, 'different model'):
+                stop_capture.generation_source(S(model=str(self.model)), fixture_loader, run=run)
+            changed = copy.deepcopy(run); changed['full_state_restore']['source_receipt_sha256'] = 'f' * 64
+            with self.assertRaisesRegex(ValueError, 'binding changed'):
+                stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=changed)
+            (checkpoint / 'generation_config.json').write_text('{"eos_token_id":[7,10]}')
+            with self.assertRaisesRegex(ValueError, 'saved generation file changed'):
+                stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+            bound[1]['files'][0]['full_read_sha256'] = hashlib.sha256((checkpoint / 'generation_config.json').read_bytes()).hexdigest()
+            with self.assertRaisesRegex(ValueError, 'sampling fields changed'):
+                stop_capture.generation_source(S(model=str(checkpoint)), fixture_loader, run=run)
+
     def test_generation_metadata_symlink_and_oversized_files_reject(self):
         target = self.model / 'other.json'; target.write_text('{}')
         self.path.unlink(); self.path.symlink_to(target)

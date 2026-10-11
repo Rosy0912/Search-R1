@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-11T11:25:34.776880+00:00",
+  "returncode": 0,
+  "stdout": "",
+  "stderr": ".........../mnt/data/shaoshitong/search-g1-resume5-3494f75-20261011/env/lib/python3.10/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:\nNo module named 'vllm._version'\n  from vllm.version import __version__ as VLLM_VERSION\n..............\n----------------------------------------------------------------------\nRan 25 tests in 2.204s\n\nOK\n"
+}
