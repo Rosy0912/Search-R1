@@ -1,0 +1,239 @@
+{
+  "utc": "2026-10-11T18:34:29.684891+00:00",
+  "job": "JobId=3379 JobName=search-g1-mixed200 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898687 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:10:41 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-12T02:21:51 EligibleTime=2026-10-12T02:21:51 AccrueTime=2026-10-12T02:21:51 StartTime=2026-10-12T02:21:51 EndTime=2026-10-12T02:32:32 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-12T02:21:51 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:138003 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/preparation/launch-mixed-native.sh WorkDir=/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/repo StdErr=/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/native-3379.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/native-3379.log Power= \n",
+  "video": "JobId=3371 JobName=zhy072-fqg-vb-Di1500sf UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898695 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=01:18:52 TimeLimit=08:00:00 TimeMin=N/A SubmitTime=2026-10-11T21:46:23 EligibleTime=2026-10-12T01:15:36 AccrueTime=2026-10-12T01:15:36 StartTime=2026-10-12T01:15:37 EndTime=2026-10-12T09:15:37 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-12T01:15:37 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:3960814 ReqNodeList=(null) ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=768G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=768G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/shared/workspace/fastquantgen_step2/aug_sf/slurm_vbench.sh Di1500sf /mnt/shared/workspace/training_data_node_5/fastquantgen_step2/step2/runs/D/ckpt/step_001500 WorkDir=/mnt/data/fastquantgen_step2/step2/code/step2_qat_dmd StdErr=/mnt/shared/workspace/fastquantgen_step2/slurm/zhy072-fqg-vb-Di1500sf-3371.out StdIn=/dev/null StdOut=/mnt/shared/workspace/fastquantgen_step2/slurm/zhy072-fqg-vb-Di1500sf-3371.out Power= TresPerNode=gres:gpu:h100:8 \n",
+  "own_cgroup_pids": [],
+  "original_training_pids_gone": true,
+  "cleanup": {
+    "run_id": "15bb15365346401da1d919e9cde8f813",
+    "cleaned": true,
+    "checked_unix": 1791743551.9286628
+  },
+  "new_adam_writes": 0,
+  "original_inode_terminal_logs": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/checkpoint-disk-admission.json",
+      "inode": 176434076,
+      "device": 64768,
+      "bytes": 32109,
+      "full_sha256": "e4d98fa2469f6413d56723b8dc937a76b26d797dc15e191bb270f0d27831cbb3"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/cleanup-status.json",
+      "inode": 176434242,
+      "device": 64768,
+      "bytes": 107,
+      "full_sha256": "b1879c5c94017bd19085c03e61f8e4422123225a99d97ff30aa86d73a7ab5c29"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/corpus-cache-claim.json",
+      "inode": 176434092,
+      "device": 64768,
+      "bytes": 7009,
+      "full_sha256": "eca91bcae42c22d26b53eec0a1743c7d8d04e995406e53f2d75e22fc3f2860c8"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/corpus-cache-cleanup.json",
+      "inode": 176434128,
+      "device": 64768,
+      "bytes": 5102,
+      "full_sha256": "508d217ec86af66e68bf75297c49a78328ecacfbfe532b66d681d7855cf19ae6"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/corpus-extraction.json",
+      "inode": 176434091,
+      "device": 64768,
+      "bytes": 1140,
+      "full_sha256": "425c156f13026d19c0c77973221030b789035968f1e44b4d26890670815a9a07"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/eight-rank-admission.json",
+      "inode": 176434078,
+      "device": 64768,
+      "bytes": 653,
+      "full_sha256": "c6ecafa92b9bbcc48b42b155ec8cdb7c2331e2bbdcf2a75ccaf3cb737eac25dd"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/evaluator-gpu.lock",
+      "inode": 176434120,
+      "device": 64768,
+      "bytes": 0,
+      "full_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/evaluator-release-admission.json",
+      "inode": 176434121,
+      "device": 64768,
+      "bytes": 345,
+      "full_sha256": "506c4f958f68a4bf07f84d6f2f18a6812cba699b0bc017b07111e1d05ffb473a"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/formal-inline-initial-probe.json",
+      "inode": 176434124,
+      "device": 64768,
+      "bytes": 2043,
+      "full_sha256": "ba1da0b473a1d2a8ea450598b3ef54d5367b02eef24f80fbeaaeba926c519955"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/gpu-samples-15bb15365346401da1d919e9cde8f813.jsonl",
+      "inode": 176434080,
+      "device": 64768,
+      "bytes": 398678,
+      "full_sha256": "8c1482d5d2b4c3dcadf4cea8aa59498c5e99ec6c33dcee30be327db25d8a3738"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/initial-probes-accepted.json",
+      "inode": 176434100,
+      "device": 64768,
+      "bytes": 574794,
+      "full_sha256": "ebd21ac382337abf70136d3a1bd634236df43b5695b32b6b2d052cf4c6f5db77"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/native-3379.log",
+      "inode": 176434048,
+      "device": 64768,
+      "bytes": 83232,
+      "full_sha256": "7b77a2150cd4eb304c95fa4de7ba3fe9261eaeb2feb67fe5dfc46c217101b187"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/native-allocation-admission.json",
+      "inode": 176434074,
+      "device": 64768,
+      "bytes": 15883,
+      "full_sha256": "d65d2441355ee522a6fffd462f9acd39cedcd59603e5d7e0a8232d27d7dc6c64"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/pipeline-status.json",
+      "inode": 176434240,
+      "device": 64768,
+      "bytes": 164,
+      "full_sha256": "4c9ca9ed10228e0095d1d90512f683a16ae828e3e5df01b8ae1808461c2daa75"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/policy-safety-calibration.json",
+      "inode": 176434131,
+      "device": 64768,
+      "bytes": 103706,
+      "full_sha256": "2911c2e53b51dc4c5bd8c90ca61613c25a849688d6a79cac59edfa0f5a48b301"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/probe-admission.log",
+      "inode": 176434123,
+      "device": 64768,
+      "bytes": 102,
+      "full_sha256": "31a7799bf607f26580579996eca121a029ea5ea32fb3c4d782d829399cb7f4ae"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/probe-coexistence-admission.json",
+      "inode": 176434122,
+      "device": 64768,
+      "bytes": 275,
+      "full_sha256": "f74e94c0c8628f175e7f7e5c33d60386c7477d1405b8c9362f75e40a21c3f1a2"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/probe-server.log",
+      "inode": 176434085,
+      "device": 64768,
+      "bytes": 2100,
+      "full_sha256": "cefe79752318634e93749c73bd5c0e2c3272d82dc6af4323407974eeca3ec513"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/process-ledger.json",
+      "inode": 176434239,
+      "device": 64768,
+      "bytes": 510687,
+      "full_sha256": "6570bf5f3517ea7654125229eadaebdc9c4c68097f9b5d92b3397217c1847673"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/resolved-training-config.json",
+      "inode": 176434135,
+      "device": 64768,
+      "bytes": 12670,
+      "full_sha256": "cea8f022892dcf9fd57f3f1dba19d9c196f0c6e5b635d6541808f9aeaab5deab"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-admission.json",
+      "inode": 176434096,
+      "device": 64768,
+      "bytes": 31770,
+      "full_sha256": "7bad76c48e71a4d624e9ccb388b3e84c33f938e852ced3d314ffc059b3e9d2a3"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-assets.json",
+      "inode": 176434083,
+      "device": 64768,
+      "bytes": 1181,
+      "full_sha256": "64702b8cfb4abcfea99085bb07ae733fe37f7ae825ccb537316da81c81d608cc"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-http-admission.json",
+      "inode": 176434099,
+      "device": 64768,
+      "bytes": 20049,
+      "full_sha256": "add58345e4c5b48b6a86eb3db2d4e0aadf8ccda1c0225fd1956c03a864f0d012"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-stage.log",
+      "inode": 176434081,
+      "device": 64768,
+      "bytes": 1070,
+      "full_sha256": "70fbee56cd90a1be8f16baaf188bfbb6befad10e6ed7db7c5b2a2c99faf50120"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-staging-claim.json",
+      "inode": 176434077,
+      "device": 64768,
+      "bytes": 499,
+      "full_sha256": "adfc073d7f41501ab21659e85efd380247182085dc64f6ca080b8fdf4e939be0"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-staging-cleanup.json",
+      "inode": 176434241,
+      "device": 64768,
+      "bytes": 332,
+      "full_sha256": "8eedbfdcb1a2455d0f51d2d6e09bd0dad842554861926914e57ec2a1b4b70a40"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retrieval-staging-status.json",
+      "inode": 176434084,
+      "device": 64768,
+      "bytes": 1181,
+      "full_sha256": "64702b8cfb4abcfea99085bb07ae733fe37f7ae825ccb537316da81c81d608cc"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/retriever.log",
+      "inode": 176434079,
+      "device": 64768,
+      "bytes": 25030,
+      "full_sha256": "c6e63215a7f53cde2eb759de6d9240ed45bde83d7fb256ef3297d1a016f5d9e2"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/run-manifest.json",
+      "inode": 176434127,
+      "device": 64768,
+      "bytes": 87278,
+      "full_sha256": "bd05eb9ac32ae3aa5a03ed7aacd0986295e79d2e003a7f7437c6339170962821"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/search-g1-common8-training.log",
+      "inode": 176434134,
+      "device": 64768,
+      "bytes": 68905,
+      "full_sha256": "c2c54c37f631072d61052e6c1d2b0e39a925c556d9d496464b8ee1267f2423a3"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/trainer.log",
+      "inode": 176434113,
+      "device": 64768,
+      "bytes": 70054,
+      "full_sha256": "608af5b07d11004812a20c203f2fb620b106304a47a3deb16be2449cfc381fc0"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-c7785c0-20261012/logs/training-launch-claim.json",
+      "inode": 176434133,
+      "device": 64768,
+      "bytes": 987,
+      "full_sha256": "ffba1df11bd895ece742f62e4bb4ac956dc79d9b971b7a7b40c5443d35e41b64"
+    }
+  ]
+}
