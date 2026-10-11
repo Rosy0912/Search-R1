@@ -121,6 +121,8 @@ def main():
             data=json.loads((ROOT/'data-recovery-5.json').read_text())
             if not data['equal']:raise RuntimeError('Historical5 data state mismatch')
             (ROOT/'common-historical-validation/5.recovery.json').write_text(json.dumps({'source_step':5,'actual_equal_role_rank_count':len(loaded),'zero_ppo':True,'data_state':data},indent=2)+'\n')
+            from compare_historical_common import compare
+            compare(ROOT)
             import shutil
             old=ROOT/'historical-checkpoints';old.mkdir(exist_ok=True)
             shutil.move(str(historical),str(old/'global_step_5'))

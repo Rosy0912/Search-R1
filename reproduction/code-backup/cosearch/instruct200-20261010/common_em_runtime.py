@@ -96,7 +96,8 @@ def verify_validation(step,folder,expected_rows):
         expected.append(identity(d['question'],d['answers']))
     if len(rows)!=expected_rows or Counter(x['question_answer_sha256'] for x in rows)!=Counter(expected):raise RuntimeError('Common evaluation question/answer identity mismatch')
     if not all(x.get('model_actions') is not None for x in rows):raise RuntimeError('Missing model author boundaries')
-    receipt=summarize(rows);receipt.update(step=step,job=os.environ['SLURM_JOB_ID'],status='ONLINE_COMMON_SCORER_FULL_IDENTITIES_PASS',path=str(root()/folder/(str(step)+'.jsonl')),per_question_sha256=hashlib.sha256((root()/folder/(str(step)+'.jsonl')).read_bytes()).hexdigest(),question_answer_manifest_sha256=hashlib.sha256(json.dumps(sorted(expected)).encode()).hexdigest())
+    receipt=summarize(rows);receipt['series_kind']='online_common_scoring_regenerated_historical_checkpoint' if folder=='common-historical-validation' else 'online_common_scoring'
+    receipt.update(step=step,job=os.environ['SLURM_JOB_ID'],status='ONLINE_COMMON_SCORER_FULL_IDENTITIES_PASS',path=str(root()/folder/(str(step)+'.jsonl')),per_question_sha256=hashlib.sha256((root()/folder/(str(step)+'.jsonl')).read_bytes()).hexdigest(),question_answer_manifest_sha256=hashlib.sha256(json.dumps(sorted(expected)).encode()).hexdigest())
     if expected_rows==512:
         counts=sorted(x['questions'] for x in receipt['datasets'].values())
         if counts!=[256,256] or set(receipt['datasets'])!={'nq','hotpotqa'}:raise RuntimeError('Validation must be NQ256 plus Hotpot256')
