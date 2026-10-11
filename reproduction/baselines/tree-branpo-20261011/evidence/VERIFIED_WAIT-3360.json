@@ -1,7 +1,9 @@
 {
   "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791730471.3366313,
-  "second_observed_epoch": 1791730547.9287965,
-  "evidence": "Dev90actual512complete,NQ256Hotpot256;fulltimer90;rolling90SAVED;actual91started"
+  "first_observed_epoch": 1791731223.58722,
+  "second_observed_epoch": 1791731386.4388614,
+  "first_complete_outer": 90,
+  "second_complete_outer": 91,
+  "evidence": "Outer91 updates finalized; full timer, rolling91SAVED, actual92 started"
 }
