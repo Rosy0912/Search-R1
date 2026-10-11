@@ -4,6 +4,7 @@ import os
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 import torch
 # Load the native transport before the legacy collector temporarily stubs verl.
@@ -97,7 +98,10 @@ class MuOnlyTests(unittest.TestCase):
         self.assertNotIn('actor_old_log_probs', data.batch.keys())
         # Run the actual update_policy body, not a manually rebuilt PPO formula.
         # Fixture rank-audit defaults are older; disable only detailed audit.
-        with patch.object(f.rank_audit, 'enabled', lambda *args: False):
+        kl = f.ast_members(f.ROOT/'verl/trainer/ppo/core_algos.py',
+            ('kl_penalty',), dict(torch=torch))['kl_penalty']
+        with patch.object(f.rank_audit, 'enabled', lambda *args: False), \
+                patch.dict(f.actor_scope, core_algos=SimpleNamespace(kl_penalty=kl)):
             metrics = actor.update_policy(data)
         self.assertEqual(actor._fresh_total_committed_optimizer_calls, 1)
         self.assertEqual(int(actor.actor_optimizer.state[actor.actor_module.weight]['step']), 1)
