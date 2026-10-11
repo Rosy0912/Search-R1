@@ -331,6 +331,9 @@ class Controller:
         return output, sources
 
     def tree_training_rewards(self, engine, qa_batch, states):
+        if os.environ.get('TREE_LIGHTWEIGHT_CANDIDATE_REWARD')=='1':
+            from .candidate_qa_reward import candidate_qa_rewards
+            return candidate_qa_rewards(engine,qa_batch,states,self.trainer.reward_fn)
         # Compose generated trajectories first; append only source metadata.
         # No targets or rewards enter model generation contexts.
         scored, sources = engine.compose(states)
