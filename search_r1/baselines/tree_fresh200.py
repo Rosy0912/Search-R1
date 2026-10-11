@@ -129,3 +129,12 @@ def validate_recursive_config(config):
         or config.baselines.model_revision!=REVISION or config.max_turns!=4
         or config.force_final_answer or config.actor_rollout_ref.model.path!=config.actor_rollout_ref.ref.model_path):
         raise ValueError('Recursive document experiment A/B contract changed')
+
+
+def validate_initial_worker_receipts(receipts, world_size):
+    """Verify every actual fresh rank, including the authorized four-rank B."""
+    if type(world_size) is not int or world_size not in (4, 8):
+        raise RuntimeError('Fresh200 unexpected worker world')
+    if (len(receipts) != world_size or {r['rank'] for r in receipts} != set(range(world_size))
+            or any(r['optimizer_state_entries'] != 0 or r['scheduler_step'] != 0 for r in receipts)):
+        raise RuntimeError('Fresh200 actual worker initialization proof incomplete')

@@ -855,9 +855,8 @@ class RayPPOTrainer(object):
             if getattr(self, 'actual_outer_updates', 0) != 0:
                 raise RuntimeError('Fresh200 driver is not in a new initialization state')
             receipts = self.actor_rollout_wg.inspect_fresh_initialization(self.config.actor_rollout_ref.model.path)
-            if (len(receipts) != 8 or {r['rank'] for r in receipts} != set(range(8))
-                    or any(r['optimizer_state_entries'] != 0 or r['scheduler_step'] != 0 for r in receipts)):
-                raise RuntimeError('Fresh200 actual worker initialization proof incomplete')
+            from search_r1.baselines.tree_fresh200 import validate_initial_worker_receipts
+            validate_initial_worker_receipts(receipts, self.actor_rollout_wg.world_size)
             self.actual_outer_updates = 0
             self.fresh_initialization_provenance = dict(status=(
                 'COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_CURRENT_CHAIN_MIGRATION'
