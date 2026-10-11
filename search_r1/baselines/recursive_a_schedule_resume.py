@@ -24,7 +24,7 @@ def binding(environ=None):
  if b.get('handoff_contract')==HANDOFF and b['parent_completed_step']==5:
   require(b['parent_commit']=='d5542fe5fad12abd672926e67fbfd9df53bb7187' and
    b['parent_config_sha256']=='c5be8a8e679684fbb8bb5ca360d99188a1b88d5a7ab4eff0b08fa6f3bc029553' and
-   b['parent_identity']['run_id']=='3bdfeb78c2a7480980f190a5c1c96bdf','wrong live5 optimization handoff')
+   b['parent_identity']['job_id']=='hkust-direct-3bdfeb78c2a7480980f190a5c1c96bdf','wrong live5 optimization handoff')
   require(type(b.get('parent_optimizer_calls')) is int and 80<=b['parent_optimizer_calls']<=100,'wrong observed5 Adam count')
  else:
   require((b['parent_commit'],b['parent_config_sha256'])==expected[b['parent_completed_step']],'wrong parent chain')
