@@ -68,7 +68,7 @@ def main():
     if len(actors)!=4:
         raise ValueError('Expected all four exact original owned actor PIDs')
     digest=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    tasks=[x.actor_rollout_execute_with_func_generator.remote(functools.partial(capture,step=a.step,output=a.output,capture_sha=digest)) for x in actors]
+    tasks=[x.actor_rollout_execute_with_func_generator.remote(func=functools.partial(capture,step=a.step,output=a.output,capture_sha=digest)) for x in actors]
     result=ray.get(tasks)
     assert {r['rank'] for r in result}==set(range(4))
     print(json.dumps(dict(status='FOUR_SAMPLING_STREAMS_CAPTURED',step=a.step,workers=result)))

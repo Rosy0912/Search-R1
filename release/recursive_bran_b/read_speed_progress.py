@@ -25,6 +25,6 @@ for r in ray._private.state.actors().values():
   assert r['ActorClassName']=='create_colocated_worker_cls.<locals>.WorkerDict'
   actors.append(ray.get_actor(r['Name'],namespace=names[r['Name']]))
 assert len(actors)==4
-result=ray.get([x.actor_rollout_execute_with_func_generator.remote(read_worker) for x in actors]);assert {r['rank'] for r in result}==set(range(4))
+result=ray.get([x.actor_rollout_execute_with_func_generator.remote(func=read_worker) for x in actors]);assert {r['rank'] for r in result}==set(range(4))
 print(json.dumps(dict(status='ACTUAL_NATIVE_CACHE_AND_UPDATE_SCALARS_READ',workers=result)))
 ray.shutdown()
