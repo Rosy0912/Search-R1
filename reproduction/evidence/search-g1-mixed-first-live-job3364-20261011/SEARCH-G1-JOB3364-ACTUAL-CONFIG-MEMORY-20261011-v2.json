@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-11T05:00:54.115449+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-11T05:00:53.588124+00:00\\\", \\\"run_id\\\": \\\"15bb15365346401da1d919e9cde8f813\\\", \\\"actor_local_micro\\\": 2, \\\"global_micro\\\": 16, \\\"vllm_utilization\\\": 0.1, \\\"gradient_accumulation\\\": 8, \\\"budget\\\": {\\\"world_size\\\": 8, \\\"train_batch_size\\\": 512, \\\"n_agent\\\": 5, \\\"trajectory_count\\\": 2560, \\\"ppo_mini_batch_size\\\": 128, \\\"optimizer_opportunities_per_outer\\\": 20, \\\"compute_dtype\\\": \\\"float32\\\"}, \\\"resolved-training-config.json\\\": {\\\"actor\\\": {\\\"ppo_micro_batch_size\\\": 16, \\\"ppo_mini_batch_size\\\": 128, \\\"ppo_epochs\\\": 1, \\\"compute_dtype\\\": \\\"float32\\\"}, \\\"rollout_utilization\\\": 0.1}, \\\"gpu_memory\\\": {\\\"rc\\\": 0, \\\"stdout\\\": \\\"0, 20432, 60648, 81559\\\\n1, 19845, 61235, 81559\\\\n2, 19846, 61234, 81559\\\\n3, 19847, 61233, 81559\\\\n4, 19839, 61241, 81559\\\\n5, 19846, 61234, 81559\\\\n6, 19846, 61234, 81559\\\\n7, 25817, 55263, 81559\\\\n\\\", \\\"stderr\\\": \\\"\\\"}}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-11T05:00:54.122843+00:00\"}\n",
+  "stderr": "",
+  "read_only": true
+}
