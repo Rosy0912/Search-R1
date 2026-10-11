@@ -1,6 +1,29 @@
 {
-  "classification": "PROGRESS",
-  "job_id": 3360,
-  "observed_epoch": 1791726537.918476,
-  "evidence": "86 credited,688directrank,full timer86,rolling86 SAVED,actual87 started."
+  "classification": "progress",
+  "job": 3360,
+  "first_observed_epoch": 1791727285.6295667,
+  "second_observed_epoch": 1791727356.2702465,
+  "first_complete_outer": 86,
+  "second_complete_outer": 87,
+  "evidence": "8rank updates complete; full outer87 timer; rolling87 SAVED; actual outer88 started",
+  "gpu_first": [
+    99,
+    57,
+    100,
+    100,
+    91,
+    89,
+    45,
+    41
+  ],
+  "gpu_second": [
+    51,
+    50,
+    49,
+    49,
+    49,
+    47,
+    49,
+    52
+  ]
 }
