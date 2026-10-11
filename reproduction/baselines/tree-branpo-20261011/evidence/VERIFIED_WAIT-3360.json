@@ -1,10 +1,14 @@
 {
-  "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791740726.401974,
-  "second_observed_epoch": 1791740812.6253006,
-  "complete_outer": 101,
-  "first_timer_outer": 100,
-  "second_timer_outer": 101,
-  "evidence": "First101updates credited,second full101 timer;rolling101 SAVED andactual102 start remotelyverified,808directrank/2020Adam each0skip."
+  "classification": "progress",
+  "first_epoch": 1791741496.6468806,
+  "second_epoch": 1791741566.3435087,
+  "completed_outer_before": 101,
+  "completed_outer_after": 102,
+  "direct_rank_records": 816,
+  "adam_per_rank": 2040,
+  "skips_per_rank": 0,
+  "rolling102_saved": true,
+  "outer103_started": true,
+  "source_unchanged": true
 }
