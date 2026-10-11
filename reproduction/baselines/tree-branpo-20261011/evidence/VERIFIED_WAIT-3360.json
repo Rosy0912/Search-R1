@@ -1,7 +1,7 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "observed_epoch": 1791717519.5086224,
-  "completed_outer": 76,
-  "evidence": "Full76 timer,rolling76 SAVED,608 directrank and actual77 start read directly."
+  "observed_epoch": 1791718267.7335694,
+  "completed_outer": 77,
+  "evidence": "Full77 timer,rolling77 SAVED,616 directrank and actual78 start read directly."
 }
