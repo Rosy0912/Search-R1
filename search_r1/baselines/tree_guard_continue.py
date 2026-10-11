@@ -10,6 +10,12 @@ def enabled(actor):
     return actor.get('guard_continue_protocol') == PROTOCOL
 
 
+def skip_only_refused_opportunity():
+    """B explicitly separates sampled-outer budget from actual Adam returns."""
+    import os
+    return os.environ.get('RECURSIVE_B_SKIP_ONLY_REFUSED_OPPORTUNITY')=='1'
+
+
 def begin_attempt(trainer):
     if trainer.global_steps != trainer.actual_outer_updates + 1:
         raise ValueError('Fresh attempt must target the next uncredited completed outer')
@@ -85,7 +91,7 @@ def validate_completed_result(trainer, output):
     if not isinstance(ranks, list) or len(ranks) != trainer.actor_rollout_wg.world_size:
         raise ValueError('Incomplete explicit completed rank result')
     for rank, value in enumerate(ranks):
-        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=False, world_size=trainer.actor_rollout_wg.world_size)
+        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=skip_only_refused_opportunity(), world_size=trainer.actor_rollout_wg.world_size)
         if any(type(value.get(key)) is not int for key in ('rank','attempt_id','accepted_outer',
                 'completed_outer_before','optimizer_calls','total_optimizer_calls',
                 'opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after')):

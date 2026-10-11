@@ -104,7 +104,9 @@ def validate_completed_outer(metrics, outer):
     opportunities = metrics.get('actor/optimizer_opportunities_processed')
     writes = metrics.get('actor/optimizer_steps')
     if opportunities is not None:
-        if opportunities != 20 or writes is None or not 1 <= writes <= 20 or writes != int(writes):
+        from .tree_guard_continue import skip_only_refused_opportunity
+        minimum=0 if skip_only_refused_opportunity() else 1
+        if opportunities != 20 or writes is None or not minimum <= writes <= 20 or writes != int(writes):
             raise RuntimeError('Fresh200 incomplete opportunities or zero actual optimizer writes')
         expected = {'actor/optimizer_opportunities_skipped': 20-writes,
                     'actor/scheduler_step_before_outer': outer-1, 'actor/scheduler_step_after_outer': outer}

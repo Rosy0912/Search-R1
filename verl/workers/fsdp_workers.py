@@ -110,6 +110,8 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
     writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
     from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled, validate_ledger
     continuing_guard = guard_continue_enabled(worker.config.actor)
+    from search_r1.baselines.tree_guard_continue import skip_only_refused_opportunity
+    per_opportunity_guard = continuing_guard and skip_only_refused_opportunity()
     ledger = getattr(worker.actor, '_fresh_opportunity_ledger', [])
     returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
     error = None
@@ -121,7 +123,7 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         if type(outer) is not int or outer < 1:
             raise ValueError('Fresh outer must be a positive direct driver counter')
         if continuing_guard:
-            validate_ledger(ledger, writes, allow_zero=False, world_size=world)
+            validate_ledger(ledger, writes, allow_zero=per_opportunity_guard, world_size=world)
             if returned_writes != writes or metrics.get('actor/optimizer_opportunities_processed') != 20:
                 raise ValueError('Fresh completed opportunity accounting differs from actual actor ledger')
         elif (type(writes) is not int or writes != 20 or type(returned_writes) is not int
@@ -579,13 +581,15 @@ class ActorRolloutRefWorker(Worker):
             from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
             partial = None
             completed = None
+            from search_r1.baselines.tree_guard_continue import skip_only_refused_opportunity
+            per_opportunity_guard = skip_only_refused_opportunity()
             try:
                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
                     prepare_partial_worker_context(self, data)
                 with Timer(name='update_policy', logger=None) as timer:
                     metrics = self.actor.update_policy(data=data)
                 if (getattr(self.actor, '_fresh_guard_refusal', None) is not None
-                        and self.actor._actual_committed_optimizer_calls == 0):
+                        and self.actor._actual_committed_optimizer_calls == 0 and not per_opportunity_guard):
                     raise self.actor._fresh_guard_refusal
                 delta_time = timer.last
                 global_num_tokens = data.meta_info['global_token_num']
@@ -601,7 +605,7 @@ class ActorRolloutRefWorker(Worker):
                 metrics['actor/lr_before_outer'] = lr_before_outer
                 metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
                 metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
-                if getattr(self.actor, '_fresh_guard_refusal', None) is not None:
+                if getattr(self.actor, '_fresh_guard_refusal', None) is not None and not per_opportunity_guard:
                     partial = persist_matched_partial_worker(self, data, self.actor._fresh_guard_refusal, scheduler_before_outer)
                 from search_r1.baselines.tree_guard_continue import enabled as continue_enabled
                 if continue_enabled(self.config.actor):

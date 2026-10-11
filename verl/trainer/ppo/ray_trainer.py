@@ -1203,7 +1203,8 @@ class RayPPOTrainer(object):
 
                     baseline_settings = getattr(self.config, 'baselines', None)
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo', 'tree_grpo'):
-                        if metrics.get('actor/optimizer_steps', 0) <= 0:
+                        from search_r1.baselines.tree_guard_continue import skip_only_refused_opportunity
+                        if metrics.get('actor/optimizer_steps', 0) <= 0 and not (fresh200 and skip_only_refused_opportunity()):
                             raise RuntimeError('Outer iteration performed no actor update; budget cannot advance')
                         if fresh200:
                             from search_r1.baselines.tree_fresh200 import validate_completed_outer

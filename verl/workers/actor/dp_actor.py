@@ -295,6 +295,8 @@ class DataParallelPPOActor(BasePPOActor):
         updates = skipped = 0
         from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled
         continuing_guard = guard_continue_enabled(self.config)
+        from search_r1.baselines.tree_guard_continue import skip_only_refused_opportunity
+        per_opportunity_guard = continuing_guard and skip_only_refused_opportunity()
         self._fresh_guard_refusal = None
         self._fresh_opportunity_ledger = []
         # Fixed rollout advantages/logprobs are reused across genuine inner epochs.
@@ -305,7 +307,7 @@ class DataParallelPPOActor(BasePPOActor):
             opportunity = dict(index=batch_idx + 1, rows=len(data),
                 local_row_indices=list(range((batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size,
                     (batch_idx % len(dataloader)) * self.config.ppo_mini_batch_size + len(data))))
-            if continuing_guard and self._fresh_guard_refusal is not None:
+            if continuing_guard and not per_opportunity_guard and self._fresh_guard_refusal is not None:
                 self._fresh_opportunity_ledger.append(dict(opportunity,
                     status='SKIPPED_BY_PRIOR_ROLLOUT_BRAKE', actual_writes=0))
                 skipped += 1
@@ -512,6 +514,18 @@ class DataParallelPPOActor(BasePPOActor):
                     guard_reason=str(error), matched_all_ranks=True))
                 skipped += int(actual == 0)
                 updates = self._actual_committed_optimizer_calls
+                if per_opportunity_guard:
+                    # Check actual parameters/Adam before clearing only rejected
+                    # gradients. A contaminated state or programming fault cannot
+                    # be called a successful numeric skip.
+                    safety.parameters_and_adam()
+                    self.actor_optimizer.zero_grad()
+                    private = [getattr(p,name) for p in self.actor_module.parameters()
+                        for name in ('_saved_grad_shard','_cpu_grad')
+                        if isinstance(getattr(p,name,None),torch.Tensor)]
+                    if any(p.grad is not None for p in self.actor_module.parameters()) or any(not torch.isfinite(g).all() for g in private):
+                        raise RuntimeError('Rejected opportunity gradients did not safely clear') from error
+                    safety.committed = updates
                 continue
             if continuing_guard:
                 self._fresh_opportunity_ledger.append(dict(opportunity, status='SUCCESS_ADAM_WRITE',
