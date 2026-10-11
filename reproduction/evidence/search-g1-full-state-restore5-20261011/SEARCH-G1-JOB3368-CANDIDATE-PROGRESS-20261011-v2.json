@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-11T12:28:45.010014+00:00",
+  "job_id": "3368",
+  "candidate_pools": [
+    {
+      "attempt_id": "aecdd51d49d34e2e8ab2e8d96c19849f",
+      "step": 6,
+      "reserved_candidates": 1536,
+      "complete_candidate_groups": 1536,
+      "last_observed_source_consumed": 11776,
+      "progress_mtime_ns": 1791721706137128891
+    }
+  ],
+  "no_complete_outer_claim": true
+}

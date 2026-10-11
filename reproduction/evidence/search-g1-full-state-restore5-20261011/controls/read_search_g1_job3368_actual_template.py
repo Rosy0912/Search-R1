@@ -29,5 +29,18 @@ for n in ('logs/native-3368.log','logs/search-g1-common8-training.log'):
  p=base/n;o[n]=dict(bytes=p.stat().st_size,tail=tail(p)) if p.exists() else None
 live=read('artifacts/live/manifest.json')
 if live:o['probe']=dict(version=live['version'],round=live['round'],restoration_origin=live.get('restoration_origin'))
+evaluation=read('logs/formal-inline-development-after.json')
+if evaluation:
+ o['after5_validation_summary']={k:evaluation[k] for k in ('step','weighted_em','weighted_f1')}
+ o['after5_validation_summary']['qa_count']=len(evaluation['rows'])
+ o['after5_validation_summary']['source_artifact_sha256']=hashlib.sha256((base/'logs/formal-inline-development-after.json').read_bytes()).hexdigest()
+import re
+training_tail=tail(base/'logs/search-g1-common8-training.log',20000) or ''
+matches=re.findall(r'main_task pid=(\d+)',training_tail)
+if matches:
+ pid=int(matches[-1]);proc=pathlib.Path('/proc')/str(pid)
+ if proc.exists():
+  fields=(proc/'stat').read_text().rsplit(')',1)[1].split()
+  o['actual_training_driver_process']=dict(pid=pid,start_ticks=int(fields[19]),state=fields[0],cgroup=(proc/'cgroup').read_text())
 v=os.statvfs(base);o['storage']=dict(ordinary_free_bytes=v.f_bavail*v.f_frsize,physical_free_including_reserved_bytes=v.f_bfree*v.f_frsize,not_exclusive_quota=True)
 print(json.dumps(o))

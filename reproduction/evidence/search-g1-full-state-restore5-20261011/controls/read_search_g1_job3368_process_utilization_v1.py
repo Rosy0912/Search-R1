@@ -1,0 +1,5 @@
+import pathlib,json,subprocess,datetime
+base=pathlib.Path('/mnt/data/shaoshitong/search-g1-resume5-475fbb6-20261011');workers=json.loads((base/'logs/full-state-restored-workers.json').read_text())['ranks'];rows=[]
+for v in workers:
+ p=pathlib.Path('/proc')/str(v['process_identity']['pid']);s=(p/'stat').read_text().rsplit(')',1)[1].split();rows.append({'rank':v['rank'],'pid':v['process_identity']['pid'],'original_birth_match':int(s[19])==v['process_identity']['start_ticks'],'state':s[0],'utime':int(s[11]),'stime':int(s[12]),'wchan':(p/'wchan').read_text(),'rss_pages':int(s[21])})
+g=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,utilization.gpu,memory.used','--format=csv,noheader,nounits'],text=True);print(json.dumps({'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'gpu_readonly':g,'workers':rows,'not_complete_outer_proof':True}))
