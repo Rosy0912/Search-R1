@@ -37,8 +37,8 @@ def full_actor_beta_available(meta):
     value = meta.get('tree_full_actor_beta_available', True)
     if type(value) is not bool:
         raise ValueError('Full actor beta availability must be explicit boolean')
-    if not value and os.environ.get('RECURSIVE_A_OMIT_FULL_BETA') != '1':
-        raise ValueError('Missing full beta requires explicit authorized recursive-A profile')
+    if not value and os.environ.get('RECURSIVE_B_OMIT_FULL_BETA') != '1':
+        raise ValueError('Missing full beta requires explicit authorized recursive-B profile')
     return value
 
 
