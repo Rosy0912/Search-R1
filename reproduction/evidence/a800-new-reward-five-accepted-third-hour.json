@@ -1,0 +1,195 @@
+{
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "checked_unix": 1791682932.5118384,
+  "complete_outer": 5,
+  "opportunities": 116,
+  "successful_adam": 116,
+  "skips": 0,
+  "partial_sixth_outer": 16,
+  "same_trainer_pid": 1358996,
+  "same_trainer_birth": 575207394,
+  "five_acceptance_sha256": "adec29afd41b5f4da0f0377edd42b9b12ed644d0e1fc38149acf72b20749d84b",
+  "five_acceptance_scalars": {
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "accepted": true,
+    "independently_verified_saved_tensor_count": 435,
+    "checked_unix": 1791681476.9921966,
+    "policy_safety_mode": "inline_first_five",
+    "formal_inline_plan_sha256": "105986836e50eb7a96c37030bf0a663735b0cdd715eebb1f7d7e9e0296a41be4",
+    "optimizer_completion_rule": "all20_opportunities_processed_and_at_least_one_write",
+    "first_five_optimizer_opportunities": 100,
+    "first_outer_semantics": "20 processed opportunities at consumed LR0; actual successful writes reported separately; fresh5 actual parameter delta verified",
+    "semantics": "structural training gate, not accuracy reproduction success"
+  },
+  "checkpoint5": {
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "step": 5,
+    "validated_tensor_count": 435,
+    "finite_all_saved_tensors": true,
+    "checkpoint": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/checkpoints/search-g1-common8/actor/global_step_5"
+  },
+  "actual_first_five_steps": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "dev512": {
+    "role": "formal_inline_development_evaluation",
+    "question_count": 512,
+    "source_counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "weighted_em": 0.171875,
+    "weighted_f1": 0.23471285739901723,
+    "executed_search_question_rate": 0.986328125,
+    "executed_search_calls_per_question": 1.134765625,
+    "executed_search_question_count": 505,
+    "executed_search_call_count": 581,
+    "valid_action_rate": 0.9436741767764298,
+    "valid_action_count": 1089,
+    "action_opportunity_count": 1154,
+    "valid_action_rate_definition": "micro average: sum(valid_action_stats)/sum(turns_stats); recognized actions per generation turn, including final recognized but unexecuted search",
+    "executed_search_definition": "completed logical retriever searches from actual_retrieval_stats; excludes final do_search=False and does not count HTTP retries",
+    "production_admission": false,
+    "semantics": "paired real dev512 EM/F1/actions; accuracy change is reported without a zero-drop gate",
+    "correct_count": 88,
+    "f1_sum": 120.17298298829682,
+    "source_correct": {
+      "nq": 50,
+      "hotpotqa": 38
+    },
+    "source_em": {
+      "nq": 0.1953125,
+      "hotpotqa": 0.1484375
+    },
+    "schema_version": 1,
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "policy_safety_mode": "inline_first_five",
+    "step": 5,
+    "plan_sha256": "105986836e50eb7a96c37030bf0a663735b0cdd715eebb1f7d7e9e0296a41be4",
+    "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "source_map_sha256": "328cc85c6364cd38259f1f81702c22123de06901a7794302cf0985159af06d1a",
+    "checked_unix": 1791681453.3680627
+  },
+  "historical_comparison": {
+    "weighted_em": -0.005859375,
+    "weighted_f1": -0.0064701528227602
+  },
+  "baseline_is_cross_run": true,
+  "latest_reward": 0.19265183806419373,
+  "new_complete_window_steps": [
+    5
+  ],
+  "new_complete_window_mean": 0.19265183806419373,
+  "new_complete_window_range": [
+    0.19265183806419373,
+    0.19265183806419373
+  ],
+  "change_from_previous_window_mean": -0.010620370507240295,
+  "stage64": {
+    "step": 5,
+    "correct": 11,
+    "count": 64,
+    "em": 0.171875,
+    "f1": 0.2429738082116004
+  },
+  "gpu_samples": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/gpu-samples-1db662001a0f4d998928bcf6f5f33c9d.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 7470270,
+    "scan_from_start": true,
+    "scan_start_byte": 0,
+    "matching_sample_count": 5114,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": 5114,
+    "first_scanned_sample_unix": 1791672039.5432847,
+    "latest_sample_unix": 1791682931.8916147,
+    "latest_sample_age_seconds": 0.7867825031280518,
+    "maximum_scanned_sampling_gap_seconds": 2.3452775478363037,
+    "sampled_run_peak_mib": {
+      "0": 57925,
+      "1": 58021,
+      "2": 58431,
+      "3": 58425,
+      "5": 19023,
+      "6": 31585
+    },
+    "sampled_scanned_peak_mib": {
+      "0": 57925,
+      "1": 58021,
+      "2": 58431,
+      "3": 58425,
+      "5": 19023,
+      "6": 31585
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1347580,
+      "start_ticks": 575162271,
+      "birth_matches": true,
+      "state": "S",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 51321,
+        "total_mib": 81920,
+        "util_percent": 97,
+        "sampled_run_peak_mib": 57925
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 51417,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": 58021
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 51417,
+        "total_mib": 81920,
+        "util_percent": 97,
+        "sampled_run_peak_mib": 58431
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 51321,
+        "total_mib": 81920,
+        "util_percent": 97,
+        "sampled_run_peak_mib": 58425
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 19023
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 31413,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 31585
+      }
+    ]
+  },
+  "errors": []
+}
