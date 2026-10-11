@@ -6,6 +6,46 @@ from omegaconf import OmegaConf
 from types import SimpleNamespace
 from verl.workers.fsdp_workers import ActorRolloutRefWorker
 
+@ray.remote(num_gpus=1,num_cpus=1)
+class StaticWorker:
+    def __init__(self,model,config):
+        import torch
+        from vllm import LLM,SamplingParams
+        from torch.nn.utils.rnn import pad_sequence
+        from verl.workers.rollout.vllm_rollout.vllm_rollout import vLLMRollout
+        from verl.utils import hf_tokenizer
+        tokenizer=hf_tokenizer(model)
+        class Engine(LLM):
+            def _post_process_outputs(self,outputs):
+                ids=[];probs=[]
+                for request in outputs:
+                    for output in request.outputs:
+                        ids.append(torch.tensor(output.token_ids,dtype=torch.long))
+                        probs.append(torch.tensor([p[token].logprob for p,token in zip(output.logprobs,output.token_ids)],dtype=torch.float32))
+                return pad_sequence(ids,batch_first=True,padding_value=tokenizer.pad_token_id),pad_sequence(probs,batch_first=True,padding_value=tokenizer.pad_token_id)
+            def generate(self,*args,**kwargs):
+                return self._post_process_outputs(super().generate(*args,**kwargs))
+        config=OmegaConf.create(OmegaConf.to_container(config,resolve=True));config.free_cache_engine=False
+        self.rollout=vLLMRollout.__new__(vLLMRollout)
+        self.rollout.config=config;self.rollout.tokenizer=tokenizer;self.rollout.pad_token_id=tokenizer.pad_token_id
+        self.rollout.inference_engine=Engine(model=model,tokenizer=model,dtype='bfloat16',tensor_parallel_size=1,
+            gpu_memory_utilization=config.gpu_memory_utilization,max_model_len=config.prompt_length+config.response_length,
+            max_num_batched_tokens=config.max_num_batched_tokens,max_num_seqs=config.max_num_seqs,enforce_eager=True,disable_log_stats=True)
+        self.rollout.sampling_params=SamplingParams(n=1,logprobs=1,max_tokens=config.response_length,detokenize=False,
+            temperature=1.0,top_k=-1,top_p=1.0,ignore_eos=False)
+    def ready(self):return dict(pid=os.getpid(),gpu=os.environ.get('CUDA_VISIBLE_DEVICES'),optimizer=False)
+    def generate(self,batch):
+        batch.meta_info.update(eos_token_id=self.rollout.tokenizer.eos_token_id,pad_token_id=self.rollout.pad_token_id)
+        return self.rollout.generate_sequences(batch).to('cpu')
+
+class StaticGroup:
+    world_size=8
+    def __init__(self,workers):self.workers=workers
+    def generate_sequences(self,batch):
+        from verl import DataProto
+        chunks=batch.chunk(8)
+        return DataProto.concat(ray.get([w.generate.remote(b) for w,b in zip(self.workers,chunks)]))
+
 @ray.remote
 def evaluate(config,run):
     from torch.utils.data import DataLoader
@@ -31,23 +71,19 @@ def evaluate(config,run):
     t=RayPPOTrainer.__new__(RayPPOTrainer)
     t.config=config;t.tokenizer=tokenizer;t.hybrid_engine=True
     t.use_reference_policy=False;t.use_rm=False
-    t.role_worker_mapping={Role.ActorRollout:ray.remote(ActorRolloutRefWorker)}
-    t.resource_pool_manager=ResourcePoolManager({'eval':[8]},{Role.ActorRollout:'eval'})
-    t.ray_worker_group_cls=RayWorkerGroup
+    workers=[StaticWorker.remote(config.actor_rollout_ref.model.path,config.actor_rollout_ref.rollout) for _ in range(8)]
+    ray.get([w.ready.remote() for w in workers])
+    t.actor_rollout_wg=StaticGroup(workers)
     t.baseline_controller=SimpleNamespace(method='bapo',ranker=None)
-    t.val_reward_fn=RewardManager(tokenizer,num_examine=0)
+    score=RewardManager(tokenizer,num_examine=0)
+    def reward(batch):
+        from search_r1.baselines.evaluation import batch_answer_metrics
+        rows=batch_answer_metrics(batch,tokenizer)
+        with (Path(run)/'qa-rows.jsonl').open('a') as f:
+            for row in rows:f.write(json.dumps(row)+'\n')
+        return score(batch)
+    t.val_reward_fn=reward
     t.val_dataloader=batches();t.global_steps=150
-    # Construct the unchanged worker directly as rollout-only. The colocated
-    # factory requires its direct Worker parent, so do not subclass the actor.
-    from verl.single_controller.ray import RayClassWithInitArgs
-    from verl.single_controller.ray.base import create_colocated_worker_cls
-    t.resource_pool_manager.create_resource_pool()
-    pool=t.resource_pool_manager.get_resource_pool(Role.ActorRollout)
-    cls=RayClassWithInitArgs(cls=ray.remote(ActorRolloutRefWorker),config=config.actor_rollout_ref,role='rollout')
-    wg=RayWorkerGroup(resource_pool=pool,ray_cls_with_init=create_colocated_worker_cls({'actor_rollout':cls}))
-    t.actor_rollout_wg=wg.spawn(prefix_set={'actor_rollout'})['actor_rollout']
-    t.wg_dicts=[wg]
-    t.actor_rollout_wg.init_model()
     # Only the validation metadata branch; native training initialization stays disabled.
     config.trainer.fresh200_enabled=True
     result=t._validate()
