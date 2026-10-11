@@ -1,10 +1,9 @@
 {
   "classification": "progress",
   "job": 3360,
-  "first_observed_epoch": 1791738418.6771243,
-  "second_observed_epoch": 1791738502.9412048,
-  "complete_outer": 99,
-  "first_timer_outer": 98,
-  "second_timer_outer": 99,
-  "evidence": "First99updates credited,second full99 timer;rolling99 SAVED andactual100 start remotelyverified,792directrank/1980Adam each0skip."
+  "first_observed_epoch": 1791739216.3867974,
+  "second_observed_epoch": 1791739308.6292396,
+  "complete_outer": 100,
+  "stage_output_changed": true,
+  "evidence": "Two live100update observations;rolling100 SAVED verifiedremote;dev100 sampleoutputs change;fulltimer99/dev95 remainlatest. HF100 milestone pending."
 }
