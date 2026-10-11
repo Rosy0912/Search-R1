@@ -10,6 +10,27 @@ def enabled(actor):
     return actor.get('guard_continue_protocol') == PROTOCOL
 
 
+def round_progress_enabled(actor, environ=None):
+    """Explicit new contract: consumed sampling rounds and Adam writes are separate."""
+    import os
+    environ = os.environ if environ is None else environ
+    return (enabled(actor) and environ.get('RECURSIVE_A_GUARD_ROUND_PROGRESS') == '1'
+            and bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')))
+
+
+def normal_guard_summary(refusal, writes, ledger):
+    """Small normal-threshold receipt; programming faults never become a skip."""
+    if (getattr(refusal, 'matched_all_ranks', None) is not True or
+            getattr(refusal, 'safety_guard', None) is not True):
+        raise ValueError('Only an explicit matched normal safety guard may consume a round')
+    validate_ledger(ledger, writes, allow_zero=True)
+    return dict(status='NORMAL_SAFETY_GUARD_ROUND_CONSUMED',
+        optimizer_writes=writes, opportunities_processed=20, opportunities_skipped=20-writes,
+        zero_write_round=(writes == 0), threshold_reason=str(refusal),
+        automatic_rollback=False, model_optimizer_snapshot_saved=False,
+        successful_update_claim=(writes > 0))
+
+
 def begin_attempt(trainer):
     if trainer.global_steps != trainer.actual_outer_updates + 1:
         raise ValueError('Fresh attempt must target the next uncredited completed outer')
@@ -32,7 +53,7 @@ def accounting(trainer):
     partial = copy.deepcopy(getattr(trainer, 'partial_optimizer_calls_per_rank', {}))
     completed = trainer.actual_outer_updates
     complete_calls = copy.deepcopy(getattr(trainer, 'completed_optimizer_calls_per_rank', {}))
-    return dict(protocol=PROTOCOL, training_attempts=getattr(trainer, 'training_attempts', completed),
+    result = dict(protocol=PROTOCOL, training_attempts=getattr(trainer, 'training_attempts', completed),
                 refused_attempts=getattr(trainer, 'refused_attempts', 0),
                 guard_refused_attempts=getattr(trainer, 'guard_refused_attempts', 0),
                 completed_outer_updates=completed, partial_optimizer_calls_per_rank=partial,
@@ -40,6 +61,14 @@ def accounting(trainer):
                 total_optimizer_calls_per_rank={str(rank): complete_calls.get(str(rank), 0) + partial.get(str(rank), 0)
                     for rank in range(trainer.actor_rollout_wg.world_size)},
                 partial_evidence=copy.deepcopy(getattr(trainer, 'partial_attempt_evidence', [])))
+    if (round_progress_enabled(trainer.config.actor_rollout_ref.actor) and
+            getattr(trainer, '_guard_round_contract_active', True)):
+        zeros = getattr(trainer, 'zero_write_sampling_rounds', 0)
+        result.update(round_progress_contract='consumed_sampling_rounds_separate_adam_v1',
+            consumed_sampling_rounds=completed, zero_write_sampling_rounds=zeros,
+            optimizer_write_rounds=completed-zeros,
+            normal_guard_rounds=getattr(trainer, 'normal_guard_rounds', 0))
+    return result
 
 
 def validate_ledger(ledger, writes, allow_zero=True):
@@ -81,7 +110,8 @@ def validate_completed_result(trainer, output):
     if not isinstance(ranks, list) or len(ranks) != trainer.actor_rollout_wg.world_size:
         raise ValueError('Incomplete explicit completed rank result')
     for rank, value in enumerate(ranks):
-        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'), allow_zero=False)
+        validate_ledger(value.get('opportunity_ledger'), value.get('optimizer_calls'),
+                        allow_zero=round_progress_enabled(trainer.config.actor_rollout_ref.actor))
         if any(type(value.get(key)) is not int for key in ('rank','attempt_id','accepted_outer',
                 'completed_outer_before','optimizer_calls','total_optimizer_calls',
                 'opportunities_processed','opportunities_skipped','scheduler_before','scheduler_after')):
@@ -124,9 +154,16 @@ def record_completed_result(trainer, output):
     from .training_state import atomic_save
     candidate = validate_completed_result(trainer, output)
     directory = Path(trainer.config.trainer.default_local_dir)/'training_state'/'attempt-results'
-    value = dict(protocol=RESULT_PROTOCOL, status='COMPLETED_OPPORTUNITIES_OUTER_CREDITED',
+    writes = output.meta_info['tree_fresh_actor_result']['ranks'][0]['optimizer_calls']
+    value = dict(protocol=RESULT_PROTOCOL, status=('ALL_OPPORTUNITIES_SKIPPED_SAMPLING_ROUND_CONSUMED'
+            if writes == 0 else 'COMPLETED_OPPORTUNITIES_OUTER_CREDITED'),
+        successful_optimizer_update=(writes > 0), actual_writes_this_round=writes,
         attempt_id=trainer.training_attempts, accepted_outer=trainer.global_steps,
         all_rank_result=output.meta_info['tree_fresh_actor_result'],
+        normal_guard=copy.deepcopy(output.meta_info.get('tree_normal_guard')),
         actual_completed_optimizer_calls_per_rank=candidate, automatic_rollback=False)
     atomic_save(value, directory/f'attempt-{trainer.training_attempts:06d}.json', json_format=True)
     trainer.completed_optimizer_calls_per_rank = candidate
+    if round_progress_enabled(trainer.config.actor_rollout_ref.actor):
+        trainer.zero_write_sampling_rounds = getattr(trainer, 'zero_write_sampling_rounds', 0) + int(writes == 0)
+        trainer.normal_guard_rounds = getattr(trainer, 'normal_guard_rounds', 0) + int('tree_normal_guard' in output.meta_info)

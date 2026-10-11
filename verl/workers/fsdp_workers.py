@@ -85,8 +85,56 @@ def inspect_fresh_worker_state(worker, expected_model_path):
     return record
 
 
+def compact_normal_guard_after_actor(worker, refusal):
+    """GPU finite checks and tiny receipts only; no model/optimizer CPU snapshot."""
+    from search_r1.baselines.tree_guard_continue import normal_guard_summary
+    from search_r1.baselines.policy_safety_runtime import PolicySafetyRefusal
+    count = worker.actor._actual_committed_optimizer_calls
+    error, summary = None, None
+    try:
+        summary = normal_guard_summary(refusal, count, worker.actor._fresh_opportunity_ledger)
+    except Exception as exc:
+        error = repr(exc)
+    admission = [dict(error=error, writes=count)]
+    if torch.distributed.is_initialized():
+        admission = [None] * torch.distributed.get_world_size()
+        torch.distributed.all_gather_object(admission, dict(error=error, writes=count))
+    if (any(value['error'] is not None for value in admission) or
+            len({value['writes'] for value in admission}) != 1):
+        raise PolicySafetyRefusal('Normal guard ledger/count fault: ' + str(admission),
+                                  matched_all_ranks=True, safety_guard=False)
+    # This scans actual model/moments in place, without copying their state.
+    worker.actor._policy_safety.parameters_and_adam('normal_guard_model_adam_before_continue')
+    worker.actor_optimizer.zero_grad()
+    error = None
+    try:
+        parameters = list(worker.actor.actor_module.parameters())
+        if any(parameter.grad is not None for parameter in parameters):
+            raise ValueError('Normal zero_grad did not clear refused gradients')
+        private = [getattr(parameter, name) for parameter in parameters
+            for name in ('_saved_grad_shard', '_cpu_grad')
+            if isinstance(getattr(parameter, name, None), torch.Tensor)]
+        if not all(bool(torch.isfinite(value).all()) for value in private):
+            raise ValueError('Nonfinite private FSDP gradient remains after normal zero_grad')
+    except Exception as exc:
+        error = repr(exc)
+    rank = torch.distributed.get_rank() if torch.distributed.is_initialized() else 0
+    record = dict(summary, rank=rank, normal_zero_grad=(error is None), error=error,
+                  model_adam_finite=True, threshold_unchanged=True)
+    records = [record]
+    if torch.distributed.is_initialized():
+        records = [None] * torch.distributed.get_world_size()
+        torch.distributed.all_gather_object(records, record)
+    if (any(value['error'] is not None for value in records) or
+            len({value['optimizer_writes'] for value in records}) != 1):
+        raise PolicySafetyRefusal('Normal guard continuation state/count fault: ' + str(records),
+                                  matched_all_ranks=True, safety_guard=False)
+    return dict(status='NORMAL_SAFETY_GUARD_ROUND_CONSUMED', ranks=records,
+                model_optimizer_snapshot_saved=False, automatic_rollback=False)
+
+
 def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer, lr_before_outer):
-    """Admit 20 processed opportunities and at least one write with guard continue.
+    """Admit 20 processed opportunities; opt-in rounds may have zero actual writes.
 
     Advance once after admission and retain direct evidence. The legacy strict
     branch continues to require all 20 writes and zero skips.
@@ -108,7 +156,7 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         return bool(flag.item())
     outer = data.meta_info.get('baseline_outer_step')
     writes = getattr(worker.actor, '_actual_committed_optimizer_calls', None)
-    from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled, validate_ledger
+    from search_r1.baselines.tree_guard_continue import enabled as guard_continue_enabled, validate_ledger, round_progress_enabled
     continuing_guard = guard_continue_enabled(worker.config.actor)
     ledger = getattr(worker.actor, '_fresh_opportunity_ledger', [])
     returned_writes, skips = metrics.get('actor/optimizer_steps'), metrics.get('actor/skipped_empty_minibatches')
@@ -121,7 +169,7 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
         if type(outer) is not int or outer < 1:
             raise ValueError('Fresh outer must be a positive direct driver counter')
         if continuing_guard:
-            validate_ledger(ledger, writes, allow_zero=False)
+            validate_ledger(ledger, writes, allow_zero=round_progress_enabled(worker.config.actor))
             if returned_writes != writes or metrics.get('actor/optimizer_opportunities_processed') != 20:
                 raise ValueError('Fresh completed opportunity accounting differs from actual actor ledger')
         elif (type(writes) is not int or writes != 20 or type(returned_writes) is not int
@@ -579,14 +627,23 @@ class ActorRolloutRefWorker(Worker):
             from search_r1.baselines.partial_worker_state import prepare_partial_worker_context, persist_matched_partial_worker
             partial = None
             completed = None
+            normal_guard = None
+            from search_r1.baselines.tree_guard_continue import round_progress_enabled
+            round_progress = round_progress_enabled(self.config.actor)
             try:
                 if self.config.actor.get('fresh200_protocol') == 'tree_fresh200_five_leaf_v1':
                     prepare_partial_worker_context(self, data)
                 with Timer(name='update_policy', logger=None) as timer:
                     metrics = self.actor.update_policy(data=data)
                 if (getattr(self.actor, '_fresh_guard_refusal', None) is not None
-                        and self.actor._actual_committed_optimizer_calls == 0):
+                        and self.actor._actual_committed_optimizer_calls == 0 and not round_progress):
                     raise self.actor._fresh_guard_refusal
+                if getattr(self.actor, '_fresh_guard_refusal', None) is not None and round_progress:
+                    normal_guard = compact_normal_guard_after_actor(self, self.actor._fresh_guard_refusal)
+                    metrics['actor/normal_guard_round_consumed'] = 1
+                if round_progress:
+                    metrics['actor/guard_round_progress_enabled'] = 1
+                    metrics['actor/zero_write_sampling_round'] = int(self.actor._actual_committed_optimizer_calls == 0)
                 delta_time = timer.last
                 global_num_tokens = data.meta_info['global_token_num']
                 estimated_flops, promised_flops = self.flops_counter.estimate_flops(global_num_tokens, delta_time)
@@ -601,7 +658,7 @@ class ActorRolloutRefWorker(Worker):
                 metrics['actor/lr_before_outer'] = lr_before_outer
                 metrics['actor/scheduler_step_before_outer'] = scheduler_before_outer
                 metrics['actor/scheduler_step_after_outer'] = self.actor_lr_scheduler.last_epoch
-                if getattr(self.actor, '_fresh_guard_refusal', None) is not None:
+                if getattr(self.actor, '_fresh_guard_refusal', None) is not None and not round_progress:
                     partial = persist_matched_partial_worker(self, data, self.actor._fresh_guard_refusal, scheduler_before_outer)
                 from search_r1.baselines.tree_guard_continue import enabled as continue_enabled
                 if continue_enabled(self.config.actor):
@@ -628,7 +685,8 @@ class ActorRolloutRefWorker(Worker):
             # TODO: here, we should return all metrics
             output = DataProto(meta_info={'metrics': metrics,
                 **({'tree_partial_state': partial} if partial is not None else {}),
-                **({'tree_fresh_actor_result': completed} if completed is not None else {})})
+                **({'tree_fresh_actor_result': completed} if completed is not None else {}),
+                **({'tree_normal_guard': normal_guard} if normal_guard is not None else {})})
 
             output = self.ulysses_sharding_manager.postprocess_data(data=output)
             output = output.to('cpu')

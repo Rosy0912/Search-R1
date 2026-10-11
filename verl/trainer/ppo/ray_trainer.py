@@ -1163,7 +1163,13 @@ class RayPPOTrainer(object):
 
                     baseline_settings = getattr(self.config, 'baselines', None)
                     if baseline_settings is not None and baseline_settings.method in ('grpo', 'gigpo', 'tree_grpo'):
-                        if metrics.get('actor/optimizer_steps', 0) <= 0:
+                        from search_r1.baselines.tree_guard_continue import round_progress_enabled
+                        zero_write_round = (fresh200 and round_progress_enabled(self.config.actor_rollout_ref.actor)
+                            and metrics.get('actor/guard_round_progress_enabled') == 1
+                            and metrics.get('actor/zero_write_sampling_round') == 1
+                            and metrics.get('actor/optimizer_opportunities_processed') == 20
+                            and metrics.get('actor/optimizer_steps') == 0)
+                        if metrics.get('actor/optimizer_steps', 0) <= 0 and not zero_write_round:
                             raise RuntimeError('Outer iteration performed no actor update; budget cannot advance')
                         if fresh200:
                             from search_r1.baselines.tree_fresh200 import validate_completed_outer
@@ -1175,6 +1181,13 @@ class RayPPOTrainer(object):
                         if fresh200:
                             metrics['training/attempt_id'] = self.training_attempts
                             metrics['training/refused_attempts'] = getattr(self, 'refused_attempts', 0)
+                            if round_progress_enabled(self.config.actor_rollout_ref.actor):
+                                metrics['training/consumed_sampling_rounds'] = self.actual_outer_updates
+                                metrics['training/zero_write_sampling_rounds'] = self.zero_write_sampling_rounds
+                                metrics['training/optimizer_write_rounds'] = self.actual_outer_updates-self.zero_write_sampling_rounds
+                                metrics['training/normal_guard_rounds'] = self.normal_guard_rounds
+                                metrics['training/actual_adam_calls_per_rank'] = actor_output.meta_info[
+                                    'tree_fresh_actor_result']['ranks'][0]['total_optimizer_calls']
                         if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:
                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
 

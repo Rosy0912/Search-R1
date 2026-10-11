@@ -304,7 +304,19 @@ def restore_driver(trainer, saved, identity):
         if any(type(value) is not int or value < 0 for value in rank_totals.values()):
             raise ValueError('Invalid historical partial optimizer writes')
         complete_totals = continue_state['completed_optimizer_calls_per_rank']
-        if any(type(value) is not int or not steps <= value <= steps * 20 for value in complete_totals.values()):
+        minimum_writes = steps
+        if continue_state.get('round_progress_contract') == 'consumed_sampling_rounds_separate_adam_v1':
+            zero_rounds = continue_state.get('zero_write_sampling_rounds')
+            guard_rounds = continue_state.get('normal_guard_rounds')
+            if (type(zero_rounds) is not int or not 0 <= zero_rounds <= steps
+                    or type(guard_rounds) is not int or not 0 <= guard_rounds <= steps
+                    or continue_state.get('consumed_sampling_rounds') != steps
+                    or continue_state.get('optimizer_write_rounds') != steps-zero_rounds):
+                raise ValueError('Invalid consumed-round/zero-write guard accounting')
+            minimum_writes = steps-zero_rounds
+            trainer.zero_write_sampling_rounds = zero_rounds
+            trainer.normal_guard_rounds = guard_rounds
+        if any(type(value) is not int or not minimum_writes <= value <= steps * 20 for value in complete_totals.values()):
             raise ValueError('Invalid completed actual optimizer writes')
         expected_totals = {str(rank): complete_totals.get(str(rank), 0) + rank_totals.get(str(rank), 0)
                            for rank in range(trainer.actor_rollout_wg.world_size)}

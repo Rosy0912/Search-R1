@@ -96,11 +96,15 @@ def validate_fresh_sampler(sampler):
 
 
 def validate_completed_outer(metrics, outer):
-    """Credit twenty processed opportunities, actual writes >=1, one scheduler advance."""
+    """Credit twenty consumed opportunities; explicit new round contract admits zero writes."""
     opportunities = metrics.get('actor/optimizer_opportunities_processed')
     writes = metrics.get('actor/optimizer_steps')
     if opportunities is not None:
-        if opportunities != 20 or writes is None or not 1 <= writes <= 20 or writes != int(writes):
+        from .tree_guard_continue import round_progress_enabled, PROTOCOL as CONTINUE_PROTOCOL
+        allow_zero = (round_progress_enabled(dict(guard_continue_protocol=CONTINUE_PROTOCOL))
+            and metrics.get('actor/guard_round_progress_enabled') == 1
+            and metrics.get('actor/zero_write_sampling_round') == 1)
+        if opportunities != 20 or writes is None or not (0 if allow_zero else 1) <= writes <= 20 or writes != int(writes):
             raise RuntimeError('Fresh200 incomplete opportunities or zero actual optimizer writes')
         expected = {'actor/optimizer_opportunities_skipped': 20-writes,
                     'actor/scheduler_step_before_outer': outer-1, 'actor/scheduler_step_after_outer': outer}

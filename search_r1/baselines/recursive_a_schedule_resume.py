@@ -139,8 +139,14 @@ def migrate_trainer(trainer):
  require(saved['identity']==m['identity'] and digest(saved)==r['logical_state_sha256'],'driver bytes/identity')
  require(saved['completed_step']==PARENT_COMPLETED_STEP and saved['actual_outer_updates']==PARENT_COMPLETED_STEP and saved['next_step']==PARENT_COMPLETED_STEP+1
  and saved['sampler']['cursor']==512*PARENT_COMPLETED_STEP and saved['sampler']['epoch']==0,'driver counters/cursor')
+ # Validate the old checkpoint with its exact old accounting schema first.
+ trainer._guard_round_contract_active=False
  restore_driver(trainer,saved,m['identity'])
  require(digest(driver_snapshot(trainer,m['identity']))==r['logical_state_sha256'],'cold driver/RNG differs')
+ from .tree_guard_continue import round_progress_enabled
+ trainer._guard_round_contract_active=round_progress_enabled(trainer.config.actor_rollout_ref.actor)
+ trainer.zero_write_sampling_rounds=getattr(trainer,'zero_write_sampling_rounds',0)
+ trainer.normal_guard_rounds=getattr(trainer,'normal_guard_rounds',0)
  provenance=dict(protocol=PROTOCOL,parent_identity=m['identity'],parent_manifest_path=str(PARENT_MANIFEST),
  parent_manifest_sha256=PARENT_MANIFEST_SHA256,parent_completed_step=PARENT_COMPLETED_STEP,parent_cursor=512*PARENT_COMPLETED_STEP,parent_epoch=0,
  new_batch_size=512,child_code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
