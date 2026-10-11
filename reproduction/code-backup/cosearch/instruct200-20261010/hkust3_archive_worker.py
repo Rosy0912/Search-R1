@@ -1,8 +1,8 @@
 """HKUST3-owned checkpoint puller. Password arrives via stdin and stays in RAM."""
 import fcntl,hashlib,json,os,shlex,subprocess,sys,time
 from pathlib import Path
-ROOT='/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-20261010'
-DEST=Path('/backup/shaoshitong/cosearch-instruct200-20261010/checkpoints')
+ROOT='/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011'
+DEST=Path('/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints')
 DEST.mkdir(parents=True,exist_ok=True)
 lock=(DEST.parent/'archive.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 ENV=dict(os.environ,SSHPASS=sys.stdin.readline().rstrip('\n'))

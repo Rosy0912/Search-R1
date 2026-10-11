@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 BASE='/data/user/jxu957/experiments/cosearch-continue300-x203-20261008'
 TOPD='/data/user/jxu957/experiments/topd-20261008/runtime/assets'
-RUN=BASE+'/runtime/cosearch-instruct200-20261010'
+RUN=BASE+'/runtime/cosearch-instruct200-common-em-20261011'
 
 def configure(original):
     model=TOPD+'/qwen2.5-3b-instruct-aa8e725'
@@ -20,7 +20,7 @@ def configure(original):
       'trainer.max_actor_ckpt_to_keep':'5','trainer.val_before_train':'False',
       'trainer.rollout_data_dir':RUN+'/rollouts',
       'trainer.validation_data_dir':RUN+'/validation',
-      'trainer.experiment_name':'cosearch-instruct200-20261010',
+      'trainer.experiment_name':'cosearch-instruct200-common-em-20261011',
       'algorithm.use_kl_in_reward':'False',
       'actor_rollout_ref.rollout.n':'5',
     }

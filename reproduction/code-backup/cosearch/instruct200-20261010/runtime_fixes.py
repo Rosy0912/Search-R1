@@ -26,6 +26,8 @@ def install_worker():
     from verl.experimental.agent_loop.co_search_agent_loop import CoSearchAgentLoop
     import question_metadata
     question_metadata.install(CoSearchAgentLoop)
+    from common_em_runtime import install_loop
+    install_loop(CoSearchAgentLoop)
     from verl.experimental.agent_loop.tool_parser import SearchR1ToolParser, FunctionCall
     question_metadata.install_parser(SearchR1ToolParser, FunctionCall)
     from verl.experimental.agent_loop.search_r1_reranker_agent_loop_worker import CoSearchAgentLoopWorker

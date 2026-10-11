@@ -70,6 +70,8 @@ def generate_supported(original,batch,support,require,record,preserve,reject,ste
         record('rollout_attempt_start',dict(step=step,validation=validation,attempt=attempt,
                input_sha256=expected,input_rows=len(forwarded),max_attempts=count))
         result=original(forwarded)
+        from common_em_runtime import capture
+        capture(result,step,validation,attempt)
         preserve('controller-generation-return',dict(step=step,validation=validation,
                  attempt=attempt,input_sha256=expected,result=result))
         reject(step,validation)

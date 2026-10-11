@@ -1,7 +1,7 @@
 """Submit once only after authorized storage and a verified deployed source manifest."""
 import fcntl,hashlib,json,subprocess,time
 from pathlib import Path
-ROOT=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-20261010')
+ROOT=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011')
 
 def main():
     lock=(ROOT/'submit.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

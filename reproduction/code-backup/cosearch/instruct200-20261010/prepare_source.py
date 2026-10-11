@@ -39,7 +39,7 @@ def patch_trainer(trainer):
         'from verl.single_controller.ray.base import create_colocated_worker_cls':
             'from verl.single_controller.ray.base import create_colocated_worker_cls_fused as create_colocated_worker_cls',
         '(is_last_step or self.global_steps % self.config.trainer.test_freq == 0)':
-            '(is_last_step or self.global_steps in (5, 50, 100, 150, 200) or (self.global_steps == 10 and self.config.trainer.get("recovery_acceptance_at10", False)))',
+            '(self.global_steps in (5, 50, 100, 150, 200))',
         'is_last_step or self.global_steps % self.config.trainer.save_freq == 0 or esi_close_to_expiration':
             'is_last_step or self.global_steps in (5, 50, 100, 150, 200) or (self.global_steps == 10 and self.config.trainer.get("recovery_acceptance_at10", False)) or esi_close_to_expiration',
         'print(f"Warning: No dataloader state found at {dataloader_local_path}, will start from scratch")':
@@ -56,6 +56,9 @@ def patch_trainer(trainer):
     if trainer.count(before) != 1: raise ValueError("Missing shared-pool ordering point")
     trainer = trainer.replace(before, '                    main_results = ray.get(main_futures)\n' + before)
     trainer = trainer.replace('main_results, reranker_results = ray.get([main_futures, reranker_futures])', 'reranker_results = ray.get(reranker_futures)')
+    before = "                logger.log(data=metrics, step=self.global_steps)"
+    if trainer.count(before) != 1: raise ValueError("Missing completed outer logging point")
+    trainer = trainer.replace(before, "                from common_em_runtime import completed_outer\n                metrics.update(completed_outer(self.global_steps))\n" + before)
     ast.parse(trainer)
     return trainer
 

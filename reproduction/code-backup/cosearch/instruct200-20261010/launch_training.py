@@ -3,7 +3,7 @@ import argparse,json,os
 from pathlib import Path
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('phase',choices=['short5','continue200','final_eval']);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('phase',choices=['short5','continue200','final_eval','validation5']);args=parser.parse_args()
     import ray
     from hydra import initialize_config_dir,compose
     from omegaconf import OmegaConf
@@ -11,15 +11,16 @@ def main():
     root=Path(os.environ['COSEARCH_RUN_ROOT'])
     if not os.environ.get('SLURM_JOB_ID'):raise RuntimeError('Owned Slurm allocation required')
     overrides=json.loads((root/'author-cli.json').read_text())
-    resume=5 if args.phase=='continue200' else 200 if args.phase=='final_eval' else None
+    resume=5 if args.phase in ('continue200','validation5') else 200 if args.phase=='final_eval' else None
     recovery_plan=json.loads((root/'recovery-plan.json').read_text()) if (root/'recovery-plan.json').exists() else None
     if recovery_plan:
         if args.phase=='continue200':resume=int(recovery_plan['step'])
-        overrides.append('++trainer.recovery_acceptance_at10=True')
+        # Extra checkpoint10 remains historical; no extra scheduled validation.
     if resume is not None:
         overrides.extend(['trainer.resume_mode=resume_path','++trainer.resume_from_path='+str(root/'checkpoints'/('global_step_'+str(resume)))])
-    if args.phase=='final_eval':
-        overrides.extend(['data.val_files=['+str(root/'data/final.parquet')+']','++trainer.val_only=True','trainer.validation_data_dir='+str(root/'final-evaluation')])
+    if args.phase in ('final_eval','validation5'):
+        if args.phase=='final_eval':overrides.append('data.val_files=['+str(root/'data/final.parquet')+']')
+        overrides.append('++trainer.val_only=True')
     with initialize_config_dir(config_dir=str(root/'repo/config'),version_base=None):
         config=compose(config_name='co_search_trainer',overrides=overrides)
     if config.trainer.n_gpus_per_node!=4 or not config.reranker_actor_rollout_ref.trainable:raise RuntimeError('Invalid joint protocol')
@@ -31,6 +32,12 @@ def main():
                     result=super()._save_checkpoint()
                     from verify_checkpoint import verify
                     verify(root,self.global_steps)
+                    common_config=root/"common-validation"/(str(self.global_steps)+".config.json")
+                    if common_config.exists():
+                        import hashlib
+                        metadata=json.loads(common_config.read_text())
+                        metadata["checkpoint_receipt_sha256"]=hashlib.sha256((root/"checkpoints"/("global_step_"+str(self.global_steps))/"full-sha-receipt.json").read_bytes()).hexdigest()
+                        common_config.write_text(json.dumps(metadata,indent=2)+"\n")
                     from archive_checkpoint import request,allow_cleanup
                     request(root,self.global_steps)
                     if recovery_plan and self.global_steps==10:
@@ -55,7 +62,12 @@ def main():
                     if self.global_steps not in (5,200):allow_cleanup(root,self.global_steps)
                     return result
                 def _validate(self):
+                    from common_em_runtime import begin_validation,verify_validation
+                    common_folder="common-final-evaluation" if args.phase=="final_eval" else "common-historical-validation" if args.phase=="validation5" else "common-validation"
+                    begin_validation(self.global_steps,common_folder,self.config)
                     metrics=super()._validate()
+                    common_receipt=verify_validation(self.global_steps,common_folder,51713 if args.phase=="final_eval" else 512)
+                    metrics.update({"common/em":common_receipt["em"],"common/f1":common_receipt["f1"],"common/correct":common_receipt["correct"]})
                     from verify_evaluation import verify
                     folder=root/'final-evaluation' if args.phase=='final_eval' else root/'validation'
                     rows=51713 if args.phase=='final_eval' else 512
@@ -72,7 +84,7 @@ def main():
                         if digest(expected)!=digest(actual):raise RuntimeError('Restored data progress differs')
                         if self.global_steps!=resume:raise RuntimeError('Restored outer step differs')
                         (root/('data-recovery-'+str(resume)+'.json')).write_text(json.dumps({'step':resume,'data_state_sha256':digest(actual),'equal':True})+'\n')
-                        if resume==5:
+                        if resume==5 and args.phase!='validation5':
                             from archive_checkpoint import allow_cleanup
                             allow_cleanup(root,5)
                     return result
@@ -82,16 +94,16 @@ def main():
                     assert self.total_training_steps==200
                     from runtime_fixes import install_controller
                     install_controller(self,original)
-                    if args.phase=='final_eval':
+                    if args.phase in ('final_eval','validation5'):
                         # Never enter the PPO fit loop; its val_only flag depends on val_before_train.
                         self.global_steps=0
                         self._load_checkpoint()
-                        assert self.global_steps==200
+                        assert self.global_steps==resume
                         import phase_sampling
                         metrics=phase_sampling.json_metadata(self._validate())
                         from verify_updates import finite
                         if not metrics or not finite(metrics):raise RuntimeError('Invalid final evaluation metrics')
-                        (root/'final-evaluation-metrics.json').write_text(json.dumps(metrics,allow_nan=False,indent=2)+'\n')
+                        (root/(args.phase+'-metrics.json')).write_text(json.dumps(metrics,allow_nan=False,indent=2)+'\n')
                         return
                     # Workers keep the200 horizon. Only this phase's stopping boundary changes.
                     if args.phase=='short5':self.total_training_steps=5
@@ -101,6 +113,7 @@ def main():
             finally:native.CoSearchRayTrainer=original
     env={'worker_process_setup_hook':'runtime_audit.install','env_vars':{
         'COSEARCH_AUDIT_ROOT':os.environ['COSEARCH_AUDIT_ROOT'],
+        'COSEARCH_RUN_ROOT':str(root),
         'SLURM_JOB_ID':os.environ['SLURM_JOB_ID'],
         'PYTHONPATH':os.environ['PYTHONPATH'],
         'HF_HUB_OFFLINE':'1','TRANSFORMERS_OFFLINE':'1',
