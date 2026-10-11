@@ -13,6 +13,7 @@ assert hashlib.sha256((b/'checkpoints/training_state/global_step_4/manifest.json
 assert r['parent_completed_step']==4 and r['parent_actual_adam']==80
 os.environ['RECURSIVE_A_OMIT_FULL_BETA']='1'
 os.environ['RECURSIVE_A_GUARD_ROUND_PROGRESS']='1'
+os.environ['TREE_LIGHTWEIGHT_CANDIDATE_REWARD']='1'
 commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 os.environ.update(SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
  SEARCH_R1_EXECUTION_BACKEND='hkust_direct',SEARCH_R1_BASELINE_COMMIT=commit,
