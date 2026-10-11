@@ -2,7 +2,12 @@
 import copy
 import numpy as np
 import torch
-from verl.protocol import DataProto, unpad_dataproto
+from verl.protocol import DataProto
+
+def rows(data, indices):
+    return DataProto(batch=data.batch[indices],
+        non_tensor_batch={k:v[indices] for k,v in data.non_tensor_batch.items()},
+        meta_info=copy.deepcopy(data.meta_info))
 
 PROTOCOL='recursive-zero-policy-transport-v1'
 FIELD='recursive_transport_padding'
@@ -12,9 +17,8 @@ def inference_call(worker, data, world):
     if len(data)==0:raise ValueError('No real rows for inference')
     missing=(-len(data))%world
     if not missing:return worker(data)
-    rows=[data]+[data[i%len(data):i%len(data)+1] for i in range(missing)]
-    padded=DataProto.concat(rows)
-    return unpad_dataproto(worker(padded),missing)
+    padded=rows(data,np.array(list(range(len(data)))+[i%len(data) for i in range(missing)]))
+    return rows(worker(padded),slice(0,len(data)))
 
 def actor_slots(data, capacity=2560):
     """Keep the exact empirical question objective under the fixed row divisor.
@@ -30,14 +34,11 @@ def actor_slots(data, capacity=2560):
     if n==capacity:return data
     if not {'policy_weights','loss_mask','advantages'}.issubset(data.batch.keys()):
         raise ValueError('Transport padding requires completed real loss inputs')
-    result=copy.deepcopy(data)
+    result=rows(data,np.array(list(range(n))+[0]*(capacity-n)))
     result.batch['policy_weights']*=capacity/n
-    result.non_tensor_batch[FIELD]=np.array([False]*n,dtype=bool)
-    dummy=copy.deepcopy(result[:1])
-    dummy.non_tensor_batch[FIELD]=np.array([True],dtype=bool)
+    result.non_tensor_batch[FIELD]=np.array([False]*n+[True]*(capacity-n),dtype=object)
     for key in ('policy_weights','loss_mask','advantages','returns','token_level_rewards','token_level_scores'):
-        if key in dummy.batch:dummy.batch[key].zero_()
-    result=DataProto.concat([result]+[copy.deepcopy(dummy) for _ in range(capacity-n)])
+        if key in result.batch:result.batch[key][n:].zero_()
     result.meta_info=dict(result.meta_info,recursive_transport_protocol=PROTOCOL,
                          recursive_real_rows=n,recursive_transport_slots=capacity-n,
                          recursive_capacity=capacity)
@@ -46,7 +47,7 @@ def actor_slots(data, capacity=2560):
 def is_zero_policy_slot(data,row):
     if FIELD not in data.non_tensor_batch:return False
     flags=data.non_tensor_batch[FIELD]
-    if not isinstance(flags,np.ndarray) or flags.dtype!=np.bool_ or len(flags)!=len(data):
+    if not isinstance(flags,np.ndarray) or flags.dtype!=object or len(flags)!=len(data) or any(type(x) is not bool for x in flags):
         raise ValueError('Malformed transport slot flags')
     flag=bool(flags[row])
     if not flag:return False

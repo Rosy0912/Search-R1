@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from tensordict import TensorDict
 from verl.protocol import DataProto
-from search_r1.baselines.recursive_transport import actor_slots,inference_call,is_zero_policy_slot,FIELD
+from search_r1.baselines.recursive_transport import actor_slots,inference_call,is_zero_policy_slot,FIELD,rows
 from search_r1.baselines.objectives import attach_policy_weights,weighted_policy_loss
 from search_r1.baselines.advantages import tree_grpo,grouped_center
 
@@ -22,7 +22,7 @@ class TransportTests(unittest.TestCase):
   self.assertEqual(calls,[4]);self.assertEqual(len(result),3)
   self.assertTrue(torch.equal(result.batch['value'],d.batch['responses']+1))
  def test_one_real_forward_row_handles_world_eight(self):
-  d=self.data()[:1];calls=[]
+  d=rows(self.data(),slice(0,1));calls=[]
   def worker(p):calls.append(len(p));return p
   out=inference_call(worker,d,8)
   self.assertEqual((calls,len(out)),([8],1))
