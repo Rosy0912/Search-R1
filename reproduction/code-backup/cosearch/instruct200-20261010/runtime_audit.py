@@ -92,6 +92,13 @@ def install():
         before=int(worker.actor_lr_scheduler.last_epoch)
         try:result=original_update(worker,data)
         finally:hook.remove()
+        # Native model offload clears cache before optimizer tensors move to CPU.
+        # Release those newly unused CUDA blocks before the other role updates.
+        import torch
+        torch.cuda.synchronize()
+        reserved_before=torch.cuda.memory_reserved()
+        torch.cuda.empty_cache()
+        record(worker,'post_update_cache_released',{'outer':step,'reserved_before':reserved_before,'reserved_after':torch.cuda.memory_reserved(),'allocated_after':torch.cuda.memory_allocated()})
         after=int(worker.actor_lr_scheduler.last_epoch)
         if str(worker.role)=='actor_rollout' and count[0]!=20:
             raise RuntimeError('Main actual optimizer steps differ from20: '+str(count[0]))
