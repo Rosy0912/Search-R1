@@ -27,6 +27,9 @@ last_health=requests.get(a.candidate+'/health',timeout=5).json();worker=last_hea
 profile=last_health['last_scan_profile'];assert profile['tiles_merged']==642 and len(profile['actual_worker_shapes'])==8
 assert {x['gpu'] for x in profile['actual_worker_shapes']}==set(range(8))
 assert sorted(t for x in profile['actual_worker_shapes'] for t in x['tile_starts'])==list(range(0,21015324,32768))
+shapes=[z for x in profile['actual_worker_shapes'] for z in x['gemm_shape_counts']]
+assert all(z['dtype']=='torch.float32' and z['left'][1]==768 and z['left'][0] in (1,64) and z['right'][0]==768 and z['right'][1] in (32768,11036) for z in shapes)
+assert sum(z['count'] for z in shapes)==1284
 proof['actual_scan_profile']=profile
 apps=[line.split(',') for line in subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True).splitlines()]
 owned=[row for row in apps if int(row[1])==worker];assert len({row[0].strip() for row in owned})==8
