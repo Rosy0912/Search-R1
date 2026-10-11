@@ -16,13 +16,13 @@ def extract(action):
     if not isinstance(action,str):return None,'missing_model_boundary'
     # Only the final top-level complete answer action is eligible. Earlier answer
     # actions, even in this generation, must neither supply nor veto the answer.
-    candidates=list(re.finditer(r'<answer>(.*?)</answer>',action,re.S))
-    if not candidates:return None,'missing_or_incomplete_answer'
-    m=candidates[-1]
-    if action[m.end():].strip():return None,'answer_not_at_end'
+    start=action.rfind('<answer>')
+    if start<0:return None,'missing_or_incomplete_answer'
+    m=re.match(r'<answer>(.*?)</answer>\s*$',action[start:],re.S)
+    if m is None:return None,'missing_incomplete_or_nonterminal_answer'
     if re.search(r'</?[A-Za-z_][^<>]*>',m.group(1)):return None,'nested_answer'
     stack=[]
-    for tag in re.finditer(r'<(/?)([A-Za-z_][\w-]*)(?:\s[^<>]*)?\s*(/?)>',action[:m.start()]):
+    for tag in re.finditer(r'<(/?)([A-Za-z_][\w-]*)(?:\s[^<>]*)?\s*(/?)>',action[:start]):
         closing,name,selfclosing=tag.groups()
         if selfclosing or tag.group(0).endswith('/>'):continue
         if closing:
