@@ -1,8 +1,6 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791725792.212288,
-  "second_observed_epoch": 1791725901.2622883,
-  "stage_tail_changed": true,
-  "evidence": "Full85 timer/dev512/variance and saved85; actual86 start verified; same job repolled."
+  "observed_epoch": 1791726537.918476,
+  "evidence": "86 credited,688directrank,full timer86,rolling86 SAVED,actual87 started."
 }
