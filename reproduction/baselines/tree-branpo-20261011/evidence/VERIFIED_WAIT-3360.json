@@ -1,10 +1,10 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "first_observed_epoch": 1791680143.618367,
-  "second_observed_epoch": 1791680204.67872,
-  "completed_outer": 28,
-  "current_outer": 29,
-  "rolling28_saved_confirmed": true,
+  "first_observed_epoch": 1791680802.450042,
+  "second_observed_epoch": 1791680865.0601811,
+  "completed_outer": 29,
+  "current_outer": 30,
+  "rolling29_saved_confirmed": true,
   "same_live_instance": true
 }
