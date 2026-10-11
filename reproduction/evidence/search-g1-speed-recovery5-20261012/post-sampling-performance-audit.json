@@ -1,0 +1,100 @@
+{
+  "utc": "2026-10-11T20:13:02.359546+00:00",
+  "scope": "Read-only code and actual timing audit; no runtime mutation or GPU test",
+  "job": 3381,
+  "frozen_runtime": "0553adec146537e07b84377ce31cba41a54f37cd",
+  "outer": 6,
+  "timing_seconds": {
+    "step": 1103.888,
+    "reference": 121.539,
+    "reward_advantage": 211.602,
+    "actor": 681.569,
+    "unclassified_step": 89.178
+  },
+  "selected_attention_tokens": 1986287,
+  "findings": [
+    {
+      "kind": "objective_unused_reference_forward",
+      "seconds_measured": 121.539,
+      "files": [
+        "verl/trainer/ppo/ray_trainer.py:966",
+        "verl/workers/actor/dp_actor.py:574"
+      ],
+      "detail": "use_kl_loss=True and coefficient0; rewards and loss do not consume reference. Input contracts and finite field checks still require it."
+    },
+    {
+      "kind": "repeated_runtime_source_reads",
+      "files": [
+        "reproduction/common8/behavior_runtime.py:53",
+        "reproduction/common8/behavior_runtime.py:126",
+        "reproduction/common8/behavior_runtime.py:167",
+        "reproduction/common8/behavior_runtime.py:381"
+      ],
+      "detail": "Full840-file SHA re-read per _native_run; four candidate waves + two driver calls + eight workers =14 passes. Two passes inside unclassified step and eight inside actor."
+    },
+    {
+      "kind": "repeated_token_audits_and_serialization",
+      "files": [
+        "reproduction/common8/behavior_trace.py:537",
+        "reproduction/common8/behavior_probability.py:125"
+      ],
+      "detail": "Context audit and probability projection repeat full2560 trace verification/canonical hashes; raw trace synchronous serialization and fsync before reference."
+    },
+    {
+      "kind": "row_hash_host_sync",
+      "files": [
+        "reproduction/common8/behavior_runtime.py:152",
+        "reproduction/common8/behavior_runtime.py:409"
+      ],
+      "detail": "Eight fields times320 rows per rank hashed through detach.cpu; worker inputs already onGPU. Exact hashes still required, but batch transfers avoid thousands of small D2H syncs."
+    },
+    {
+      "kind": "probe_duplicate_full_forward",
+      "files": [
+        "probe_server.py:143",
+        "probe_server.py:181"
+      ],
+      "detail": "Single GPU micro4; commit and boundary each2560 inputs =>1280 full model forwards. Boundary G5 prompt duplicates uncollapsed. Hook captures intermediate layer but later layers still execute; actual readout layer not yet read."
+    },
+    {
+      "kind": "actor_monitor_and_control_work",
+      "files": [
+        "verl/workers/actor/dp_actor.py:273",
+        "reproduction/common8/worker_evidence.py:29",
+        "search_g1/gradient_clipping.py:39"
+      ],
+      "detail": "160training fw+bw and80 extra monitor forward/rank/outer; many finite/FP64 scans, collective scalars and per-row durable ledgers. These are also present in current A800 code, not independently an H100-vs-A800 cause."
+    },
+    {
+      "kind": "zero_entropy_metric_full_vocab",
+      "files": [
+        "search_g1/entropy_memory.py:5"
+      ],
+      "detail": "Coefficient0 disables entropy gradient but retains expensive full-vocabulary entropy computation; contributes no objective gradient."
+    }
+  ],
+  "infrastructure": {
+    "nvlink_topology": "all8 pairs NV18",
+    "observed_env": {
+      "NCCL_NVLS_ENABLE": "0",
+      "NCCL_DEBUG": "WARN",
+      "OMP_NUM_THREADS": "8"
+    },
+    "shared_video_preserved": true,
+    "probe_gpu": "GPU7 shared with training/video",
+    "a800_layout": "training0-3, auxiliary probe/retrieval5/6"
+  },
+  "limitations": [
+    "No independent timers for source checks, row hashing, monitor, finite/clip, fsync or probe internals; no honest minute attribution to each.",
+    "Infra comparison can differ in reward algorithm; exact cross-run comparison must state this.",
+    "No repair deployed; healthy runtime remains frozen."
+  ],
+  "repair_candidates": [
+    "Skip objective-unused reference path with matching field-contract update",
+    "Cache frozen source verification at startup/recovery; retain per-outer identity receipts",
+    "Reuse single actual context audit and canonical bytes/hashes",
+    "Batch D2H and tensor hashing instead of per-row per-field transfers",
+    "Exact prompt dedup/restore order on fixed version probe; intermediate-layer early stop only after actual layer validation",
+    "Combine duplicate finite checks/control receipts while preserving actual write and save correctness; revise any monitor enforcement explicitly"
+  ]
+}
