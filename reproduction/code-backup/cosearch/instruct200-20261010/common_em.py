@@ -49,8 +49,8 @@ def summarize(rows):
     grouped={}
     for ds in sorted(set(x['data_source'] for x in rows)):
         part=[x for x in rows if x['data_source']==ds]
-        grouped[ds]={'questions':len(part),'correct':sum(x['em'] for x in part),'em':sum(x['em'] for x in part)/len(part),'f1':sum(x['f1'] for x in part)/len(part)}
-    return {'trajectories':n,'correct':sum(x['em'] for x in rows),'em':sum(x['em'] for x in rows)/n,'f1':sum(x['f1'] for x in rows)/n,'datasets':grouped,'macro_dataset_em':sum(x['em'] for x in grouped.values())/len(grouped),'weighted_overall_em':sum(x['em'] for x in rows)/n,'scorer_version':VERSION}
+        grouped[ds]={'questions':len(set(x.get('question_uid',x.get('question_answer_sha256',str(i))) for i,x in enumerate(part))),'trajectories':len(part),'correct':sum(x['em'] for x in part),'em':sum(x['em'] for x in part)/len(part),'f1':sum(x['f1'] for x in part)/len(part)}
+    return {'questions':len(set(x.get('question_uid',x.get('question_answer_sha256',str(i))) for i,x in enumerate(rows))),'trajectories':n,'correct':sum(x['em'] for x in rows),'em':sum(x['em'] for x in rows)/n,'f1':sum(x['f1'] for x in rows)/n,'datasets':grouped,'macro_dataset_em':sum(x['em'] for x in grouped.values())/len(grouped),'weighted_overall_em':sum(x['em'] for x in rows)/n,'scorer_version':VERSION}
 def mixed_first(candidate_rows,selected_rows):
     if len(selected_rows)!=2560:raise ValueError('Mixed-first update denominator must be2560')
     return {'candidate_pool':summarize(candidate_rows),'selected_updates':summarize(selected_rows)}

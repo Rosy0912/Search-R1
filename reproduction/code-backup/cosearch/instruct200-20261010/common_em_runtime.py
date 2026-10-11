@@ -40,7 +40,7 @@ def rows_from(batch):
         actions=nt['common_model_actions'][i];last=actions[-1] if actions else None
         verified=bool(last and last['author']=='main_model' and last['fully_retained'] and nt['common_boundary_version'][i]==VERSION)
         refs=nt['common_references'][i];question=nt['common_question'][i]
-        row=dict(question=question,references=refs,data_source=str(nt['common_data_source'][i]),question_answer_sha256=identity(question,refs),model_actions=actions,response_mask=nt.get('common_response_mask',[None]*n)[i],**score(last['text'] if last else None,refs,verified))
+        row=dict(question=question,question_uid=str(nt['uid'][i]),references=aliases(refs),data_source=str(nt['common_data_source'][i]),question_answer_sha256=identity(question,refs),model_actions=actions,response_mask=nt.get('common_response_mask',[None]*n)[i],**score(last['text'] if last else None,refs,verified))
         row['full_interaction_format_diagnostics']={k:str(nt[k][i]) for k in ('valid','json_correct','one_tool_call_per_assistant') if k in nt}
         row['algorithm_reward']=float(rewards[i].sum().item()) if rewards is not None else None
         rows.append(row)
@@ -59,7 +59,7 @@ def capture(result,step,validation,attempt):
     else:
         if len(rows)!=2560:raise RuntimeError('Training EM must include all2560 responses')
         path=root()/'common-training'/job/('step-%s-attempt-%s.jsonl'%(step,attempt));write_rows(path,rows)
-        summary=summarize(rows);summary.update(step=step,attempt=attempt,job=job,questions=len(set(x['question_answer_sha256'] for x in rows)))
+        summary=summarize(rows);summary.update(step=step,attempt=attempt,job=job,questions=len(set(x['question_uid'] for x in rows)))
         ranker=result[1];summary['reranker']={'trajectories':len(ranker),'algorithm_reward_sum':float(ranker.batch['rm_scores'].sum().item()) if len(ranker) else 0.0,'metric_kind':'native_ranking_reward_separate_from_main_em'}
         (path.with_suffix('.summary.json')).write_text(json.dumps(summary,indent=2)+'\n')
     return rows
