@@ -177,7 +177,7 @@ class ActorRolloutRefWorker(Worker):
             actor_module = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path=local_path,
                                                                 torch_dtype=torch_dtype,
                                                                 config=actor_model_config,
-                                                                attn_implementation='sdpa',
+                                                                attn_implementation=('flash_attention_2' if use_remove_padding else 'sdpa'),
                                                                 trust_remote_code=trust_remote_code)
             # some parameters may not in torch_dtype. TODO(zhangchi.usc1992) remove this after we switch to fsdp2
             from verl.utils.rope_precision import cast_preserving_qwen_rope

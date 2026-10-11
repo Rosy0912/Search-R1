@@ -1,22 +1,32 @@
 """Manifest-bound BF16 execution; legacy diagnostic manifests remain FP32."""
 
 BF16_PROFILE = 'bf16_policy_fp32_master'
+NATIVE_BF16_PROFILE = 'native8_bf16_varlen_fp32_master'
 SAMPLING_JOURNAL_POLICY = 'sampling_journal_no_extra_hf_forward'
 
 
 def bf16_policy(run):
     profile = run.get('precision_profile')
-    assert profile in (None, BF16_PROFILE), 'Unknown policy precision profile'
+    assert profile in (None, BF16_PROFILE, NATIVE_BF16_PROFILE), 'Unknown policy precision profile'
     if profile == BF16_PROFILE:
         assert run.get('execution_backend') == 'ssh_local' and run.get('training_world_size') == 4
         return True
+    if profile == NATIVE_BF16_PROFILE:
+        assert run.get('training_world_size') == 8 and run.get('execution_backend') == 'slurm'
+        assert run.get('actor_micro_batch_per_rank') == 2 and run.get('vllm_gpu_memory_utilization') == 0.1
+        return True
     return False
+
+
+def remove_padding(run):
+    bf16_policy(run)
+    return run.get('precision_profile') == NATIVE_BF16_PROFILE
 
 
 def overrides(run):
     if not bf16_policy(run):
         return {}
-    return {
+    result = {
         'actor_rollout_ref.actor.compute_dtype': 'bfloat16',
         'actor_rollout_ref.actor.allow_tf32': 'null',
         'actor_rollout_ref.ref.compute_dtype': 'bfloat16',
@@ -28,6 +38,9 @@ def overrides(run):
         '+actor_rollout_ref.ref.fsdp_config.model_dtype': 'fp32',
         'actor_rollout_ref.rollout.dtype': 'bfloat16',
     }
+    if remove_padding(run):
+        result['actor_rollout_ref.model.use_remove_padding'] = 'true'
+    return result
 
 
 def sampling_journal_only(run):

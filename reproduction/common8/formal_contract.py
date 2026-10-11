@@ -5,7 +5,7 @@ from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
 from reproduction.common8.topology import world_size, actor_global_micro, execution_job_id, monitor_trajectories_per_rank
-from reproduction.common8.precision_contract import bf16_policy, verify as verify_precision_config
+from reproduction.common8.precision_contract import bf16_policy, remove_padding, verify as verify_precision_config
 
 CONTRACT_KIND = 'fresh200_warmup57'
 TARGET_UPDATES = 200
@@ -113,7 +113,7 @@ def verify_formal_config(document, run, base):
     assert document['data']['val_files'] == str(base / 'data/stage.parquet')
     assert document['actor_rollout_ref']['model']['path'] == run['initial_model']
     exact(document['actor_rollout_ref']['model'], dict(enable_gradient_checkpointing=True,
-        use_remove_padding=False), 'Model execution graph')
+        use_remove_padding=remove_padding(run)), 'Model execution graph')
     exact(actor['fsdp_config'], dict(param_offload=True,grad_offload=True,
         optimizer_offload=True), 'Actor FSDP graph')
     assert reference['fsdp_config']['param_offload'] is True

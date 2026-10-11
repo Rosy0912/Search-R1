@@ -128,6 +128,13 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    if os.environ.get('SEARCH_G1_EXECUTION_PROFILE'):
+        from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE, SAMPLING_JOURNAL_POLICY
+        assert os.environ['SEARCH_G1_EXECUTION_PROFILE'] == NATIVE_BF16_PROFILE and restore_receipt
+        result.update(precision_profile=NATIVE_BF16_PROFILE, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
+            execution_backend='slurm', training_world_size=8,
+            vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
+        result['budget'].update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     if restore_receipt:
         from search_g1.full_state_restore import bind
         bind(result,restore_receipt)

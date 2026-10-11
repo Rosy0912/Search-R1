@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-11T17:14:38.310107+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-11T17:14:38.020377+00:00\\\", \\\"original_gone\\\": true, \\\"native\\\": {\\\"returncode\\\": 1, \\\"stdout\\\": \\\"\\\", \\\"stderr\\\": \\\"slurm_load_jobs error: Invalid job id specified\\\\n\\\"}, \\\"queue\\\": {\\\"returncode\\\": 0, \\\"stdout\\\": \\\"\\\", \\\"stderr\\\": \\\"\\\"}, \\\"gpu_processes\\\": {\\\"returncode\\\": 0, \\\"stdout\\\": \\\"\\\", \\\"stderr\\\": \\\"\\\"}}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-11T17:14:38.510402+00:00\"}\n",
+  "stderr": ""
+}

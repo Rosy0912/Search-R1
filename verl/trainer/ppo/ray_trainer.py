@@ -805,7 +805,11 @@ class RayPPOTrainer(object):
                     inline_attempts.attempt_index=5
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    evaluate_development(self)
+                    if run.get('followup_checkpoint_required'):
+                        from search_g1.full_state_restore import reuse_development_after5
+                        reuse_development_after5(base,run)
+                    else:
+                        evaluate_development(self)
                 else:
                     evaluate_development(self)
 
@@ -1064,6 +1068,7 @@ class RayPPOTrainer(object):
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                             self.global_steps == self.config.trainer.get('acceptance_step',0) or
+                            (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == continuation_k + 5) or
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()

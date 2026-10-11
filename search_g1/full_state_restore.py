@@ -40,9 +40,27 @@ def source(receipt_path):
     return p,r,checkpoint,origin,run
 
 
+def execution_budget_compatible(run, parent):
+    from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE, bf16_policy
+    if run.get('precision_profile') != NATIVE_BF16_PROFILE:
+        assert run['budget'] == parent['budget']
+        return
+    assert bf16_policy(run)
+    allowed = {'compute_dtype', 'rollout_dtype', 'allow_tf32'}
+    assert run['budget'].keys() == parent['budget'].keys()
+    assert all(run['budget'][k] == parent['budget'][k] for k in run['budget'] if k not in allowed)
+    assert run['budget']['compute_dtype'] == run['budget']['rollout_dtype'] == 'bfloat16'
+    assert run['budget']['allow_tf32'] is None
+    run['execution_transition'] = dict(source_precision_profile=parent.get('precision_profile'),
+        target_precision_profile=NATIVE_BF16_PROFILE, master_optimizer_reduction_dtype='float32',
+        bitwise_continuation=False, scientific_budget_unchanged=True,
+        discarded_unpersisted_old_suffix='old3368 outers6-10 and partial11 are not stitched into resumed counters')
+
+
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
-    assert run['budget']==parent['budget'] and run['input_sha256']==parent['input_sha256']
+    execution_budget_compatible(run, parent)
+    assert run['input_sha256']==parent['input_sha256']
     assert run['initial_model_sha256']==parent['initial_model_sha256']
     assert run['actor_micro_batch_per_rank']==parent['actor_micro_batch_per_rank']==2
     run.update(run_id=parent['run_id'],native_ray_execution_id=uuid.uuid4().hex,
@@ -120,6 +138,11 @@ def restore_worker(worker,receipt_path):
                 for name in f.keys():equal_tree(actual_model[name],f.get_tensor(name));checked+=1
         assert checked==435
     del actual_model
+    from reproduction.common8.precision_contract import remove_padding
+    current_run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+    if remove_padding(current_run):
+        from search_g1.varlen_execution import verify_loaded_model
+        verify_loaded_model(worker.actor_module_fsdp, rank)
     if worker._is_offload_param:
         offload_fsdp_param_and_grad(module=worker.actor_module_fsdp,offload_grad=worker._is_offload_grad)
     worker.actor_optimizer.load_state_dict(saved['optimizer'])
@@ -267,10 +290,15 @@ def accept_resumed_five(records):
     verify_write_receipt_links(base,gates,6,10)
     budgets=budget_rows(read_console_form(base,run['run_id']),6,10,complete_records=actual,run=run)
     schedules=verify_scheduler_receipts(base,run,6,10,gates)
-    result=dict(accepted=True,run_id=run['run_id'],source_completed_outer=5,source_actual_optimizer_writes_per_rank=100,
+    checkpoint10=None
+    if run.get('followup_checkpoint_required'):
+        checkpoint10=json.loads((Path(run['checkpoint_dir'])/'actor/global_step_10/complete.json').read_text())
+        assert checkpoint10['step']==10 and checkpoint10['actual_optimizer_writes_per_rank']==actual[-1]['optimizer_writes_after']
+        assert 'training_state/manifest.json' in checkpoint10['files_sha256']
+    result=dict(checkpoint10=checkpoint10,accepted=True,run_id=run['run_id'],source_completed_outer=5,source_actual_optimizer_writes_per_rank=100,
         first_resumed_outer=6,last_resumed_outer=10,next_outer=11,actual_updates=actual,
         budgets=budgets,scheduler_receipts=schedules,actual_restore_workers=workers,actual_restore_driver=driver,
-        extra_validation_performed=False,new_checkpoint10_claimed=False,total_budget=200,checked_unix=time.time())
+        extra_validation_performed=False,new_checkpoint10_claimed=bool(run.get("followup_checkpoint_required")),total_budget=200,checked_unix=time.time())
     publish(base/'logs/five-resumed-updates-acceptance.json',result)
     print('SEARCH_G1_RESUMED_FIVE_ACCEPTED=6-10;CONTINUING11',flush=True)
     return result
@@ -348,3 +376,18 @@ def optimizer_construction_config(config,model_path):
     # This does not change the resolved training counter or pretend restoration
     # happened. restore_worker must load and read back Adam100/scheduler5 before use.
     return construction
+
+
+def reuse_development_after5(base, run):
+    """Reuse pinned historical CP5 measurements; new BF16 execution is not re-evaluated here."""
+    old = Path('/mnt/data/shaoshitong/search-g1-resume5-475fbb6-20261011/logs/formal-inline-development-after.json')
+    expected_sha = '87d5cdeb87e083240acead0a766b05dd42a4f5009b0ddf0e42d5080d22c52c8c'
+    assert digest(old) == expected_sha
+    proof = json.loads(old.read_text())
+    assert proof['step'] == 5 and proof['run_id'] == run['run_id']
+    publish(Path(base)/'logs/formal-inline-development-after.json', proof)
+    result=verify_restored_pair(base, run)
+    publish(Path(base)/'logs/reused-development-after5.json', dict(source_path=str(old),
+        source_sha256=expected_sha, current_evaluation_performed=False,
+        interpretation='historical FP32 CP5 validation; not a new BF16 execution measurement'))
+    return result

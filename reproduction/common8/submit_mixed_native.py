@@ -14,7 +14,7 @@ def publish_exclusive(path,value):
         json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
 
 
-def submit(base,commit,expected_files,restore_receipt=None):
+def submit(base,commit,expected_files,restore_receipt=None,execution_profile=None):
     base=Path(base).resolve();assert str(base).startswith('/mnt/data/shaoshitong/')
     intent=base/'preparation/native-submit-intent.json';receipt=base/'preparation/native-submit-receipt.json'
     if intent.exists() or receipt.exists():
@@ -34,6 +34,10 @@ def submit(base,commit,expected_files,restore_receipt=None):
         from search_g1.full_state_restore import source
         p,_,_,_,_=source(restore_receipt)
         text+='export SEARCH_G1_FULL_STATE_RESTORE_RECEIPT='+shlex.quote(str(p))+'\n'
+    if execution_profile:
+        from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
+        assert execution_profile == NATIVE_BF16_PROFILE and restore_receipt
+        text+='export SEARCH_G1_EXECUTION_PROFILE='+shlex.quote(execution_profile)+'\n'
     for key,value in dict(SEARCH_G1_BASE=str(base),SEARCH_G1_SOURCE_COMMIT=commit,
         SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES='1',SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION='0.1',
         SEARCH_G1_LOCAL_RETRIEVAL_ASSETS=str(assets)).items():text+='export '+key+'='+shlex.quote(value)+'\n'
@@ -58,5 +62,5 @@ def submit(base,commit,expected_files,restore_receipt=None):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True)
     parser.add_argument('--source-commit',required=True);parser.add_argument('--source-manifest',required=True)
-    parser.add_argument('--restore-receipt')
-    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()),args.restore_receipt)
+    parser.add_argument('--restore-receipt');parser.add_argument('--execution-profile')
+    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()),args.restore_receipt,args.execution_profile)

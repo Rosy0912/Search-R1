@@ -76,3 +76,21 @@ without simulated writes; the legacy default adds no collectives. Runtime
 precision invariant checks use the corresponding FSDP process group before
 forward and after matching logits. Evidence is in
 `g1-common8-explicit-precision-calibration-cpu.json`; it is not CUDA admission.
+
+The authorized native H100 recovery profile `native8_bf16_varlen_fp32_master`
+restores the original full CP5 model and optimizer state, then uses BF16 actor,
+reference and rollout computation. Actor master weights, Adam moments, rewards,
+probe calculations, response log probability reductions and objective remain
+FP32. This is an explicitly recorded execution transition, not bitwise
+continuation of the previous FP32 suffix. Global micro16/local2/accumulation8,
+mini128, twenty opportunities, selection limits and scheduler remain unchanged.
+
+Padding removal selects Qwen2 FlashAttention2 (HF 4.46.3, FlashAttention 2.7.4)
+with packed position resets and varlen sequence boundaries; packed SDPA is not
+used. The behavior denominator uses the actual selected sampling journal with
+existing token/context/mask provenance checks, as in the A800 BF16 execution.
+It does not claim independently recomputed HF probability parity. The original
+0 and CP5 FP32 validation scores are reused with pinned source SHA, explicitly
+identified as historical measurements. New CP10 is saved and read back before
+continuing11; it was unavailable in canceled job3368. Speed is measured from
+actual candidate filling plus training, not predicted from configuration.
