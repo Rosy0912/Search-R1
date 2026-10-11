@@ -32,7 +32,8 @@ def prepare(raw,output,revision):
         val_ids=set(selected[:256]);stage_ids=set(selected[256:288]);held=set()
         for i in selected:held.add(canonical_question_key(rows[i]['prompt']))
         validation += [rows[i] for i in selected[:256]];stage += [rows[i] for i in selected[256:]]
-        train += [r for i,r in enumerate(rows) if canonical_question_key(r['prompt']) not in forbidden|held]
+        excluded=forbidden|held
+        train += [r for i,r in enumerate(rows) if canonical_question_key(r['prompt']) not in excluded]
     records={};ids={};questions={}
     for split,rows in [('train',train),('validation',validation),('stage',stage),('final',final)]:
         f=pd.DataFrame(rows);p=output/(split+'.parquet');f.to_parquet(p,index=False);f=pd.read_parquet(p)
