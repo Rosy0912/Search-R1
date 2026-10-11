@@ -1,4 +1,4 @@
-Actual progress:80/200 full outers;640 directrank records,1600 successful Adam/rank,zero skips;rolling80 saved, actual81 started. Outer80 total1386.399390s (23.106657min), including dev678.414462s (11.306908min). Training reward0.406640619, pure intra variance0.069661227998,mixed118/512. Dev80 complete512:NQ256+Hotpot256,F1 45.987413%,EM37.890625%; versus75 F1 down0.421275pp,EM down1.757813pp; versus60 F1 down1.658338pp,EM down1.757813pp. Protocol unchanged. Final200,51713,HF/tokenizer,costs and cleanup remain incomplete.
+Actual progress:81/200 full outers;648 directrank records,1620 successful Adam/rank,zero skips;rolling81 saved, actual82 started. Outer81 total742.560175s (12.376003min). Reward0.443749994, pure intra variance0.071614346251,mixed123/512. Latest dev80 unchanged:F1 45.987413%,EM37.890625%; versus75 F1 down0.421275pp,EM down1.757813pp. Final200,51713,HF/tokenizer,costs and cleanup incomplete.
 
 
 

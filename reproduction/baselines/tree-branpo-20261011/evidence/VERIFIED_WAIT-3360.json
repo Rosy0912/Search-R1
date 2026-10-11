@@ -1,7 +1,6 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791721091.6034803,
-  "second_observed_epoch": 1791721161.4443154,
-  "evidence": "Dev80 finalized512 rows, timer80 completed, actual epoch0step81 appeared between polls."
+  "observed_epoch": 1791721962.8583379,
+  "evidence": "81 actual credited updates,648rank records, full timer81, rolling81 saved and actual82 start confirmed."
 }
