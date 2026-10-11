@@ -25,6 +25,9 @@ def parse_gpu_inventory(text):
 def check_selected_gpus(selected, inventory, processes):
     if not selected or len(set(selected)) != len(selected):
         raise ValueError('CUDA_VISIBLE_DEVICES must select distinct GPUs')
+    if os.environ.get('RECURSIVE_BRAN_STRICT_GPU_GATE')=='1':
+        from .recursive_admission import exact_gpu_gate
+        exact_gpu_gate(selected,inventory)
     records = []
     for device in selected:
         matches = [v for index, v in inventory.items() if device == index or device == v['uuid']]
