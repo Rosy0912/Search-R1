@@ -105,3 +105,5 @@ UUID locks, actual CUDA/rank validation and bound foreign process checks. Global
 Slurm/cgroup/device configuration and the video's reservation are not modified.
 The admission receipt distinguishes zero newly reserved Slurm GPUs from eight
 actual shared physical GPUs. CPU fixtures are not actual GPU acceptance.
+
+Human instruction: reduce extraneous training checks and retain training correctness. Startup no longer performs packed/single diagnostic forwards or numerical logit gates. Actual loaded Flash2 layer/dtype configuration remains checked; CP5 HF/Adam/scheduler/RNG/cursor/probe readback and real finite optimizer-update accounting remain. Necessary isolated failure diagnostic3380 reproduced max0.8359375 for different GEMM shapes, while equal-shaped masked CP5 forwards matched exactly and sequence isolation was exact. This is no quality or bitwise-continuation claim.

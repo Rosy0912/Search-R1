@@ -141,8 +141,8 @@ def restore_worker(worker,receipt_path):
     from reproduction.common8.precision_contract import remove_padding
     current_run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
     if remove_padding(current_run):
-        from search_g1.varlen_execution import verify_loaded_model
-        verify_loaded_model(worker.actor_module_fsdp, rank)
+        from search_g1.varlen_execution import verify_execution_configuration
+        verify_execution_configuration(worker.actor_module_fsdp, rank)
     if worker._is_offload_param:
         offload_fsdp_param_and_grad(module=worker.actor_module_fsdp,offload_grad=worker._is_offload_grad)
     worker.actor_optimizer.load_state_dict(saved['optimizer'])
