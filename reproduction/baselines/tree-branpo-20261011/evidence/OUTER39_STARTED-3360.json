@@ -1,0 +1,278 @@
+{
+  "classification": "progress",
+  "job": 3360,
+  "first_observed_epoch": 1791687611.325083,
+  "second_observed_epoch": 1791687732.6836445,
+  "accounting": {
+    "complete_outer_only_per_rank": {
+      "0": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "1": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "2": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "3": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "4": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "5": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "6": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "7": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      }
+    },
+    "all_finalized_attempts_per_rank": {
+      "0": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "1": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "2": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "3": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "4": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "5": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "6": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      },
+      "7": {
+        "adam_writes": 760,
+        "opportunities": 760,
+        "skips": 0
+      }
+    },
+    "complete_outer_count": 38,
+    "finalized_attempt_count": 38,
+    "all_skipped_attempt_count": 0,
+    "accounting_errors": [],
+    "complete_totals_valid": true,
+    "source": "Every finalized small attempt JSON and all-skip worker ledger, not last8",
+    "in_flight_or_unrecorded_partial_adam_writes": null,
+    "scope": "Current attempt and unfinalized partial writes excluded and unknown; completed credits differ from consumed attempts"
+  },
+  "rank_records": {
+    "count": 304,
+    "latest": [
+      {
+        "path": "outer-000038-attempt-000038-rank00.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 0,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank01.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 1,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank02.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 2,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank03.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 3,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank04.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 4,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank05.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 5,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank06.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 6,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      },
+      {
+        "path": "outer-000038-attempt-000038-rank07.json",
+        "status": "DIRECT_RANK_COMPLETE_OUTER_OBSERVED",
+        "rank": 7,
+        "observed_outer": 38,
+        "attempt_id": 38,
+        "actual_optimizer_calls": 20,
+        "opportunities_processed": 20,
+        "opportunities_skipped": 0,
+        "scheduler_step_before": 37,
+        "scheduler_step_after": 38,
+        "local_before_error": null,
+        "local_scheduler_error": null
+      }
+    ]
+  },
+  "timing": {
+    "completed_outer": 38,
+    "attempt_id": 38,
+    "timing_seconds": {
+      "timing_s/gen": 280.94589680433273,
+      "timing_s/ref": 9.593341939151287,
+      "timing_s/adv": 10.021005284041166,
+      "timing_s/update_actor": 223.19215642660856,
+      "timing_s/stage_testing": 40.24750630557537,
+      "timing_s/step": 646.257989179343
+    },
+    "scope": "Original trainer completed step timer including validation/checkpoint when scheduled; joined to credited attempt",
+    "rollout_cost": {
+      "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+      "attempt_id": 38,
+      "candidate_outer": 38,
+      "start_epoch": 1791687044.9896464,
+      "end_epoch": 1791687325.7010012,
+      "wall_seconds": 280.71135511249304,
+      "costs": {
+        "generated_tokens": 448335,
+        "prefill_tokens": 2107947,
+        "retrieval_calls": 1561,
+        "trajectories": 2560,
+        "padded_rows": 15,
+        "context_mismatches": 0,
+        "raw_slots": 2076000,
+        "raw_emitted_tokens": 448335,
+        "raw_retained_tokens": 230014,
+        "raw_discarded_tail_tokens": 218321,
+        "raw_inherited_leaf_tokens": 77074,
+        "semantic_prefix_scan_cpu_seconds": 21.12084004006465,
+        "semantic_prefix_scan_wall_seconds": 21.043064765632153
+      },
+      "error": null
+    }
+  },
+  "stage": {
+    "last_lines": [
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 659 & 500",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 564 & 500",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 501 & 500",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 564 & 500",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_38/manifest.json",
+      "-0.0047349445521831512 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0047349445521831512 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:617.06329345703125 - response_length/max:2353 - response_length/min:194 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.591796875 - prompt_length/max:222 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0570312500000001 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.0390625 - env/ratio_of_valid_action:0.9951171875 - env/number_of_valid_search:1.0464843749999999 - timing_s/gen:280.94589680433273 - timing_s/ref:9.5933419391512871 - timing_s/adv:10.021005284041166 - timing_s/update_actor:223.19215642660856 - timing_s/stage_testing:40.247506305575371 - timing_s/step:646.25798917934299 - timing_per_token_ms/ref:0.0049657112283557148 - timing_per_token_ms/update_actor:0.11552885368605824 - timing_per_token_ms/adv:0.0051870785774136086 - timing_per_token_ms/gen:0.17784965379382225",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 39",
+      "\u001b[36m(measured_task pid=4011013)\u001b[0m [WARNING] OBSERVATION TOO LONG, CONSIDER CHANGING YOUR CONFIG, 825 & 500"
+    ],
+    "errors": [
+      "8591355551034212 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0038591355551034212 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:601.70001220703125 - response_length/max:2224 - response_length/min:86 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.083984375 - prompt_length/max:223 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0296875000000001 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99765625000000002 - env/number_of_valid_action:2.01953125 - env/ratio_of_valid_action:0.99723307291666663 - env/number_of_valid_search:1.0218750000000001 - timing_s/gen:271.03334078192711 - timing_s/ref:9.3642177879810333 - timing_s/adv:10.00633617118001 - timing_s/update_actor:218.41268221661448 - timing_s/stage_testing:40.596651744097471 - timing_s/step:627.18689556792378 - timing_per_token_ms/ref:0.0049445482068937105 - timing_per_token_ms/update_actor:0.11532752234822269 - timing_per_token_ms/adv:0.0052836032536841731 - timing_per_token_ms/gen:0.17595545744214772",
+      "/mean:-0.0046038110740482807 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0046038110740482807 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:610.693359375 - response_length/max:2548 - response_length/min:142 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:136.95703125 - prompt_length/max:218 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.044921875 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99648437499999998 - env/number_of_valid_action:2.0363281249999998 - env/ratio_of_valid_action:0.99772135416666663 - env/number_of_valid_search:1.03984375 - timing_s/gen:280.48010135442019 - timing_s/ref:9.9517948664724827 - timing_s/adv:9.9350147135555744 - timing_s/update_actor:217.18633964657784 - timing_s/stage_testing:40.92567677423358 - timing_s/step:640.00752570480108 - timing_per_token_ms/ref:0.0051995156004213628 - timing_per_token_ms/update_actor:0.11347337604347883 - timing_per_token_ms/adv:0.0051907484716732753 - timing_per_token_ms/gen:0.17940679706047505",
+      "tages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0017313638236373663 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:614.9300537109375 - response_length/max:2549 - response_length/min:365 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:138.0625 - prompt_length/max:273 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.052734375 - env/number_of_actions/max:4 - env/number_of_actions/min:2 - env/finish_ratio:0.99570312500000002 - env/number_of_valid_action:2.0367187499999999 - env/ratio_of_valid_action:0.99576822916666674 - env/number_of_valid_search:1.041015625 - timing_s/gen:284.54987093061209 - timing_s/ref:10.498938947916031 - timing_s/adv:9.9135752059519291 - timing_s/update_actor:224.73993818834424 - timing_s/testing:554.83794995397329 - timing_s/stage_testing:7.4110925197601318e-05 - timing_s/step:1166.6409105062485 - timing_per_token_ms/ref:0.0054464654044025533 - timing_per_token_ms/update_actor:0.1165868574341361 - timing_per_token_ms/adv:0.0051428001116129492 - timing_per_token_ms/gen:0.18075598720294805",
+      "an:-0.0044777235016226768 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0044777235016226768 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:599.0101318359375 - response_length/max:2530 - response_length/min:183 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.85546875 - prompt_length/max:213 - prompt_length/min:128 - prompt_length/clip_ratio:0.00390625 - env/number_of_actions/mean:2.0308593749999999 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99765625000000002 - env/number_of_valid_action:2.0199218750000001 - env/ratio_of_valid_action:0.9970703125 - env/number_of_valid_search:1.022265625 - timing_s/gen:262.45732941478491 - timing_s/ref:9.5693615898489952 - timing_s/adv:9.8026855997741222 - timing_s/update_actor:219.737295281142 - timing_s/stage_testing:40.728434734046459 - timing_s/step:622.85633139312267 - timing_per_token_ms/ref:0.0050728813289869015 - timing_per_token_ms/update_actor:0.11648647739429573 - timing_per_token_ms/adv:0.0051965703548890159 - timing_per_token_ms/gen:0.17115301507485978",
+      "an:-0.003104890463873744 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.003104890463873744 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:600.732421875 - response_length/max:2600 - response_length/min:248 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.345703125 - prompt_length/max:210 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0375000000000001 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.015625 - env/ratio_of_valid_action:0.99410807291666659 - env/number_of_valid_search:1.0230468749999999 - timing_s/gen:276.1003622636199 - timing_s/ref:9.4679546318948269 - timing_s/adv:9.8128380738198757 - timing_s/update_actor:221.34533206000924 - timing_s/stage_testing:39.932724509388208 - timing_s/step:636.81697906181216 - timing_per_token_ms/ref:0.0050108784596263663 - timing_per_token_ms/update_actor:0.11714616299723164 - timing_per_token_ms/adv:0.0051934066906343945 - timing_per_token_ms/gen:0.1795336826878777",
+      "-0.0047349445521831512 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0047349445521831512 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:617.06329345703125 - response_length/max:2353 - response_length/min:194 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.591796875 - prompt_length/max:222 - prompt_length/min:126 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.0570312500000001 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.99257812499999998 - env/number_of_valid_action:2.0390625 - env/ratio_of_valid_action:0.9951171875 - env/number_of_valid_search:1.0464843749999999 - timing_s/gen:280.94589680433273 - timing_s/ref:9.5933419391512871 - timing_s/adv:10.021005284041166 - timing_s/update_actor:223.19215642660856 - timing_s/stage_testing:40.247506305575371 - timing_s/step:646.25798917934299 - timing_per_token_ms/ref:0.0049657112283557148 - timing_per_token_ms/update_actor:0.11552885368605824 - timing_per_token_ms/adv:0.0051870785774136086 - timing_per_token_ms/gen:0.17784965379382225"
+    ]
+  },
+  "rolling_save_proof": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_38/manifest.json"
+  ],
+  "run_result": null
+}
