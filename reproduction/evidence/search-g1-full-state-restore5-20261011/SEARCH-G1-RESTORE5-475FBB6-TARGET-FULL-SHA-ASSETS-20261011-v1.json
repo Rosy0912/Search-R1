@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-11T11:54:56.219496+00:00",
+  "base": "/mnt/data/shaoshitong/search-g1-resume5-475fbb6-20261011",
+  "outputs_remote": "/mnt/data/shaoshitong/search-g1-resume5-475fbb6-20261011/checkpoints",
+  "links": {
+    "env": "/dataset/shaoshitong/Search-G1-common8/env",
+    "bootstrap-tools": "/dataset/shaoshitong/Search-G1-common8/bootstrap-tools",
+    "bootstrap-assets": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets",
+    "assets": "/dataset/shaoshitong/Search-G1-common8/assets",
+    "retriever-gpu-lib": "/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib"
+  },
+  "canonical_data_links": {
+    "exclusions-audit.json": "/mnt/data/shaoshitong/g1f-ef498ac3/data/exclusions-audit.json",
+    "manifest.json": "/mnt/data/shaoshitong/g1f-ef498ac3/data/manifest.json",
+    "stage.parquet": "/mnt/data/shaoshitong/g1f-ef498ac3/data/stage.parquet",
+    "validation.parquet": "/mnt/data/shaoshitong/g1f-ef498ac3/data/validation.parquet",
+    "train.parquet": "/mnt/data/shaoshitong/g1f-ef498ac3/data/train.parquet",
+    "final.parquet": "/mnt/data/shaoshitong/g1f-ef498ac3/data/final.parquet"
+  },
+  "training_started": false,
+  "shared_gpu_launch_settings": {
+    "SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES": "1",
+    "SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION": "0.1"
+  },
+  "source_sha_validation_required_before_launch": true
+}
