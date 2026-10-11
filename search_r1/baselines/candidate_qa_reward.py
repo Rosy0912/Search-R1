@@ -4,7 +4,7 @@ Final training compose/probability validation remains unchanged. Candidate
 semantics are rebuilt with the existing original-token/ByteLevel contract.
 """
 from .tree_raw_tokens import (_trajectory_values, tokenizer_validation_scope,
-                              require)
+                              require, tokenizer_identity)
 
 
 def _decoded_model_spans(tokens, marks, tokenizer):
@@ -20,8 +20,11 @@ def _decoded_model_spans(tokens, marks, tokenizer):
 def candidate_qa_rewards(engine, qa_batch, states, reward_fn):
     from verl.trainer.main_ppo import RewardManager, _select_rm_score_fn
     from verl.utils.reward_score import qa_em
-    require(type(reward_fn) is RewardManager and reward_fn.tokenizer is engine.tokenizer,
-            'Light candidate scoring requires the unchanged QA RewardManager/tokenizer')
+    require(type(reward_fn) is RewardManager,
+            'Light candidate scoring requires the unchanged QA RewardManager')
+    require(tokenizer_identity(reward_fn.tokenizer,
+                engine.tokenizer_identity['tokenizer_json_sha256'])==engine.tokenizer_identity,
+            'Light candidate reward tokenizer differs from the frozen complete identity')
     require(reward_fn.format_score==0. and engine.token_preservation is not None,
             'Light candidate scoring requires strict binary QA and raw-token preservation')
     require(engine.config.max_prompt_length==4096,

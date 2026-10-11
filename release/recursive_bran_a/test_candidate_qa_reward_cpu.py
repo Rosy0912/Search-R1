@@ -18,11 +18,11 @@ class CandidateQARewardTests(unittest.TestCase):
 
     def test_unknown_scorer_refused_before_ledger(self):
         from verl.trainer.main_ppo import RewardManager
-        tok=object();engine=NS(tokenizer=tok,tokenizer_identity={},token_preservation={},config=NS(max_prompt_length=4096))
+        tok=object();engine=NS(tokenizer=tok,tokenizer_identity={'tokenizer_json_sha256':'f'*64},token_preservation={},config=NS(max_prompt_length=4096))
         batch=type('Batch',(),{'__len__':lambda self:1,'non_tensor_batch':{'data_source':['unknown']}})()
         # Only the tokenizer scope is mocked; the production scorer selector must reject.
         from contextlib import nullcontext
-        with patch('search_r1.baselines.candidate_qa_reward.tokenizer_validation_scope',return_value=nullcontext()):
+        with patch('search_r1.baselines.candidate_qa_reward.tokenizer_validation_scope',return_value=nullcontext()), patch('search_r1.baselines.candidate_qa_reward.tokenizer_identity',return_value=engine.tokenizer_identity):
             with self.assertRaises(NotImplementedError):
                 candidate_qa_rewards(engine,batch,[NS(source=0)],RewardManager(tok,0))
 
