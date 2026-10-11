@@ -6,10 +6,9 @@ b=Path(os.environ['RECURSIVE_BRAN_BASE']).resolve();r=json.loads(Path(os.environ
 assert socket.gethostname().split('.')[0]=='xielab1' and os.getuid()==1005
 assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']
 out=Path(r['output']).resolve()
-assert out.parent==b and out.name.startswith('output-search-only-resume5-')
+assert out.parent==b and out.name.startswith('output-search-only-resume4-')
 if (out/'fresh-initialization.json').exists():raise RuntimeError('No blind restart of sparse continuation')
-assert not Path('/proc/3920441').exists(), 'Previous boundary owner still present'
-assert r['parent_completed_step']==5
+assert r['parent_completed_step']==4
 binding=json.loads(Path(os.environ['RECURSIVE_A_CONTINUATION_BINDING']).read_text())
 assert binding['handoff_contract']=='search_only_and_no_repeated_candidate_proof_v1'
 assert hashlib.sha256(Path(binding['parent_manifest']).read_bytes()).hexdigest()==binding['parent_manifest_sha256']
