@@ -1,15 +1,18 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791702887.9565263,
-  "second_observed_epoch": 1791702954.1387641,
-  "completed_outer": 59,
+  "first_observed_epoch": 1791703475.066324,
+  "second_observed_epoch": 1791703534.7902284,
+  "first_completed_outer": 59,
+  "second_completed_outer": 60,
+  "direct_rank_records": 480,
   "queue": {
     "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|12:43:20|h100-10\n",
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|12:53:00|h100-10\n",
     "stderr": ""
   },
-  "direct_rank_records": 472,
-  "full_step59_seconds": 644.6480031386018,
-  "scope": "Actual complete logger59/rolling59 and step60 continuation; no restart/source change."
+  "save60_lines": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_60/manifest.json"
+  ],
+  "scope": "Actual credited outer60; complete dev60/full timer/logger pending; no restart/source change."
 }
