@@ -28,7 +28,8 @@ def check_local_runtime(config, ray_nodes=None):
     elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
         raise ValueError('Local runtime requires the matching Slurm allocation')
     parsed = urlparse(config.retriever.url)
-    if (parsed.scheme != 'http' or not loopback(parsed.hostname or '') or parsed.username
+    local_retriever = loopback(parsed.hostname or '') or (direct and expected=='xielab5' and parsed.hostname=='10.123.4.11')
+    if (parsed.scheme != 'http' or not local_retriever or parsed.username
             or parsed.password or parsed.path != '/retrieve'):
         raise ValueError('Retriever must be a local loopback HTTP service')
     address = os.environ.get('RAY_ADDRESS', '')

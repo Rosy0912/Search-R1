@@ -20,13 +20,13 @@ replacements={'baselines.local_runtime_host':'xielab5',
  'baselines.holdout.manifest_sha256':hashlib.sha256((data/'manifest.json').read_bytes()).hexdigest(),
  'baselines.holdout.data_root':str(data),'trainer.acceptance_gate_enabled':'false',
  'trainer.n_gpus_per_node':'4','trainer.experiment_name':'recursive-bran-b-hkust4-200',
- 'retriever.url':'http://127.0.0.1:18003/retrieve','trainer.default_local_dir':str(b/'checkpoints')}
+ 'retriever.url':'http://10.123.4.11:18003/retrieve','trainer.default_local_dir':str(b/'checkpoints')}
 overrides=[k+'='+str(replacements.get(k,v)) for k,v in [x.split('=',1) for x in overrides]]
 with initialize_config_dir(config_dir=str(repo/'verl/trainer/config'),version_base=None):
  cfg=compose(config_name='ppo_recursive_bran_b',overrides=overrides)
 validate_config(cfg);identity=prepare_common_holdout(cfg)
 text=OmegaConf.to_yaml(OmegaConf.create(OmegaConf.to_container(cfg,resolve=True)))
-r=b/'receipts';r.mkdir(parents=True,exist_ok=True)
+r=b/'receipts'/('configuration-'+uuid.uuid4().hex);r.mkdir(parents=True,exist_ok=False)
 if (r/'configuration.json').exists():raise RuntimeError('Existing immutable configuration')
 (r/'resolved.yaml').write_text(text)
 record=dict(run_id=uuid.uuid4().hex,config_sha256=hashlib.sha256(text.encode()).hexdigest(),data_identity=identity['content_identity']['sha256'],

@@ -21,8 +21,10 @@ for line in rows.splitlines():
  pid=int(pid);assert pid==1749337 and gpu=='GPU-21352a4a-5b55-8adf-8e82-c70b7a94ecf3' and float(mem)<=1024,'Selected GPU is occupied; no takeover'
  p=pathlib.Path('/proc',str(pid));assert p.stat().st_uid==1001
  st=(p/'stat').read_text().split(') ',1)[1].split();assert int(st[19])==641133475
-health=json.load(urllib.request.urlopen('http://127.0.0.1:18003/health',timeout=15))
+health=json.load(urllib.request.urlopen('http://10.123.4.11:18003/health',timeout=15))
 assert health['ready'] is True,'Retriever not ready'
+assert health['ntotal']==21015324 and health['d']==768 and health['tf32'] is False and health['query_micro']==64
+assert health['source_manifest_sha256']=='b1fe4576cd1d3314fe35fde3443cf63105110cf6dc9a71daa9e807f2cd2c4508' and health['acceptance_sha256']=='f256ee31dea1297a07baa28ca9b722e678fbc3555669a3d2bcebcb00884a9443','Retriever numeric identity changed'
 print('REMOTE_RETRIEVER_HEALTH',json.dumps(health),flush=True)
 PY
 exec "$python" -m search_r1.baselines.preflight -- "$python" release/recursive_bran_b/train.py

@@ -2,7 +2,7 @@
 import json,os,hashlib,socket,time
 from pathlib import Path
 from omegaconf import OmegaConf
-b=Path(os.environ['RECURSIVE_BRAN_BASE']).resolve();r=json.loads((b/'receipts/configuration.json').read_text())
+b=Path(os.environ['RECURSIVE_BRAN_BASE']).resolve();r=json.loads(Path(os.environ['RECURSIVE_BRAN_CONFIGURATION']).read_text())
 assert socket.gethostname().split('.')[0]=='xielab5' and os.getuid()==1001
 assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']
 if (b/'receipts/start.json').exists() or (b/'output/fresh-initialization.json').exists():
