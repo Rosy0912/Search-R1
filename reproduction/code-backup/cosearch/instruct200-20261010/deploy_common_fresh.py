@@ -9,6 +9,8 @@ def deploy(payload):
     for n,b in payload['tools'].items():
         if Path(n).name!=n:raise ValueError(n)
         (NEW/'tools'/n).write_bytes(base64.b64decode(b))
+    for config_file in (OLD/'tools').glob('*.yaml'):
+        (NEW/'tools'/config_file.name).write_text(config_file.read_text().replace(str(OLD),str(NEW)))
     shutil.copytree(str(OLD/'repo'),str(NEW/'repo'),symlinks=True,ignore=shutil.ignore_patterns('__pycache__'))
     p=NEW/'repo/verl/verl/trainer/ppo/search_r1_reranker_ray_trainer.py';s=p.read_text();before=hashlib.sha256(s.encode()).hexdigest()
     point='and (is_last_step or (self.global_steps in (5, 50, 100, 150, 200) or (self.global_steps == 10 and self.config.trainer.get("recovery_acceptance_at10", False))))'

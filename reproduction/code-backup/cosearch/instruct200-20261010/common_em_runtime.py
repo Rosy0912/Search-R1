@@ -24,6 +24,7 @@ def install_loop(cls):
         output=result[0] if isinstance(result,tuple) else result
         from question_metadata import with_question
         fixed=with_question(kwargs)
+        output.extra_fields['common_response_mask']=list(output.response_mask)
         output.extra_fields.update(common_question=fixed['extra_info']['question'],common_references=fixed['reward_model']['ground_truth'],common_data_source=str(fixed.get('data_source','unknown')),common_boundary_version=VERSION)
         return result
     cls.run=run;cls._common_em_installed=True

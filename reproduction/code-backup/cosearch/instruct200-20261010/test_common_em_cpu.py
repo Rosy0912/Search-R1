@@ -25,6 +25,7 @@ class Loop:
   await self._handle_generating_state(d,{})
   d.response_mask.extend([0]*len('<answer>U2</answer>'))
   d.next='<answer>wrong</answer>';await self._handle_generating_state(d,{})
+  d.response_mask=list(d.response_mask)
   return d,[]
 install_loop(Loop)
 x=asyncio.run(Loop().run({},raw_prompt=[{'role':'user','content':'Answer the given question.\nQuestion: q'}],extra_info={},reward_model={'ground_truth':{'target':['U2']}},data_source='nq'))[0]
