@@ -105,9 +105,11 @@ def _emission(action, context, expected_provenance):
     validate_distribution({key: settings[key] for key in PLAIN_DISTRIBUTION})
     require(settings['min_tokens'] == 0 and settings['max_tokens'] == 500 and
             type(settings['min_tokens']) is int and type(settings['max_tokens']) is int and
-            settings['ignore_eos'] is False and settings['stop'] in (None, []) and
+            settings['ignore_eos'] is False and ((settings['stop'] in (None, []) and
+            settings['include_stop_str_in_output'] is False) or
+            (settings['stop'] in (['</search>'],['</search>','</answer>']) and settings['include_stop_str_in_output'] is True)) and
             settings['stop_token_ids'] in (None, []) and
-            settings['include_stop_str_in_output'] is False and settings['logprobs'] == 1 and
+            settings['logprobs'] == 1 and
             type(settings['logprobs']) is int and
             settings['prompt_logprobs'] is None and settings['seed'] is None,
             'Unsupported stop/length/logprob/seed settings')
@@ -125,11 +127,25 @@ def _emission(action, context, expected_provenance):
     return emission
 
 
-def _row(projection, expected_provenance, validation_context=None):
+class BehaviorMuProofCache:
+    """Driver-local, bounded to one outer; never serialized into training data."""
+    def __init__(self, max_rows=4096):
+        self.max_rows=max_rows;self.rows={};self.contexts={};self.hits=0;self.misses=0
+
+
+def _row(projection, expected_provenance, validation_context=None, proof_cache=None):
     require(projection.get('protocol') == RAW_PROTOCOL and projection['response_cap'] == 4096,
             'Accepted raw/semantic protocol and fixed cap required')
     bound = {key: value for key, value in projection.items() if key != 'binding_sha256'}
     require(fingerprint(bound) == projection['binding_sha256'], 'Raw projection binding changed')
+    # Fresh content SHA is computed above, never trust a caller-supplied digest.
+    # It binds every ledger/identity field; runtime tokenizer checks remain below.
+    key=(projection['binding_sha256'],fingerprint(expected_provenance),
+         fingerprint([turn['action']['tokenizer_identity'] for turn in projection['raw_ledger']]))
+    if proof_cache is not None and key in proof_cache.rows:
+        proof_cache.hits+=1
+        return proof_cache.rows[key]
+
     state = SimpleNamespace(prompt=projection['prompt_token_ids'],
                             response=projection['policy_response_token_ids'],
                             model_mask=projection['policy_model_mask'],
@@ -165,7 +181,12 @@ def _row(projection, expected_provenance, validation_context=None):
         offset = len(values)
     require(len(values) == len(state.response) and actions,
             'Effective row has missing behavior probabilities')
-    return values, actions, steps
+    result=(values, actions, steps)
+    if proof_cache is not None:
+        proof_cache.misses+=1
+        if len(proof_cache.rows)>=proof_cache.max_rows:proof_cache.rows.clear()
+        proof_cache.rows[key]=result
+    return result
 
 
 def compose_behavior_mu_rows(states, projections, *, response_width, expected_provenance):
@@ -197,7 +218,7 @@ def compose_behavior_mu_rows(states, projections, *, response_width, expected_pr
     return tensor, bindings
 
 
-def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
+def validate_behavior_mu_batch(data, *, expected_provenance, required=True, proof_cache=None):
     """Validate complete row-local binding after final balancing/permutation.
 
     Caller owns matched collective refusal. This function never edits tensors,
@@ -242,7 +263,7 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
                 binding['tree_uid'] == data.non_tensor_batch['tree_uid'][row] and
                 binding['trajectory_uid'] == data.non_tensor_batch['trajectory_uid'][row],
                 'Row permutation lost behavior/source/leaf identity')
-        values, actions, steps = _row(projection, expected, validation_context=validation_context)
+        values, actions, steps = _row(projection, expected, validation_context=validation_context, proof_cache=proof_cache)
         require(binding['action_receipts'] == actions, 'Sampled action/context/identity binding changed')
         prompt = cpu_rows['prompts'][row]
         response = cpu_rows['responses'][row]

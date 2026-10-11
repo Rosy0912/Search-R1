@@ -115,13 +115,13 @@ def cast_rollout_structural_fields(data, actor_config, preserve_old=False):
         data.batch[key] = data.batch[key].long()
 
 
-def prepare_behavior_mu_old_policy(data, actor_config):
+def prepare_behavior_mu_old_policy(data, actor_config, proof_cache=None):
     from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
     corrected = behavior_mu_correction_enabled(actor_config.get('policy_safety', {}))
     if not corrected:
         return False
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
-    validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True, proof_cache=proof_cache)
     from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     sampled = data.batch['sampled_old_log_probs']
     if not full_actor_beta_available(data.meta_info):
@@ -147,12 +147,12 @@ def prepare_behavior_mu_old_policy(data, actor_config):
     return True
 
 
-def validate_final_behavior_mu_batch(data, actor_config):
+def validate_final_behavior_mu_batch(data, actor_config, proof_cache=None):
     from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
     if not behavior_mu_correction_enabled(actor_config.get('policy_safety', {})):
         return
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
-    receipt = validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    receipt = validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True, proof_cache=proof_cache)
     from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     if (data.meta_info.get('tree_behavior_mu_corrected_profile') is not True
             or full_actor_beta_available(data.meta_info) != ('actor_old_log_probs' in data.batch.keys())
@@ -386,6 +386,20 @@ def _timer(name: str, timing_raw: Dict[str, float]):
     with Timer(name=name, logger=None) as timer:
         yield
     timing_raw[name] = timer.last
+
+
+@contextmanager
+def _driver_cpu_stage(name, outer):
+    start=time.perf_counter();cpu=time.process_time();successful=False
+    print('TREE_DRIVER_STAGE='+json.dumps(dict(event='start',stage=name,outer=outer,
+        unix_time=time.time(),pid=os.getpid())),flush=True)
+    try:
+        yield
+        successful=True
+    finally:
+        print('TREE_DRIVER_STAGE='+json.dumps(dict(event='complete',stage=name,outer=outer,
+            unix_time=time.time(),pid=os.getpid(),successful=successful,wall_seconds=time.perf_counter()-start,
+            cpu_seconds=time.process_time()-cpu)),flush=True)
 
 
 class RayPPOTrainer(object):
@@ -640,6 +654,8 @@ class RayPPOTrainer(object):
         else:
             for batch_dict in self.val_dataloader:
                 timing_raw = {}
+                from search_r1.baselines.tree_behavior_mu import BehaviorMuProofCache
+                outer_mu_proofs = BehaviorMuProofCache()
                 test_batch: DataProto = DataProto.from_single_dict(batch_dict)
                 # test_batch = test_batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n_agent, interleave=True)
                 
@@ -966,6 +982,8 @@ class RayPPOTrainer(object):
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
+                from search_r1.baselines.tree_behavior_mu import BehaviorMuProofCache
+                outer_mu_proofs = BehaviorMuProofCache()
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
                 if fresh200:
@@ -1022,12 +1040,15 @@ class RayPPOTrainer(object):
                                     or self.config.algorithm.kl_ctrl.kl_coef != 0.):
                                 raise ValueError('No-full-beta profile exceeds authorized zero-KL behavior-mu scope')
                             self.actor_rollout_wg.release_rollout_policy_cache()
+                            from search_r1.baselines.retriever_phase import release_retriever_gpu
+                            release_retriever_gpu(self.config,"after_tree_sampling_before_hf")
                             final_gen_batch_output.meta_info['tree_full_actor_beta_available'] = False
                         else:
                             with torch.no_grad():
                                 output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                                 final_gen_batch_output = final_gen_batch_output.union(output)
-                        prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor)
+                        with _driver_cpu_stage("prepare_behavior_mu",self.global_steps):
+                            prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor,outer_mu_proofs)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
                         #                                         dtype=object)
@@ -1045,7 +1066,8 @@ class RayPPOTrainer(object):
                     # Please take care when you implement group based adv computation such as GRPO and rloo
                     if len(batch)%self.actor_rollout_wg.world_size==0:
                         self._balance_batch(batch, metrics=metrics)
-                    validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
+                    with _driver_cpu_stage("balanced_mu_validate",self.global_steps):
+                        validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor,outer_mu_proofs)
 
                     # compute global_valid tokens
                     batch.meta_info['global_token_num'] = torch.sum(batch.batch['attention_mask'], dim=-1).tolist()
@@ -1069,7 +1091,7 @@ class RayPPOTrainer(object):
                             values = self.critic_wg.compute_values(batch)
                             batch = batch.union(values)
 
-                    with _timer('adv', timing_raw):
+                    with _timer('adv', timing_raw), _driver_cpu_stage('reward_advantages',self.global_steps):
                         # compute scores. Support both model and function-based.
                         # We first compute the scores using reward model. Then, we call reward_fn to combine
                         # the results from reward model and rule-based results.
@@ -1118,10 +1140,12 @@ class RayPPOTrainer(object):
                                 batch, metrics = self._create_loss_mask(batch, metrics)
                             if fresh200:
                                 batch.meta_info.update(attempt_metadata)
-                            validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
+                            with _driver_cpu_stage("pre_actor_mu_validate",self.global_steps):
+                                validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor,outer_mu_proofs)
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
-                                audit_controller.audit_actor_batch(batch)
+                                with _driver_cpu_stage("actor_batch_audit",self.global_steps):
+                                    audit_controller.audit_actor_batch(batch)
                             from search_r1.baselines.recording_schedule import record_details
                             if os.environ.get('SEARCH_R1_TRAJECTORY_DIR') and record_details(self.global_steps):
                                 from search_r1.baselines.trajectory_log import save_rollouts

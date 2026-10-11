@@ -4,6 +4,7 @@ Only new algorithms use this engine. The original GRPO/validation path is kept.
 All metadata is row-local, so DataProto permutations also permute provenance.
 """
 import time
+import json
 from dataclasses import dataclass, field
 import copy
 import hashlib
@@ -99,7 +100,8 @@ class SearchRollout:
             self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
                          trajectories=0, padded_rows=0, context_mismatches=0,
-                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.)
+                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.,retrieval_http_calls=0,
+                         retrieval_http_json_wall_seconds=0.,interaction_wall_seconds=0.)
         if token_preservation is not None:
             self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
                 raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
@@ -120,7 +122,24 @@ class SearchRollout:
         return not state.done and (state.turns < self.config.max_turns or
                                   (self.config.force_final_answer and not state.final_used))
 
+    def timed_rewards(self, states):
+        started=time.perf_counter()
+        self.timing("reward_callback_start", rows=len(states))
+        try:
+            return self.reward_callback(states)
+        finally:
+            self.timing("reward_callback_complete", rows=len(states), wall_seconds=time.perf_counter()-started)
+
+    def timing(self, event, **fields):
+        # Compact always-on telemetry, separate from sparse full tree dumps.
+        payload = dict(event=event, unix_time=time.time(),
+            outer=getattr(self, 'rollout_outer', None),
+            run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'), **fields)
+        print('TREE_TIMING=' + json.dumps(payload, allow_nan=False), flush=True)
+
     def advance(self, states, meta):
+        before_cost=self.cost.copy()
+        successful=False
         started=None
         if self.token_preservation is not None:
             import time
@@ -131,8 +150,12 @@ class SearchRollout:
             if self.token_preservation is not None:
                 from .tree_raw_tokens import tokenizer_validation_scope
                 with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
-                    return self._advance(states,meta)
-            return self._advance(states, meta)
+                    result=self._advance(states,meta)
+                    successful=True
+                    return result
+            result=self._advance(states, meta)
+            successful=True
+            return result
         except Exception as exc:
             if self.token_preservation is not None and os.environ.get('SEARCH_R1_BASELINE_OUTPUT'):
                 from .training_state import atomic_save
@@ -145,6 +168,15 @@ class SearchRollout:
                     rejected_advance_cpu_seconds=time.process_time()-started[1]),
                     os.path.join(directory,uuid.uuid4().hex+'.json'),json_format=True)
             raise
+        finally:
+            if started is not None:
+                print('TREE_ACTION_TIMING='+json.dumps(dict(outer=getattr(self,'rollout_outer',None),
+                    successful=successful,active_requests=len(states),
+                    wall_seconds=time.perf_counter()-started[0],
+                    driver_cpu_seconds=time.process_time()-started[1],
+                    cost_delta={key:self.cost[key]-value for key,value in before_cost.items()
+                        if isinstance(value,(int,float)) and isinstance(self.cost.get(key),(int,float))}),
+                    allow_nan=False),flush=True)
 
     def _advance(self, states, meta):
         from verl import DataProto
@@ -171,6 +203,9 @@ class SearchRollout:
         output = self.manager.actor_rollout_wg.generate_sequences(batch)
         self.cost['generation_rpc_calls'] += 1
         self.cost['generation_rpc_wall_seconds'] += time.perf_counter() - generation_rpc_started
+        self.timing('generation_rpc_complete', shared_batch_wall_seconds=time.perf_counter()-generation_rpc_started,
+            active_requests=len(states), padded_requests=extra,
+            time_scope='shared_batch_not_individual_latency')
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
@@ -214,6 +249,9 @@ class SearchRollout:
                 self.cost['semantic_prefix_scan_wall_seconds'] += ledger['prefix_scan_wall_seconds']
             self.cost['raw_discarded_tail_tokens'] += sum(record['true_emitted_length'] for record in emissions[len(states):])
         # A batch can contain normal and final-only steps. Never search for the latter.
+        interaction_started=time.perf_counter()
+        http_before=getattr(self.manager,'retrieval_http_json_wall_seconds',0.)
+        http_calls_before=getattr(self.manager,'retrieval_http_calls',0)
         normal = [s.turns < self.config.max_turns for s in states]
         observations, dones, valid, searches = [''] * len(states), [0] * len(states), [0] * len(states), [0] * len(states)
         for do_search in (True, False):
@@ -228,12 +266,23 @@ class SearchRollout:
                 result = self.ranker.execute(self.manager, predictions, [states[i] for i in indices], do_search)
             for j, i in enumerate(indices):
                 observations[i], dones[i], valid[i], searches[i] = (part[j] for part in result)
+        self.cost['interaction_wall_seconds']+=time.perf_counter()-interaction_started
+        self.cost['retrieval_http_json_wall_seconds']+=getattr(self.manager,'retrieval_http_json_wall_seconds',0.)-http_before
+        self.cost['retrieval_http_calls']+=getattr(self.manager,'retrieval_http_calls',0)-http_calls_before
         if self.token_preservation is not None:
             obs_tokens, obs_attention = self.manager._process_next_obs(
                 observations, return_attention_mask=True)
         else:
             obs_tokens = self.manager._process_next_obs(observations)
+        interaction_wall=time.perf_counter()-interaction_started
         for i, s in enumerate(states):
+            self.timing('trajectory_action', trajectory_id=s.trajectory, source_index=s.source,
+                turn_before=s.turns, active_requests=len(states),
+                shared_interaction_wall_seconds=interaction_wall,
+                time_scope='shared_batch_not_individual_latency',
+                prefix_scan_wall_seconds=(prepared_actions[i][1]['prefix_scan_wall_seconds']
+                    if prepared_actions is not None else None),
+                retrieved=bool(searches[i]), terminal=bool(dones[i]))
             action = tokens[i][tokens[i] != pad].tolist() if prepared_actions is None else prepared_actions[i][0]
             obs = (obs_tokens[i][obs_attention[i].bool()].tolist() if prepared_actions is not None
                    else obs_tokens[i][obs_tokens[i] != pad].tolist())
@@ -280,6 +329,8 @@ class SearchRollout:
 
     def complete(self, states, meta):
         snapshots = [[] for _ in states]
+        started=time.perf_counter()
+        reported=set()
         while True:
             active_indices = [i for i, s in enumerate(states) if self.pending(s)]
             if not active_indices:
@@ -287,15 +338,28 @@ class SearchRollout:
             for i in active_indices:
                 snapshots[i].append(copy.deepcopy(states[i]))
             self.advance([states[i] for i in active_indices], meta)
+            for i in active_indices:
+                if not self.pending(states[i]) and i not in reported:
+                    reported.add(i)
+                    self.timing('trajectory_complete', trajectory_id=states[i].trajectory,
+                        source_index=states[i].source, kind='initial',
+                        wall_seconds=time.perf_counter()-started,
+                        time_scope='trajectory_elapsed_including_shared_batch_wait',
+                        model_calls=len(snapshots[i]), policy_tokens=sum(states[i].model_mask))
         self.cost['trajectories'] += len(states)
         return snapshots
 
     def compose(self, states):
-        if self.token_preservation is not None:
-            from .tree_raw_tokens import tokenizer_validation_scope
-            with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
-                return self._compose(states)
-        return self._compose(states)
+        started=time.perf_counter()
+        self.timing("compose_start", rows=len(states))
+        try:
+            if self.token_preservation is not None:
+                from .tree_raw_tokens import tokenizer_validation_scope
+                with tokenizer_validation_scope(self.tokenizer,self.tokenizer_identity):
+                    return self._compose(states)
+            return self._compose(states)
+        finally:
+            self.timing('compose_complete', rows=len(states), wall_seconds=time.perf_counter()-started)
 
     def _compose(self, states):
         from verl import DataProto
@@ -452,7 +516,7 @@ class SearchRollout:
             raise ValueError('Tail backoff requires the actual training reward callback')
         if any(not nodes for nodes in snapshots):
             raise ValueError('Tail branching requires at least one original model-action state')
-        base_rewards = self.reward_callback(roots)
+        base_rewards = self.timed_rewards(roots)
         if len(base_rewards) != len(roots) or not np.isfinite(base_rewards).all():
             raise ValueError('Nonfinite or misaligned original-root rewards')
         leaves = [[root] for root in roots]
@@ -501,7 +565,7 @@ class SearchRollout:
                 if key in before_cost:
                     name = 'branch_' + key
                     self.cost[name] = self.cost.get(name, 0) + self.cost[key]-before_cost[key]
-            scores = self.reward_callback(children)
+            scores = self.timed_rewards(children)
             if len(scores) != len(children) or not np.isfinite(scores).all():
                 raise ValueError('Nonfinite or misaligned branch rewards')
             previous = list(base_rewards)
@@ -530,7 +594,7 @@ class SearchRollout:
         directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
         if self.record_details:
             directory.mkdir(parents=True)
-        scores = self.reward_callback(roots)
+        scores = self.timed_rewards(roots)
         if len(scores)!=len(roots) or any(float(r) not in (0.,1.) for r in scores):
             raise ValueError('Recursive search requires actual binary strict EM')
         def steps(state):

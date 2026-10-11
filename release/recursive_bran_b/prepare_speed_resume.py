@@ -16,7 +16,7 @@ binding=dict(protocol='recursive_b_sparse_schedule_continuation_v1',parent_compl
  sampling_streams=[],sampling_stream_status='PARENT_STREAM_NOT_RECORDED_COLD_EXECUTOR_REINITIALIZED',
  latest_human_authority='Stop current B, fix according to acceleration-handoff, resume same complete checkpoint; retain partial4, no repeated completed updates')
 bpath=target/'binding.json';bpath.write_text(json.dumps(binding,sort_keys=True))
-cfg=OmegaConf.load(old);cfg.trainer.evaluation_steps=[5,50,100,150,200];cfg.trainer.checkpoint_save_steps=[5,50,100,150,200];cpath=target/'resolved.yaml';cpath.write_text(OmegaConf.to_yaml(cfg))
+cfg=OmegaConf.load(old);cfg.trainer.evaluation_steps=[5,50,100,150,200];cfg.trainer.checkpoint_save_steps=[5,50,100,150,200];cfg.actor_rollout_ref.rollout.tree_action_tag_stop=True;cfg.actor_rollout_ref.rollout.tree_action_stop_mode='search_only';cpath=target/'resolved.yaml';cpath.write_text(OmegaConf.to_yaml(cfg))
 os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=str(bpath),RECURSIVE_B_CONTINUATION_SHA256=sha(bpath))
 from search_r1.baselines.recursive_b_schedule_resume import validate_entry,parent_manifest
 validate_entry(cfg);parent_manifest()

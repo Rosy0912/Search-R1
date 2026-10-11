@@ -25,3 +25,18 @@ all four local write counts zero, scheduler3, total Adam60 and actual tmux rc1.
 A new immutable run restores complete3; its failure evidence is named by run ID
 so it cannot overwrite the prior failed attempt. No complete speedup or healthy
 new outer is claimed by the sampling counter or CPU tests alone.
+
+The subsequent 726 run restored complete3 exactly but refused before entering
+update_policy: the new run-suffixed partial directory producer disagreed with
+the older worker path validator. Its actual four zero-write counters and
+scheduler3 are preserved, but no worker tensor snapshot was saved; do not claim
+that missing evidence as finite/accepted. The new source shares one evidence
+name function between producer and consumer and tests their actual interface.
+
+Further handoff port is isolated: SEARCH-only native stopping, lightweight
+candidate QA, one-outer content-keyed mu proof reuse, action/trajectory/HTTP and
+driver-stage flush timings. B inverse-generation parent selection, wave
+ordering, zero transport masking and objective are preserved; A's later
+cross-question pipeline, linear prefix algorithm and retained-KV extras are
+not copied. Optional eight-GPU phase retrieval remains unadmitted until actual
+foreign-free eight-card availability and full numerical/HTTP/memory gates.

@@ -85,13 +85,25 @@ def validate_native_emission(emission,pad,eos):
     _native_require(stop_ids==expected_stops,
         'Native effective EOS/stop set binding changed',diagnostic)
     positions=[index for index,token in enumerate(ids) if token in stop_ids]
+    strings=stopping.get('sampling_stop_strings',[])
+    include=stopping.get('include_stop_str_in_output',False)
+    settings=emission.get('sampling_params',{})
+    _native_require(strings in ([],['</search>'],['</search>','</answer>']) and
+        strings==list(settings.get('stop') or []) and
+        include==settings.get('include_stop_str_in_output',False) and
+        (not strings or include is True),'Native string-stop binding differs',diagnostic)
+    string_stop=(type(emission.get('stop_reason')) is str and emission['stop_reason'] in strings)
+    if string_stop:
+        returned=emission.get('native_returned_text')
+        _native_require(type(returned) is str and returned.endswith(emission['stop_reason']),
+            'Actual native returned text does not retain its stopping tag',diagnostic)
     diagnostic.update(true_emitted_pad_count=sum(token==pad for token in ids),
         emitted_native_stop_count=len(positions),last_emitted_token_is_native_stop=ids[-1] in stop_ids,
         early_emitted_native_stop_present=any(index!=n-1 for index in positions),
         finish_is_stop=emission.get('finish_reason')=='stop',
         finish_is_length=emission.get('finish_reason')=='length',
         stop_reason_matches_native_stop_or_none=(emission.get('stop_reason') is None or
-            type(emission.get('stop_reason')) is int and emission['stop_reason'] in stop_ids))
+            type(emission.get('stop_reason')) is int and emission['stop_reason'] in stop_ids or string_stop))
     _native_require(emission.get('finished') is True and
         emission.get('finish_reason') in ('stop','length'),
         'Native finish status is unsupported',diagnostic)
@@ -99,11 +111,11 @@ def validate_native_emission(emission,pad,eos):
         'Native stop reason differs from the bound native EOS/stop set',diagnostic)
     _native_require(not diagnostic['early_emitted_native_stop_present'],
         'Native emission continued after a native EOS/stop token',diagnostic)
-    _native_require((emission['finish_reason']=='stop')==(ids[-1] in stop_ids),
+    _native_require((emission['finish_reason']=='stop')==(ids[-1] in stop_ids or string_stop),
         'Native finish reason disagrees with the emitted native EOS/stop boundary',diagnostic)
     if emission['finish_reason']=='stop':
         _native_require((emission['stop_reason'] is None and ids[-1]==eos) or
-            (type(emission['stop_reason']) is int and emission['stop_reason']==ids[-1]),
+            (type(emission['stop_reason']) is int and emission['stop_reason']==ids[-1]) or string_stop,
             'Native finish stop reason disagrees with the last emitted token',diagnostic)
     _native_require(emission['finish_reason']!='length' or emission.get('stop_reason') is None,
         'Native length finish has an EOS stop reason',diagnostic)
@@ -541,7 +553,12 @@ def capture_native_sampling_settings(sampling_params):
         require(settings[key] is None, 'Native raw-token protocol requires actual '+key+'=None')
     require(settings['logits_processors'] is None, 'Native raw-token protocol requires actual logits_processors=None')
     require(settings['n']==1 and settings['max_tokens']==500 and settings['ignore_eos'] is False and
-            settings['min_tokens']==0 and not settings['stop'], 'Unsupported native stop/distribution protocol')
+            settings['min_tokens']==0 and (not settings['stop'] or
+            settings['stop'] in (['</search>'],['</search>','</answer>']) and settings['include_stop_str_in_output'] is True),
+            'Unsupported native stop/distribution protocol')
+    if settings['stop']:
+        require(getattr(sampling_params,'detokenize',False) is True,
+            'Native string stopping requires actual native detokenization')
     return settings
 
 
@@ -569,7 +586,8 @@ def capture_native_stopping(sampling_params,primary_eos_token_id,generation_conf
         generation_config_sha256=fingerprint(generation_config),
         generation_config_eos_token_ids=sorted(set(generation_eos)),
         sampling_stop_token_ids=sorted(set(explicit)),sampling_all_stop_token_ids=sorted(native_all),
-        effective_stop_token_ids=sorted(effective))
+        effective_stop_token_ids=sorted(effective),sampling_stop_strings=list(native_params.stop or []),
+        include_stop_str_in_output=native_params.include_stop_str_in_output)
 
 
 def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,native_stopping=None):
@@ -593,12 +611,34 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
         require(out.finish_reason in ('stop','length'), 'Unsupported native abort/finish status')
         identity=dict(call_id=call_id,rank=int(rank),request_id=request.request_id,physical_row=row,
                       runtime_provenance=provenance.copy())
-        rows.append(dict(schema_version=1,protocol=PROTOCOL,sampling_identity=identity,
+        record=dict(schema_version=1,protocol=PROTOCOL,sampling_identity=identity,
             sample_id=fingerprint(identity),prompt_token_ids=[int(x) for x in request.prompt_token_ids],
             raw_emitted_token_ids=ids,raw_selected_logprobs=logps,true_emitted_length=len(ids),
             finish_reason=out.finish_reason,stop_reason=out.stop_reason,finished=True,
-            sampling_params=copy.deepcopy(settings),native_stopping=copy.deepcopy(native_stopping)))
+            sampling_params=copy.deepcopy(settings),native_stopping=copy.deepcopy(native_stopping))
+        if type(out.stop_reason) is str:
+            require(settings['stop'] and out.stop_reason in settings['stop'] and
+                settings['include_stop_str_in_output'] is True and
+                isinstance(out.text,str) and out.text.endswith(out.stop_reason),
+                'Native returned output omitted or mismatched its stopping tag')
+            record['native_returned_text']=out.text
+        rows.append(record)
     return rows
+
+
+def validate_decoded_string_stop(emission,decoded):
+    """Bind actual native returned text to original IDs, never fabricate mu."""
+    reason=emission.get('stop_reason')
+    if type(reason) is not str:return
+    strings=emission['native_stopping']['sampling_stop_strings']
+    returned=emission.get('native_returned_text');full=decoded[-1]
+    require(type(returned) is str and returned.endswith(reason) and full.startswith(returned),
+        'Native returned stopping text differs from original emitted token decode')
+    require(all(not any(marker in prefix for marker in strings) for prefix in decoded[:-1]),
+        'Native emission continued past a completed string stop token boundary')
+    # Native string stopping may cut within the last whole sampled token; that
+    # token and its actual selected probability must remain indivisible.
+    require(reason in full,'Actual emitted tokens do not cover native string stop')
 
 
 def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity,response_mask=None,_context=None):
@@ -616,6 +656,7 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
     decoded,complete,utf8_proof=_scan_utf8_prefixes(tokenizer,ids,identity,_context=context)
     utf8_cpu_seconds=time.process_time()-utf8_started
     full=decoded[-1];text=canonical_text(full)
+    validate_decoded_string_stop(emission,decoded)
     semantic_ids=tokenizer.encode(text,add_special_tokens=False)
     require(isinstance(semantic_ids,list) and all(type(token) is int for token in semantic_ids) and
             isinstance(legacy_ids,list) and all(type(token) is int for token in legacy_ids) and
@@ -660,6 +701,7 @@ def validate_action_utf8_proof(action,tokenizer,_context=None):
     emission=action['native_emission'];cut=action['cut']
     ids,_,_=validate_native_emission(emission,tokenizer.pad_token_id,tokenizer.eos_token_id)
     decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
+    validate_decoded_string_stop(emission,decoded)
     require(proof==action.get('utf8_boundary_proof'),'Bound original-token native replacement proof differs')
     require(type(cut) is int and 0<cut<=len(ids) and complete[cut-1],
             'Retained boundary has an unfinished native replacement prefix')

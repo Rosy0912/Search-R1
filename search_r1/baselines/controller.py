@@ -241,6 +241,7 @@ class Controller:
             preservation=option(self.config.tree,'token_preservation',{})
             self._tree_raw_identity=tokenizer_identity(trainer.tokenizer,option(preservation,'tokenizer_sha256'))
             reward_fn=trainer.reward_fn
+            self._tree_candidate_reward_fn=reward_fn
             def scoped_reward(*args,**kwargs):
                 with tokenizer_validation_scope(trainer.tokenizer,self._tree_raw_identity,
                         _context=getattr(self,'_tree_validation_context',None)) as context:
@@ -331,6 +332,9 @@ class Controller:
         return output, sources
 
     def tree_training_rewards(self, engine, qa_batch, states):
+        if os.environ.get("TREE_LIGHTWEIGHT_CANDIDATE_REWARD")=="1":
+            from .candidate_qa_reward import candidate_qa_rewards
+            return candidate_qa_rewards(engine,qa_batch,states,self._tree_candidate_reward_fn)
         # Compose generated trajectories first; append only source metadata.
         # No targets or rewards enter model generation contexts.
         scored, sources = engine.compose(states)

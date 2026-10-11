@@ -43,6 +43,8 @@ def validate_entry(config=None,environ=None,initialized=False):
   expected=json.loads(json.dumps(old))
   expected['trainer']['evaluation_steps']=[5,50,100,150,200]
   expected['trainer']['checkpoint_save_steps']=[5,50,100,150,200]
+  expected['actor_rollout_ref']['rollout']['tree_action_tag_stop']=True
+  expected['actor_rollout_ref']['rollout']['tree_action_stop_mode']='search_only'
   if initialized:
    # Native _create_dataloader injects these scheduler counters before fit.
    expected['actor_rollout_ref']['actor']['optim']['total_training_steps']=200

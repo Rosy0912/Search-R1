@@ -29,7 +29,7 @@ def main():
  out=Path(r['output']);out.relative_to(root)
  if out.exists():raise ValueError('No blind restart/overwrite of speed output')
  os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=r['binding'],RECURSIVE_B_CONTINUATION_SHA256=r['binding_sha256'],
-  RECURSIVE_B_OMIT_FULL_BETA='1',SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
+  RECURSIVE_B_OMIT_FULL_BETA='1',TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
   SEARCH_R1_EXECUTION_BACKEND='hkust_direct',SEARCH_R1_BASELINE_COMMIT=r['source_commit'],
   SEARCH_R1_BASELINE_CONFIG_SHA256=r['config_sha256'],SEARCH_R1_BASELINE_DATA_IDENTITY=r['data_identity'],
   SEARCH_R1_MODEL_IDENTITY='Qwen/Qwen2.5-3B-Instruct@aa8e72537993ba99e69dfaafa59ed015b17504d1',

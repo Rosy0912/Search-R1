@@ -29,13 +29,8 @@ def partial_context(trainer):
             raise ValueError('Partial attempt identity does not match the consumed controller')
         identity['attempt_id'] = attempt
         name = f'partial_attempt_{attempt:06d}_outer_{outer:06d}'
-    # A new immutable B speed run may fail before any write at the same outer.
-    # Keep each run's failure evidence instead of colliding with a prior attempt.
-    if os.environ.get('RECURSIVE_B_CONTINUATION_BINDING'):
-        run_id = identity['run_id']
-        if len(run_id) != 32 or any(c not in '0123456789abcdef' for c in run_id):
-            raise ValueError('B partial evidence requires an exact immutable run ID')
-        name += '_run_' + run_id
+    from .partial_evidence_name import evidence_name
+    name = evidence_name(identity,continuing,os.environ)
     directory = Path(trainer.config.trainer.default_local_dir) / 'training_state' / name
     return dict(protocol=PROTOCOL, identity=identity, directory=str(directory))
 

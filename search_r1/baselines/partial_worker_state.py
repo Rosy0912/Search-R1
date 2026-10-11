@@ -46,8 +46,8 @@ def _validated_context(worker,data):
         raise ValueError('Partial source/run identity differs from actual worker environment')
     directory=Path(context['directory'])
     own_run=Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']).resolve().parent
-    name = (f'partial_attempt_{identity["attempt_id"]:06d}_outer_{identity["attempted_outer"]:06d}'
-            if enabled(worker.config.actor) else f'partial_outer_{identity["attempted_outer"]:06d}')
+    from .partial_evidence_name import evidence_name
+    name = evidence_name(identity,enabled(worker.config.actor),os.environ)
     if (not directory.is_absolute() or not directory.resolve().is_relative_to(own_run)
             or directory.name!=name or directory.parent.name!='training_state'):
         raise ValueError('Partial state directory must remain in this own run and match attempted outer')
