@@ -632,6 +632,12 @@ class ActorRolloutRefWorker(Worker):
         return capture_worker(self,directory,checkpoint=checkpoint)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def restore_mixed_full_state(self, receipt_path):
+        assert self._is_actor and self._is_rollout
+        from search_g1.full_state_restore import restore_worker
+        return restore_worker(self, receipt_path)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
         assert self._is_actor
         import torch

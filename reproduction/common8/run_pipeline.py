@@ -289,6 +289,25 @@ class Pipeline:
         self.wait('final-acceptance',v)
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
+        if self.run.get('full_state_restore'):
+            from search_g1.full_state_restore import source
+            _,_,_,origin,parent=source(self.run['full_state_restore']['source_receipt'])
+            import shutil
+            live=json.loads((origin/'artifacts/live/manifest.json').read_text())
+            assert live['run_id']==self.run['run_id'] and live['round']==0
+            source_round=Path(live['commit']).parent.parent
+            target_round=self.base/'artifacts'/source_round.name
+            shutil.copytree(source_round,target_round)
+            archive_before=digest(source_round/'version-manifest.json')
+            live=dict(live,commit=str(target_round/'heads/commit_probe.pkl'),boundary=str(target_round/'heads/boundary_probe.pkl'))
+            # Relocate only paths, with an explicit immutable source archive link.
+            live['restoration_origin']=dict(source_archive=str(source_round/'version-manifest.json'),source_archive_sha256=archive_before,
+                new_calibration_generated=False,source_base=str(origin))
+            publish(target_round/'version-manifest.json',live)
+            target=self.base/'artifacts/live';target.mkdir(exist_ok=False)
+            publish(target/'manifest.json',live)
+            self.stage('RESTORING_ORIGINAL_FROZEN_PROBE_NO_NEW_CALIBRATION',source_base=str(origin),version=live['version'])
+            return
         role=supported_execution_role(self.run,self.base)
         if role==CALIBRATION_ROLES[0] or (role=='production' and self.run.get('contract_kind')==CONTRACT_KIND):
             self.stage('REAL_INITIAL_300_QUESTION_CALIBRATION')
@@ -306,20 +325,31 @@ class Pipeline:
                                 '--terminal-proof',str(sources['diagnostic_terminal_proof'])])
             c=self.start('initial-probe-adoption',command,self.training_gpus)
             self.wait('initial-probe-adoption',c)
+    def fresh_mechanics_admission(self):
+        self.stage('EIGHT_RANK_MECHANICS')
+        root=self.base/'logs/eight-rank-mechanics';root.mkdir(exist_ok=False)
+        p=self.start('gpu-preflight',[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','reproduction/common8/gpu_preflight.py'],ALLOWED,{'SEARCH_G1_GPU_PREFLIGHT_DIR':str(root)})
+        self.wait('gpu-preflight',p,900)
+        proofs=[json.loads((root/f'rank-{rank}.json').read_text()) for rank in range(8)]
+        assert all(p['accepted'] is True and p['rank']==r and p['slurm_job_id']==os.environ['SLURM_JOB_ID'] for r,p in enumerate(proofs))
+        self.stage('INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE')
+        smoke=self.smoke('initial')
+        publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],mechanics_sha256={str(r):digest(root/f'rank-{r}.json') for r in range(8)},model_smoke_sha256=digest(smoke),actual_grpo_updates=0))
     def execute(self, export_port):
         sampler=None;success=False;finished_stage=None
         try:
             supported_execution_role(self.run,self.base)
             sampler=threading.Thread(target=self.sample,daemon=True);sampler.start()
-            self.stage('EIGHT_RANK_MECHANICS')
-            root=self.base/'logs/eight-rank-mechanics';root.mkdir(exist_ok=False)
-            p=self.start('gpu-preflight',[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','reproduction/common8/gpu_preflight.py'],ALLOWED,{'SEARCH_G1_GPU_PREFLIGHT_DIR':str(root)})
-            self.wait('gpu-preflight',p,900)
-            proofs=[json.loads((root/f'rank-{rank}.json').read_text()) for rank in range(8)]
-            assert all(p['accepted'] is True and p['rank']==r and p['slurm_job_id']==os.environ['SLURM_JOB_ID'] for r,p in enumerate(proofs))
-            self.stage('INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE')
-            smoke=self.smoke('initial')
-            publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],mechanics_sha256={str(r):digest(root/f'rank-{r}.json') for r in range(8)},model_smoke_sha256=digest(smoke),actual_grpo_updates=0))
+            restoring=bool(self.run.get('full_state_restore'))
+            if restoring:
+                allocation=json.loads((self.base/'logs/native-allocation-admission.json').read_text())
+                assert allocation['accepted'] and allocation['slurm_job_id']==os.environ['SLURM_JOB_ID']
+                publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],
+                    slurm_job_id=os.environ['SLURM_JOB_ID'],actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'],
+                    scope='current native allocation only; full checkpoint GPU restore required before Adam',
+                    repeated_synthetic_gpu_tests=False))
+            else:
+                self.fresh_mechanics_admission()
             self.stage('STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL')
             p=self.start('retrieval-stage',[self.python,'-m','reproduction.common8.stage_retrieval','--base',str(self.base),'--port',str(export_port)],[])
             self.wait('retrieval-stage',p)
@@ -344,11 +374,16 @@ class Pipeline:
             resumed=self.endpoint('probe-server',e,'18012/resume','post',{'version':health['version']})
             assert resumed['resumed'] is True and resumed['version']==health['version']
             publish(self.base/'logs/evaluator-release-admission.json',dict(run_id=self.run['run_id'],released=released,resumed=resumed))
-            self.stage('REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE')
-            smoke=self.smoke('coexistence')
-            totals={int(r[0]):int(r[1]) for r in gpu_rows('index,memory.total')}
-            assert set(self.max_used)==self.physical_indices and all(0<=v<=totals[i] for i,v in self.max_used.items())
-            publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],model_smoke_sha256=digest(smoke),sampled_peak_mib=self.max_used,occupancy_policy='monitor_only',sampled_peak_fraction_stop_limit=None,scope='actual initial/coexistence sampled occupancy; not full 2560-trajectory peak or a training-stop criterion'))
+            if restoring:
+                publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],
+                    slurm_job_id=os.environ['SLURM_JOB_ID'],scope='frozen original probe and current resource binding; real model restore before Adam required',
+                    repeated_model_smoke=False,actual_model_restore_pending=True))
+            else:
+                self.stage('REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE')
+                smoke=self.smoke('coexistence')
+                totals={int(r[0]):int(r[1]) for r in gpu_rows('index,memory.total')}
+                assert set(self.max_used)==self.physical_indices and all(0<=v<=totals[i] for i,v in self.max_used.items())
+                publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],model_smoke_sha256=digest(smoke),sampled_peak_mib=self.max_used,occupancy_policy='monitor_only',sampled_peak_fraction_stop_limit=None,scope='actual initial/coexistence sampled occupancy; not full 2560-trajectory peak or a training-stop criterion'))
             a=self.start('probe-admission',[self.python,'-m','reproduction.common8.probe_admission'],[7]);self.wait('probe-admission',a,300)
             finished_stage=self.train_and_verify()
             success=True

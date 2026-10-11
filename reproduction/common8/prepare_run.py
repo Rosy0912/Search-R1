@@ -13,7 +13,7 @@ REVISION='aa8e72537993ba99e69dfaafa59ed015b17504d1'
 OFFICIAL_MANIFEST_SHA='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
 
 
-def write_method(base, commit, source):
+def write_method(base, commit, source, restoration=False):
     """Freeze prospective method before the fresh run starts; never claim health."""
     from reproduction.common8.formal_inline_safety import METHOD_ROLE
     from reproduction.common8.formal_contract import FORMAL_COUNTING, FORMAL_SAFEGUARDS
@@ -21,7 +21,7 @@ def write_method(base, commit, source):
     method=dict(schema_version=1, role=METHOD_ROLE, source_commit=commit,
         source_map_sha256=document_sha256(source), policy_safety_mode=SAFETY_MODE,
         target_updates=TARGET_UPDATES, warmup_steps=57,
-        same_process_after_five=True, fresh_states=True,
+        same_process_after_five=True, fresh_states=not restoration,
         optimizer_counting=FORMAL_COUNTING, safeguards=FORMAL_SAFEGUARDS,
         created_unix=time.time(), negative_tail_semantics='prospective operational candidate; not calibrated health',
         production_admission=False, healthy_checkpoint_accepted=False)
@@ -89,13 +89,22 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None):
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
     data_proof=verify(base/'data')
     model_hashes=verify_model(model,official_path)
-    audit=derive_calibration(base)
+    if restore_receipt:
+        import shutil
+        from search_g1.full_state_restore import source
+        _,_,_,origin,_=source(restore_receipt)
+        for name in ('calibration-300.parquet','audit.json'):
+            assert not (base/'data'/name).exists()
+            shutil.copy2(origin/'data'/name,base/'data'/name)
+        audit=json.loads((base/'data/audit.json').read_text())
+    else:
+        audit=derive_calibration(base)
     repo=base/'repo'
     from reproduction.common8.source_files import runtime_files
     source={str(p.relative_to(repo)):digest(p) for p in runtime_files(repo)}
@@ -105,7 +114,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     inputs={name:digest(base/'data'/name) for name in
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
-    method = write_method(base, commit, source)
+    method = write_method(base, commit, source,restoration=bool(restore_receipt))
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
         mixed_first_selection=True,actor_micro_batch_per_rank=2,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
         initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
@@ -119,6 +128,9 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    if restore_receipt:
+        from search_g1.full_state_restore import bind
+        bind(result,restore_receipt)
     from reproduction.common8.native_ray import prepare as prepare_ray
     prepare_ray(result)
     assert type(allow_existing_gpu_processes) is bool
@@ -150,6 +162,6 @@ if __name__=='__main__':
     p.add_argument('--source-commit',required=True)
     p.add_argument('--allow-existing-gpu-processes',action='store_true')
     p.add_argument('--rollout-memory-utilization',type=float,default=0.1)
-    p.add_argument('--local-retrieval-assets');a=p.parse_args()
+    p.add_argument('--local-retrieval-assets');p.add_argument('--restore-receipt');a=p.parse_args()
     print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,
-        a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets)))
+        a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets,a.restore_receipt)))

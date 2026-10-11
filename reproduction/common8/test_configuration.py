@@ -35,7 +35,8 @@ class ConfigurationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             base, run = self.fixture(root)
             _, config, args = c.resolved(base)
-            self.assertEqual(len(args), len(json.loads(c.RECIPE.read_text())))
+            self.assertEqual(len({x.split('=',1)[0] for x in args}),len(args))
+            self.assertEqual(config.actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank,4)
             self.assertEqual(config.actor_rollout_ref.actor.compute_dtype, "float32")
             self.assertFalse(config.actor_rollout_ref.ref.allow_tf32)
             self.assertEqual(config.actor_rollout_ref.rollout.dtype, "float32")
@@ -82,11 +83,11 @@ class ConfigurationTests(unittest.TestCase):
             base, run = self.fixture(root)
             parent = os.getppid()
             stat = Path(f'/proc/{parent}/stat').read_text().rsplit(')', 1)[1].split()
-            claim = dict(run_id=run['run_id'], slurm_job_id='cpu-fixture-only',
+            claim = dict(run_id=run['run_id'], slurm_job_id='12345',
                          shell_pid=parent, shell_start_ticks=int(stat[19]))
             (base / 'logs/training-launch-claim.json').write_text(json.dumps(claim))
             _, args = c.arguments(base)
-            with patch.dict(os.environ, SLURM_JOB_ID='cpu-fixture-only'), patch.object(c.os, 'execv') as execute:
+            with patch.dict(os.environ, SLURM_JOB_ID='12345'), patch.object(c.os, 'execv') as execute:
                 c.launch(base)
                 execute.assert_called_once_with(sys.executable,
                     [sys.executable, '-m', 'verl.trainer.main_ppo_eco', *args])

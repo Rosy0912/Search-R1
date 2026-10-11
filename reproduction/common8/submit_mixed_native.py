@@ -14,7 +14,7 @@ def publish_exclusive(path,value):
         json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
 
 
-def submit(base,commit,expected_files):
+def submit(base,commit,expected_files,restore_receipt=None):
     base=Path(base).resolve();assert str(base).startswith('/mnt/data/shaoshitong/')
     intent=base/'preparation/native-submit-intent.json';receipt=base/'preparation/native-submit-receipt.json'
     if intent.exists() or receipt.exists():
@@ -30,6 +30,10 @@ def submit(base,commit,expected_files):
     assert (assets/'e5_Flat.index').is_file() and (assets/'wiki-18.jsonl').is_file()
     launcher=base/'preparation/launch-mixed-native.sh'
     text='#!/usr/bin/env bash\nset -euo pipefail\n'
+    if restore_receipt:
+        from search_g1.full_state_restore import source
+        p,_,_,_,_=source(restore_receipt)
+        text+='export SEARCH_G1_FULL_STATE_RESTORE_RECEIPT='+shlex.quote(str(p))+'\n'
     for key,value in dict(SEARCH_G1_BASE=str(base),SEARCH_G1_SOURCE_COMMIT=commit,
         SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES='1',SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION='0.1',
         SEARCH_G1_LOCAL_RETRIEVAL_ASSETS=str(assets)).items():text+='export '+key+'='+shlex.quote(value)+'\n'
@@ -54,4 +58,5 @@ def submit(base,commit,expected_files):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True)
     parser.add_argument('--source-commit',required=True);parser.add_argument('--source-manifest',required=True)
-    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()))
+    parser.add_argument('--restore-receipt')
+    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()),args.restore_receipt)

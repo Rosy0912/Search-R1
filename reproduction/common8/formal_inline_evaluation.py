@@ -141,6 +141,9 @@ def verify_pair(base,run):
     from reproduction.common8.validation_identity import expected
     from reproduction.common8.formal_inline_safety import verify_plan
     base=Path(base).resolve();assert_formal_run(run)
+    if run.get('full_state_restore'):
+        from search_g1.full_state_restore import verify_restored_pair
+        return verify_restored_pair(base,run)
     artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text());_,plan_sha=verify_plan(base,artifact,run)
     record,frame,ids=expected(base,'validation');proofs={};hashes={}
     for step,path in PATHS.items():

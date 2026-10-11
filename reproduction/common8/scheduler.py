@@ -179,15 +179,28 @@ class OuterSchedulerEvidence:
         _need(type(rank) is int and rank in ranks(run) and world_size == training_world_size(run),
               'Wrong real scheduler rank topology')
         self.identity = _identity(self.base, job_id=job_id)
-        _need(getattr(scheduler, '_common8_schedule_kind', None) == CONTRACT_KIND and
-              scheduler.last_epoch == 0 and scheduler._step_count == 1 and
-              _learning_rates(optimizer) == [0.] * len(optimizer.param_groups) and not optimizer.state,
-              'Outer scheduler evidence must start with fresh LambdaLR and Adam')
-        self.optimizer, self.scheduler = optimizer, scheduler
-        self.rank, self.world_size = rank, world_size
-        self.completed_outer, self.pending, self.rejected = 0, None, False
-        self.recoverable = self.identity['policy_safety_mode']=='inline_first_five'
-        self.actual_writes, self.last_attempt_index, self.used_attempt_ids = 0, 0, set()
+        restore=run.get('full_state_restore')
+        if restore:
+            from search_g1.full_state_restore import verified_runtime_prefix
+            prefix=verified_runtime_prefix(self.base,run)
+            _need(prefix['completed_outer']==5 and prefix['writes']==100 and optimizer.state,
+                  'Actual restored optimizer/readback is required')
+        else:prefix=dict(completed_outer=0,writes=0,attempt_index=0)
+        k=prefix['completed_outer']
+        _need(getattr(scheduler, '_common8_schedule_kind', None)==CONTRACT_KIND and
+              scheduler.last_epoch==k and scheduler._step_count==k+1 and
+              _learning_rates(optimizer)==[expected_lr(k)]*len(optimizer.param_groups) and
+              (bool(optimizer.state) if restore else not optimizer.state),
+              'Outer scheduler must match actual fresh/restored state')
+        self.optimizer,self.scheduler=optimizer,scheduler
+        self.rank,self.world_size=rank,world_size
+        self.completed_outer,self.pending,self.rejected=k,None,False
+        self.recoverable=self.identity['policy_safety_mode']=='inline_first_five'
+        self.actual_writes,self.last_attempt_index,self.used_attempt_ids=prefix['writes'],prefix['attempt_index'],set()
+        if restore:
+            origin=Path(restore['source_base'])
+            attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
+            self.used_attempt_ids={v['attempt_id'] for v in attempts}
         self.prepared = None
         self.process_pid, self.process_start_ticks = os.getpid(), _start_ticks()
         _need(self.process_start_ticks > 0, 'Missing actual process birth ticks')

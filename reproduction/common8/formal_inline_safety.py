@@ -186,7 +186,8 @@ def verify_method(method, run):
     assert method['source_map_sha256'] == document_sha256(run['source_sha256'])
     assert method['policy_safety_mode'] == SAFETY_MODE
     assert method['target_updates'] == 200 and method['warmup_steps'] == 57
-    assert method['same_process_after_five'] is True and method['fresh_states'] is True
+    assert method['same_process_after_five'] is True
+    assert method['fresh_states'] is (not bool(run.get('full_state_restore')))
     assert method['optimizer_counting'] == FORMAL_COUNTING
     assert canonical_bytes(method['safeguards']) == canonical_bytes(FORMAL_SAFEGUARDS)
     assert type(method['created_unix']) in (int, float) and math.isfinite(method['created_unix'])
@@ -245,7 +246,7 @@ def verify_plan(base, artifact, run):
     assert artifact['initial_probe_version'] == run['initial_probe_version']
     for key, value in FORMAL_SAFEGUARDS.items():
         assert type(artifact[key]) in (int, float) and artifact[key] == value
-    assert artifact['actual_optimizer_writes_at_freeze'] == 0
+    assert artifact['actual_optimizer_writes_at_freeze'] == (100 if run.get('full_state_restore') else 0)
     assert artifact['optimizer_counting'] == FORMAL_COUNTING
     receipts = artifact['receipts_sha256']
     for relative, sha in receipts.items():
@@ -273,6 +274,9 @@ def verify_plan(base, artifact, run):
         assert artifact['training_world_size'] == world_size(run)
         assert artifact['monitoring_scope'] == monitor_scope(run)
         verify_prospective_probability(base, run, artifact['probability'], receipts)
+    elif run.get('full_state_restore'):
+        from search_g1.full_state_restore import verify_guarded_restore
+        verify_guarded_restore(base,run,artifact['probability'])
     else:
         from reproduction.common8.production_safety_admission import _verify_parent_probability
         _verify_parent_probability(base, run, artifact['probability'], receipts)
@@ -292,6 +296,9 @@ def prepare(base):
     method = read(base / 'preparation/formal-inline-method.json'); verify_method(method, run)
     document = OmegaConf.to_container(config, resolve=True); verify_formal_config(document, run, base)
     initial, receipts = archive_initial_probe(base, run)
+    if run.get('full_state_restore'):
+        from search_g1.full_state_restore import prepare_guarded_restore
+        return prepare_guarded_restore(base,run,document,method,initial,receipts)
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         return _prepare_local(base, run, document, method, initial, receipts)
     root = base / 'logs/policy-safety-admission-receipts/parent'

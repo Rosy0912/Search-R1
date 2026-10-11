@@ -31,6 +31,9 @@ if [[ -n "${SEARCH_G1_LOCAL_RETRIEVAL_ASSETS:-}" ]]; then
   prepare_options+=(--local-retrieval-assets "$SEARCH_G1_LOCAL_RETRIEVAL_ASSETS")
 fi
 prepare_options+=(--rollout-memory-utilization "${SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION:-0.1}")
+if [[ -n "${SEARCH_G1_FULL_STATE_RESTORE_RECEIPT:-}" ]]; then
+  prepare_options+=(--restore-receipt "$SEARCH_G1_FULL_STATE_RESTORE_RECEIPT")
+fi
 python -m reproduction.common8.prepare_run "${prepare_options[@]}" --base "$BASE" \
   --model "$BASE/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725" \
   --official-manifest "$BASE/preparation/official-model-manifest-original.json" --source-commit "$COMMIT"

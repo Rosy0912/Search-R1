@@ -282,15 +282,17 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
     from reproduction.common8.behavior_runtime import read_gate_receipt
     base = Path(base).resolve(); _integer(last, 'last', minimum=1); _hash(plan_sha256, 'prospective plan')
     _require(last <= 200 and run['policy_safety_mode'] == 'inline_first_five', 'Invalid formal attempt scope')
-    _require([row['step'] for row in complete_records] == list(range(1, last + 1)), 'Incomplete actual completed selection')
+    from search_g1.full_state_restore import verified_runtime_prefix
+    prefix=verified_runtime_prefix(base,run) if run.get('full_state_restore') else dict(completed_outer=0,writes=0,attempt_index=0,rejections=0,aborted=0)
+    _require([row['step'] for row in complete_records] == list(range(prefix['completed_outer']+1, last + 1)), 'Incomplete actual completed selection')
     cutoff = _integer(complete_records[-1]['attempt_index'], 'cutoff attempt', minimum=1)
     _require(set(scheduler_receipts) == {str(rank) for rank in ranks(run)}, 'Need every actual scheduler receipt')
     all_attempts = _owned_rows(base, 'logs/actual-attempts.jsonl')
     attempts = [row for row in all_attempts if _attempt_identity(row)[1] <= cutoff]
     _require(last < 200 or len(attempts) == len(all_attempts), 'Actual driver contains attempts after final COMPLETE200')
-    _require([row['attempt_index'] for row in attempts] == list(range(1, cutoff + 1)),
+    _require([row['attempt_index'] for row in attempts] == list(range(prefix['attempt_index']+1, cutoff + 1)),
              'Actual driver attempt prefix is omitted, duplicated or reordered')
-    _require(len({row['attempt_id'] for row in attempts}) == cutoff, 'Actual driver attempt UUID reused')
+    _require(len({row['attempt_id'] for row in attempts}) == cutoff-prefix['attempt_index'], 'Actual driver attempt UUID reused')
     rank_workers = {}; rank_schedulers = {}; selected_hashes = {}; scheduler_hashes = {}
     for rank in ranks(run):
         all_scheduler = _owned_rows(base, f'logs/scheduler-rank-{rank}.jsonl')
@@ -305,10 +307,10 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         selected_hashes[str(rank)] = document_sha256(workers)
         scheduler_hashes[str(rank)] = document_sha256(scheduler)
     binding = dict(run_id=run['run_id'], calibration_sha256=plan_sha256)
-    completed = 0; writes = 0; aborted = 0; rejections = 0; summaries = []
+    completed=prefix['completed_outer'];writes=prefix['writes'];aborted=prefix['aborted'];rejections=prefix['rejections'];summaries=[]
     scheduler_cursors = {rank: 0 for rank in ranks(run)}; worker_cursors = {rank: 0 for rank in ranks(run)}
     job = rank_schedulers[0][0]['slurm_job_id']
-    for ordinal, raw_attempt in enumerate(attempts, 1):
+    for ordinal, raw_attempt in enumerate(attempts, prefix['attempt_index']+1):
         attempt = copy.deepcopy(raw_attempt); outer = completed + 1
         for name in ('logical_update', 'optimizer_writes_before', 'optimizer_writes_after',
                      'completed_outer', 'cumulative_aborted_attempts'):
@@ -394,10 +396,11 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                      selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes)
     return dict(schema_version=1, role='actual_formal_all_attempt_monitor_audit', run_id=run['run_id'],
         structural_accepted=True, completed_outer_count=completed, cutoff_attempt_index=cutoff,
-        actual_attempt_count=cutoff, fully_skipped_attempt_count=aborted,
-        processed_opportunities_per_rank=cutoff * 20, actual_optimizer_writes_per_rank=writes,
-        completed_outer_global_monitor_count=completed * 40, retry_global_monitor_count=aborted * 40,
-        unique_global_monitor_count=cutoff * 40, cumulative_policy_rejections=rejections,
+        actual_attempt_count=len(attempts), source_completed_outer=prefix['completed_outer'],
+        source_actual_optimizer_writes_per_rank=prefix['writes'], fully_skipped_attempt_count=aborted-prefix['aborted'],
+        processed_opportunities_per_rank=len(attempts) * 20, actual_optimizer_writes_per_rank=writes,
+        completed_outer_global_monitor_count=(completed-prefix['completed_outer']) * 40, retry_global_monitor_count=(aborted-prefix['aborted']) * 40,
+        unique_global_monitor_count=len(attempts) * 40, cumulative_policy_rejections=rejections,
         guard_triggered_monitor_count=sum(row['guard_triggered_monitor_count'] for row in summaries),
         attempts=summaries, selected_driver_attempts_sha256=document_sha256(attempts),
         selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes,

@@ -134,38 +134,59 @@ def verify_full(base):
     assert resolved['resolved_config_sha256']==config_proof['resolved_config_sha256']
     data=verify(base/'data')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
-    assert [r['step'] for r in records]==list(range(1,TARGET_UPDATES+1))
+    restoration=run.get('full_state_restore')
+    first=restoration['completed_outer']+1 if restoration else 1
+    assert [r['step'] for r in records]==list(range(first,TARGET_UPDATES+1))
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
-    verify_write_receipt_links(base, behavior_gates, 1, TARGET_UPDATES)
-    budgets=budget_rows(read_console_form(base,run['run_id']),1,TARGET_UPDATES,complete_records=records,run=run)
-    scheduler_receipts=verify_scheduler_receipts(base,run,1,TARGET_UPDATES,behavior_gates)
-    five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
-    assert five['accepted'] is True and five['run_id']==run['run_id']
-    from reproduction.common8.formal_inline_safety import verify_plan,verify_first_five
+    verify_write_receipt_links(base, behavior_gates, first, TARGET_UPDATES)
+    budgets=budget_rows(read_console_form(base,run['run_id']),first,TARGET_UPDATES,complete_records=records,run=run)
+    scheduler_receipts=verify_scheduler_receipts(base,run,first,TARGET_UPDATES,behavior_gates)
+    from reproduction.common8.formal_inline_safety import verify_plan
+    from reproduction.common8.formal_attempt_audit import verify_attempt_history
+    from reproduction.common8.formal_inline_evaluation import verify_pair
     artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text())
     _,inline_plan_sha=verify_plan(base,artifact,run)
-    from reproduction.common8.formal_attempt_audit import verify_attempt_history
-    inline_all_attempts=verify_attempt_history(base,run,records,scheduler_receipts,
-                                              last=TARGET_UPDATES,plan_sha256=inline_plan_sha)
-    assert five['policy_safety_mode']==run['policy_safety_mode'] and five['formal_inline_plan_sha256']==inline_plan_sha
-    inline_first_five=verify_first_five(base,run,{str(step):behavior_gates[str(step)] for step in range(1,6)},
-                                      verify_scheduler_receipts(base,run,1,5,behavior_gates))
-    assert inline_first_five['selected_evidence_sha256']==five['formal_inline_first_five']['selected_evidence_sha256'], \
-        'Actual first-five immutable attempt/state/monitor selection changed'
-    from reproduction.common8.formal_inline_evaluation import verify_pair
+    inline_all_attempts=verify_attempt_history(base,run,records,scheduler_receipts,last=TARGET_UPDATES,plan_sha256=inline_plan_sha)
     paired_development=verify_pair(base,run)
-    assert five['paired_development']==paired_development, 'Authenticated baseline/current512 comparison changed after acceptance'
-    assert [r['step'] for r in five['actual_updates']]==list(range(1,6))
-    for saved,actual in zip(five['actual_updates'],records[:5]):
-        assert saved['probe_version']==actual['probe_version']
-        assert all(float(saved['metrics'][key])==value for key,value in actual['metrics'].items())
-    for rank in ranks(run):
-        verify_five_scheduler_prefix(five['scheduler_receipts'][str(rank)],scheduler_receipts[str(rank)])
+    if restoration:
+        five=json.loads((base/'logs/five-resumed-updates-acceptance.json').read_text())
+        assert five['accepted'] and five['run_id']==run['run_id']
+        assert five['source_completed_outer']==5 and five['source_actual_optimizer_writes_per_rank']==100
+        assert five['actual_updates']==records[:5] and [v['step'] for v in records[:5]]==list(range(6,11))
+        from search_g1.full_state_restore import verified_runtime_prefix,source
+        prefix=verified_runtime_prefix(base,run)
+        _,source_proof,source_cp,origin,parent=source(restoration['source_receipt'])
+        inline_first_five=dict(scope='actual parent first5 checkpoint states and raw receipts; no reconstructed driver metric5',
+            source_checkpoint=source_proof,restored_prefix=prefix)
+        for rank in ranks(run):
+            selected=[v for v in scheduler_receipts[str(rank)]['selected_rows'] if 6<=v['logical_update']<=10]
+            assert five['scheduler_receipts'][str(rank)]['selected_rows']==selected
+    else:
+        five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
+        assert five['accepted'] is True and five['run_id']==run['run_id']
+        from reproduction.common8.formal_inline_safety import verify_plan,verify_first_five
+        artifact=json.loads((base/'logs/policy-safety-calibration.json').read_text())
+        _,inline_plan_sha=verify_plan(base,artifact,run)
+        inline_all_attempts=verify_attempt_history(base,run,records,scheduler_receipts,
+                                                  last=TARGET_UPDATES,plan_sha256=inline_plan_sha)
+        assert five['policy_safety_mode']==run['policy_safety_mode'] and five['formal_inline_plan_sha256']==inline_plan_sha
+        inline_first_five=verify_first_five(base,run,{str(step):behavior_gates[str(step)] for step in range(1,6)},
+                                          verify_scheduler_receipts(base,run,1,5,behavior_gates))
+        assert inline_first_five['selected_evidence_sha256']==five['formal_inline_first_five']['selected_evidence_sha256'], \
+            'Actual first-five immutable attempt/state/monitor selection changed'
+        paired_development=verify_pair(base,run)
+        assert five['paired_development']==paired_development, 'Authenticated baseline/current512 comparison changed after acceptance'
+        assert [r['step'] for r in five['actual_updates']]==list(range(1,6))
+        for saved,actual in zip(five['actual_updates'],records[:5]):
+            assert saved['probe_version']==actual['probe_version']
+            assert all(float(saved['metrics'][key])==value for key,value in actual['metrics'].items())
+        for rank in ranks(run):
+            verify_five_scheduler_prefix(five['scheduler_receipts'][str(rank)],scheduler_receipts[str(rank)])
     snapshots={}
     for step in SAVE_STEPS:
-        checkpoint=Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
+        checkpoint=source_cp if restoration and step==5 else Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
         proof=json.loads((checkpoint/'complete.json').read_text())
         assert proof['run_id']==run['run_id'] and proof['step']==step and proof['finite_all_saved_tensors'] is True
         assert Path(proof['checkpoint']).resolve()==checkpoint.resolve()

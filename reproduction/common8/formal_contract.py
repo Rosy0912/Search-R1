@@ -122,6 +122,10 @@ def verify_formal_config(document, run, base):
         test_freq=50, acceptance_step=5, val_only=False,
         val_before_train=run.get('pretraining_baseline_policy')!='reuse_historical'), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']
+    if run.get('full_state_restore'):
+        restore=run['full_state_restore']
+        assert document['actor_rollout_ref']['model']['actor_checkpoint_path']==restore['source_checkpoint']
+        assert document['trainer']['full_state_restore_receipt']==restore['source_receipt']
     assert Path(run['checkpoint_dir']).resolve() == base / 'checkpoints/search-g1-common8'
     assert document['max_turns'] == 4 and document['do_search'] is True
     exact(document['retriever'], dict(url='http://127.0.0.1:18010/retrieve', topk=3), 'Retrieval')

@@ -23,6 +23,9 @@ def claim(base):
     payload=dict(run_id=run['run_id'],shell_pid=parent,shell_start_ticks=int(stat[19]),
         slurm_job_id=execution_job_id(run),claimed_unix=time.time(),
         semantics='exclusive launch claim, not evidence of a completed update')
+    if run.get('full_state_restore'):
+        payload.update(full_state_restore=run['full_state_restore'],
+            semantics='exclusive new allocation restoring the declared logical experiment; no replay or fresh optimizer')
     if run.get('execution_backend')=='ssh_local':
         allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
         assert allocation['node']==run['execution_host']==socket.gethostname()

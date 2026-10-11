@@ -1,0 +1,310 @@
+"""Explicit restoration of this experiment's independently validated full state.
+
+The original fresh-experiment contract remains the scientific origin. A resumed
+allocation restores actual counters and state; it never substitutes fresh Adam
+or treats unavailable driver metrics as reconstructed measurements.
+"""
+import hashlib
+import json
+import os
+from pathlib import Path
+import random
+import time
+import uuid
+
+
+def digest(path):
+    h=hashlib.sha256()
+    with Path(path).open('rb') as f:
+        for block in iter(lambda:f.read(8*1024*1024),b''):h.update(block)
+    return h.hexdigest()
+
+
+def source(receipt_path):
+    p=Path(receipt_path).resolve();r=json.loads(p.read_text())
+    assert r['status']=='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS'
+    assert r['step']==5 and r['cpu_regression_tests']==3
+    assert len(r['ranks'])==8 and sorted(v['rank'] for v in r['ranks'])==list(range(8))
+    assert all(v['actual_optimizer_writes']==100 and v['scheduler_last_epoch']==5 and v['optimizer_tensors_finite'] for v in r['ranks'])
+    assert r['driver_state']['completed_outer']==5 and r['driver_state']['source_consumed']==10240
+    assert r['hf_saved_tensor_count']==435 and len(r['files'])==23
+    checkpoint=Path(next(v['path'] for v in r['files'] if v['relative_path']=='complete.json')).parent
+    origin=checkpoint.parents[3];run=json.loads((origin/'logs/run-manifest.json').read_text())
+    assert run['run_id']==r['run_id'] and run['source_commit']=='2de313e3e455e005e0d7db83104942bad8bd977a'
+    assert run['actor_micro_batch_per_rank']==2 and run['vllm_gpu_memory_utilization']==0.1
+    assert {v['relative_path'] for v in r['files']}=={str(f.relative_to(checkpoint)) for f in checkpoint.rglob('*') if f.is_file()}
+    for v in r['files']:
+        f=Path(v['path']);st=f.stat()
+        assert f.resolve().is_relative_to(checkpoint.resolve()) and not f.is_symlink()
+        assert (st.st_ino,st.st_size,st.st_mtime_ns)==(v['inode'],v['bytes'],v['mtime_ns'])
+    return p,r,checkpoint,origin,run
+
+
+def bind(run,receipt_path):
+    p,r,checkpoint,origin,parent=source(receipt_path)
+    assert run['budget']==parent['budget'] and run['input_sha256']==parent['input_sha256']
+    assert run['initial_model_sha256']==parent['initial_model_sha256']
+    assert run['actor_micro_batch_per_rank']==parent['actor_micro_batch_per_rank']==2
+    run.update(run_id=parent['run_id'],native_ray_execution_id=uuid.uuid4().hex,
+        pretraining_baseline_policy='reuse_historical',
+        full_state_restore=dict(source_receipt=str(p),source_receipt_sha256=digest(p),source_checkpoint=str(checkpoint),
+            source_base=str(origin),source_run_manifest_sha256=digest(origin/'logs/run-manifest.json'),
+            completed_outer=5,actual_optimizer_writes_per_rank=100,candidate_source_cursor=10240,
+            followup_acceptance_outer=10,next_outer_after_followup=11),
+        optimizer_semantics='actual full checkpoint5 HF/Adam100/scheduler5/RNG/candidate cursor10240 restoration; no fresh optimizer or replayed prefix')
+    return run
+
+
+def active(run=None):
+    if run is None:
+        base=Path(os.environ['SEARCH_G1_BASE']);run=json.loads((base/'logs/run-manifest.json').read_text())
+    return run.get('full_state_restore')
+
+
+def from_config(config):
+    receipt=config.trainer.get('full_state_restore_receipt',None)
+    if not receipt:return None
+    p,r,checkpoint,origin,parent=source(receipt)
+    assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
+    assert config.trainer.total_training_steps==201 and config.trainer.acceptance_step==5
+    assert config.actor_rollout_ref.actor.ppo_micro_batch_size==16
+    return r
+
+
+def equal_tree(a,b):
+    import torch,numpy as np
+    if isinstance(a,torch.Tensor):
+        assert isinstance(b,torch.Tensor) and a.dtype==b.dtype and a.shape==b.shape and torch.equal(a.cpu(),b.cpu())
+    elif isinstance(a,np.ndarray):
+        assert isinstance(b,np.ndarray) and a.dtype==b.dtype and np.array_equal(a,b)
+    elif isinstance(a,dict):
+        assert isinstance(b,dict) and a.keys()==b.keys()
+        for k in a:equal_tree(a[k],b[k])
+    elif isinstance(a,(list,tuple)):
+        assert type(a) is type(b) and len(a)==len(b)
+        for x,y in zip(a,b):equal_tree(x,y)
+    else:assert a==b
+
+
+def publish(path,value):
+    path=Path(path)
+    with path.open('x') as f:json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
+    fd=os.open(path.parent,os.O_RDONLY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+
+
+def restore_worker(worker,receipt_path):
+    import torch,numpy as np
+    from safetensors import safe_open
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP,StateDictType,FullStateDictConfig
+    from verl.utils.fsdp_utils import load_fsdp_param_and_grad,offload_fsdp_param_and_grad
+    from search_g1.training_state import worker_rng,cpu_tree
+    p,r,checkpoint,origin,parent=source(receipt_path);rank=worker.rank
+    assert torch.distributed.get_world_size()==8
+    proof=next(v for v in r['files'] if v['relative_path']==f'training_state/rank-{rank}.pt')
+    assert digest(proof['path'])==proof['full_read_sha256']
+    saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
+    assert saved['rank']==rank and saved['world_size']==8 and saved['actual_optimizer_writes']==100
+    # Compare all actual FSDP-restored model tensors with saved HF tensors.
+    if worker._is_offload_param:
+        load_fsdp_param_and_grad(module=worker.actor_module_fsdp,device_id=torch.cuda.current_device(),load_grad=False)
+    with FSDP.state_dict_type(worker.actor_module_fsdp,StateDictType.FULL_STATE_DICT,FullStateDictConfig(offload_to_cpu=True,rank0_only=True)):
+        actual_model=worker.actor_module_fsdp.state_dict()
+    checked=0
+    if rank==0:
+        weightmap=json.loads((checkpoint/'model.safetensors.index.json').read_text())['weight_map']
+        assert set(actual_model)==set(weightmap)
+        for shard in sorted(set(weightmap.values())):
+            with safe_open(str(checkpoint/shard),framework='pt',device='cpu') as f:
+                for name in f.keys():equal_tree(actual_model[name],f.get_tensor(name));checked+=1
+        assert checked==435
+    del actual_model
+    if worker._is_offload_param:
+        offload_fsdp_param_and_grad(module=worker.actor_module_fsdp,offload_grad=worker._is_offload_grad)
+    worker.actor_optimizer.load_state_dict(saved['optimizer'])
+    worker.actor_lr_scheduler.load_state_dict(saved['scheduler'])
+    equal_tree(cpu_tree(worker.actor_optimizer.state_dict()),saved['optimizer'])
+    equal_tree(cpu_tree(worker.actor_lr_scheduler.state_dict()),saved['scheduler'])
+    worker.actor._optimizer_writes=100;worker.actor._complete_outers=5;worker.actor._last_attempt_index=5
+    worker.actor._inline_initial_optimizer_published=True
+    parent_attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
+    assert [v['attempt_index'] for v in parent_attempts]==list(range(1,6))
+    worker.actor._used_attempt_ids={v['attempt_id'] for v in parent_attempts}
+    parent_monitor=[v for v in map(json.loads,(origin/f'logs/optimizer-rank-{rank}.jsonl').read_text().splitlines()) if v['kind']=='POLICY_MONITOR']
+    assert parent_monitor and parent_monitor[-1]['optimizer_writes']==100
+    worker.actor._policy_rejections=parent_monitor[-1]['rejection_count']
+    rng=saved['rng'];manager=worker.rollout_sharding_manager
+    engine=worker.rollout.inference_engine.llm_engine;assert not engine.has_unfinished_requests()
+    runner=engine.model_executor.worker.model_runner;generators=runner.get_generators();generators.clear()
+    for key,v in rng['request_generators'].items():
+        gen=torch.Generator(device=v['device']);gen.set_state(v['state']);generators[key]=gen
+    manager.torch_random_states=cpu_tree(rng['actor_cuda_saved']);manager.gen_random_states=cpu_tree(rng['rollout_cuda_saved'])
+    torch.set_rng_state(rng['torch_cpu']);torch.cuda.set_rng_state(rng['torch_cuda'],device=torch.cuda.current_device())
+    np.random.set_state(rng['numpy']);random.setstate(rng['python'])
+    equal_tree(worker_rng(worker),rng)
+    from reproduction.a800.owned_processes import identity
+    from reproduction.common8.native_allocation import cuda_uuids
+    actual_uuids=cuda_uuids(count=torch.cuda.device_count())
+    cuda_uuid=actual_uuids[torch.cuda.current_device()]
+    allocation=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/native-allocation-admission.json').read_text())
+    assert cuda_uuid in allocation['actual_cuda_runtime_uuids']
+    row=dict(rank=rank,process_identity=identity(os.getpid()),actual_cuda_uuid=cuda_uuid,
+        slurm_job_id=os.environ['SLURM_JOB_ID'],source_checkpoint=str(checkpoint),source_state_full_sha256=proof['full_read_sha256'],
+        actual_optimizer_writes=100,scheduler_last_epoch=5,model_hf_exact_tensors_checked_on_rank0=checked,
+        actual_adam_scheduler_readback_equal=True,actual_rng_readback_equal=True,world_size=8,
+        policy_rejections=worker.actor._policy_rejections,
+        source_run_id=saved['run_id'],source_step=5,checked_unix=time.time())
+    publish(Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'full-state-restored-rank-{rank}.json',row)
+    return row
+
+
+def restore_driver(trainer,receipt_path):
+    import torch,numpy as np
+    from search_g1.training_state import driver_rng,compact_stream_state
+    p,r,checkpoint,origin,parent=source(receipt_path)
+    proof=next(v for v in r['files'] if v['relative_path']=='training_state/driver.pt')
+    assert digest(proof['path'])==proof['full_read_sha256']
+    saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
+    assert saved['completed_outer']==5 and saved['candidate_stream']['consumed_source_rows']==10240
+    assert saved['probe_version']==trainer.reward_fn.expected_probe_version
+    torch.set_rng_state(saved['rng']['torch_cpu']);np.random.set_state(saved['rng']['numpy']);random.setstate(saved['rng']['python'])
+    equal_tree(driver_rng(),saved['rng'])
+    trainer._restored_candidate_state=compact_stream_state(saved['candidate_stream'])
+    assert trainer._restored_candidate_state['pending_source'] is None
+    row=dict(source_checkpoint=str(checkpoint),actual_driver_rng_readback_equal=True,completed_outer=5,
+             actual_candidate_source_cursor=10240,candidate_order_count=169028,pending_offset=0,
+             actual_probe_version=saved['probe_version'],source_driver_full_sha256=proof['full_read_sha256'],checked_unix=time.time())
+    publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-driver.json',row)
+    return row
+
+
+def prepare_guarded_restore(base,run,document,method,initial,receipts):
+    """Prospective source-state admission, distinct from fresh0 smoke results."""
+    from reproduction.common8.formal_inline_safety import ROLE,native_birth
+    from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS,FORMAL_COUNTING
+    from reproduction.common8.policy_calibration_plan import document_sha256
+    base=Path(base);binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
+    assert digest(p)==binding['source_receipt_sha256']
+    allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
+    probability=dict(role='verified_full_state_restore_source',run_id=run['run_id'],
+        slurm_job_id=allocation['slurm_job_id'],actual_optimizer_writes=100,
+        source_receipt_sha256=digest(p),source_checkpoint=str(cp),source_step=5,
+        source_sha256=run['source_sha256'],resolved_config_sha256=document_sha256(document),
+        actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'],
+        actual_model_gpu_restore_required_before_first_write=True,
+        actual_behavior_probability_accepted=False,physical_execution_authenticated=False)
+    for relative in ('logs/native-allocation-admission.json','preparation/formal-inline-method.json','logs/initial-probes-accepted.json'):
+        receipts[relative]=digest(base/relative)
+    artifact=dict(schema_version=4,role=ROLE,run_id=run['run_id'],source_commit=run['source_commit'],
+        source_sha256=run['source_sha256'],initial_model_sha256=run['initial_model_sha256'],input_sha256=run['input_sha256'],budget=run['budget'],
+        accepted_for_guarded_training=True,short_train_accepted=False,healthy_checkpoint_accepted=False,
+        initial_probe_version=run['initial_probe_version'],initial_probe_archive=initial['archive'],
+        method_sha256=digest(base/'preparation/formal-inline-method.json'),probability=probability,
+        receipts_sha256=receipts,slurm_job_id=allocation['slurm_job_id'],native_birth=native_birth(allocation),
+        actual_optimizer_writes_at_freeze=100,optimizer_counting=FORMAL_COUNTING,created_unix=time.time(),
+        restoration_scope='verified source state; real model/Adam/scheduler/RNG load is mandatory before Adam6',**FORMAL_SAFEGUARDS)
+    publish(base/'logs/policy-safety-calibration.json',artifact)
+    return artifact
+
+
+def verify_guarded_restore(base,run,probability):
+    from reproduction.common8.policy_calibration_plan import document_sha256
+    binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
+    assert digest(p)==binding['source_receipt_sha256']==probability['source_receipt_sha256']
+    assert probability['role']=='verified_full_state_restore_source'
+    assert probability['actual_optimizer_writes']==100 and probability['source_step']==5
+    assert probability['source_checkpoint']==str(cp) and probability['run_id']==run['run_id']==parent['run_id']
+    assert probability['source_sha256']==run['source_sha256']
+    allocation=json.loads((Path(base)/'logs/native-allocation-admission.json').read_text())
+    assert probability['slurm_job_id']==allocation['slurm_job_id']
+    assert probability['actual_cuda_runtime_uuids']==allocation['actual_cuda_runtime_uuids']
+    resolved=json.loads((Path(base)/'logs/resolved-training-config.json').read_text()) if (Path(base)/'logs/resolved-training-config.json').exists() else None
+    if resolved:assert probability['resolved_config_sha256']==resolved['resolved_config_sha256']
+    assert probability['actual_model_gpu_restore_required_before_first_write'] is True
+    assert probability['actual_behavior_probability_accepted'] is False
+    return True
+
+
+def accept_resumed_five(records):
+    import math
+    from reproduction.common8.behavior_runtime import read_gate_receipt,verify_write_receipt_links
+    from reproduction.common8.runtime import budget_rows,verify_scheduler_receipts
+    from reproduction.common8.worker_evidence import read_console_form
+    base=Path(os.environ['SEARCH_G1_BASE']);run=json.loads((base/'logs/run-manifest.json').read_text())
+    binding=active(run);assert binding and [r['step'] for r in records]==list(range(6,11))
+    driver=json.loads((base/'logs/full-state-restored-driver.json').read_text());assert driver['actual_driver_rng_readback_equal']
+    workers=json.loads((base/'logs/full-state-restored-workers.json').read_text())['ranks']
+    assert len(workers)==8 and all(v['actual_rng_readback_equal'] and v['actual_adam_scheduler_readback_equal'] for v in workers)
+    actual=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+    assert [v['step'] for v in actual]==list(range(6,11))
+    assert all(all(math.isfinite(v) for v in r['metrics'].values()) for r in actual)
+    gates={str(r['step']):read_gate_receipt(base,run,r['step'],update_record=r) for r in actual}
+    verify_write_receipt_links(base,gates,6,10)
+    budgets=budget_rows(read_console_form(base,run['run_id']),6,10,complete_records=actual,run=run)
+    schedules=verify_scheduler_receipts(base,run,6,10,gates)
+    result=dict(accepted=True,run_id=run['run_id'],source_completed_outer=5,source_actual_optimizer_writes_per_rank=100,
+        first_resumed_outer=6,last_resumed_outer=10,next_outer=11,actual_updates=actual,
+        budgets=budgets,scheduler_receipts=schedules,actual_restore_workers=workers,actual_restore_driver=driver,
+        extra_validation_performed=False,new_checkpoint10_claimed=False,total_budget=200,checked_unix=time.time())
+    publish(base/'logs/five-resumed-updates-acceptance.json',result)
+    print('SEARCH_G1_RESUMED_FIVE_ACCEPTED=6-10;CONTINUING11',flush=True)
+    return result
+
+
+def verified_runtime_prefix(base,run):
+    """Require actual restored worker/driver readbacks before auditing a suffix."""
+    base=Path(base);binding=active(run);assert binding
+    p,r,cp,origin,parent=source(binding['source_receipt'])
+    assert digest(p)==binding['source_receipt_sha256']
+    workers=json.loads((base/'logs/full-state-restored-workers.json').read_text())['ranks']
+    driver=json.loads((base/'logs/full-state-restored-driver.json').read_text())
+    assert len(workers)==8 and sorted(v['rank'] for v in workers)==list(range(8))
+    allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
+    assert {v['actual_cuda_uuid'] for v in workers}==set(allocation['actual_cuda_runtime_uuids'])
+    assert all(v['slurm_job_id']==allocation['slurm_job_id'] for v in workers)
+    assert len({(v['process_identity']['pid'],v['process_identity']['start_ticks']) for v in workers})==8
+    assert all(v['actual_adam_scheduler_readback_equal'] and v['actual_rng_readback_equal'] and v['actual_optimizer_writes']==100 and v['scheduler_last_epoch']==5 for v in workers)
+    assert next(v for v in workers if v['rank']==0)['model_hf_exact_tensors_checked_on_rank0']==435
+    assert driver['actual_driver_rng_readback_equal'] and driver['completed_outer']==5 and driver['actual_candidate_source_cursor']==10240
+    assert len({v['policy_rejections'] for v in workers})==1
+    attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
+    assert [v['attempt_index'] for v in attempts]==list(range(1,6))
+    assert all(v['complete_outer'] and v['all_ranks_agreed'] for v in attempts)
+    assert attempts[-1]['completed_outer']==5 and attempts[-1]['optimizer_writes_after']==100
+    return dict(completed_outer=5,writes=100,attempt_index=5,rejections=workers[0]['policy_rejections'],aborted=attempts[-1]['cumulative_aborted_attempts'])
+
+
+def record_original_baseline(base,run):
+    """Link the actual official0 evaluation; do not repeat or relabel its rows."""
+    p,r,cp,origin,parent=source(active(run)['source_receipt'])
+    original=origin/'logs/formal-inline-development-before.json'
+    result=dict(schema_version=1,role='full_state_restore_original_development_baseline',
+        run_id=run['run_id'],step=0,source_path=str(original),source_sha256=digest(original),
+        current_evaluation_performed=False,original=json.loads(original.read_text()))
+    assert result['original']['step']==0 and result['original']['run_id']==run['run_id']
+    publish(Path(base)/'logs/formal-inline-development-before.json',result)
+    return result
+
+
+def verify_restored_pair(base,run):
+    from reproduction.common8.calibration_evaluation import aggregate
+    from reproduction.common8.formal_inline_evaluation import score_counts
+    from reproduction.common8.validation_identity import expected
+    base=Path(base);p,r,cp,origin,parent=source(active(run)['source_receipt'])
+    before_path=base/'logs/formal-inline-development-before.json'
+    before_link=json.loads(before_path.read_text());original=origin/'logs/formal-inline-development-before.json'
+    assert before_link['role']=='full_state_restore_original_development_baseline'
+    assert before_link['source_path']==str(original) and before_link['source_sha256']==digest(original)
+    assert before_link['current_evaluation_performed'] is False
+    before=json.loads(original.read_text());assert before_link['original']==before
+    after_path=base/'logs/formal-inline-development-after.json';after=json.loads(after_path.read_text())
+    record,frame,ids=expected(base,'validation')
+    for step,proof in ((0,before),(5,after)):
+        assert proof['run_id']==run['run_id'] and proof['step']==step and proof['validation_sha256']==record['sha256']
+        measured=aggregate(proof['rows'],ids,frame['data_source'].tolist());measured.update(score_counts(proof['rows']))
+        assert all(proof[k]==v for k,v in measured.items() if k not in ('role','semantics'))
+    return dict(role='original0_restored5_development_comparison',before=before,after=after,
+        original_before_sha256=digest(original),after_sha256=digest(after_path),
+        changes={k:after[k]-before[k] for k in ('weighted_em','weighted_f1')},accuracy_health_gate=False,
+        repeated_baseline_evaluation=False)

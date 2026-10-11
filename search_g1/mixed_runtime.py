@@ -27,10 +27,21 @@ def subset(batch, indices):
 
 
 class CandidateStream:
-    def __init__(self, loader):
+    def __init__(self, loader, restored_state=None):
         self.loader, self.pending, self.offset = loader, None, 0
-        self.order, self.cursor, self.epoch = list(iter(loader.sampler)), 0, 0
-        self.consumed = 0
+        if restored_state is None:
+            self.order, self.cursor, self.epoch = list(iter(loader.sampler)), 0, 0
+            self.consumed = 0
+        else:
+            # A restored order must not draw a new sampler permutation/RNG.
+            from search_g1.training_state import compact_stream_state
+            state = compact_stream_state(restored_state)
+            self.order = list(state['candidate_order'])
+            assert sorted(self.order) == list(range(len(loader.dataset)))
+            self.cursor, self.epoch = state['candidate_cursor'], state['epoch']
+            assert 0 <= self.cursor <= len(self.order) and self.epoch >= 0
+            self.consumed = state['consumed_source_rows']
+            self.pending, self.offset = state['pending_source'], state['pending_offset']
 
     def state(self):
         return dict(candidate_order=self.order, candidate_cursor=self.cursor,

@@ -53,6 +53,10 @@ def arguments(base):
         overrides.append(key + '=' + raw)
     overrides.append('actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank='+
                      str(monitor_trajectories_per_rank(run)))
+    if run.get('full_state_restore'):
+        restore=run['full_state_restore']
+        overrides += ['+actor_rollout_ref.model.actor_checkpoint_path='+json.dumps(restore['source_checkpoint']),
+                      '+trainer.full_state_restore_receipt='+json.dumps(restore['source_receipt'])]
     return run, overrides
 
 

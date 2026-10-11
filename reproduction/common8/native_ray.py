@@ -19,7 +19,7 @@ def identity(path):
 
 
 def prepare(run):
-    path = root_for(run['run_id'])
+    path = root_for(run.get('native_ray_execution_id',run['run_id']))
     path.mkdir(mode=0o700, exist_ok=False)
     run['ray_tmp_dir'] = str(path)
     run['ray_tmp_dir_identity'] = identity(path)
@@ -28,7 +28,7 @@ def prepare(run):
 
 
 def verify(run, actual):
-    path = root_for(run['run_id'])
+    path = root_for(run.get('native_ray_execution_id',run['run_id']))
     assert actual == run['ray_tmp_dir'] == str(path)
     assert identity(path) == run['ray_tmp_dir_identity'], 'Private native Ray root identity changed'
     longest = path / 'session_0000-00-00_00-00-00_000000_2147483647' / 'sockets/plasma_store'

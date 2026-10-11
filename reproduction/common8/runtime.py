@@ -187,7 +187,14 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
         history=[r for r in rows if r['logical_update']<=last]
         actual=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
         completed={row['step']:row for row in actual if row['step']<=last}
-        assert set(completed)==set(range(1,last+1)), 'Missing actual completed logical updates'
+        restored=run.get('full_state_restore') or {}
+        offset=restored.get('completed_outer',0)
+        assert first>offset
+        if offset:
+            from search_g1.full_state_restore import verified_runtime_prefix
+            prefix=verified_runtime_prefix(base,run)
+        else:prefix=dict(completed_outer=0,writes=0,attempt_index=0)
+        assert set(completed)==set(range(offset+1,last+1)), 'Missing actual completed logical updates'
         from reproduction.common8.behavior_runtime import read_gate_receipt
         attempt_rows=[]
         for row in history:
@@ -195,9 +202,9 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             assert type(row['attempt_index']) is int and row['attempt_index']>0
             if not attempt_rows or row['attempt_id']!=attempt_rows[-1][0]['attempt_id']:attempt_rows.append([])
             attempt_rows[-1].append(row)
-        complete_count=0;physical_writes=0;seen=set();attempt_signatures=[]
+        complete_count=prefix['completed_outer'];physical_writes=prefix['writes'];seen=set();attempt_signatures=[]
         expected_by_row=[]
-        for ordinal,attempt in enumerate(attempt_rows,1):
+        for ordinal,attempt in enumerate(attempt_rows,prefix['attempt_index']+1):
             beginning=attempt[0];ending=attempt[-1]
             attempt_id=beginning['attempt_id'];step=complete_count+1
             assert attempt_id not in seen and beginning['attempt_index']==ordinal

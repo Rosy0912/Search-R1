@@ -704,6 +704,14 @@ class RayPPOTrainer(object):
         # we should create rollout at the end so that vllm can have a better estimation of kv cache memory
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
+        if self.config.trainer.get('full_state_restore_receipt', None):
+            from pathlib import Path
+            from search_g1.full_state_restore import publish
+            proofs = self.actor_rollout_wg.restore_mixed_full_state(self.config.trainer.full_state_restore_receipt)
+            assert len(proofs)==8 and sorted(p['rank'] for p in proofs)==list(range(8))
+            assert all(p['actual_adam_scheduler_readback_equal'] and p['actual_rng_readback_equal'] for p in proofs)
+            publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-workers.json',
+                    dict(source_step=5,actual_optimizer_writes_per_rank=100,ranks=proofs))
 
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
@@ -781,12 +789,25 @@ class RayPPOTrainer(object):
         if os.environ.get('SEARCH_G1_PROFILE')=='common8':
             from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
             if active_run() is not None:
-                assert continuation_k==0 and self.global_steps==0
+                restore_receipt=self.config.trainer.get('full_state_restore_receipt',None)
+                assert (continuation_k,self.global_steps)==((5,5) if restore_receipt else (0,0))
                 assert self.total_training_steps==201 and len(self.train_dataloader)>0
                 assert self.config.trainer.critic_warmup<=1 and not self.use_critic
                 from reproduction.common8.recoverable_attempt import AttemptProgress
                 inline_attempts=AttemptProgress()
-                evaluate_development(self)
+                if restore_receipt:
+                    from search_g1.full_state_restore import restore_driver
+                    restore_driver(self,restore_receipt)
+                    from search_g1.full_state_restore import record_original_baseline
+                    base,run=active_run();record_original_baseline(base,run)
+                    inline_attempts.completed_outer=5
+                    inline_attempts.cumulative_writes=100
+                    inline_attempts.attempt_index=5
+                    # Finish only the canonical dev512-after5 that the failed
+                    # allocation never reached. Do not repeat initial/stage64.
+                    evaluate_development(self)
+                else:
+                    evaluate_development(self)
 
         # we start from step 1
         self.global_steps += 1
@@ -813,7 +834,8 @@ class RayPPOTrainer(object):
         mixed_stream = None
         if self.config.data.get("mixed_first_selection", False):
             from search_g1.mixed_runtime import CandidateStream
-            mixed_stream = CandidateStream(self.train_dataloader)
+            mixed_stream = CandidateStream(self.train_dataloader,
+                restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
 
@@ -1073,6 +1095,9 @@ class RayPPOTrainer(object):
                         if active_run() is not None:evaluate_development(self)
                     from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
+                if self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps==continuation_k+5:
+                    from search_g1.full_state_restore import accept_resumed_five
+                    accept_resumed_five(five_update_records)
                 if self.global_steps in (50,100,150,200,250) and self.global_steps + 1 < self.total_training_steps:
                     from reproduction.profile import refresh_after_checkpoint
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)

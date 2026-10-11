@@ -12,6 +12,11 @@ def model_initialization_path(model, actor):
 
 
 def completed_updates(config, total_steps):
+    if config.trainer.get('full_state_restore_receipt', None):
+        from search_g1.full_state_restore import from_config
+        restored = from_config(config)
+        assert total_steps == 201
+        return restored['step']
     k = config.trainer.get('weight_continuation_step', 0)
     if isinstance(k, bool) or not isinstance(k, int) or k < 0:
         raise ValueError('Completed update count must be a nonnegative integer')

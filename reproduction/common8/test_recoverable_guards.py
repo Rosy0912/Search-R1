@@ -183,7 +183,7 @@ class LedgerDirectoryDurabilityTests(unittest.TestCase):
                 def sync(fd):
                     seen.append('directory' if stat.S_ISDIR(os.fstat(fd).st_mode) else 'file')
                     return real(fd)
-                result=dict(attempt_index=1,attempt_id='1'*32,all_ranks_agreed=True)
+                result=dict(attempt_index=1,attempt_id='1'*32,all_ranks_agreed=True,real_rank_count=8)
                 with patch.dict(os.environ,SEARCH_G1_BASE=str(base),SLURM_JOB_ID='12345'),patch.object(os,'fsync',side_effect=sync):
                     if kind=='worker':_append_local('OPPORTUNITY',dict(rank=0,processed=True))
                     else:record_attempt(result)
@@ -201,7 +201,7 @@ class LedgerDirectoryDurabilityTests(unittest.TestCase):
                 with patch.dict(os.environ,SEARCH_G1_BASE=str(base),SLURM_JOB_ID='12345'),patch.object(os,'fsync',side_effect=sync):
                     with self.assertRaisesRegex(OSError,'parent durability'):
                         if kind=='worker':_append_local('OPPORTUNITY',dict(rank=0,processed=True))
-                        else:record_attempt(dict(attempt_index=1,attempt_id='1'*32,all_ranks_agreed=True))
+                        else:record_attempt(dict(attempt_index=1,attempt_id='1'*32,all_ranks_agreed=True,real_rank_count=8))
                 # Readable new bytes are explicitly NOT acknowledged success.
                 receipt=base/'logs'/('optimizer-rank-0.jsonl' if kind=='worker' else 'actual-attempts.jsonl')
                 self.assertTrue(receipt.is_file())
@@ -255,7 +255,7 @@ def _gloo_actor_worker(rank,world,endpoint,base_name,whole_skip):
     dist.init_process_group('gloo',rank=rank,world_size=world,init_method=endpoint,timeout=timedelta(seconds=45))
     try:
         # Native topology is constructed; all guard collectives below are the
-        # real two-rank Gloo group, independent from this local source adapter.
+        # real eight-rank Gloo group, independent from this local source adapter.
         class TorchAdapter:
             distributed=SimpleNamespace(get_world_size=lambda:8,get_rank=dist.get_rank,is_initialized=dist.is_initialized)
             cuda=SimpleNamespace(current_device=lambda:0)
@@ -299,7 +299,7 @@ def _gloo_actor_worker(rank,world,endpoint,base_name,whole_skip):
                       for name in ('responses','input_ids','attention_mask','position_ids','loss_mask','old_log_probs','advantages')})
         class Data(SimpleNamespace):
             def __len__(self):return 320
-        data=Data(meta_info=dict(logical_update=1,attempt_id='1'*32,attempt_index=1,
+        data=Data(batch=batch,meta_info=dict(logical_update=1,attempt_id='1'*32,attempt_index=1,
             temperature=1.,behavior_probability_gate=dict(sha256='d'*64)),
             select=lambda **kwargs:SimpleNamespace(batch=batch))
         with patch.dict(os.environ,{'SEARCH_G1_PROFILE':'common8','SEARCH_G1_BASE':base_name,'SLURM_JOB_ID':'12345'}), \
@@ -328,10 +328,10 @@ class ActualGlooOpportunityTests(unittest.TestCase):
         for whole_skip in (False,True):
             with self.subTest(whole_skip=whole_skip),tempfile.TemporaryDirectory() as name:
                 base=Path(name);_fixture(base)
-                mp.spawn(_gloo_actor_worker,args=(2,'file://'+str(base/'gloo-init'),str(base),whole_skip),nprocs=2,join=True)
-                results=[json.loads((base/f'constructed-result-{rank}.json').read_text()) for rank in range(2)]
-                self.assertEqual(results[0],results[1])
-                for rank in range(2):
+                mp.spawn(_gloo_actor_worker,args=(8,'file://'+str(base/'gloo-init'),str(base),whole_skip),nprocs=8,join=True)
+                results=[json.loads((base/f'constructed-result-{rank}.json').read_text()) for rank in range(8)]
+                self.assertTrue(all(v==results[0] for v in results))
+                for rank in range(8):
                     rows=[json.loads(line) for line in (base/f'logs/optimizer-rank-{rank}.jsonl').read_text().splitlines()]
                     self.assertEqual(sum(row['kind']=='POLICY_MONITOR' for row in rows),40)
                     self.assertEqual(sum(row['kind']=='OPPORTUNITY' for row in rows),20)
