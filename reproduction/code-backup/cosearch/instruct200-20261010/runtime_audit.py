@@ -75,6 +75,15 @@ def install():
         if worker._is_actor:
             import torch
             if torch.distributed.get_world_size()!=4:raise RuntimeError('Each role must use four ranks')
+            if str(worker.role)=='reranker_actor_rollout':
+                original_forward=worker.actor._forward_micro_batch
+                @functools.wraps(original_forward)
+                def forward_with_cpu_saved_tensors(*a,**kw):
+                    # Includes cross-entropy saved logits outside native layer activation hooks.
+                    with torch.autograd.graph.save_on_cpu(pin_memory=True):
+                        return original_forward(*a,**kw)
+                worker.actor._forward_micro_batch=forward_with_cpu_saved_tensors
+                record(worker,'reranker_saved_tensors_cpu_enabled',{'micro_batch_unchanged':4})
             props=torch.cuda.get_device_properties(torch.cuda.current_device())
             from probe_faiss_gpu import visible_cuda_uuids
             uuid=visible_cuda_uuids(torch.cuda.device_count())[torch.cuda.current_device()]
