@@ -308,3 +308,19 @@ def verify_restored_pair(base,run):
         original_before_sha256=digest(original),after_sha256=digest(after_path),
         changes={k:after[k]-before[k] for k in ('weighted_em','weighted_f1')},accuracy_health_gate=False,
         repeated_baseline_evaluation=False)
+
+
+def optimizer_construction_config(config,model_path):
+    """Construct temporary empty objects, then require full actual state loading."""
+    import copy
+    run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+    binding=active(run)
+    if not binding:return config
+    p,r,checkpoint,origin,parent=source(binding['source_receipt'])
+    assert digest(p)==binding['source_receipt_sha256']
+    assert config.get('completed_updates',0)==r['step']==binding['completed_outer']==5
+    assert Path(model_path).resolve()==checkpoint
+    construction=copy.deepcopy(dict(config));construction['completed_updates']=0
+    # This does not change the resolved training counter or pretend restoration
+    # happened. restore_worker must load and read back Adam100/scheduler5 before use.
+    return construction

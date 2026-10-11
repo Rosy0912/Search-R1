@@ -32,6 +32,28 @@ class RestorationTests(unittest.TestCase):
         b={'state':{0:{'step':torch.tensor(100.),'exp_avg':torch.tensor([1.,3.])}},'param_groups':[{'lr':1e-7}]}
         with self.assertRaises(AssertionError):equal_tree(a,b)
 class ResumedSchedulerTests(unittest.TestCase):
+    def test_actual_resolved_restore_counter_uses_temporary_constructor_only(self):
+        import json,tempfile,os
+        from pathlib import Path
+        from unittest.mock import patch
+        from reproduction.common8.scheduler import collective_actor_initialization
+        from search_g1.full_state_restore import optimizer_construction_config
+        config=dict(lr=1e-6,completed_updates=5,lr_warmup_steps=57,lr_warmup_steps_ratio=0.)
+        with tempfile.TemporaryDirectory() as name:
+            base=Path(name);(base/'logs').mkdir()
+            cp=base/'checkpoint5';receipt=base/'result.json';receipt.write_text('{}')
+            (base/'logs/run-manifest.json').write_text(json.dumps(dict(full_state_restore=dict(source_receipt=str(receipt),source_receipt_sha256='a'*64,completed_outer=5))))
+            with patch.dict(os.environ,SEARCH_G1_BASE=str(base)),patch('search_g1.full_state_restore.source',return_value=(receipt,dict(step=5),cp,None,None)),patch('search_g1.full_state_restore.digest',return_value='a'*64):
+                temporary=optimizer_construction_config(config,str(cp))
+            self.assertEqual(config['completed_updates'],5);self.assertEqual(temporary['completed_updates'],0)
+            p=torch.nn.Parameter(torch.tensor([1.]))
+            import torch.distributed as dist
+            dist.init_process_group('gloo',rank=0,world_size=1,init_method='file://'+str(base/'constructor-gloo'))
+            try:optimizer,scheduler=collective_actor_initialization(lambda:torch.optim.AdamW([p],lr=1e-6),temporary,execution_role='production')
+            finally:dist.destroy_process_group()
+            self.assertFalse(optimizer.state);self.assertEqual(scheduler.last_epoch,0)
+            self.assertEqual(temporary['lr_warmup_steps'],57)
+
     def test_actual_adam100_scheduler5_continues_at6(self):
         import json,tempfile,torch
         from pathlib import Path

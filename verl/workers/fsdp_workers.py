@@ -246,7 +246,9 @@ class ActorRolloutRefWorker(Worker):
                                           weight_decay=optim_config.get('weight_decay', 1e-2))
             if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
                 from reproduction.common8.scheduler import collective_actor_initialization
-                actor_optimizer, actor_lr_scheduler = collective_actor_initialization(fresh_optimizer, optim_config,
+                from search_g1.full_state_restore import optimizer_construction_config
+                construction_config=optimizer_construction_config(optim_config,model_path)
+                actor_optimizer, actor_lr_scheduler = collective_actor_initialization(fresh_optimizer, construction_config,
                     execution_role=os.environ.get('SEARCH_G1_CALIBRATION_ROLE', 'production'))
             else:
                 from verl.utils.weight_continuation import scheduler_from_completed

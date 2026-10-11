@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-11T11:01:18.193698+00:00",
+  "returncode": 0,
+  "stdout": "{\"route\": \"retained18 SSH-W h100-8\", \"returncode\": 0, \"stdout\": \"{\\\"utc\\\": \\\"2026-10-11T11:01:17.984673+00:00\\\", \\\"cpu_only\\\": true, \\\"rc\\\": 0, \\\"stdout\\\": \\\"ve_padding=False\\\\nActor use_remove_padding=False\\\\nSEARCH_G1_REJECTED_NONFINITE_UPDATE={\\\\\\\"stage\\\\\\\": \\\\\\\"after_optimizer_write\\\\\\\", \\\\\\\"rank\\\\\\\": 0, \\\\\\\"local_failed_fields\\\\\\\": [\\\\\\\"state\\\\\\\"], \\\\\\\"failure_on_another_rank\\\\\\\": false}\\\\nSEARCH_G1_REJECTED_NONFINITE_UPDATE={\\\\\\\"stage\\\\\\\": \\\\\\\"after_optimizer_write\\\\\\\", \\\\\\\"rank\\\\\\\": 0, \\\\\\\"local_failed_fields\\\\\\\": [\\\\\\\"state\\\\\\\"], \\\\\\\"failure_on_another_rank\\\\\\\": false}\\\\nSEARCH_G1_REJECTED_NONFINITE_UPDATE={\\\\\\\"stage\\\\\\\": \\\\\\\"frozen_monitor_identity\\\\\\\", \\\\\\\"rank\\\\\\\": 0, \\\\\\\"local_failed_fields\\\\\\\": [\\\\\\\"state\\\\\\\"], \\\\\\\"failure_on_another_rank\\\\\\\": false}\\\\n\\\", \\\"stderr\\\": \\\"..................................................................................\\\\n----------------------------------------------------------------------\\\\nRan 82 tests in 15.166s\\\\n\\\\nOK\\\\n\\\"}\\n\", \"stderr\": \"\", \"utc\": \"2026-10-11T11:01:18.363049+00:00\"}\n",
+  "stderr": ""
+}
