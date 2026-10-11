@@ -89,7 +89,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.4,local_retrieval_assets=None):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None):
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
@@ -107,7 +107,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
          'exclusions-audit.json','calibration-300.parquet','audit.json')}
     method = write_method(base, commit, source)
     result=dict(policy_safety_required='actor_rollout_ref.actor.policy_safety.enabled=true' in json.loads((repo/'reproduction/common8/recipe.json').read_text()),profile='common8',run_id=uuid.uuid4().hex,started_unix=time.time(),
-        mixed_first_selection=True,actor_micro_batch_per_rank=4,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
+        mixed_first_selection=True,actor_micro_batch_per_rank=2,completed_updates=0,initial_model=str(model.resolve()),reference_model=str(model.resolve()),
         initial_model_sha256=model_hashes,model_revision=REVISION, budget=budget,
         source_commit=commit,source_sha256=source,
         source_snapshot_semantics='disk fingerprint before launch; not proof of loaded modules',
@@ -149,7 +149,7 @@ if __name__=='__main__':
     p.add_argument('--model',required=True);p.add_argument('--official-manifest',required=True)
     p.add_argument('--source-commit',required=True)
     p.add_argument('--allow-existing-gpu-processes',action='store_true')
-    p.add_argument('--rollout-memory-utilization',type=float,default=0.4)
+    p.add_argument('--rollout-memory-utilization',type=float,default=0.1)
     p.add_argument('--local-retrieval-assets');a=p.parse_args()
     print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,
         a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets)))
