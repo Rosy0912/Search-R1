@@ -1,9 +1,10 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "first_observed_epoch": 1791710312.456512,
-  "second_observed_epoch": 1791710381.749845,
-  "completed_outer": 68,
-  "receipt": "OUTER69_STARTED-3360.json",
-  "evidence": "Full68 timer and native save receipt;544 direct ranks; actual step69 started."
+  "first_observed_epoch": 1791710983.0407102,
+  "second_observed_epoch": 1791711108.1335676,
+  "completed_outer_before": 68,
+  "completed_outer_after": 69,
+  "receipt": "OUTER70_STARTED-3360.json",
+  "evidence": "Full69 timer/native save;552 direct ranks; actual step70 started."
 }
