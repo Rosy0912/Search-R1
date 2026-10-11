@@ -33,6 +33,15 @@ def behavior_mu_correction_enabled(config):
     return correction['enabled']
 
 
+def full_actor_beta_available(meta):
+    value = meta.get('tree_full_actor_beta_available', True)
+    if type(value) is not bool:
+        raise ValueError('Full actor beta availability must be explicit boolean')
+    if not value and os.environ.get('RECURSIVE_A_OMIT_FULL_BETA') != '1':
+        raise ValueError('Missing full beta requires explicit authorized recursive-A profile')
+    return value
+
+
 class _ActorProbabilityValidation:
     """Process-local, single-update proof; never accepted from batch metadata.
 
@@ -53,7 +62,7 @@ class _ActorProbabilityValidation:
         from .tree_behavior_mu import FIELD, META, PROVENANCE_META, PROVENANCE_KEYS
         from .tree_raw_tokens import FIELD as RAW_FIELD, fingerprint
         meta_keys = (META, PROVENANCE_META, 'tree_behavior_mu_corrected_profile',
-                     'tree_raw_token_protocol', 'temperature',
+                     'tree_raw_token_protocol', 'temperature', 'tree_full_actor_beta_available',
                      'baseline_outer_step', 'baseline_attempt_id')
         meta = [(key, key in source_data.meta_info, source_data.meta_info.get(key))
                 for key in meta_keys]
@@ -107,8 +116,13 @@ def validate_actor_probability_profile(actor, data, config, *, return_context=Fa
                 raise ValueError('Behavior-mu correction requires enabled Tree policy safety')
             from .tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
             validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
-            sampled, old, beta = (data.batch[key] for key in
-                                  ('sampled_old_log_probs', 'old_log_probs', 'actor_old_log_probs'))
+            sampled, old = (data.batch[key] for key in ('sampled_old_log_probs', 'old_log_probs'))
+            available = full_actor_beta_available(data.meta_info)
+            beta = data.batch.get('actor_old_log_probs')
+            if available != (beta is not None):
+                raise ValueError('Actual beta presence differs from declared availability')
+            if not available and (not actor.config.use_kl_loss or actor.config.kl_loss_coef != 0.):
+                raise ValueError('Omitting full beta requires zero reference KL loss')
             valid = PolicySafetyRuntime.effective_mask(data.batch)
             temperature = data.meta_info['temperature']
             if type(temperature) not in (int, float) or temperature != 1.:
@@ -125,10 +139,10 @@ def validate_actor_probability_profile(actor, data, config, *, return_context=Fa
                     raise ValueError('Corrected actor required float field invalid: '+key)
                 finite_checks.append(torch.isfinite(value[valid]).all())
             if (sampled.dtype != torch.float32 or old.dtype != torch.float32
-                    or not beta.is_floating_point() or old.shape != sampled.shape
-                    or beta.shape != sampled.shape or not torch.equal(old, sampled)):
+                    or old.shape != sampled.shape or not torch.equal(old, sampled)
+                    or (available and (not beta.is_floating_point() or beta.shape != sampled.shape))):
                 raise ValueError('Fixed mu denominator / independent actor beta tensor binding invalid')
-            finite_checks.append(torch.isfinite(beta[valid]).all())
+            if available: finite_checks.append(torch.isfinite(beta[valid]).all())
             if not torch.stack(finite_checks).all():
                 raise ValueError('Corrected actor required float field / independent beta nonfinite')
             context = _ActorProbabilityValidation(data)
@@ -138,7 +152,8 @@ def validate_actor_probability_profile(actor, data, config, *, return_context=Fa
     if dist.is_initialized(): dist.all_reduce(flag, op=dist.ReduceOp.MAX)
     if flag.item():
         raise PolicySafetyRefusal('Global probability-profile startup refusal; local diagnosis: '+str(error), matched_all_ranks=True)
-    signature = torch.tensor([int(corrected), int(bool(config.get('enabled', False)))], device=device)
+    signature = torch.tensor([int(corrected), int(bool(config.get('enabled', False))),
+                              int(full_actor_beta_available(data.meta_info)) if corrected else 0], device=device)
     lo, hi = signature.clone(), signature.clone()
     if dist.is_initialized():
         dist.all_reduce(lo, op=dist.ReduceOp.MIN)
@@ -211,6 +226,7 @@ class PolicySafetyRuntime:
         self.attempt_id = meta.get('baseline_attempt_id')
         self.target_kl = float(config['target_old_policy_kl'])
         self.corrected_profile = behavior_mu_correction_enabled(config)
+        self.full_actor_beta_available = full_actor_beta_available(meta) if self.corrected_profile else False
         if self.corrected_profile:
             if self.source_data is None:
                 raise ValueError('Corrected safety startup requires full row-local mu source data')
@@ -220,7 +236,7 @@ class PolicySafetyRuntime:
                 from .tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
                 validate_behavior_mu_batch(self.source_data, expected_provenance=runtime_provenance(os.environ), required=True)
             for key in ('input_ids', 'responses', 'attention_mask', 'position_ids', 'loss_mask',
-                        'sampled_old_log_probs', 'actor_old_log_probs', 'old_log_probs'):
+                        'sampled_old_log_probs', 'old_log_probs') + (('actor_old_log_probs',) if self.full_actor_beta_available else ()):
                 if key not in batch.keys():
                     raise ValueError('Corrected safety batch differs from full source data: '+key)
                 selected, source = batch[key], self.source_data.batch[key]
@@ -239,8 +255,8 @@ class PolicySafetyRuntime:
             valid = self.effective_mask(batch)
             if not shared_validation and (batch['old_log_probs'].dtype != torch.float32
                     or not torch.equal(batch['old_log_probs'], batch['sampled_old_log_probs'])
-                    or not batch['actor_old_log_probs'].is_floating_point()
-                    or not torch.isfinite(batch['actor_old_log_probs'][valid]).all()):
+                    or (self.full_actor_beta_available and (not batch['actor_old_log_probs'].is_floating_point()
+                    or not torch.isfinite(batch['actor_old_log_probs'][valid]).all()))):
                 raise ValueError('Corrected safety requires actual fixed mu and finite independent beta')
             if meta.get('tree_behavior_mu_corrected_profile') is not True:
                 raise ValueError('Corrected safety profile missing validated actor batch marker')
@@ -248,7 +264,7 @@ class PolicySafetyRuntime:
             if type(repeat_limit) not in (int, float):
                 raise ValueError('Explicit numeric initial actor repeat threshold required')
             self.initial_consistency_limit = float(repeat_limit)
-            if any(key not in batch.keys() for key in ('actor_old_log_probs', 'sampled_old_log_probs')):
+            if any(key not in batch.keys() for key in (('actor_old_log_probs', 'sampled_old_log_probs') if self.full_actor_beta_available else ('sampled_old_log_probs',))):
                 raise ValueError('Corrected safety profile missing independent fixed mu/beta fields')
         else:
             self.initial_consistency_limit = float(config['initial_old_logprob_max_abs_delta'])
@@ -400,16 +416,18 @@ class PolicySafetyRuntime:
             finite_delta = torch.where(torch.isfinite(delta), delta, 0.)
             if finite_delta.numel(): max_abs_delta = torch.maximum(max_abs_delta, finite_delta.abs().max())
             if self.corrected_profile:
-                beta = data['actor_old_log_probs']
-                invalid |= ~torch.isfinite(beta[valid]).all() | ~torch.isfinite(current[valid]).all()
-                beta_mu = (beta.double() - data['old_log_probs'].double())[valid]
-                invalid |= ~torch.isfinite(beta_mu).all()
-                if beta_mu.numel():
-                    mu_full_beta_delta = torch.maximum(mu_full_beta_delta, torch.where(torch.isfinite(beta_mu), beta_mu.abs(), 0.).max())
-                full = (current.double() - beta.double())[valid]
-                invalid |= ~torch.isfinite(full).all()
-                if full.numel():
-                    full_beta_delta = torch.maximum(full_beta_delta, torch.where(torch.isfinite(full), full.abs(), 0.).max())
+                invalid |= ~torch.isfinite(current[valid]).all()
+                if self.full_actor_beta_available:
+                    beta = data['actor_old_log_probs']
+                    invalid |= ~torch.isfinite(beta[valid]).all()
+                    beta_mu = (beta.double() - data['old_log_probs'].double())[valid]
+                    invalid |= ~torch.isfinite(beta_mu).all()
+                    if beta_mu.numel():
+                        mu_full_beta_delta = torch.maximum(mu_full_beta_delta, torch.where(torch.isfinite(beta_mu), beta_mu.abs(), 0.).max())
+                    full = (current.double() - beta.double())[valid]
+                    invalid |= ~torch.isfinite(full).all()
+                    if full.numel():
+                        full_beta_delta = torch.maximum(full_beta_delta, torch.where(torch.isfinite(full), full.abs(), 0.).max())
                 if first:
                     initial_values.append(current.detach().clone())
                 else:
@@ -446,11 +464,12 @@ class PolicySafetyRuntime:
             decision.update(probability_denominator='actual_behavior_mu',
                             behavior_kl_scope='Original Tree equal-leaf weighted fixed monitor measure; not unbiased full-policy KL',
                             global_monitor_mu_actor_max_abs_delta=max_abs_delta.item(),
-                            global_monitor_mu_full_partition_beta_max_abs_delta=diagnostics[3].item(),
+                            full_actor_beta_available=self.full_actor_beta_available,
+                            global_monitor_mu_full_partition_beta_max_abs_delta=diagnostics[3].item() if self.full_actor_beta_available else None,
                             global_monitor_initial_mu_monitor_beta_max_abs_delta=self.initial_mu_monitor_beta_max_abs_delta,
                             original_sampler_actor_consistency_accepted=False,
                             initial_mu_kl_baseline_subtracted=False,
-                            global_monitor_actor_full_partition_max_abs_delta=diagnostics[0].item(),
+                            global_monitor_actor_full_partition_max_abs_delta=diagnostics[0].item() if self.full_actor_beta_available else None,
                             global_monitor_actor_frozen_monitor_max_abs_delta=diagnostics[1].item(),
                             global_monitor_actor_repeat_max_abs_delta=diagnostics[2].item() if first else None,
                             initial_actor_repeat_checked=first,

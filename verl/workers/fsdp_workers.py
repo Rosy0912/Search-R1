@@ -552,6 +552,9 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         data = data.to('cuda')
 
         assert self._is_actor
@@ -637,9 +640,18 @@ class ActorRolloutRefWorker(Worker):
         torch.cuda.empty_cache()
         return output
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def release_rollout_policy_cache(self):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         data = data.to('cuda')
 
         assert self._is_rollout
@@ -673,12 +685,30 @@ class ActorRolloutRefWorker(Worker):
         prompts = prompts.to('cuda')
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)
+        # Native recursive trajectories retain emitted behavior-mu directly.
+        # The trainer scores the assembled trajectory once; a per-action actor
+        # pass is only needed when the sampler/actor diagnostic is enabled.
+        if (self.config.rollout.get('tree_raw_emission', False)
+                and 'sampling_consistency' in self.config.rollout
+                and not self.config.rollout.sampling_consistency.enabled):
+            recompute_log_prob = False
         if 'sampling_consistency' in self.config.rollout:
             from search_r1.baselines.sampling_consistency import generation_preflight
             generation_preflight(self, prompts)
 
         assert self._is_rollout
-        if self._is_offload_param:
+        cache_enabled = (bool(os.environ.get('RECURSIVE_B_CONTINUATION_BINDING'))
+                         and self.config.rollout.get('tree_raw_emission', False)
+                         and not recompute_log_prob and prompts.meta_info.get('do_sample', True))
+        cache_version = (self.actor._fresh_total_committed_optimizer_calls,
+                         self.actor_lr_scheduler.last_epoch) if cache_enabled else None
+        manager = self.rollout_sharding_manager
+        if hasattr(manager, 'prepare_policy_cache'):
+            manager.prepare_policy_cache(cache_enabled, cache_version)
+        elif cache_enabled:
+            raise RuntimeError('Native recursive policy cache requires FSDP-vLLM manager')
+        actor_loaded = self._is_offload_param and not getattr(manager, 'weights_resident', False)
+        if actor_loaded:
             load_fsdp_param_and_grad(module=self.actor_module_fsdp,
                                      device_id=torch.cuda.current_device(),
                                      load_grad=self._is_offload_grad)
@@ -756,6 +786,9 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
         assert self._is_actor
         import torch
         if self._is_offload_param:
@@ -815,7 +848,11 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_current_chain_training_state(self):
-        from search_r1.baselines.tree_current_chain_resume import load_worker
+        from search_r1.baselines.recursive_b_schedule_resume import enabled
+        if enabled():
+            from search_r1.baselines.recursive_b_schedule_resume import load_worker
+        else:
+            from search_r1.baselines.tree_current_chain_resume import load_worker
         return load_worker(self)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
@@ -839,6 +876,10 @@ class ActorRolloutRefWorker(Worker):
         if 'guard_continue_accounting' in identity:
             receipt['actual_total_optimizer_calls'] = self.actor._fresh_total_committed_optimizer_calls
             receipt['observed_adam_steps'] = sorted(set(int(value['step']) for value in self.actor_optimizer.state.values()))
+        from search_r1.baselines.recursive_b_schedule_resume import enabled as b_enabled
+        if b_enabled():
+            from search_r1.baselines.recursive_b_schedule_resume import save_sampling_stream
+            receipt['sampling_stream'] = save_sampling_stream(self,local_path,identity)
         return receipt
 
 

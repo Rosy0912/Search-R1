@@ -3,6 +3,7 @@
 Only new algorithms use this engine. The original GRPO/validation path is kept.
 All metadata is row-local, so DataProto permutations also permute provenance.
 """
+import time
 from dataclasses import dataclass, field
 import copy
 import hashlib
@@ -97,7 +98,8 @@ class SearchRollout:
                     'Frozen actual PAD/EOS identity changed')
             self.tokenizer_identity = tokenizer_identity(self.tokenizer, token_preservation['tokenizer_sha256'])
         self.cost = dict(generated_tokens=0, prefill_tokens=0, retrieval_calls=0,
-                         trajectories=0, padded_rows=0, context_mismatches=0)
+                         trajectories=0, padded_rows=0, context_mismatches=0,
+                         generation_rpc_calls=0, generation_rpc_wall_seconds=0.)
         if token_preservation is not None:
             self.cost.update(raw_slots=0, raw_emitted_tokens=0, raw_retained_tokens=0,
                 raw_discarded_tail_tokens=0, raw_inherited_leaf_tokens=0, semantic_prefix_scan_cpu_seconds=0.,
@@ -165,7 +167,10 @@ class SearchRollout:
             self.cost['prefill_tokens'] += extra * len(states[0].rolling)
             tensors = {k: torch.cat((v, v[:1].repeat(extra, 1)), 0) for k, v in batch.batch.items()}
             batch = DataProto.from_dict(tensors, meta_info=meta.copy())
+        generation_rpc_started = time.perf_counter()
         output = self.manager.actor_rollout_wg.generate_sequences(batch)
+        self.cost['generation_rpc_calls'] += 1
+        self.cost['generation_rpc_wall_seconds'] += time.perf_counter() - generation_rpc_started
         self.output_meta = output.meta_info.copy()
         generated = output.batch['responses']
         # Include actual discarded padding generations, rather than estimate duplicates.
@@ -251,7 +256,7 @@ class SearchRollout:
             s.anchors.append(anchor)
             s.records.append(dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
                                   scoring_context_matches_generation=matches[i]))
-            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR') and getattr(self, 'record_details', True):
                 s.records[-1].update(action_token_ids=action, observation_token_ids=obs,
                     raw_generation_token_ids=raw[i].tolist(),
                     observation_text=observations[i], generation_context_token_ids=s.rolling.copy(),
@@ -366,6 +371,8 @@ class SearchRollout:
         return self._run(gen_batch,tree)
 
     def _run(self, gen_batch, tree=None):
+        from .recording_schedule import record_details
+        self.record_details = record_details(getattr(self, 'rollout_outer', 0))
         self.cost = dict.fromkeys(self.cost, 0)
         states = self.initial_states(gen_batch)
         self.tree_candidate_counts = []
@@ -521,7 +528,8 @@ class SearchRollout:
         if tree.roots != 1 or self.reward_callback is None:
             raise ValueError('Recursive search requires one root and strict reward callback')
         directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
-        directory.mkdir(parents=True)
+        if self.record_details:
+            directory.mkdir(parents=True)
         scores = self.reward_callback(roots)
         if len(scores)!=len(roots) or any(float(r) not in (0.,1.) for r in scores):
             raise ValueError('Recursive search requires actual binary strict EM')
@@ -536,13 +544,18 @@ class SearchRollout:
                                model_calls=len(nodes) if parent is None else 0))
         planners=[]
         for index,(root,nodes,score) in enumerate(zip(roots,snapshots,scores)):
-            question_dir=directory/str(index);question_dir.mkdir()
+            question_dir=directory/str(index)
+            if self.record_details:
+                question_dir.mkdir()
             root_path=question_dir/(root.trajectory+'.json')
-            with root_path.open('x') as f:
-                json.dump(dict(state=dataclasses.asdict(root),source='initial'),f,allow_nan=False);f.flush();os.fsync(f.fileno())
+            if self.record_details:
+                with root_path.open('x') as f:
+                    json.dump(dict(state=dataclasses.asdict(root),source='initial'),f,allow_nan=False);f.flush();os.fsync(f.fileno())
             holder={};sequence=[0]
             def emit(event,_dir=question_dir,_holder=holder,_seq=sequence,_index=index,**fields):
                 _seq[0]+=1
+                if not self.record_details:
+                    return
                 if event=='branch_start':
                     parent=_holder['planner'].parent
                     snapshot=parent.snapshots[fields['action_index']]
@@ -598,8 +611,9 @@ class SearchRollout:
                     retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
                     batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
                 trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
-                with trajectory_path.open('x') as f:
-                    json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
+                if self.record_details:
+                    with trajectory_path.open('x') as f:
+                        json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
                 planner.accept_result(result)
         selected=[]
         self.recursive_summaries=[]

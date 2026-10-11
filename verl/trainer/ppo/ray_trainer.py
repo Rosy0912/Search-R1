@@ -122,8 +122,23 @@ def prepare_behavior_mu_old_policy(data, actor_config):
         return False
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
     validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
-    beta = data.batch['old_log_probs']
+    from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     sampled = data.batch['sampled_old_log_probs']
+    if not full_actor_beta_available(data.meta_info):
+        if 'old_log_probs' in data.batch.keys() or 'actor_old_log_probs' in data.batch.keys():
+            raise ValueError('Omitted full actor beta must not have a fabricated substitute')
+        if not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.:
+            raise ValueError('Omitted full beta requires reference KL loss zero')
+        # Native behavior-mu validation above proves every sampled distribution
+        # is plain temperature 1. The omitted HF path must not be a metadata producer.
+        temperature = data.meta_info.get('temperature', 1.)
+        if type(temperature) not in (int, float) or temperature != 1.:
+            raise ValueError('Actor temperature differs from actual captured behavior-mu distribution')
+        data.meta_info['temperature'] = 1.
+        data.batch['old_log_probs'] = sampled.detach().clone()
+        data.meta_info['tree_behavior_mu_corrected_profile'] = True
+        return True
+    beta = data.batch['old_log_probs']
     if not beta.is_floating_point() or beta.shape != sampled.shape or sampled.dtype != torch.float32:
         raise ValueError('Behavior-mu profile requires independent floating actor beta and FP32 sampled mu')
     data.batch['actor_old_log_probs'] = beta.detach().clone()
@@ -138,8 +153,9 @@ def validate_final_behavior_mu_batch(data, actor_config):
         return
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
     receipt = validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     if (data.meta_info.get('tree_behavior_mu_corrected_profile') is not True
-            or 'actor_old_log_probs' not in data.batch.keys()
+            or full_actor_beta_available(data.meta_info) != ('actor_old_log_probs' in data.batch.keys())
             or not torch.equal(data.batch['old_log_probs'], data.batch['sampled_old_log_probs'])):
         raise ValueError('Final balanced behavior-mu batch has no fixed mu/independent beta binding')
     return receipt
@@ -844,7 +860,8 @@ class RayPPOTrainer(object):
         from search_r1.baselines.tree_fresh200 import is_fresh200
         fresh200 = self.config.get('baselines') is not None and is_fresh200(self.config)
         from search_r1.baselines.tree_current_chain_resume import enabled as current_chain_enabled
-        current_chain_resume = fresh200 and current_chain_enabled()
+        from search_r1.baselines.recursive_b_schedule_resume import enabled as b_chain_enabled
+        current_chain_resume = fresh200 and (current_chain_enabled() or b_chain_enabled())
         if fresh200:
             from search_r1.baselines.tree_fresh200 import (validate_fresh200_config, refuse_recovery_environment,
                                                           validate_fresh_sampler)
@@ -873,7 +890,10 @@ class RayPPOTrainer(object):
             atomic_save(self.fresh_initialization_provenance,
                 os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'fresh-initialization.json'), json_format=True)
             if current_chain_resume:
-                from search_r1.baselines.tree_current_chain_resume import migrate_trainer
+                if b_chain_enabled():
+                    from search_r1.baselines.recursive_b_schedule_resume import migrate_trainer
+                else:
+                    from search_r1.baselines.tree_current_chain_resume import migrate_trainer
                 migrate_trainer(self)
         if os.environ.get('TREE_RECOVERY_MANIFEST'):
             from search_r1.baselines.training_state import recovery_manifest,restore_recovery_driver,atomic_save
@@ -993,13 +1013,20 @@ class RayPPOTrainer(object):
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         cast_rollout_structural_fields(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
-                        with torch.no_grad():
-                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
-                                from search_r1.baselines.recursive_transport import inference_call
-                                output=inference_call(self.actor_rollout_wg.compute_log_prob,final_gen_batch_output,self.actor_rollout_wg.world_size)
-                            else:
+                        if os.environ.get('RECURSIVE_B_OMIT_FULL_BETA') == '1':
+                            actor_config = self.config.actor_rollout_ref.actor
+                            from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
+                            if (not os.environ.get('RECURSIVE_B_CONTINUATION_BINDING')
+                                    or not behavior_mu_correction_enabled(actor_config.policy_safety)
+                                    or not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.
+                                    or self.config.algorithm.kl_ctrl.kl_coef != 0.):
+                                raise ValueError('No-full-beta profile exceeds authorized zero-KL behavior-mu scope')
+                            self.actor_rollout_wg.release_rollout_policy_cache()
+                            final_gen_batch_output.meta_info['tree_full_actor_beta_available'] = False
+                        else:
+                            with torch.no_grad():
                                 output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
-                            final_gen_batch_output = final_gen_batch_output.union(output)
+                                final_gen_batch_output = final_gen_batch_output.union(output)
                         prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],
@@ -1095,7 +1122,8 @@ class RayPPOTrainer(object):
                             audit_controller = getattr(self, 'baseline_controller', None)
                             if hasattr(audit_controller, 'audit_actor_batch'):
                                 audit_controller.audit_actor_batch(batch)
-                            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
+                            from search_r1.baselines.recording_schedule import record_details
+                            if os.environ.get('SEARCH_R1_TRAJECTORY_DIR') and record_details(self.global_steps):
                                 from search_r1.baselines.trajectory_log import save_rollouts
                                 save_rollouts(batch,self.tokenizer,self.global_steps,
                                               os.environ['SEARCH_R1_TRAJECTORY_DIR'])
@@ -1167,8 +1195,11 @@ class RayPPOTrainer(object):
                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
 
                     # validate
-                    if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
-                        self.global_steps % self.config.trainer.test_freq == 0:
+                    explicit_eval_steps = self.config.trainer.get('evaluation_steps', None)
+                    evaluation_due = (self.global_steps in explicit_eval_steps if explicit_eval_steps is not None
+                                      else self.config.trainer.test_freq > 0 and
+                                      self.global_steps % self.config.trainer.test_freq == 0)
+                    if self.val_reward_fn is not None and evaluation_due:
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
@@ -1181,17 +1212,21 @@ class RayPPOTrainer(object):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
-                    if self.config.trainer.save_freq > 0 and \
-                            (self.config.actor_rollout_ref.actor.get('recursive_document_objective',False) or
-                             self.global_steps % self.config.trainer.save_freq == 0 or
-                             self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
-                             self.global_steps + 1 >= self.total_training_steps):
+                    explicit_save_steps = self.config.trainer.get('checkpoint_save_steps', None)
+                    save_due = (self.global_steps in explicit_save_steps if explicit_save_steps is not None
+                                else self.config.trainer.save_freq > 0 and
+                                (self.config.actor_rollout_ref.actor.get('recursive_document_objective',False) or
+                                 self.global_steps % self.config.trainer.save_freq == 0 or
+                                 self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
+                                 self.global_steps + 1 >= self.total_training_steps))
+                    if save_due:
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
-                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
+                            if (self.config.actor_rollout_ref.actor.get('recursive_document_objective',False)
+                                    and explicit_save_steps is None):
                                 from search_r1.baselines.recursive_rolling import prune
                                 pruned=prune(self.config.trainer.default_local_dir,self.global_steps)
                                 metrics['recursive/rolling_snapshots_pruned']=len(pruned)

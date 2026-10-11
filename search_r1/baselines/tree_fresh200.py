@@ -85,7 +85,11 @@ def refuse_recovery_environment(environ=None):
     keys = [key for key in environ if key.startswith('TREE_RECOVERY_')]
     if keys:
         raise ValueError('Fresh200 forbids historical recovery environment: '+', '.join(sorted(keys)))
-    from .tree_current_chain_resume import validate_entry
+    from .recursive_b_schedule_resume import enabled as b_enabled
+    if b_enabled(environ):
+        from .recursive_b_schedule_resume import validate_entry
+    else:
+        from .tree_current_chain_resume import validate_entry
     validate_entry(environ=environ)
 
 
