@@ -35,8 +35,9 @@ sys.exit(subprocess.call(args+[cfg['user']+'@'+expected_ip,COMMAND]))
     for name, value in [('CONFIG', CONFIG), ('TARGET', target),
                         ('EXPECTED_IP', TARGETS[target]), ('COMMAND', command)]:
         source = source.replace(name, repr(value))
+    # Honor the user's working mgmt-host SSH configuration. A forced legacy
+    # SOCKS route can fail even while ordinary `ssh mgmt-host` succeeds.
     return ['ssh', '-T', '-o', 'BatchMode=yes', '-o',
-            'ProxyCommand=nc -X 5 -x 127.0.0.1:7892 %h %p', '-o',
             'ConnectTimeout=15', '-o', 'ServerAliveInterval=15', '-o',
             'ServerAliveCountMax=3', 'mgmt-host', 'python3 -c '+shlex.quote(source)]
 
