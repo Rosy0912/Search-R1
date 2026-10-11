@@ -126,13 +126,20 @@ class vLLMRollout(BaseRollout):
         )
 
         action_stop = self.config.get('tree_action_tag_stop', False)
+        assert type(action_stop) is bool, 'tree_action_tag_stop requires an explicit bool'
         # we may detokenize the result all together later
         if vllm_version in ('0.4.2', '0.5.4', '0.6.3'):
             kwargs['detokenize'] = False
 
         if action_stop:
             assert self.config.get('tree_raw_emission', False), 'Action tag stop requires native emission capture'
-            kwargs.update(stop=['</search>', '</answer>'], include_stop_str_in_output=True, detokenize=True)
+            stop_mode = self.config.get('tree_action_stop_mode', 'search_only')
+            assert stop_mode in ('search_only', 'both'), 'Unknown native action-stop mode'
+            # Existing parser searches the entire response for SEARCH before
+            # ANSWER. Stopping ANSWER early can hide a later SEARCH and changes
+            # that behavior, so the semantic-preserving default is SEARCH only.
+            stop_strings = ['</search>'] if stop_mode == 'search_only' else ['</search>', '</answer>']
+            kwargs.update(stop=stop_strings, include_stop_str_in_output=True, detokenize=True)
 
         # supporting adding any sampling params from the config file
         for k in config.keys():

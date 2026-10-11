@@ -107,7 +107,7 @@ def _emission(action, context, expected_provenance):
             type(settings['min_tokens']) is int and type(settings['max_tokens']) is int and
             settings['ignore_eos'] is False and ((settings['stop'] in (None, []) and
             settings['include_stop_str_in_output'] is False) or
-            (settings['stop']==['</search>','</answer>'] and settings['include_stop_str_in_output'] is True)) and
+            (settings['stop'] in (['</search>'],['</search>','</answer>']) and settings['include_stop_str_in_output'] is True)) and
             settings['stop_token_ids'] in (None, []) and
             settings['logprobs'] == 1 and
             type(settings['logprobs']) is int and
