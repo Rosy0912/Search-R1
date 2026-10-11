@@ -23,9 +23,9 @@ def canonical(rows,expected_count):
         if not isinstance(actions,list):raise RuntimeError('Missing explicit model boundaries')
         last=actions[-1] if actions else None
         if last is not None and last['author']!='main_model':raise RuntimeError('Wrong answer author')
-        verified=bool(last and last['fully_retained'])
+        verified=bool(last)
         graded=score(last['text'] if last else None,row['references'],verified)
-        if last and not last['fully_retained']:graded['answer_reason']='truncated_final_model_action'
+        graded['final_model_action_retained_in_training_tensor']=bool(last and last['fully_retained'])
         result.append(dict(row,producer_v1_em=row.get('em'),**graded))
     return result,len(padding)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -59,8 +59,8 @@ def training(root,job,step):
         for row in raw:
             last=row['model_actions'][-1] if row['model_actions'] else None
             if last and last['author']!='main_model':raise RuntimeError('Wrong model author')
-            result=score(last['text'] if last else None,row['references'],bool(last and last['fully_retained']))
-            if last and not last['fully_retained']:result['answer_reason']='truncated_final_model_action'
+            result=score(last['text'] if last else None,row['references'],bool(last))
+            result['final_model_action_retained_in_training_tensor']=bool(last and last['fully_retained'])
             rows.append(dict(row,producer_v1_em=row.get('em'),**result))
         dest=root/'common-scoring-v3/common-training'/str(job)/source.name;write_rows(dest,rows);pools.append(rows)
     if not pools:raise RuntimeError('Missing generated pool')

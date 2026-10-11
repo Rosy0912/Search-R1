@@ -5,6 +5,7 @@ assert score('<answer>gold</answer><answer>wrong</answer>',['gold'])['em']==0
 assert score('<search><answer>wrong</answer></search><answer>gold</answer>',['gold'])['em']==1
 assert score('<answer><answer>gold</answer></answer>',['gold'])['em']==0
 assert score('<answer>gold</answer><search>q</search>',['gold'])['em']==0
+assert score('<answer>2 > 1</answer>',['2 > 1'])['em']==1
 assert score('</reason><answer>gold</answer>',['gold'])['em']==1
 assert score('<reason>x</think><answer>gold</answer>',['gold'])['em']==0
 assert score('<search><answer>gold</answer></search>',['gold'])['em']==0
@@ -16,3 +17,9 @@ except RuntimeError:pass
 else:raise AssertionError('Malformed native padding accepted')
 assert len(canonical([r(i) for i in range(512)],512)[0])==512
 print('PASS orphan-format independent EM,model-only terminal answers,exact native final padding and512coverage')
+
+rows=[r(i) for i in range(512)];rows[0]['model_actions'][0]['fully_retained']=False
+assert canonical(rows,512)[0][0]['em']==1
+rows[0]['model_actions'][0]['text']='<answer>gold'
+assert canonical(rows,512)[0][0]['em']==0
+print('PASS full actually-generated model action scored independently of downstream tensor retention')
