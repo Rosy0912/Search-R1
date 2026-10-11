@@ -14,6 +14,15 @@ def publish_exclusive(path,value):
         json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
 
 
+def validate_native_queue(active):
+    native_jobs=[line.split('|',1) for line in active.splitlines() if line.strip()]
+    assert all(len(row)==2 and row[0].isdecimal() and row[1] for row in native_jobs)
+    assert not any(row[1].startswith('search-g1-') for row in native_jobs), 'An active Search-G1 allocation already exists; inspect its intent/receipt'
+    # Slurm may queue behind unrelated allocations. It remains responsible for
+    # exclusive resources; this does not cancel or oversubscribe another job.
+    return native_jobs
+
+
 def submit(base,commit,expected_files,restore_receipt=None,execution_profile=None):
     base=Path(base).resolve();assert str(base).startswith('/mnt/data/shaoshitong/')
     intent=base/'preparation/native-submit-intent.json';receipt=base/'preparation/native-submit-receipt.json'
@@ -25,7 +34,7 @@ def submit(base,commit,expected_files,restore_receipt=None,execution_profile=Non
     assert not (base/'logs/run-manifest.json').exists()
     # Verify a fresh target and no duplicate native allocation before publishing intent.
     active=subprocess.check_output(['squeue','-h','-w','h100-8','-t','RUNNING,PENDING,COMPLETING','-o','%i|%j'],text=True)
-    assert not active.strip(), 'Inspect existing node allocation before submitting'
+    native_jobs=validate_native_queue(active)
     assets=Path('/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/wiki')
     assert (assets/'e5_Flat.index').is_file() and (assets/'wiki-18.jsonl').is_file()
     launcher=base/'preparation/launch-mixed-native.sh'
@@ -49,7 +58,7 @@ def submit(base,commit,expected_files,restore_receipt=None,execution_profile=Non
         '--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),
         '--export=NONE',str(launcher)]
     publish_exclusive(intent,dict(created_unix=time.time(),base=str(base),source_commit=commit,
-        verified_files=len(expected_files),command=command,shared_gpu_policy='preserve_bound_existing_processes'))
+        verified_files=len(expected_files),observed_unrelated_native_jobs=native_jobs,command=command,shared_gpu_policy='preserve_bound_existing_processes'))
     r=subprocess.run(command,capture_output=True,text=True,timeout=30)
     result=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,checked_unix=time.time(),source_commit=commit)
     if r.returncode==0:
