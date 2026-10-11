@@ -1,7 +1,14 @@
 {
   "classification": "PROGRESS",
   "job": 3360,
-  "observed_epoch": 1791713926.4869182,
-  "receipt": "OUTER73_STARTED-3360.json",
-  "evidence": "Full72 timer/native save;576 direct ranks; next start observed=True"
+  "first_observed_epoch": 1791714552.977195,
+  "second_observed_epoch": 1791714618.4697826,
+  "queue": {
+    "returncode": 0,
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|15:57:44|h100-10\n",
+    "stderr": ""
+  },
+  "completed_outer": 73,
+  "stage_log_changed": true,
+  "evidence": "Actual outer73 credited with584 directrank records, rolling73 SAVED and full timer logged; next outer74 start read directly."
 }
