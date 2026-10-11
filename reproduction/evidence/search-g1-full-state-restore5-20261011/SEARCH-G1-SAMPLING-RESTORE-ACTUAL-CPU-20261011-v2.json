@@ -1,0 +1,21 @@
+{
+  "actual_source_CP5_generation_load_PASS": true,
+  "run_id": "15bb15365346401da1d919e9cde8f813",
+  "source_checkpoint": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/checkpoints/search-g1-common8/actor/global_step_5",
+  "generation_config_sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+  "actual_loaded_fields": {
+    "do_sample": true,
+    "temperature": 0.7,
+    "top_k": 20,
+    "top_p": 0.8,
+    "repetition_penalty": 1.05,
+    "pad_token_id": 151643,
+    "bos_token_id": 151643,
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "transformers_version": "4.46.3"
+  },
+  "gpu_reload_performed": false
+}
