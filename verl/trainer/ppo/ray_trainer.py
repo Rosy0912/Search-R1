@@ -787,6 +787,17 @@ class RayPPOTrainer(object):
         self.actor_rollout_wg = all_wg['actor_rollout']
         self.actor_rollout_wg.init_model()
 
+    def _evaluate_with_checkpoint_protection(self, save_due):
+        """Keypoint state exists before any evaluator can fail; never overwrite it."""
+        if save_due:
+            self._save_checkpoint()
+        metrics=self._validate()
+        if save_due and self.config.trainer.get('training_state_enabled',False):
+            # Evaluation can advance driver/worker RNG. Keep its actual state in
+            # a separate immutable snapshot instead of calling it pre-eval state.
+            self._save_complete_training_state(boundary_phase='post-evaluation')
+        return metrics
+
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
                                         f'global_step_{self.global_steps}')
@@ -805,7 +816,7 @@ class RayPPOTrainer(object):
         if self.config.trainer.get('training_state_enabled', False):
             self._save_complete_training_state()
 
-    def _save_complete_training_state(self):
+    def _save_complete_training_state(self, boundary_phase=None):
         from search_r1.baselines.training_state import atomic_save, driver_snapshot, restore_driver, digest
         identity = dict(job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
@@ -818,7 +829,10 @@ class RayPPOTrainer(object):
         if continue_enabled(self.config.actor_rollout_ref.actor):
             identity['guard_continue_accounting'] = accounting(self)
         directory = os.path.join(self.config.trainer.default_local_dir, 'training_state', f'global_step_{self.global_steps}')
-        verify = self.global_steps == self.config.trainer.acceptance_step
+        if boundary_phase is not None:
+            if boundary_phase != 'post-evaluation':raise ValueError('Unknown checkpoint boundary phase')
+            directory=os.path.join(directory,boundary_phase)
+        verify = boundary_phase is None and self.global_steps == self.config.trainer.acceptance_step
         workers = self.actor_rollout_wg.save_training_state(directory, identity, verify=verify)
         if len(workers) != self.actor_rollout_wg.world_size or {r['identity']['rank'] for r in workers} != set(range(len(workers))):
             raise ValueError('Incomplete worker snapshot coverage')
@@ -840,6 +854,9 @@ class RayPPOTrainer(object):
                                     next_step=self.global_steps+1, exact_reload_verified=verify),
                         hf_checkpoint=hf_path, hf_identity=hf_identity,
                         limits='Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence')
+        if boundary_phase is not None:
+            manifest['boundary_phase']=boundary_phase
+            manifest['limits']+='; captures actual completed scheduled evaluation RNG, not a pre-evaluation state'
         manifest_path = os.path.join(directory, 'manifest.json')
         manifest_sha = atomic_save(manifest, manifest_path, json_format=True)
         if verify:
@@ -1219,14 +1236,23 @@ class RayPPOTrainer(object):
                         if os.environ.get('TREE_RECOVERY_MANIFEST') and metrics['actor/optimizer_steps']!=10:
                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
 
+                    recursive_rolling = (self.config.get('baselines') is not None and
+                        self.config.baselines.tree.get('branch_sampling') == 'recursive_uniform_v1')
+                    explicit_save_steps = self.config.trainer.get('checkpoint_save_steps', None)
+                    save_due = (self.global_steps in explicit_save_steps if explicit_save_steps is not None
+                                else self.config.trainer.save_freq > 0 and
+                            (recursive_rolling or self.global_steps % self.config.trainer.save_freq == 0 or
+                             self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
+                             self.global_steps + 1 >= self.total_training_steps))
                     # validate
                     explicit_eval_steps = self.config.trainer.get('evaluation_steps', None)
                     evaluation_due = (self.global_steps in explicit_eval_steps if explicit_eval_steps is not None
                                       else self.config.trainer.test_freq > 0 and
                                       self.global_steps % self.config.trainer.test_freq == 0)
+                    protected_eval_checkpoint=(self.val_reward_fn is not None and evaluation_due and save_due)
                     if self.val_reward_fn is not None and evaluation_due:
                         with _timer('testing', timing_raw):
-                            val_metrics: dict = self._validate()
+                            val_metrics: dict = self._evaluate_with_checkpoint_protection(save_due)
                         metrics.update(val_metrics)
                         if os.environ.get('TREE_RECOVERY_MANIFEST'):
                             if val_metrics.get('val/f1/all',0)<self.config.trainer.recovery_min_f1:
@@ -1237,20 +1263,13 @@ class RayPPOTrainer(object):
                         with _timer('stage_testing', timing_raw):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
-                    recursive_rolling = (self.config.get('baselines') is not None and
-                        self.config.baselines.tree.get('branch_sampling') == 'recursive_uniform_v1')
-                    explicit_save_steps = self.config.trainer.get('checkpoint_save_steps', None)
-                    save_due = (self.global_steps in explicit_save_steps if explicit_save_steps is not None
-                                else self.config.trainer.save_freq > 0 and
-                            (recursive_rolling or self.global_steps % self.config.trainer.save_freq == 0 or
-                             self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
-                             self.global_steps + 1 >= self.total_training_steps))
                     if save_due:
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
-                            self._save_checkpoint()
+                            if not protected_eval_checkpoint:
+                                self._save_checkpoint()
                             if recursive_rolling and explicit_save_steps is None:
                                 from search_r1.baselines.recursive_rolling import prune
                                 prune(self.config.trainer.default_local_dir, self.global_steps,
