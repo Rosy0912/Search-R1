@@ -294,6 +294,8 @@ class Controller:
             engine.audit.report['algorithm_source_commit'] = getattr(self.config, 'algorithm_source_commit', None)
             engine.audit.report['base_commit'] = getattr(self.config, 'base_commit', None)
             engine.audit.report['attempt_id'] = getattr(self.trainer, 'training_attempts', None)
+        engine.question_uids=qa_batch.non_tensor_batch['index'].tolist()
+        engine.rollout_outer=self.trainer.global_steps
         output, sources = engine.run(gen_batch, tree)
         if engine.audit is not None:
             self.latest_tree_audit = engine.audit

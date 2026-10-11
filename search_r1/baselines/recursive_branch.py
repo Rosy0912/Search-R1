@@ -4,7 +4,7 @@ Executor callbacks must provide real pre-action snapshots and persist events.
 This module neither rebuilds text nor reinitializes interaction budgets.
 """
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -18,6 +18,7 @@ class Record:
     snapshots: list
     steps: list
     source: str
+    cost: dict = field(default_factory=dict)
 
 
 def common_prefix(a, b):
@@ -168,7 +169,7 @@ class Planner:
         (self.accepted if different else self.pool).append(child)
         self.emit('branch_end',attempt=attempt,status='complete',id=child.trajectory_id,
                   parent_reward=parent.reward,reward=child.reward,generation=child.generation,
-                  source=child.source)
+                  source=child.source,cost=child.cost)
         if different or not self.backoff:
             self.end_search('contrast_accept' if different else 'boundary_reached')
         if different:

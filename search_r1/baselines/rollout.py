@@ -514,6 +514,7 @@ class SearchRollout:
         """Execute one pending branch per question in each shared GPU batch."""
         import dataclasses
         import json
+        import time
         from pathlib import Path
         from .recursive_branch import Record, Planner
         from .tree_audit import state_signature, fingerprint
@@ -522,6 +523,8 @@ class SearchRollout:
         directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
         directory.mkdir(parents=True)
         scores = self.reward_callback(roots)
+        if len(scores)!=len(roots) or any(float(r) not in (0.,1.) for r in scores):
+            raise ValueError('Recursive search requires actual binary strict EM')
         def steps(state):
             return [(tuple(x['action']['action_token_ids']),tuple(x['observation_token_ids']))
                     for x in state.raw_ledger]
@@ -531,8 +534,11 @@ class SearchRollout:
         planners=[]
         for index,(root,nodes,score) in enumerate(zip(roots,snapshots,scores)):
             question_dir=directory/str(index);question_dir.mkdir()
+            root_path=question_dir/(root.trajectory+'.json')
+            with root_path.open('x') as f:
+                json.dump(dict(state=dataclasses.asdict(root),source='initial'),f,allow_nan=False);f.flush();os.fsync(f.fileno())
             holder={};sequence=[0]
-            def emit(event,_dir=question_dir,_holder=holder,_seq=sequence,**fields):
+            def emit(event,_dir=question_dir,_holder=holder,_seq=sequence,_index=index,**fields):
                 _seq[0]+=1
                 if event=='branch_start':
                     parent=_holder['planner'].parent
@@ -542,6 +548,10 @@ class SearchRollout:
                     with snapshot_path.open('x') as f:
                         f.write(payload);f.flush();os.fsync(f.fileno())
                     fields.update(snapshot=str(snapshot_path),snapshot_sha256=hashlib.sha256(payload.encode()).hexdigest())
+                fields.update(question_id=str(self.question_uids[_index]),outer=self.rollout_outer,
+                    run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                    source_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                    config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'))
                 with (_dir/'events.jsonl').open('a') as f:
                     f.write(json.dumps(dict(event=event,event_seq=_seq[0],**fields),allow_nan=False)+'\n')
                     f.flush();os.fsync(f.fileno())
@@ -560,6 +570,7 @@ class SearchRollout:
                 if state_signature(snapshot)!=state_signature(child):
                     raise ValueError('Branch changed executor state or inherited probabilities')
                 children.append(child)
+            started=time.time()
             try:
                 suffixes=self.complete(children,meta)
                 rewards=self.reward_callback(children)
@@ -578,6 +589,12 @@ class SearchRollout:
                     fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
                     raise ValueError('Continuation changed inherited prefix')
                 result=record(child,parent.snapshots[:index]+suffix,parent,reward)
+                result.cost=dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
+                    retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
+                    batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
+                trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
+                with trajectory_path.open('x') as f:
+                    json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
                 planner.accept_result(result)
         selected=[]
         self.recursive_summaries=[]
