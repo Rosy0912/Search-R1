@@ -37,7 +37,8 @@ PARENT_MIGRATION_SHA256 = '6384b8350550ef767c8d1e0b5c27705842913517c642d8556d59b
 
 def enabled(environ=None):
     environ = os.environ if environ is None else environ
-    return any(key.startswith(ENV_PREFIX) for key in environ)
+    from .recursive_a_schedule_resume import enabled as recursive_enabled
+    return recursive_enabled(environ) or any(key.startswith(ENV_PREFIX) for key in environ)
 
 
 def require(condition, message):
@@ -47,6 +48,8 @@ def require(condition, message):
 
 def validate_entry(config=None, environ=None):
     environ = os.environ if environ is None else environ
+    from .recursive_a_schedule_resume import enabled as recursive_enabled, validate_entry as recursive_validate
+    if recursive_enabled(environ): return recursive_validate(config,environ)
     if not enabled(environ):
         return False
     require(not any(key.startswith('TREE_RECOVERY_') for key in environ),
@@ -143,6 +146,8 @@ def model_section(state):
 
 
 def load_worker(worker):
+    from .recursive_a_schedule_resume import enabled as recursive_enabled, load_worker as recursive_load
+    if recursive_enabled(): return recursive_load(worker)
     require(worker._is_actor and worker.config.actor.get('training_state_enabled', False),
             'native actor state is disabled')
     require(worker.world_size == 8 and not worker.actor_optimizer.state
@@ -197,6 +202,8 @@ def load_worker(worker):
 
 
 def migrate_trainer(trainer):
+    from .recursive_a_schedule_resume import enabled as recursive_enabled, migrate_trainer as recursive_migrate
+    if recursive_enabled(): return recursive_migrate(trainer)
     require(validate_entry(trainer.config), 'explicit current-chain entry is absent')
     require(len(trainer.train_dataset) == 169028 and len(trainer.val_dataset) == 512,
             'fixed training/dev split sizes differ')
