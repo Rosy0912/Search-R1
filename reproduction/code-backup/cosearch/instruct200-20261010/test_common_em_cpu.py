@@ -2,6 +2,9 @@ import asyncio,sys,tempfile
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).parent))
 from common_em import *
+class ArrayAliases:
+ def tolist(self):return ['U2','other']
+assert score('<answer>U2</answer>',{'target':ArrayAliases()})['em']==1
 assert score('<answer>The U2!</answer>',{'target':['u2','other']})['em']==1
 for text in ['<search><answer>U2</answer></search>','<answer><answer>U2</answer></answer>','<answer>U2</answer> more','<answer>U2','<answer>U2</answer><answer>U2</answer>','<reason><answer>U2</answer>']:
  assert score(text,['U2'])['em']==0,text

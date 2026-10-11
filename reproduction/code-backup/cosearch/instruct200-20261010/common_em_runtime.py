@@ -1,7 +1,7 @@
 """Boundary evidence and metrics only; never alter rewards, filtering or PPO tensors."""
 import functools,hashlib,json,os,time
 from pathlib import Path
-from common_em import score,identity,summarize,VERSION
+from common_em import score,identity,summarize,aliases,VERSION
 
 def install_loop(cls):
     if getattr(cls,'_common_em_installed',False):return
@@ -25,7 +25,7 @@ def install_loop(cls):
         from question_metadata import with_question
         fixed=with_question(kwargs)
         output.extra_fields['common_response_mask']=list(output.response_mask)
-        output.extra_fields.update(common_question=fixed['extra_info']['question'],common_references=fixed['reward_model']['ground_truth'],common_data_source=str(fixed.get('data_source','unknown')),common_boundary_version=VERSION)
+        output.extra_fields.update(common_question=fixed['extra_info']['question'],common_references=aliases(fixed['reward_model']['ground_truth']),common_data_source=str(fixed.get('data_source','unknown')),common_boundary_version=VERSION)
         return result
     cls.run=run;cls._common_em_installed=True
 

@@ -9,6 +9,7 @@ def normalize(text):
 def aliases(value):
     if isinstance(value,dict):return aliases(value['target'])
     if isinstance(value,str):return [value]
+    if hasattr(value,'tolist'):return aliases(value.tolist())
     if isinstance(value,(list,tuple)):return [str(x) for x in value]
     raise ValueError('Missing reference aliases')
 def extract(action):
