@@ -1,5 +1,14 @@
 """User-authorized stop of exact original B subtree, retaining complete3 and partial4."""
-import hashlib,json,os,pathlib,signal,time
+import hashlib,json,os,pathlib,signal,time,ctypes,platform
+assert platform.machine()=='x86_64'
+libc=ctypes.CDLL(None,use_errno=True)
+def pidfd_open(pid):
+ fd=libc.syscall(434,ctypes.c_int(pid),ctypes.c_uint(0))
+ if fd<0:raise OSError(ctypes.get_errno(),'pidfd_open')
+ return fd
+def pidfd_send(fd,sig):
+ result=libc.syscall(424,ctypes.c_int(fd),ctypes.c_int(sig),ctypes.c_void_p(),ctypes.c_uint(0))
+ if result<0:raise OSError(ctypes.get_errno(),'pidfd_send_signal')
 ROOT=pathlib.Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011')
 EXPECTED={401223:651299641,401228:651299742,411651:651318130,412273:651321123,412683:651321851,412684:651321852,412685:651321852}
 def read(pid):
@@ -16,7 +25,7 @@ assert all(w['actual_total_optimizer_calls']==60 and w['observed_adam_steps']==[
 assert not (ROOT/'checkpoints/training_state/global_step_4/manifest.json').exists()
 assert not any((ROOT/'output/rank-audit/policy-safety').glob('step-000004-*'))
 # Freeze the actual driver before verifying that no fourth update was issued.
-fd=os.pidfd_open(411651);signal.pidfd_send_signal(fd,signal.SIGSTOP);os.close(fd)
+fd=pidfd_open(411651);pidfd_send(fd,signal.SIGSTOP);os.close(fd)
 time.sleep(.3)
 try:
  assert exact(411651,651318130)['state'] in ('T','t')
@@ -43,13 +52,13 @@ try:
  with target.open('x') as f:json.dump(receipt,f,sort_keys=True);f.flush();os.fsync(f.fileno())
  for pid in [401228]+[p for p in sorted(owned,reverse=True) if p not in (401223,401228)]+[401223]:
   try:
-   exact(pid,allproc[pid]['tick']);fd=os.pidfd_open(pid);signal.pidfd_send_signal(fd,signal.SIGTERM)
-   if pid==411651:signal.pidfd_send_signal(fd,signal.SIGCONT)
+   exact(pid,allproc[pid]['tick']);fd=pidfd_open(pid);pidfd_send(fd,signal.SIGTERM)
+   if pid==411651:pidfd_send(fd,signal.SIGCONT)
    os.close(fd)
   except (FileNotFoundError,ProcessLookupError):pass
 except BaseException:
  try:
-  exact(411651,651318130);fd=os.pidfd_open(411651);signal.pidfd_send_signal(fd,signal.SIGCONT);os.close(fd)
+  exact(411651,651318130);fd=pidfd_open(411651);pidfd_send(fd,signal.SIGCONT);os.close(fd)
  except (FileNotFoundError,ProcessLookupError):pass
  raise
 print(json.dumps(dict(status='EXACT_OWNED_SUBTREE_SIGTERM_SENT',owned_count=len(records),checkpoint=3,request_path=str(target))))

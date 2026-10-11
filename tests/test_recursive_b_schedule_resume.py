@@ -27,6 +27,16 @@ class ResumeTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as tmp,patch.object(resume,'PARENT_COMPLETED_STEP',4,create=True),patch.object(resume,'PARENT_OPTIMIZER_CALLS',80,create=True):
    w,b,value=self.stream(tmp);before=torch.get_rng_state().clone();receipt=resume.restore_sampling_stream(w,b)
    self.assertTrue(torch.equal(before,torch.get_rng_state()));self.assertTrue(torch.equal(value,w.rollout_sharding_manager.gen_random_states));self.assertTrue(receipt['actual_separate_sampling_cuda_stream_restored']);self.assertFalse(receipt['executor_bitwise_equivalence'])
+ def test_missing_parent3_stream_explicit_and_no_partial_attachment(self):
+  worker=SimpleNamespace(rank=0)
+  binding=dict(parent_completed_step=3,sampling_streams=[],sampling_stream_status='PARENT_STREAM_NOT_RECORDED_COLD_EXECUTOR_REINITIALIZED')
+  result=resume.restore_sampling_stream(worker,binding)
+  self.assertFalse(result['actual_separate_sampling_cuda_stream_restored'])
+  self.assertFalse(result['executor_bitwise_equivalence'])
+  binding['sampling_streams']=[dict(rank=0)]
+  with self.assertRaises(ValueError):resume.restore_sampling_stream(worker,binding)
+  binding['sampling_streams']=[];binding['parent_completed_step']=4
+  with self.assertRaises(ValueError):resume.restore_sampling_stream(worker,binding)
  def test_stream_bytes_and_rank_mismatch_rejected(self):
   with tempfile.TemporaryDirectory() as tmp,patch.object(resume,'PARENT_COMPLETED_STEP',4,create=True),patch.object(resume,'PARENT_OPTIMIZER_CALLS',80,create=True):
    w,b,value=self.stream(tmp);b['sampling_streams'][0]['file_sha256']='0'*64

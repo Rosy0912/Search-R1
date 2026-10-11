@@ -17,7 +17,7 @@ def binding(environ=None):
  raw=Path(e['RECURSIVE_B_CONTINUATION_BINDING']).read_bytes()
  require(hashlib.sha256(raw).hexdigest()==e['RECURSIVE_B_CONTINUATION_SHA256'],'binding bytes changed')
  b=json.loads(raw)
- require(b['protocol']==PROTOCOL and b['parent_completed_step'] in (4,5),'only completed4/5 boundary')
+ require(b['protocol']==PROTOCOL and b['parent_completed_step'] in (3,4,5),'only explicit completed3/4/5 boundary')
  require((b['parent_commit'],b['parent_config_sha256'])==('3da904591125f117b1eae1ba09546ebe793cb2d4','95d9f8f2195a35f189ff06af8e449d419040ae96c4cde4fc50f9d7062db414f7'),'wrong parent chain')
  require(b['parent_run_id']=='ef09290e69454f20b6a9594ad8e485b6','wrong parent run')
  root=Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011')
@@ -164,6 +164,12 @@ def migrate_trainer(trainer):
 def restore_sampling_stream(worker, b):
     import torch
     records = b['sampling_streams']
+    if b.get('sampling_stream_status')=='PARENT_STREAM_NOT_RECORDED_COLD_EXECUTOR_REINITIALIZED':
+        require(b['parent_completed_step']==3 and not records, 'missing sampling stream exception only at parent3')
+        return dict(rank=worker.rank,actual_separate_sampling_cuda_stream_restored=False,
+            parent_completed_step=3,executor_bitwise_equivalence=False,
+            status='PARENT_STREAM_NOT_RECORDED_COLD_EXECUTOR_REINITIALIZED',
+            scope='Native training RNG restored; sampler stream uses cold engine initialization. Partial outer4 stream is not attached to parent3.')
     require(len(records)==4 and {r['rank'] for r in records}==set(range(4)), 'sampling stream rank coverage')
     r = next(r for r in records if r['rank']==worker.rank)
     p = Path(r['path'])
