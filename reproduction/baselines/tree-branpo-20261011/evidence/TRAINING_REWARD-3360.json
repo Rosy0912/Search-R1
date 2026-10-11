@@ -1,5 +1,5 @@
 {
-  "observed_epoch": 1791746089.5452435,
+  "observed_epoch": 1791746345.7384634,
   "job": 3360,
   "rows": [
     {
@@ -1167,13 +1167,24 @@
         "critic/rewards/max": 1.0,
         "critic/rewards/min": 0.0
       }
+    },
+    {
+      "outer": 107,
+      "metrics": {
+        "critic/score/mean": 0.44843751192092896,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.44843751192092896,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
     }
   ],
   "scope": "Leaf training reward separate from dev EM/F1",
-  "save106_lines": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_106/manifest.json"
+  "save107_lines": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_107/manifest.json"
   ],
-  "next107_lines": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 107"
+  "next108_lines": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 108"
   ]
 }

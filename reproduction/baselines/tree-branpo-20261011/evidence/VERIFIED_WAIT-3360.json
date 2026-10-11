@@ -1,35 +1,13 @@
 {
   "job": 3360,
   "classification": "progress",
-  "ordinary_ssh_mgmt_host_success": true,
-  "corrected_monitor_forced_legacy_proxy": true,
-  "completed_outer": 106,
-  "direct_rank_records": 848,
-  "adam_per_rank": 2120,
+  "first_epoch": 1791746253.1641216,
+  "second_epoch": 1791746324.5678365,
+  "completed_outer": 107,
+  "direct_rank_records": 856,
+  "adam_per_rank": 2140,
   "skips_per_rank": 0,
-  "rolling106_saved": true,
-  "outer107_started": true,
-  "gpu_util": [
-    62,
-    61,
-    62,
-    54,
-    62,
-    58,
-    62,
-    62
-  ],
-  "source_unchanged": true,
-  "cpu_first": {
-    "epoch": 1791746083.225156,
-    "returncode": 0,
-    "stdout": "    PID STAT     TIME %CPU     ELAPSED WCHAN\n4011013 SNl  18:27:26 74.8  1-00:39:26 futex_wait_queue_me\n",
-    "stderr": ""
-  },
-  "cpu_second": {
-    "epoch": 1791746154.674934,
-    "returncode": 0,
-    "stdout": "    PID STAT     TIME %CPU     ELAPSED WCHAN\n4011013 SNl  18:27:26 74.7  1-00:40:37 futex_wait_queue_me\n",
-    "stderr": ""
-  }
+  "rolling107_saved": true,
+  "outer108_started": true,
+  "source_unchanged": true
 }
