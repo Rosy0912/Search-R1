@@ -1,16 +1,16 @@
 {
   "classification": "PROGRESS",
   "job_id": 3360,
-  "first_observed_epoch": 1791704733.313142,
-  "second_observed_epoch": 1791704792.409644,
-  "completed_outer": 61,
-  "next_outer_started": 62,
-  "rolling61_save_receipt": [
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_61/manifest.json"
+  "first_observed_epoch": 1791705381.516756,
+  "second_observed_epoch": 1791705501.1894028,
+  "completed_outer": 62,
+  "next_outer_started": 63,
+  "rolling62_save_receipt": [
+    "\u001b[36m(measured_task pid=4011013)\u001b[0m TREE_ROLLING_NATIVE_STATE_SAVED=/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/checkpoints/training_state/rolling-completed/global_step_62/manifest.json"
   ],
   "queue": {
     "returncode": 0,
-    "stdout": "3360|tree-branpo-fresh200|RUNNING|13:13:58|h100-10\n",
+    "stdout": "3360|tree-branpo-fresh200|RUNNING|13:25:47|h100-10\n",
     "stderr": ""
   },
   "accounting_errors": []
