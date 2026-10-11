@@ -35,6 +35,11 @@ def attach_policy_weights(data, method):
                 weights[i, selected] = 1. / (len(actions) * selected.sum())
     elif method in ('tree_grpo', 'cosearch'):
         weights = mask / mask.sum(-1, keepdim=True).clamp_min(1)
+        if method=='tree_grpo':
+            groups=defaultdict(list)
+            for i,uid in enumerate(data.non_tensor_batch['uid']):groups[uid].append(i)
+            for rows in groups.values():
+                weights[rows] *= len(data)/(max(1,len(groups))*len(rows))
     else:
         raise ValueError(f'No paper policy measure for {method}')
     data.batch['policy_weights'] = weights

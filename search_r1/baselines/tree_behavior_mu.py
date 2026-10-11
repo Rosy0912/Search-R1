@@ -231,6 +231,8 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
     validation_context = {}
     seen, total = {}, 0
     for row in range(rows):
+        from .recursive_transport import is_zero_policy_slot
+        transport_slot=is_zero_policy_slot(data,row)
         projection = data.non_tensor_batch[RAW_FIELD][row]
         binding = data.non_tensor_batch[FIELD][row]
         bound = {key: value for key, value in binding.items() if key != 'binding_sha256'}
@@ -273,7 +275,7 @@ def validate_behavior_mu_batch(data, *, expected_provenance, required=True):
         if 'loss_mask' in data.batch:
             loss_mask = data.batch['loss_mask']
             require(loss_mask.shape == (rows, width) and
-                    cpu_rows['loss_mask'][row] == info[len(prompt):],
+                    cpu_rows['loss_mask'][row] == ([0]*width if transport_slot else info[len(prompt):]),
                     'Added loss mask differs from original sampled actor-token mask')
         want_mu = values + [0.] * (width-n)
         actual_bits = [scalar32(x) for x in actual_mu]

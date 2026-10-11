@@ -995,7 +995,11 @@ class RayPPOTrainer(object):
                         cast_rollout_structural_fields(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
                         with torch.no_grad():
-                            output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
+                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
+                                from search_r1.baselines.recursive_transport import inference_call
+                                output=inference_call(self.actor_rollout_wg.compute_log_prob,final_gen_batch_output,self.actor_rollout_wg.world_size)
+                            else:
+                                output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
                             final_gen_batch_output = final_gen_batch_output.union(output)
                         prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
@@ -1013,7 +1017,8 @@ class RayPPOTrainer(object):
                     # balance the number of valid tokens on each dp rank.
                     # Note that this breaks the order of data inside the batch.
                     # Please take care when you implement group based adv computation such as GRPO and rloo
-                    self._balance_batch(batch, metrics=metrics)
+                    if len(batch)%self.actor_rollout_wg.world_size==0:
+                        self._balance_batch(batch, metrics=metrics)
                     validate_final_behavior_mu_batch(batch, self.config.actor_rollout_ref.actor)
 
                     # compute global_valid tokens
@@ -1025,7 +1030,11 @@ class RayPPOTrainer(object):
                     if self.use_reference_policy:
                         # compute reference log_prob
                         with _timer('ref', timing_raw):
-                            ref_log_prob = self.ref_policy_wg.compute_ref_log_prob(batch)
+                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
+                                from search_r1.baselines.recursive_transport import inference_call
+                                ref_log_prob=inference_call(self.ref_policy_wg.compute_ref_log_prob,batch,self.ref_policy_wg.world_size)
+                            else:
+                                ref_log_prob = self.ref_policy_wg.compute_ref_log_prob(batch)
                             batch = batch.union(ref_log_prob)
 
                     # compute values
@@ -1106,13 +1115,21 @@ class RayPPOTrainer(object):
                             if fresh200:
                                 from search_r1.baselines.tree_partial_state import partial_context
                                 batch.meta_info['tree_partial_context'] = partial_context(self)
+                            actor_batch=batch
+                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
+                                from search_r1.baselines.recursive_transport import actor_slots
+                                actor_batch=actor_slots(batch)
+                                if actor_batch is not batch:
+                                    self._balance_batch(actor_batch,metrics,logging_prefix='transport_seqlen')
+                                metrics.update({'recursive/real_training_rows':len(batch),
+                                    'recursive/transport_slots':len(actor_batch)-len(batch)})
                             try:
-                                actor_output = self.actor_rollout_wg.update_actor(batch)
+                                actor_output = self.actor_rollout_wg.update_actor(actor_batch)
                             except Exception as actor_error:
                                 if fresh200:
                                     from search_r1.baselines.tree_partial_state import preserve_unmatched_actor_failure
                                     try:
-                                        evidence = preserve_unmatched_actor_failure(self, batch, actor_error)
+                                        evidence = preserve_unmatched_actor_failure(self, actor_batch, actor_error)
                                         print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE=' + evidence, flush=True)
                                     except Exception as evidence_error:
                                         print('TREE_UNMATCHED_ACTOR_FAILURE_EVIDENCE_FAILED=' +
@@ -1120,7 +1137,7 @@ class RayPPOTrainer(object):
                                 raise
                             if fresh200:
                                 from search_r1.baselines.tree_partial_state import stop_on_partial_actor_result
-                                if stop_on_partial_actor_result(self, batch, actor_output):
+                                if stop_on_partial_actor_result(self, actor_batch, actor_output):
                                     metrics.update({'training/attempt_id': self.training_attempts,
                                         'training/refused_attempts': self.refused_attempts,
                                         'training/actual_outer_updates': self.actual_outer_updates})

@@ -374,6 +374,10 @@ class SearchRollout:
         if tree is not None:
             from .tree_fresh200 import leaf_quotas, tree_option
             quotas = leaf_quotas(tree)
+            if tree_option(tree, 'branch_sampling') in ('recursive_uniform_v1', 'recursive_inverse_generation_v1'):
+                states = self._recursive_branches(states, snapshots, tree, gen_batch.meta_info)
+                self.last_states = states
+                return self.compose(states)
             if tree_option(tree, 'branch_sampling') == 'branpo_tail_v1':
                 states = self._tail_branches(states, snapshots, quotas, tree, gen_batch.meta_info)
                 self.last_states = states
@@ -505,3 +509,108 @@ class SearchRollout:
                 continuation=0, sampled_reward=float(base_rewards[index]), stop_reason='original_root')
         self.tree_candidate_counts = [len(nodes) for nodes in snapshots]
         return [leaf for rows in leaves for leaf in rows]
+
+    def _recursive_branches(self, roots, snapshots, tree, meta):
+        """Execute one pending branch per question in each shared GPU batch."""
+        import dataclasses
+        import json
+        import time
+        from pathlib import Path
+        from .recursive_branch import Record, Planner
+        from .tree_audit import state_signature, fingerprint
+        if tree.roots != 1 or self.reward_callback is None:
+            raise ValueError('Recursive search requires one root and strict reward callback')
+        directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']) / 'recursive-events' / uuid.uuid4().hex
+        directory.mkdir(parents=True)
+        scores = self.reward_callback(roots)
+        if len(scores)!=len(roots) or any(float(r) not in (0.,1.) for r in scores):
+            raise ValueError('Recursive search requires actual binary strict EM')
+        def steps(state):
+            return [(tuple(x['action']['action_token_ids']),tuple(x['observation_token_ids']))
+                    for x in state.raw_ledger]
+        def record(state,nodes,parent=None,reward=0):
+            return Record(state.trajectory,parent.trajectory_id if parent else None,state.tree,
+                          parent.generation+1 if parent else 0,int(reward),state,nodes,steps(state),'initial',
+                          dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in state.raw_ledger) if parent is None else 0,
+                               retrieval_calls=int(state.valid_searches) if parent is None else 0,
+                               model_calls=len(nodes) if parent is None else 0))
+        planners=[]
+        for index,(root,nodes,score) in enumerate(zip(roots,snapshots,scores)):
+            question_dir=directory/str(index);question_dir.mkdir()
+            root_path=question_dir/(root.trajectory+'.json')
+            with root_path.open('x') as f:
+                json.dump(dict(state=dataclasses.asdict(root),source='initial'),f,allow_nan=False);f.flush();os.fsync(f.fileno())
+            holder={};sequence=[0]
+            def emit(event,_dir=question_dir,_holder=holder,_seq=sequence,_index=index,**fields):
+                _seq[0]+=1
+                if event=='branch_start':
+                    parent=_holder['planner'].parent
+                    snapshot=parent.snapshots[fields['action_index']]
+                    snapshot_path=_dir/('snapshot-%d.json'%fields['attempt'])
+                    payload=json.dumps(dataclasses.asdict(snapshot),allow_nan=False)
+                    with snapshot_path.open('x') as f:
+                        f.write(payload);f.flush();os.fsync(f.fileno())
+                    fields.update(snapshot=str(snapshot_path),snapshot_sha256=hashlib.sha256(payload.encode()).hexdigest())
+                fields.update(question_id=str(self.question_uids[_index]),outer=self.rollout_outer,
+                    split='train', seed=42, variant=tree.branch_sampling,
+                    run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                    source_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
+                    config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'))
+                with (_dir/'events.jsonl').open('a') as f:
+                    f.write(json.dumps(dict(event=event,event_seq=_seq[0],**fields),allow_nan=False)+'\n')
+                    f.flush();os.fsync(f.fileno())
+            planner=Planner(record(root,nodes,reward=score),self.rng,emit,
+                            target=tree.leaves,budget=tree.continuation_budget_per_question,
+                            variant='inverse_generation' if tree.branch_sampling=='recursive_inverse_generation_v1' else 'uniform')
+            holder['planner']=planner;planners.append(planner)
+        while True:
+            requests=[]
+            for planner in planners:
+                request=planner.next_request()
+                if request is not None:requests.append((planner,request))
+            if not requests:break
+            children=[]
+            for planner,(parent,index,attempt) in requests:
+                snapshot=parent.snapshots[index];child=snapshot.branch()
+                if state_signature(snapshot)!=state_signature(child):
+                    raise ValueError('Branch changed executor state or inherited probabilities')
+                children.append(child)
+            started=time.time()
+            try:
+                suffixes=self.complete(children,meta)
+                rewards=self.reward_callback(children)
+            except Exception as exc:
+                for planner,_ in requests:planner.accept_result(error=exc)
+                for planner in planners:
+                    if planner.reason is None:
+                        planner.reason='batch_execution_aborted'
+                        planner.end_search(planner.reason)
+                    planner.finish()
+                # Full search/pool terminal evidence precedes refusing this training outer.
+                raise
+            for (planner,(parent,index,attempt)),child,suffix,reward in zip(requests,children,suffixes,rewards):
+                snapshot=parent.snapshots[index];n=len(snapshot.response)
+                if (child.response[:n]!=snapshot.response or child.model_mask[:n]!=snapshot.model_mask or
+                    fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
+                    raise ValueError('Continuation changed inherited prefix')
+                result=record(child,parent.snapshots[:index]+suffix,parent,reward)
+                result.cost=dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
+                    retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
+                    batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
+                trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
+                with trajectory_path.open('x') as f:
+                    json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
+                planner.accept_result(result)
+        selected=[]
+        self.recursive_summaries=[]
+        for planner in planners:
+            final=planner.finish()
+            self.recursive_summaries.append(dict(attempts=planner.attempts,selected=len(final),
+                accepted=len(planner.accepted)-1,same=len(planner.pool),
+                filled=sum(r.source=='failure_fill' for r in final),reason=planner.reason))
+            for r in final:
+                r.state.branch_metadata=dict(protocol=tree.branch_sampling,generation=r.generation,
+                    parent_id=r.parent_id,root_id=r.root_id,source=r.source,sampled_reward=r.reward)
+                selected.append(r.state)
+        self.tree_candidate_counts=[x['attempts'] for x in self.recursive_summaries]
+        return selected

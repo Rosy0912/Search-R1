@@ -28,6 +28,8 @@ def is_fresh200(config):
 
 
 def validate_fresh200_config(config):
+    if config.baselines.tree.get('branch_sampling') in ('recursive_uniform_v1', 'recursive_inverse_generation_v1'):
+        return validate_recursive_config(config)
     actor, rollout, ref = (config.actor_rollout_ref[k] for k in ('actor', 'rollout', 'ref'))
     tree, holdout, trainer = config.baselines.tree, config.baselines.holdout, config.trainer
     safety = actor.get('policy_safety', {})
@@ -108,3 +110,22 @@ def validate_completed_outer(metrics, outer):
                 'actor/scheduler_step_after_outer': outer}
     if any(metrics.get(k) != value for k, value in expected.items()):
         raise RuntimeError('Fresh200 incomplete actual optimizer/scheduler outer; writes are retained')
+
+
+def validate_recursive_config(config):
+    actor,rollout=config.actor_rollout_ref.actor,config.actor_rollout_ref.rollout
+    tree,trainer=config.baselines.tree,config.trainer
+    if ((tree.roots,tree.leaves,tree.continuation_budget_per_question)!=(1,5,10)
+        or leaf_quotas(tree)!=(5,) or rollout.n_agent!=1 or rollout.n!=1
+        or (actor.ppo_mini_batch_size,actor.ppo_micro_batch_size,actor.ppo_epochs)!=(128,16,1)
+        or config.data.train_batch_size!=512 or trainer.actual_update_limit!=200
+        or trainer.total_training_steps!=201 or trainer.n_gpus_per_node!=(4 if tree.branch_sampling=='recursive_inverse_generation_v1' else 8)
+        or trainer.test_freq!=5 or trainer.save_freq!=50
+        or trainer.acceptance_gate_enabled or actor.optim.lr!=1e-6
+        or actor.optim.lr_warmup_steps!=57 or actor.optim.total_training_steps!=200
+        or not actor.get('recursive_document_objective')
+        or actor.entropy_coeff!=0 or actor.kl_loss_coef!=0 or config.algorithm.kl_ctrl.kl_coef!=0
+        or actor.clip_ratio!=.2 or actor.grad_clip!=1
+        or config.baselines.model_revision!=REVISION or config.max_turns!=4
+        or config.force_final_answer or config.actor_rollout_ref.model.path!=config.actor_rollout_ref.ref.model_path):
+        raise ValueError('Recursive document experiment A/B contract changed')
