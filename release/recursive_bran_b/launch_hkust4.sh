@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export RECURSIVE_BRAN_BASE=/weka_3/shaoshitong/recursive-bran-b-4gpu-20261011
-cd "$RECURSIVE_BRAN_BASE/source"
+cd "${RECURSIVE_BRAN_SOURCE:?explicit immutable source required}"
 python=/weka_3/shaoshitong/search-e1-config-study-20261004/env/bin/python
 export CUDA_VISIBLE_DEVICES=4,5,6,7
 export PYTHONPATH="$PWD" OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4

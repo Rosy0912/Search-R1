@@ -31,6 +31,7 @@ if (r/'configuration.json').exists():raise RuntimeError('Existing immutable conf
 (r/'resolved.yaml').write_text(text)
 record=dict(run_id=uuid.uuid4().hex,config_sha256=hashlib.sha256(text.encode()).hexdigest(),data_identity=identity['content_identity']['sha256'],
  model=str(model),execution_backend='hkust_direct',config=str(r/'resolved.yaml'),overrides=overrides,
+ source=str(repo),source_commit=(repo/'SOURCE_COMMIT').read_text().strip(),
  variant='recursive_inverse_generation_v1',gpu_physical=[4,5,6,7],local_actor_micro=4,local_old_ref_micro=8,
  total_outers=200,initial_acceptance_outers=10)
 (r/'configuration.json').write_text(json.dumps(record,indent=2));print(json.dumps({k:v for k,v in record.items() if k!='overrides'}))

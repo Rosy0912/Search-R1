@@ -7,7 +7,10 @@ assert socket.gethostname().split('.')[0]=='xielab5' and os.getuid()==1001
 assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']
 if (b/'receipts/start.json').exists() or (b/'output/fresh-initialization.json').exists():
  raise RuntimeError('No blind restart; preserve and restore the actual full boundary')
-commit=(Path(__file__).parents[2]/'SOURCE_COMMIT').read_text().strip()
+repo=Path(__file__).parents[2].resolve()
+assert str(repo)==r['source']
+commit=(repo/'SOURCE_COMMIT').read_text().strip()
+assert commit==r['source_commit']
 os.environ.update(SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
  SEARCH_R1_EXECUTION_BACKEND='hkust_direct',SEARCH_R1_BASELINE_COMMIT=commit,
  SEARCH_R1_BASELINE_CONFIG_SHA256=r['config_sha256'],SEARCH_R1_BASELINE_DATA_IDENTITY=r['data_identity'],
