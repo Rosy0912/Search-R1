@@ -1,0 +1,25 @@
+{
+  "role": "CPU_ONLY_ACTUAL_CP5_DRIVER_RESTORE_DIAGNOSTIC",
+  "driver_proof": {
+    "source_checkpoint": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/checkpoints/search-g1-common8/actor/global_step_5",
+    "actual_driver_rng_readback_equal": true,
+    "completed_outer": 5,
+    "actual_candidate_source_cursor": 10240,
+    "candidate_order_count": 169028,
+    "pending_offset": 0,
+    "actual_probe_version": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+    "reward_alpha_fixed": true,
+    "historical_reward_diagnostics_restored": false,
+    "source_driver_full_sha256": "55cb0ad87c5d4b62dbc1e1d3252834945ed415cab950e4940b05fd615b56d55f",
+    "checked_unix": 1791719383.2100294
+  },
+  "actual_source_cursor": 10240,
+  "actual_order_count": 169028,
+  "pending_source_none": true,
+  "actual_reward_manager_class": "EcoRewardManager",
+  "actual_training_probe_binding": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+  "actual_validation_probe_binding": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+  "original_before0_link_sha256": "211b30cc1b974b55fc2474f1325889d879bc8b6d79060c02b465a105b80d528f",
+  "baseline_repeated": false,
+  "gpu_driver_restore_claimed": false
+}

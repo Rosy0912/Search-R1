@@ -31,6 +31,23 @@ class RestorationTests(unittest.TestCase):
         equal_tree(a,a)
         b={'state':{0:{'step':torch.tensor(100.),'exp_avg':torch.tensor([1.,3.])}},'param_groups':[{'lr':1e-7}]}
         with self.assertRaises(AssertionError):equal_tree(a,b)
+class RestoredProbeBindingTests(unittest.TestCase):
+    def test_new_managers_lazy_version_is_bound_from_saved_and_live_probe(self):
+        from search_g1.full_state_restore import bind_restored_probe
+        trainer=SimpleNamespace(reward_fn=SimpleNamespace(no_self=True),val_reward_fn=SimpleNamespace())
+        saved=dict(probe_version='same-run:0:sha')
+        run=dict(run_id='same-run',initial_probe_version=saved['probe_version'])
+        live=dict(run_id='same-run',version=saved['probe_version'],round=0)
+        bind_restored_probe(trainer,saved,run,live,'same-run')
+        self.assertEqual(trainer.reward_fn.expected_probe_version,saved['probe_version'])
+        self.assertEqual(trainer.val_reward_fn.expected_probe_version,saved['probe_version'])
+        for damaged in (dict(live,version='other'),dict(live,round=1),dict(live,run_id='other')):
+            with self.assertRaises(AssertionError):bind_restored_probe(trainer,saved,run,damaged,'same-run')
+        trainer.reward_fn.expected_probe_version='other'
+        with self.assertRaises(AssertionError):bind_restored_probe(trainer,saved,run,live,'same-run')
+        trainer.reward_fn.expected_probe_version=saved['probe_version'];trainer.reward_fn.no_self=False
+        with self.assertRaisesRegex(AssertionError,'adaptive reward'):bind_restored_probe(trainer,saved,run,live,'same-run')
+
 class ResumedSchedulerTests(unittest.TestCase):
     def test_actual_resolved_restore_counter_uses_temporary_constructor_only(self):
         import json,tempfile,os

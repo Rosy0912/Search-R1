@@ -159,6 +159,26 @@ def restore_worker(worker,receipt_path):
     return row
 
 
+def bind_restored_probe(trainer,saved,run,live,source_run_id):
+    """Initialize the reward manager's lazy binding before its first RPC.
+
+    Real probe replies still require this exact version. Reward alpha is fixed
+    in this experiment; historical EMA/call diagnostics were not checkpointed.
+    """
+    version=saved['probe_version']
+    assert source_run_id==run['run_id']==live['run_id']
+    if 'run_id' in saved:assert saved['run_id']==source_run_id
+    assert version==run['initial_probe_version']==live['version'] and live['round']==0
+    assert trainer.reward_fn.no_self is True, 'Uncheckpointed adaptive reward cannot be resumed'
+    managers=[trainer.reward_fn]
+    if getattr(trainer,'val_reward_fn',None) is not None:managers.append(trainer.val_reward_fn)
+    for manager in managers:
+        previous=getattr(manager,'expected_probe_version',None)
+        assert previous is None or previous==version, 'Reward manager bound to another probe'
+    for manager in managers:manager.expected_probe_version=version
+    return version
+
+
 def restore_driver(trainer,receipt_path):
     import torch,numpy as np
     from search_g1.training_state import driver_rng,compact_stream_state
@@ -167,14 +187,18 @@ def restore_driver(trainer,receipt_path):
     assert digest(proof['path'])==proof['full_read_sha256']
     saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
     assert saved['completed_outer']==5 and saved['candidate_stream']['consumed_source_rows']==10240
-    assert saved['probe_version']==trainer.reward_fn.expected_probe_version
+    base=Path(os.environ['SEARCH_G1_BASE'])
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    live=json.loads((base/'artifacts/live/manifest.json').read_text())
+    bind_restored_probe(trainer,saved,run,live,r['run_id'])
     torch.set_rng_state(saved['rng']['torch_cpu']);np.random.set_state(saved['rng']['numpy']);random.setstate(saved['rng']['python'])
     equal_tree(driver_rng(),saved['rng'])
     trainer._restored_candidate_state=compact_stream_state(saved['candidate_stream'])
     assert trainer._restored_candidate_state['pending_source'] is None
     row=dict(source_checkpoint=str(checkpoint),actual_driver_rng_readback_equal=True,completed_outer=5,
              actual_candidate_source_cursor=10240,candidate_order_count=169028,pending_offset=0,
-             actual_probe_version=saved['probe_version'],source_driver_full_sha256=proof['full_read_sha256'],checked_unix=time.time())
+             actual_probe_version=saved['probe_version'],reward_alpha_fixed=True,
+             historical_reward_diagnostics_restored=False,source_driver_full_sha256=proof['full_read_sha256'],checked_unix=time.time())
     publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-driver.json',row)
     return row
 
