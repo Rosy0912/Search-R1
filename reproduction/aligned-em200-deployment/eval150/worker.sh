@@ -4,6 +4,8 @@ ROOT=/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009
 OLDROOT=/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009
 SOURCE=0fe642bd0c71f0b5f9813cbbad7bdd94e0625244
 TOKEN=${1:?unique token}
+# CPU Slurm allocation; physical GPUs acquired by the canonical eight-UUID cohost leases.
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 [[ "$TOKEN" =~ ^[a-f0-9]{32}$ && $(hostname) = h100-11 && ${SLURM_JOB_ID:-} =~ ^[0-9]+$ && ${SLURM_RESTART_COUNT:-0} = 0 && -n ${CUDA_VISIBLE_DEVICES:-} ]]
 export SPT_NOENV=1 PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 export PATH="$ROOT/env/bin:/usr/local/bin:/usr/bin:/bin" PYTHONPATH="$ROOT/tools:$ROOT/retriever-gpu-lib:$ROOT/repo"
