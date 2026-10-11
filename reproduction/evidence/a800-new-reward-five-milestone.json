@@ -1,0 +1,68 @@
+{
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "checked_unix": 1791681122.5998173,
+  "complete_outers": 5,
+  "opportunities": 100,
+  "successful_adam": 100,
+  "skips": 0,
+  "latest_reward": 0.19265183806419373,
+  "stage64": {
+    "sha256": "1487f5613ec8c65e47bfc527edc651774afb8dfd25280313d8f7f3d3ad40712a",
+    "keys": [
+      "run_id",
+      "split",
+      "step",
+      "final",
+      "question_ids",
+      "data_sources",
+      "em",
+      "counts",
+      "f1",
+      "weighted_f1",
+      "correct",
+      "weighted_em",
+      "validation_sha256",
+      "checked_unix"
+    ],
+    "scalars": {
+      "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+      "split": "stage",
+      "step": 5,
+      "final": false,
+      "weighted_f1": 0.2429738082116004,
+      "correct": 11.0,
+      "weighted_em": 0.171875,
+      "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "checked_unix": 1791680978.3788643
+    }
+  },
+  "checkpoint5_producer": [
+    {
+      "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/checkpoints/search-g1-common8/actor/global_step_5/complete.json",
+      "keys": [
+        "run_id",
+        "step",
+        "validated_tensor_count",
+        "finite_all_saved_tensors",
+        "checkpoint",
+        "files_sha256"
+      ],
+      "scalars": {
+        "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+        "step": 5,
+        "validated_tensor_count": 435,
+        "finite_all_saved_tensors": true,
+        "checkpoint": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/checkpoints/search-g1-common8/actor/global_step_5"
+      },
+      "sha256": "5a39f7763ffcdfc411d013812f9f45e3b7a1ce1f69ecb78739127cd94cc1244e"
+    }
+  ],
+  "five_comprehensive_acceptance": "pending",
+  "dev512": "pending",
+  "same_trainer_pid": 1358996,
+  "same_trainer_birth": 575207394,
+  "errors": [],
+  "notification_kind": "checkpoint5 milestone; not formal hourly; anchor unchanged"
+}
