@@ -1,4 +1,4 @@
-最新实际进度：79/200完整轮；632份rank记录，各1580成功Adam、0skip，rolling79保存，第80轮启动已实读。第79轮755.922353秒（12.598706分钟），reward0.438671887、纯树内优势方差0.084797898430、混奖138/512。dev75完整512题F1 46.408688%、EM39.648438%未更新；较70轮F1下降0.810589个百分点、EM上升0.195313个百分点。200轮、51713最终评测、HF/tokenizer验收及收尾未完成。
+Actual progress: 80/200 credited training outers, 640 direct rank records; 1600 successful Adam writes/rank, zero skips. Rolling80 SAVED. Periodic dev80 and total outer80 timing pending. Last complete timing is outer79:755.922353s (12.598706min); reward0.438671887, pure intra variance0.084797898430, mixed138/512 are outer79 metrics. Latest dev75 unchanged: F1 46.408688%, EM39.648438%; F1 down0.810589pp vs70, EM up0.195313pp. Final200,51713,HF/tokenizer,costs and cleanup remain incomplete.
 
 
 
