@@ -10,8 +10,8 @@ def summarize(root):
             try:rows.append(json.loads(line))
             except json.JSONDecodeError:truncated+=1
         if not rows:continue
-        start=rows[0];outer=start['outer']
-        o=outers.setdefault(outer,dict(outer=outer,run_id=start['run_id'],source_commit=start['source_commit'],
+        start=rows[0];outer=start['outer'];rollout_id=path.parent.parent.name
+        o=outers.setdefault((outer,rollout_id),dict(outer=outer,rollout_id=rollout_id,run_id=start['run_id'],source_commit=start['source_commit'],
              config_sha256=start['config_sha256'],started_questions=0,closed_questions=0,
              final_trajectories=0,shortfalls=0,continuations_closed=0,contrast_accepts_closed=0,
              same_candidates_closed=0,fill_closed=0,strict_correct_selected_closed=0,
