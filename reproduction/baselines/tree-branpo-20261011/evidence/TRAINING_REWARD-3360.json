@@ -1,5 +1,5 @@
 {
-  "observed_epoch": 1791676412.5881922,
+  "observed_epoch": 1791677166.7038152,
   "job": 3360,
   "rows": [
     {
@@ -251,6 +251,17 @@
         "critic/score/max": 1.0,
         "critic/score/min": 0.0,
         "critic/rewards/mean": 0.19921875,
+        "critic/rewards/max": 1.0,
+        "critic/rewards/min": 0.0
+      }
+    },
+    {
+      "outer": 24,
+      "metrics": {
+        "critic/score/mean": 0.22499999403953552,
+        "critic/score/max": 1.0,
+        "critic/score/min": 0.0,
+        "critic/rewards/mean": 0.22499999403953552,
         "critic/rewards/max": 1.0,
         "critic/rewards/min": 0.0
       }
