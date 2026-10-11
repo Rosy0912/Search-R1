@@ -1,9 +1,0 @@
-{
-  "reviewed_sha": "3f6a7307f997d9180a88cf87f7006e5961aa43cc",
-  "metric_source_sha": "31a9578465a9a0faee98ff2b6bdf2bcb6834bd92",
-  "patch_id": "cf688eade2fb5ec51730582730c3e6c38261ada8",
-  "actor_sha256": "fb7654efe727526b257e756fd089efff8d276f85b8426aedab9298e0c1c04fcd",
-  "full_cpu_gate": "main-agent cpu-all-20261003.txt:141 passed/1 skipped",
-  "independent_tree_probe": "tree-metric-probe.json",
-  "gpu_training_started": false
-}

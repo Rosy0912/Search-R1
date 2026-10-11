@@ -1,9 +1,0 @@
-{
-  "epoch": 1790988468.5665941,
-  "local_previous_pid": 81328,
-  "mgmt_orphan_pid": 2647174,
-  "node9_listener_pid": 3314298,
-  "listener_start": "2026-10-03 08:12:49 +0800",
-  "exact_route": "127.0.0.1:18082:127.0.0.1:38082 root@h100-9",
-  "action": "TERM own route matching previous local tunnel; node9 port bind confirmed free"
-}

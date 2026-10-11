@@ -52,7 +52,7 @@ def main():
             and saved['run_id']=='tree-branpo-fresh200-'+str(current['job_id'])
             and Path(args.identity).parent.name==saved['run_id'],'Guard own run/package binding differs')
     require(all(saved[k]==current[k] for k in ('cluster_name','job_id','node_list','gpus','requested_cpus','memory_gib','wall_hours','no_requeue','restarts')),'Guard allocation lineage changed')
-    from build_package_draft import read_regular_bound
+    from pinned_files import read_regular_bound
     raw=read_regular_bound(args.source,args.source_sha)
     module=type(sys)('_owned_guard_original');module.__file__=args.source
     # Every original subprocess.run call resolves the controlled wrapper below.

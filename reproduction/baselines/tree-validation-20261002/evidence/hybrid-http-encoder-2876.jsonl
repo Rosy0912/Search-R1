@@ -1,6 +1,0 @@
-{"epoch": 1790988699.6731064, "queries": 14, "vectors_sha256": "fbb2788e0f57349dcde765a9cb94ce42756b3641fca5e372c233e7faf6c314c5", "wall_seconds": 0.14822419919073582, "process_cpu_seconds": 1.171164883000003}
-{"epoch": 1790988702.1448576, "queries": 14, "vectors_sha256": "fbb2788e0f57349dcde765a9cb94ce42756b3641fca5e372c233e7faf6c314c5", "wall_seconds": 0.14331934414803982, "process_cpu_seconds": 1.1261760730000105}
-{"epoch": 1790988704.9032052, "queries": 14, "vectors_sha256": "fbb2788e0f57349dcde765a9cb94ce42756b3641fca5e372c233e7faf6c314c5", "wall_seconds": 0.14297962188720703, "process_cpu_seconds": 1.134289424000002}
-{"epoch": 1790988708.2698267, "queries": 14, "vectors_sha256": "fbb2788e0f57349dcde765a9cb94ce42756b3641fca5e372c233e7faf6c314c5", "wall_seconds": 0.1403663046658039, "process_cpu_seconds": 1.097029563999996}
-{"epoch": 1790988716.3915298, "queries": 512, "vectors_sha256": "c7bc1b4a084a169e6b6f197958d462094a743d34347842bd57eb249c308da7de", "wall_seconds": 4.605375688523054, "process_cpu_seconds": 36.738808531000004}
-{"epoch": 1790988740.7541702, "queries": 512, "vectors_sha256": "c7bc1b4a084a169e6b6f197958d462094a743d34347842bd57eb249c308da7de", "wall_seconds": 4.688497910276055, "process_cpu_seconds": 37.42373042}

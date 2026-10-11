@@ -1,2 +1,0 @@
-2026-10-02 retry: fake-IP198.18.0.17 closed before auth. DNS HTTPS and mgmt getent agree110.43.160.159. Existing bracketed HostKeyAlias verified; successful root login. No config/known_hosts changes.
-GPU0-6:A80080GB,util0%,used4/81920MiB. GPU7:used68494/81920MiB,running PIDs1511331/1511855; excluded.

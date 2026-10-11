@@ -1,9 +1,0 @@
-{
-  "epoch": 1791664774.7631507,
-  "job": 3360,
-  "stage_last_lines": [
-    "0953148901462555 - critic/advantages/max:2.9435489177703857 - critic/advantages/min:-2.9435491561889648 - critic/returns/mean:-0.0090953148901462555 - critic/returns/max:2.9435489177703857 - critic/returns/min:-2.9435491561889648 - response_length/mean:704.9163818359375 - response_length/max:2418 - response_length/min:93 - response_length/clip_ratio:0.00039062500582076609 - prompt_length/mean:137.49609375 - prompt_length/max:218 - prompt_length/min:128 - prompt_length/clip_ratio:0.001953125 - env/number_of_actions/mean:2.1667968750000002 - env/number_of_actions/max:4 - env/number_of_actions/min:1 - env/finish_ratio:0.97109374999999998 - env/number_of_valid_action:2.111328125 - env/ratio_of_valid_action:0.98587239583333341 - env/number_of_valid_search:1.1402343749999999 - timing_s/gen:320.68784641474485 - timing_s/ref:11.057861961424351 - timing_s/adv:11.572633743286133 - timing_s/update_actor:239.81461229920387 - timing_s/stage_testing:42.587811645120382 - timing_s/step:719.64789681881666 - timing_per_token_ms/ref:0.0051275085883476174 - timing_per_token_ms/update_actor:0.11120155853501285 - timing_per_token_ms/adv:0.0053662072392932749 - timing_per_token_ms/gen:0.17770715633100603",
-    "\u001b[36m(measured_task pid=4011013)\u001b[0m epoch 0, step 10"
-  ],
-  "scope": "actual measured_task epoch0 step10 after complete9"
-}

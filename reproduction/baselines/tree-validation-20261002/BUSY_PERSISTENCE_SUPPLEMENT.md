@@ -1,9 +1,0 @@
-# Busy probe failure-persistence supplement
-
-Reviewed only the new busy probe (SHA2568f262f0566132c1079c887c3951e63ef3b7fef99b7923507c86d07c7da09fe76). Existing ASYNC_CPU_HEALTH_REVIEW.md and the older frozen retrieval review were not changed.
-
-Incremental.samples.jsonl append now preserves each completed health measurement. Within concurrent-health and future.result phases, errors write FAILED_BUSY_HEALTH_MEASUREMENT with phase/exception/epoch/provenance/samples/sourceSHA before raising. A real short thread fixture confirms the health-failure report exists before the outstanding mockPOST worker ends; mockedPOST timeout is also recorded. Successful path retains BUSY_HEALTH_MEASUREMENT_ONLY, never acceptance. Four actual-script fixtures exercise success, concurrenthealtherror, POSTerror and finalhealtherror.
-
-Remaining exact scope: initialprovenanceGET, post-loop minimumsampleassert and finalprovenanceGET/equality still lie outside the catch. The finalhealtherror fixture saves.samples.jsonl but no FAILED report, and the script fails rather than accepting; this remaining diagnostic boundary was reported to parent. It does not change successful measurement/parity/math or the ownSlurm1h outer bound. Pool context may wait for nativeHTTP completion after recording a failure. Requests900s is read-inactivity timeout, not a strict elapsed deadline; ownSlurm cleanup bounds allocation. No claim that all conceivable health exceptions are persisted.
-
-No core blocker to reviewing a successful real new-gate result was found. A failed or incomplete new gate must remain unaccepted regardless of whether its diagnostic JSON was emitted. This supplement is not a new retrieval/stage acceptance. Evidence: probe-busy-persistence.py and busy-persistence-fixtures.json (mock HTTP, short real worker threads, no sockets/model/GPU).

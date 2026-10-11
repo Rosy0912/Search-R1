@@ -1,3 +1,0 @@
-REQUIRED_SERVICE_DIED_STOP_OWN_JOB
-{"epoch": 1790989570.4292243, "pid": 3333062, "job_id": "2877", "process_cpu_seconds": 584.49, "rss_bytes": 3433861120, "peak_rss_bytes": 67352993792, "scope": "own retriever process; sampling started after initial loading"}
-{"epoch": 1790989575.4345205, "pid": 3333062, "job_id": "2877", "process_cpu_seconds": 623.53, "rss_bytes": 3378958336, "peak_rss_bytes": 67352993792, "scope": "own retriever process; sampling started after initial loading"}

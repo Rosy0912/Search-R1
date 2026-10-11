@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 from production_contract import ROOT, SOURCE, CHAIN_SCOPE, DIRECT_MODE, require, read_bound, production_inputs
 from slurm_identity import CLUSTER, NODE, local_environment, cluster_identity, query, create_journal, finalize_journal, verify_management_scope, timeout_output
-from build_package_draft import read_regular_bound
+from pinned_files import read_regular_bound
 
 
 def fresh_admission(manifest,run,environment):
