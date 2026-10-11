@@ -67,7 +67,7 @@ def capture(result,step,validation,attempt):
 def completed_outer(step):
     job=os.environ['SLURM_JOB_ID'];paths=sorted((root()/'common-training'/job).glob('step-%s-attempt-*.jsonl'%step))
     if not paths:raise RuntimeError('Missing complete training EM pool')
-    pools=[[json.loads(l) for l in p.read_text().splitlines()] for p in paths]
+    pools=[[json.loads(l) for l in p.read_text().split('\n') if l] for p in paths]
     selected=summarize(pools[-1]);all_rows=sum(pools,[])
     result={'step':step,'job':job,'complete_outer':True,'all_actual_generated_responses':summarize(all_rows),'selected_update_trajectories':selected,'attempts':len(pools),'reranker':json.loads(paths[-1].with_suffix('.summary.json').read_text())['reranker']}
     (root()/'common-training'/job/('completed-outer-%s.json'%step)).write_text(json.dumps(result,indent=2)+'\n')
@@ -88,10 +88,11 @@ def begin_validation(step,folder,config):
 
 def verify_validation(step,folder,expected_rows):
     from collections import Counter
-    rows=[json.loads(l) for l in (root()/folder/(str(step)+'.jsonl')).read_text().splitlines()]
+    rows=[json.loads(l) for l in (root()/folder/(str(step)+'.jsonl')).read_text().split('\n') if l]
     data=root()/'data'/('final.jsonl' if expected_rows==51713 else 'validation.jsonl')
     expected=[]
-    for l in data.read_text().splitlines():
+    for l in data.read_text().split('\n'):
+        if not l:continue
         d=json.loads(l)
         expected.append(identity(d['question'],d['answers']))
     if len(rows)!=expected_rows or Counter(x['question_answer_sha256'] for x in rows)!=Counter(expected):raise RuntimeError('Common evaluation question/answer identity mismatch')
