@@ -12,7 +12,7 @@ consumed event. Exceptions synchronize both streams before buffers are freed.
 
 Unchanged arithmetic contract: 32768 original vector tile boundaries, 64 query
 micro-batches separately within every request, FP32 vectors/queries/matmul/top-k,
-TF32 disabled, tile -> request -> query-micro operator order, sorted local and
+TF32 disabled and CUDA autocast refused, tile -> request -> query-micro operator order, sorted local and
 merged top-k, global IDs, original tail tile. No concatenated request GEMM.
 Exact floating score/ID equality is still a **GPU benchmark requirement**, not
 proved by the CPU tests. Allocator addresses and CUDA scheduling change.
@@ -33,9 +33,9 @@ CPU tests (no CUDA or performance claim):
 PYTHONPATH=. python -m unittest release.recursive_bran_a.retriever_overlap_candidate.test_lifecycle_cpu -v
 ```
 
-Five tests check exact original tile/tail dimensions, unchanged copied bytes,
+Six tests check exact original tile/tail dimensions, unchanged copied bytes,
 prefetch before compute, CPU/GPU slot reuse event dependencies, unsafe overwrite
-refusal, and exception cleanup. They do not test real CUDA event timing.
+refusal, exception cleanup, and rejecting CUDA autocast before copies. They do not test real CUDA event timing.
 
 ## GPU profile, only after independently verified idle GPU7
 

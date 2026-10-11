@@ -124,6 +124,8 @@ class PinnedOverlapFlatIP:
 
     @torch.no_grad()
     def search_many(self, list_queries, list_ks, trace=None):
+        if torch.is_autocast_enabled():
+            raise ValueError('Candidate requires an explicit FP32/no-autocast caller')
         if torch.backends.cuda.matmul.allow_tf32 or torch.backends.cudnn.allow_tf32:
             raise ValueError('Candidate requires TF32 disabled before admission')
         if len(list_queries) != len(list_ks) or len(list_queries) > 8:

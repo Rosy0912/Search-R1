@@ -1,6 +1,7 @@
 """CPU lifecycle proofs only; this does not execute CUDA copies or measure speed."""
 import unittest
-from .pinned_overlap import DoubleBufferTiles, Tile, memory_plan, tile_plan
+from unittest.mock import patch
+from .pinned_overlap import DoubleBufferTiles, Tile, memory_plan, tile_plan, PinnedOverlapFlatIP
 
 
 class FakeBackend:
@@ -37,6 +38,12 @@ class FakeBackend:
 
 
 class Checks(unittest.TestCase):
+    def test_autocast_is_refused_before_any_cuda_copy(self):
+        candidate = PinnedOverlapFlatIP.__new__(PinnedOverlapFlatIP)
+        with patch('torch.is_autocast_enabled', return_value=True):
+            with self.assertRaisesRegex(ValueError, 'FP32/no-autocast'):
+                candidate.search_many([], [])
+
     def test_exact_original_tile_boundaries_and_tail(self):
         plan = tile_plan(21015324)
         self.assertEqual(len(plan), 642)
