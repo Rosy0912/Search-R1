@@ -58,14 +58,16 @@ def evaluate(config,run):
     dataset=RLHFDataset(config.data.val_files,tokenizer,prompt_key=config.data.prompt_key,
         max_prompt_length=config.data.max_prompt_length,filter_prompts=True,truncation='error')
     assert len(dataset)==51713, f'Unexpected final dataset size {len(dataset)}'
+    offset=int(config.eval_resume_completed)
+    dataset.dataframe=dataset.dataframe.iloc[offset:].reset_index(drop=True)
     loader=DataLoader(dataset,batch_size=config.data.val_batch_size,shuffle=False,drop_last=False,collate_fn=collate_fn)
     def batches():
-        done=0
+        done=offset
         for i,batch in enumerate(loader):
             start=time.monotonic()
             yield batch
             done+=len(batch['input_ids'])
-            record=dict(batch=i+1,completed=done,total=len(dataset),batch_size=len(batch['input_ids']),seconds=time.monotonic()-start,time=time.time())
+            record=dict(batch=offset//config.data.val_batch_size+i+1,completed=done,total=51713,batch_size=len(batch['input_ids']),seconds=time.monotonic()-start,time=time.time())
             with (Path(run)/'progress.jsonl').open('a') as f:f.write(json.dumps(record)+'\n')
             print('EVAL150_BATCH_COMPLETE='+json.dumps(record),flush=True)
     t=RayPPOTrainer.__new__(RayPPOTrainer)
@@ -87,9 +89,13 @@ def evaluate(config,run):
     # Only the validation metadata branch; native training initialization stays disabled.
     config.trainer.fresh200_enabled=True
     result=t._validate()
-    assert result['val/qa_count/all']==51713
-    (Path(run)/'final51713.json').write_text(json.dumps(dict(checkpoint_outer=150,metrics=result),indent=2))
-    return result
+    from search_r1.baselines.evaluation import aggregate_answer_metrics
+    all_rows=[json.loads(line) for line in (Path(run)/'qa-rows.jsonl').read_text().splitlines()]
+    assert len(all_rows)==51713
+    full=aggregate_answer_metrics(all_rows)
+    (Path(run)/'final51713.json').write_text(json.dumps(dict(checkpoint_outer=150,metrics=full,suffix_runtime_metrics=result,resumed_prefix=offset),indent=2))
+    print('EVAL150_COMPLETE51713='+json.dumps(full),flush=True)
+    return full
 
 def main():
     root=Path('/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009')
@@ -102,10 +108,24 @@ def main():
     c.trainer.fresh200_enabled=False;c.trainer.fresh200_gate_enabled=False
     c.trainer.resume_full_state=None;c.trainer.resume_permission=None;c.trainer.resume_verify_only=False
     c.data.val_files=c.data.final_val_files;c.data.val_batch_size=512
-    c.actor_rollout_ref.rollout.gpu_memory_utilization=0.28
+    c.actor_rollout_ref.rollout.gpu_memory_utilization=0.20
     c.actor_rollout_ref.rollout.max_num_batched_tokens=16384
     c.actor_rollout_ref.rollout.max_num_seqs=128
     c.trainer.default_local_dir=str(run/'unused-training-checkpoints')
+    prior=root/'runs/eval150-final51713-852d701d694d4dfe98f2c2f6985740a8-3376'
+    # Completed QA rows have fixed parquet order and greedy checkpoint150 semantics.
+    old_config=OmegaConf.load(prior/'eval-config.yaml')
+    assert old_config.actor_rollout_ref.model.path==c.actor_rollout_ref.model.path
+    assert old_config.data.val_files==c.data.val_files and old_config.data.val_batch_size==512
+    assert old_config.max_turns==c.max_turns and old_config.force_final_answer==c.force_final_answer
+    offset=json.loads((prior/'progress.jsonl').read_text().splitlines()[-1])['completed']
+    prefix=[json.loads(line) for line in (prior/'qa-rows.jsonl').read_text().splitlines()][:offset]
+    assert len(prefix)==offset and offset==12800
+    c.eval_resume_completed=offset
+    c.eval_resume_from=str(prior)
+    with (run/'qa-rows.jsonl').open('x') as f:
+        for row in prefix:f.write(json.dumps(row)+'\n')
+    (run/'resume-prefix.json').write_text(json.dumps(dict(prior=str(prior),completed=offset,scope='exact saved score prefix;next row12801;no model/optimizer changes')))
     OmegaConf.save(c,run/'eval-config.yaml')
     ray.init(address=os.environ['RAY_ADDRESS'],runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'false','NCCL_DEBUG':'WARN'}})
     print(ray.get(evaluate.remote(c,str(run))),flush=True)
