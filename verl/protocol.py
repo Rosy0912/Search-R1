@@ -205,9 +205,23 @@ class DataProto:
         import io
         batch_deserialized_bytes, non_tensor_batch, meta_info = data
         batch_deserialized = io.BytesIO(initial_bytes=batch_deserialized_bytes)
-        batch = torch.load(batch_deserialized,
-                           weights_only=False,
-                           map_location='cpu' if not torch.cuda.is_available() else None)
+        # PyTorch 2.4 deletes this thread-local value after each load. A
+        # DataProto inside another torch archive performs a nested load, so
+        # preserve the outer loader's mapping for its remaining objects and
+        # cleanup. This also honors an explicit outer CPU mapping on GPU hosts.
+        load_context = torch._utils._thread_local_state
+        missing = object()
+        outer_map = getattr(load_context, 'map_location', missing)
+        mapping = (outer_map if outer_map is not missing else
+                   'cpu' if not torch.cuda.is_available() else None)
+        try:
+            batch = torch.load(batch_deserialized, weights_only=False,
+                               map_location=mapping)
+        finally:
+            if outer_map is not missing:
+                load_context.map_location = outer_map
+            elif hasattr(load_context, 'map_location'):
+                del load_context.map_location
         self.batch = batch
         self.non_tensor_batch = non_tensor_batch
         self.meta_info = meta_info

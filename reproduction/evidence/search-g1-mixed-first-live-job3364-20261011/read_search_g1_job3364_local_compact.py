@@ -16,7 +16,9 @@ match=re.search(r'JobState=(\S+)',d['job']['stdout'])
 state.update(updated_utc=d['utc'],last_observed_utc=d['utc'],completed_outer=len(completed),actual_adam_per_rank=min(counts.values()),actual_adam_per_rank_counts=counts,native_job_state=match.group(1) if match else 'UNKNOWN',actual_progress_evidence=str(p))
 complete_writes=updates[-1]['optimizer_writes_after'] if updates else 0
 assert min(counts.values()) >= complete_writes
-state['last_observed_stage']='ACTUAL_UPDATES' if min(counts.values())>complete_writes else 'NEXT_CANDIDATE_GENERATION'
+backend_completed=max([a['completed_outer'] for a in d['actual_attempts'] if a.get('complete_outer')]+[len(completed)])
+state['backend_completed_outer']=backend_completed
+state['last_observed_stage']=('POST_UPDATE_EVALUATION_AND_CHECKPOINT' if backend_completed>len(completed) else 'ACTUAL_UPDATES' if min(counts.values())>complete_writes else 'NEXT_CANDIDATE_OR_UPDATE_PREPARATION')
 state['latest_candidate_pools']=d['candidate_pools']
 if d['candidate_pools']:
  latest_pool=max(d['candidate_pools'],key=lambda item:item['step'])

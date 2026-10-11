@@ -714,11 +714,11 @@ class RayPPOTrainer(object):
         stream = getattr(self, 'mixed_stream', None)
         if stream is not None:
             from pathlib import Path
-            from search_g1.training_state import atomic_save, driver_rng
+            from search_g1.training_state import atomic_save, driver_rng, compact_stream_state
             state_dir = Path(actor_local_path)/'training_state'
             proofs = self.actor_rollout_wg.capture_mixed_state(str(state_dir), checkpoint=True)
             driver = atomic_save(state_dir/'driver.pt', dict(completed_outer=self.global_steps,
-                candidate_stream=stream.state(), rng=driver_rng(),
+                candidate_stream=compact_stream_state(stream.state()), rng=driver_rng(),
                 probe_version=self.reward_fn.expected_probe_version))
             import json
             with (state_dir/'manifest.json').open('x') as f:
