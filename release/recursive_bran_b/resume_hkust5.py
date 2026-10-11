@@ -23,6 +23,9 @@ def main():
    if tick==identity['tick']:
     state=raw.rsplit(')',1)[1].split()[0]
     if state!='Z' or list(Path('/proc/%d/fd'%identity['pid']).glob('*')):raise ValueError('Original owner still alive or has open descriptors')
+ if 'retry_terminal' in r:
+  from search_r1.baselines.recursive_b_retry import validate_retry_terminal
+  validate_retry_terminal(r['retry_terminal'],r['retry_terminal_sha256'])
  out=Path(r['output']);out.relative_to(root)
  if out.exists():raise ValueError('No blind restart/overwrite of speed output')
  os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=r['binding'],RECURSIVE_B_CONTINUATION_SHA256=r['binding_sha256'],

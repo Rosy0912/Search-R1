@@ -75,6 +75,33 @@ class MuOnlyTests(unittest.TestCase):
         self.assertTrue(torch.equal(omitted.batch['old_log_probs'], omitted.batch['sampled_old_log_probs']))
         self.assertEqual(omitted.meta_info['temperature'], 1.)
 
+    def test_real_tensordict_missing_beta_profile_and_native_actor_update(self):
+        from tensordict import TensorDict
+        data = self.data(True)
+        data.batch = TensorDict(dict(data.batch.items()), batch_size=[len(data)])
+        with self.assertRaises(KeyError):
+            data.batch.get('actor_old_log_probs')
+        actor = f.Actor(self.cfg)
+        actor._fresh_total_committed_optimizer_calls = 0
+        corrected, context = validate_actor_probability_profile(
+            actor, data, self.cfg.policy_safety, return_context=True)
+        self.assertTrue(corrected)
+        self.assertTrue(context.matches(data))
+        runtime = PolicySafetyRuntime(actor, data.batch, data.meta_info,
+            self.cfg.policy_safety, source_data=data, validation_context=context)
+        decision = runtime.measure('before_optimizer', publish=False)
+        self.assertTrue(decision['allowed'])
+        self.assertFalse(decision['full_actor_beta_available'])
+        self.assertNotIn('actor_old_log_probs', data.batch.keys())
+        # Run the actual update_policy body, not a manually rebuilt PPO formula.
+        # Fixture rank-audit defaults are older; disable only detailed audit.
+        with patch.object(f.rank_audit, 'enabled', lambda *args: False):
+            metrics = actor.update_policy(data)
+        self.assertEqual(actor._fresh_total_committed_optimizer_calls, 1)
+        self.assertEqual(int(actor.actor_optimizer.state[actor.actor_module.weight]['step']), 1)
+        self.assertTrue(torch.isfinite(actor.actor_module.weight).all())
+        self.assertNotIn('actor_old_log_probs', data.batch.keys())
+
     def test_sampler_safety_still_runs_and_missing_full_beta_metrics_are_null(self):
         data = self.data(True)
         actor = f.Actor(self.cfg)
