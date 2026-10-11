@@ -82,7 +82,7 @@ class _ActorProbabilityValidation:
                 and source_data.meta_info is self.meta
                 and source_data.non_tensor_batch is self.non_tensor
                 and len(source_data.batch.keys()) == len(self.tensors)
-                and all(source_data.batch.get(key) is value and value._version == version
+                and all(key in source_data.batch.keys() and source_data.batch[key] is value and value._version == version
                         for key, value, version in self.tensors))
         if not tensors_match:
             return False

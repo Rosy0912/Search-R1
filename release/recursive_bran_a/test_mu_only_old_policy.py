@@ -47,6 +47,9 @@ class MuOnlyTests(unittest.TestCase):
             del data.meta_info['temperature']
             data.meta_info['tree_full_actor_beta_available'] = False
             f.trainer['prepare_behavior_mu_old_policy'](data, self.cfg)
+        # Exercise the production TensorDict missing-key semantics in every test.
+        from tensordict import TensorDict
+        data.batch=TensorDict(dict(data.batch.items()),batch_size=[len(data)])
         return data
 
     def test_same_mu_ppo_loss_gradient_and_real_adam_update(self):
@@ -54,10 +57,16 @@ class MuOnlyTests(unittest.TestCase):
         f.trainer['validate_final_behavior_mu_batch'](omitted, self.cfg)
         results = []
         for data in (full, omitted):
-            from tensordict import TensorDict
-            data.batch=TensorDict(dict(data.batch.items()),batch_size=[len(data)])
             actor = f.Actor(self.cfg)
-            self.assertTrue(validate_actor_probability_profile(actor, data, self.cfg.policy_safety))
+            corrected, context = validate_actor_probability_profile(actor, data, self.cfg.policy_safety, return_context=True)
+            self.assertTrue(corrected)
+            self.assertTrue(context.matches(data))
+            # Equal field count does not prove all cached TensorDict keys exist.
+            original=data.batch['advantages'];del data.batch['advantages']
+            data.batch['renamed_advantages']=original
+            self.assertFalse(context.matches(data))
+            del data.batch['renamed_advantages'];data.batch['advantages']=original
+            self.assertTrue(context.matches(data))
             current = actor.actor_module(torch.ones(len(data), 1)).expand_as(data.batch['responses'])
             mask = PolicySafetyRuntime.effective_mask(data.batch)
             loss = (f.dual_clip_terms(data.batch['old_log_probs'], current, data.batch['advantages'], mask)
