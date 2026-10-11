@@ -640,6 +640,12 @@ class ActorRolloutRefWorker(Worker):
         torch.cuda.empty_cache()
         return output
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def release_rollout_policy_cache(self):
+        manager = getattr(self, 'rollout_sharding_manager', None)
+        if manager is not None and getattr(manager, 'weights_resident', False):
+            manager.release_model_weights()
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""

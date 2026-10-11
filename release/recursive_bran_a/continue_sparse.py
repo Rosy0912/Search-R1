@@ -5,10 +5,11 @@ from omegaconf import OmegaConf
 b=Path(os.environ['RECURSIVE_BRAN_BASE']).resolve();r=json.loads(Path(os.environ['RECURSIVE_A_CHILD_CONFIG_RECEIPT']).read_text())
 assert socket.gethostname().split('.')[0]=='xielab1' and os.getuid()==1005
 assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']
-out=b/'output-sparse-cache-resume4'
+out=b/'output-sparse-mu-only-resume4'
 if (out/'fresh-initialization.json').exists():raise RuntimeError('No blind restart of sparse continuation')
 parent=Path('/proc/2277572/stat')
 if parent.exists() and parent.read_text().split()[21]=='951698974':raise RuntimeError('Original owner still live')
+os.environ['RECURSIVE_A_OMIT_FULL_BETA']='1'
 commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 os.environ.update(SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
  SEARCH_R1_EXECUTION_BACKEND='hkust_direct',SEARCH_R1_BASELINE_COMMIT=commit,
@@ -18,10 +19,10 @@ os.environ.update(SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],
  SEARCH_R1_TREE_RANK_AUDIT_DIR=str(out/'rank-audit'),SEARCH_R1_TRAJECTORY_DIR=str(out/'trajectories'),
  TREE_COMMON_DATA=str(b/'common-data-v2'),TREE_INSTRUCT_MODEL=r['model'],
  SLURM_JOB_ID='hkust-direct-'+r['run_id'],SLURM_JOB_NODELIST='xielab1',RAY_ADDRESS='local')
-if Path('/proc/3360882').exists():raise RuntimeError('Failed previous continuation owner still present')
+if Path('/proc/3488460').exists():raise RuntimeError('Failed previous continuation owner still present')
 # SLURM_JOB_ID is a compatibility provenance key only, not a Slurm allocation claim.
 out.mkdir(exist_ok=True)
-(b/'receipts/cache-start-from4.json').write_text(json.dumps(dict(time=time.time(),pid=os.getpid(),uid=os.getuid(),
+(b/'receipts/mu-only-start-from4.json').write_text(json.dumps(dict(time=time.time(),pid=os.getpid(),uid=os.getuid(),
  run_id=r['run_id'],source_commit=commit,execution_backend='hkust_direct',slurm_allocation=False)))
 from search_r1.baselines.main import main
 main.__wrapped__(OmegaConf.load(r['config']))

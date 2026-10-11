@@ -122,8 +122,17 @@ def prepare_behavior_mu_old_policy(data, actor_config):
         return False
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
     validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
-    beta = data.batch['old_log_probs']
+    from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     sampled = data.batch['sampled_old_log_probs']
+    if not full_actor_beta_available(data.meta_info):
+        if 'old_log_probs' in data.batch.keys() or 'actor_old_log_probs' in data.batch.keys():
+            raise ValueError('Omitted full actor beta must not have a fabricated substitute')
+        if not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.:
+            raise ValueError('Omitted full beta requires reference KL loss zero')
+        data.batch['old_log_probs'] = sampled.detach().clone()
+        data.meta_info['tree_behavior_mu_corrected_profile'] = True
+        return True
+    beta = data.batch['old_log_probs']
     if not beta.is_floating_point() or beta.shape != sampled.shape or sampled.dtype != torch.float32:
         raise ValueError('Behavior-mu profile requires independent floating actor beta and FP32 sampled mu')
     data.batch['actor_old_log_probs'] = beta.detach().clone()
@@ -138,8 +147,9 @@ def validate_final_behavior_mu_batch(data, actor_config):
         return
     from search_r1.baselines.tree_behavior_mu import validate_behavior_mu_batch, runtime_provenance
     receipt = validate_behavior_mu_batch(data, expected_provenance=runtime_provenance(os.environ), required=True)
+    from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
     if (data.meta_info.get('tree_behavior_mu_corrected_profile') is not True
-            or 'actor_old_log_probs' not in data.batch.keys()
+            or full_actor_beta_available(data.meta_info) != ('actor_old_log_probs' in data.batch.keys())
             or not torch.equal(data.batch['old_log_probs'], data.batch['sampled_old_log_probs'])):
         raise ValueError('Final balanced behavior-mu batch has no fixed mu/independent beta binding')
     return receipt
@@ -994,9 +1004,20 @@ class RayPPOTrainer(object):
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         cast_rollout_structural_fields(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
-                        with torch.no_grad():
-                            output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
-                            final_gen_batch_output = final_gen_batch_output.union(output)
+                        if os.environ.get('RECURSIVE_A_OMIT_FULL_BETA') == '1':
+                            actor_config = self.config.actor_rollout_ref.actor
+                            from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
+                            if (not os.environ.get('RECURSIVE_A_CONTINUATION_BINDING')
+                                    or not behavior_mu_correction_enabled(actor_config.policy_safety)
+                                    or not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.
+                                    or self.config.algorithm.kl_ctrl.kl_coef != 0.):
+                                raise ValueError('No-full-beta profile exceeds authorized zero-KL behavior-mu scope')
+                            self.actor_rollout_wg.release_rollout_policy_cache()
+                            final_gen_batch_output.meta_info['tree_full_actor_beta_available'] = False
+                        else:
+                            with torch.no_grad():
+                                output = self.actor_rollout_wg.compute_log_prob(final_gen_batch_output)
+                                final_gen_batch_output = final_gen_batch_output.union(output)
                         prepare_behavior_mu_old_policy(final_gen_batch_output, self.config.actor_rollout_ref.actor)
 
                         # batch.non_tensor_batch['uid'] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))],

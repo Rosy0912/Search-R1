@@ -257,7 +257,9 @@ class DataParallelPPOActor(BasePPOActor):
 
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
         if corrected_profile:
-            select_keys += ['actor_old_log_probs', 'sampled_old_log_probs']
+            select_keys += ['sampled_old_log_probs']
+            from search_r1.baselines.policy_safety_runtime import full_actor_beta_available
+            if full_actor_beta_available(data.meta_info): select_keys += ['actor_old_log_probs']
         if self.config.state_masking:
             select_keys.append('loss_mask')
         if self.config.use_kl_loss:
