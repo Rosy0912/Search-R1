@@ -22,3 +22,5 @@ actor_rollout_ref:
 trainer:
   acceptance_gate_enabled: false
   experiment_name: recursive-bran-a-hkust1-fresh200
+  evaluation_steps: [5, 50, 100, 150, 200]
+  checkpoint_save_steps: [5, 50, 100, 150, 200]

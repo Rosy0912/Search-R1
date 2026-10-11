@@ -1151,8 +1151,11 @@ class RayPPOTrainer(object):
                             raise RuntimeError('Recovery outer optimizer calls differ from required10')
 
                     # validate
-                    if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
-                        self.global_steps % self.config.trainer.test_freq == 0:
+                    explicit_eval_steps = self.config.trainer.get('evaluation_steps', None)
+                    evaluation_due = (self.global_steps in explicit_eval_steps if explicit_eval_steps is not None
+                                      else self.config.trainer.test_freq > 0 and
+                                      self.global_steps % self.config.trainer.test_freq == 0)
+                    if self.val_reward_fn is not None and evaluation_due:
                         with _timer('testing', timing_raw):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
@@ -1167,16 +1170,19 @@ class RayPPOTrainer(object):
 
                     recursive_rolling = (self.config.get('baselines') is not None and
                         self.config.baselines.tree.get('branch_sampling') == 'recursive_uniform_v1')
-                    if self.config.trainer.save_freq > 0 and \
+                    explicit_save_steps = self.config.trainer.get('checkpoint_save_steps', None)
+                    save_due = (self.global_steps in explicit_save_steps if explicit_save_steps is not None
+                                else self.config.trainer.save_freq > 0 and
                             (recursive_rolling or self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
-                             self.global_steps + 1 >= self.total_training_steps):
+                             self.global_steps + 1 >= self.total_training_steps))
+                    if save_due:
                         # Save the final updated policy before the counter advances.
                         # Final validation below must have a matching saved model,
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
-                            if recursive_rolling:
+                            if recursive_rolling and explicit_save_steps is None:
                                 from search_r1.baselines.recursive_rolling import prune
                                 prune(self.config.trainer.default_local_dir, self.global_steps,
                                       os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
