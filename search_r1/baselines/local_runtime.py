@@ -12,6 +12,23 @@ def loopback(value):
         return value == 'localhost'
 
 
+def local_addresses():
+    """Actual host interfaces, including Ray's route-selected local IPv4."""
+    local = {'127.0.0.1', '::1'}
+    local.update(record[4][0] for record in socket.getaddrinfo(socket.gethostname(), None))
+    # DNS alone may resolve the hostname to loopback on HKUST5. Do not
+    # allow a remote address: read only addresses assigned to this host.
+    import fcntl, struct
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+        for _, name in socket.if_nameindex():
+            try:
+                value = fcntl.ioctl(probe.fileno(), 0x8915, struct.pack('256s', name.encode()[:15]))
+            except OSError:
+                continue # Interfaces without an IPv4 address are expected.
+            local.add(socket.inet_ntoa(value[20:24]))
+    return local
+
+
 def check_local_runtime(config, ray_nodes=None):
     if not config.baselines.get('local_runtime_only', False):
         return
@@ -39,8 +56,7 @@ def check_local_runtime(config, ray_nodes=None):
     if any(os.environ.get(name) for name in proxies):
         raise ValueError('Online local runtime must not use an HTTP/SOCKS proxy')
     if ray_nodes is not None:
-        local = {'127.0.0.1', '::1'}
-        local.update(record[4][0] for record in socket.getaddrinfo(socket.gethostname(), None))
+        local = local_addresses()
         alive = [node for node in ray_nodes if node.get('Alive')]
         if len(alive) != 1 or alive[0].get('NodeManagerAddress') not in local:
             raise ValueError('Ray contains a remote or unexpected alive node')
