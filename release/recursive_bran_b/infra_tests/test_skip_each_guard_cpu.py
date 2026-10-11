@@ -13,7 +13,7 @@ class EachGuard(unittest.TestCase):
  def execute(self,kind):
   fixture=MuOnlyTests();fixture.setUp()
   try:
-   cfg=fixture.cfg;cfg.ppo_mini_batch_size=32;cfg.ppo_micro_batch_size=4;cfg.guard_continue_protocol=PROTOCOL
+   cfg=fixture.cfg;cfg.update(ppo_mini_batch_size=32,ppo_micro_batch_size=4,guard_continue_protocol=PROTOCOL)
    data=f.make_data(fixture.factory,cfg,rows=640);data.batch['ref_log_prob']=torch.full_like(data.batch['old_log_probs'],-.8)
    actor=f.Actor(cfg);actor._fresh_total_committed_optimizer_calls=0
    native=PolicySafetyRuntime.measure;refused=[False]
