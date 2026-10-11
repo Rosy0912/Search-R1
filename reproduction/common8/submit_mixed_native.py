@@ -31,7 +31,7 @@ def submit(base,commit,expected_files):
     launcher=base/'preparation/launch-mixed-native.sh'
     text='#!/usr/bin/env bash\nset -euo pipefail\n'
     for key,value in dict(SEARCH_G1_BASE=str(base),SEARCH_G1_SOURCE_COMMIT=commit,
-        SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES='1',SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION='0.2',
+        SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES='1',SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION='0.1',
         SEARCH_G1_LOCAL_RETRIEVAL_ASSETS=str(assets)).items():text+='export '+key+'='+shlex.quote(value)+'\n'
     text+='exec bash '+shlex.quote(str(base/'repo/reproduction/common8/launch_native.sh'))+'\n'
     with launcher.open('x') as f:f.write(text);f.flush();os.fsync(f.fileno())
