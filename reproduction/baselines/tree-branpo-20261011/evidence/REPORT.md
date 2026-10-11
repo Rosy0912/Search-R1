@@ -1,4 +1,4 @@
-Actual progress:81/200 full outers;648 directrank records,1620 successful Adam/rank,zero skips;rolling81 saved, actual82 started. Outer81 total742.560175s (12.376003min). Reward0.443749994, pure intra variance0.071614346251,mixed123/512. Latest dev80 unchanged:F1 45.987413%,EM37.890625%; versus75 F1 down0.421275pp,EM down1.757813pp. Final200,51713,HF/tokenizer,costs and cleanup incomplete.
+Actual progress:82/200 full outers;656 directrank records,1640 successful Adam/rank,zero skips;rolling82 saved,actual83 started. Outer82 total771.540263563s (12.859004min). Reward0.481640637,pure intra variance0.081542699386,mixed136/512. Latest dev80 unchanged:F1 45.987413%,EM37.890625%; versus75 F1 down0.421275pp,EM down1.757813pp. Final200,51713,HF/tokenizer,costs and cleanup incomplete.
 
 
 
