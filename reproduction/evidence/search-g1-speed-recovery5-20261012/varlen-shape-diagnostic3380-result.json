@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-11T18:35:21.395215+00:00",
+  "checkpoint": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/checkpoints/search-g1-common8/actor/global_step_5",
+  "optimizer_writes": 0,
+  "slurm_job_id": "3380",
+  "different_shape": {
+    "max": 0.8359375,
+    "mean": 0.04375336319208145,
+    "rms": 0.06007685884833336,
+    "p99": 0.1953125,
+    "max_probability_difference": 0.04084432125091553,
+    "mean_token_kl": 0.0018093710532411933,
+    "max_token_kl": 0.006981045473366976,
+    "argmax_match": 0.8888888955116272
+  },
+  "equal_shape_masked": {
+    "max": 0.0,
+    "mean": 0.0,
+    "rms": 0.0,
+    "p99": 0.0,
+    "max_probability_difference": 0.0,
+    "mean_token_kl": 0.0,
+    "max_token_kl": 0.0,
+    "argmax_match": 1.0
+  },
+  "sequence2_isolation": true,
+  "sequence2_max_difference": 0.0,
+  "max_allocated_bytes": 6506117120,
+  "scope": "Actual saved CP5 BF16 parameter / FP32 rotary forward diagnostic, no optimizer or training; equal-shaped masked reference separates numerical shape effects from packed boundaries"
+}
