@@ -138,6 +138,8 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     if restore_receipt:
         from search_g1.full_state_restore import bind
         bind(result,restore_receipt)
+    from reproduction.common8.shared_slurm import bind as bind_shared_slurm
+    bind_shared_slurm(result,base)
     from reproduction.common8.native_ray import prepare as prepare_ray
     prepare_ray(result)
     assert type(allow_existing_gpu_processes) is bool

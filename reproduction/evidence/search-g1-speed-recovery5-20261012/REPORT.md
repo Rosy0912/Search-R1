@@ -16,3 +16,7 @@ pending until the new allocation supplies measured evidence.
 
 
 Published/frozen source653712ba5cb3f7f96dcdf570625cc789b77e3024; full822 Git blobs match independent GitHub readback and target files. Remote focused14CPU tests and3queue tests pass. New3377 submitted once UTC17:31:35; actual UTC17:32 PENDING(Resources), video3371 occupies h100-8. Scheduler estimated Beijing09:15:37 is not an observed start or guarantee. Actual fullGPU restore, varlen model check and resumed6–10/newfullCP10/11start remain pending. User was asked whether to retain exclusive queue or authorize Slurm shared scheduling; absent a new answer, retain3377 and do not alter/cancel the foreign job. No OOM occurred during this recovery submission. Controls here are archival; never replay once-only submission/publication.
+
+## Explicit shared Slurm admission
+
+The human authorized: 允许核实并改为Slurm共用，保留视频和8卡训练预算. Video3371 reserves all eight GPU GRES. Updating pending3377 OverSubscribe to YES succeeded but left it pending Resources. The shared entry requests native96CPU/512GiB with oversubscribe and no additional GPU GRES reservation, then independently verifies all eight actual CUDA UUIDs, bound video job birth and existing process births. Records distinguish reserved GPU count0 from actual shared physical8. Global Slurm/device policy and the video allocation are unchanged. Remote CPU suite23 tests passed; actual GPU restoration and resumed6–10/CP10/11 acceptance remain pending. The old pending3377 may be replaced only while still PENDING; a running healthy job must first be inspected.

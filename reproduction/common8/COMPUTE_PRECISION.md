@@ -94,3 +94,14 @@ It does not claim independently recomputed HF probability parity. The original
 identified as historical measurements. New CP10 is saved and read back before
 continuing11; it was unavailable in canceled job3368. Speed is measured from
 actual candidate filling plus training, not predicted from configuration.
+
+The later direct user authorization permits Slurm shared scheduling while
+preserving the video job and the actual eight-GPU training budget. Shared native
+execution reserves96CPUs and512GiB host RAM. It uses an explicit per-run physical
+GPU authorization (indices0–7, independently observed UUIDs and native video job
+birth), rather than falsely claiming a second Slurm GPU reservation while the
+video owns all eight GRES. The pipeline retains own Slurm process/cgroup tracking,
+UUID locks, actual CUDA/rank validation and bound foreign process checks. Global
+Slurm/cgroup/device configuration and the video's reservation are not modified.
+The admission receipt distinguishes zero newly reserved Slurm GPUs from eight
+actual shared physical GPUs. CPU fixtures are not actual GPU acceptance.

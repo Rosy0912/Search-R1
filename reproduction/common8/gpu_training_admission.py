@@ -86,7 +86,11 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
     assert allocation['slurm_job_id'] == claim['slurm_job_id']
     local = run.get('execution_backend', 'slurm') == 'ssh_local'
     size = world_size(run)
-    physical = allocation['actual_allocated_indices']
+    from reproduction.common8.shared_slurm import physical_indices, POLICY
+    physical = physical_indices(allocation)
+    if allocation.get('slurm_gpu_sharing_policy') == POLICY:
+        assert run['slurm_gpu_sharing_policy']==POLICY
+        assert allocation['slurm_shared_authorization_sha256']==run['slurm_shared_authorization_sha256']
     if local:
         assert allocation['execution_backend'] == claim['execution_backend'] == 'ssh_local'
         assert allocation['slurm_job_id'] is None and allocation['execution_id'] == claim['execution_id'] == run['execution_id']

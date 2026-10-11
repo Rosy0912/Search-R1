@@ -11,6 +11,7 @@ from reproduction.common8.verify_data import digest
 from reproduction.common8.stage_retrieval import binding,memory_bytes
 from reproduction.common8.formal_contract import CONTRACT_KIND,SAFETY_MODE, assert_formal_run, has_formal_markers
 from reproduction.common8.topology import world_size,execution_job_id
+from reproduction.common8.shared_slurm import physical_indices
 ALLOWED=tuple(range(8))
 CALIBRATION_ROLES=('policy_safety_calibration_discovery','policy_safety_calibration_confirmation')
 _interrupt_requested=None
@@ -84,7 +85,7 @@ class Pipeline:
         self.python=run['python_executable'] if self.local else str(base/'env/bin/python')
         self.job_id=execution_job_id(run);self.world=world_size(run)
         self.owned=OwnedProcesses(base/'logs/process-ledger.json',run['run_id'])
-        allocation=json.loads((base/'logs/native-allocation-admission.json').read_text());self.physical_indices=set(allocation['actual_allocated_indices'])
+        allocation=json.loads((base/'logs/native-allocation-admission.json').read_text());self.physical_indices=set(physical_indices(allocation))
         self.stop_sampling=threading.Event();self.max_used={};self.sample_error=None
         if self.local:
             from reproduction.common8.native_allocation import local_placement

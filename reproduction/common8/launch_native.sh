@@ -12,6 +12,9 @@ export OMP_NUM_THREADS=8 PYTHONUNBUFFERED=1 NCCL_NVLS_ENABLE=0
 unset PYTHONHOME RAY_ADDRESS
 mkdir -p "$BASE/logs" "$BASE/tmp" "$BASE/ray" "$BASE/artifacts" "$BASE/cache/triton" "$BASE/cache/inductor" "$BASE/cache/hf"
 cd "$BASE/repo"
+if [[ -n "${SEARCH_G1_SLURM_SHARED_AUTHORIZATION:-}" ]]; then
+  export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+fi
 # Model/data preparation is inside the actual native full-memory allocation.
 python - <<'PY'
 import os,socket,subprocess
@@ -19,7 +22,13 @@ from reproduction.common8.native_allocation import fields
 from reproduction.common8.stage_retrieval import memory_bytes
 job=fields(subprocess.check_output(['scontrol','show','job','-o',os.environ['SLURM_JOB_ID']],text=True))
 assert job['JobState']=='RUNNING' and job['NodeList']==socket.gethostname().split('.')[0]=='h100-8'
-assert job['JobId']==os.environ['SLURM_JOB_ID'] and job['NumNodes']=='1' and job['TresPerNode'] in ('gres:gpu:8','gres:gpu:h100:8')
+assert job['JobId']==os.environ['SLURM_JOB_ID'] and job['NumNodes']=='1'
+if os.environ.get('SEARCH_G1_SLURM_SHARED_AUTHORIZATION'):
+    from reproduction.common8.shared_slurm import authorization
+    authorization(os.environ['SEARCH_G1_SLURM_SHARED_AUTHORIZATION'],os.environ['SEARCH_G1_BASE'])
+    assert job.get('TresPerNode','(null)') in ('(null)','N/A') and job['OverSubscribe']!='NO'
+else:
+    assert job['TresPerNode'] in ('gres:gpu:8','gres:gpu:h100:8')
 assert memory_bytes(job['TRES'])>=512*2**30
 assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==8
 PY

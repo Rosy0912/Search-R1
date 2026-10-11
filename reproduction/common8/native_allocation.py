@@ -4,6 +4,8 @@ Slurm's requested GRES alone is insufficient: also check RUNNING/node binding,
 visible CUDA devices, no other active allocation on this node, and no foreign
 compute applications. The local branch binds only the authorized GPUs and actual
 PID birth/host; foreign jobs outside that assignment do not affect admission.
+The explicit shared8 native branch separately proves CPU/memory allocation and
+actual shared CUDA UUIDs, without claiming Slurm reserved the shared GPUs twice.
 This is resource evidence, not model/GRPO acceptance.
 """
 import argparse
@@ -98,7 +100,9 @@ def admit(base):
     assert run['profile']=='common8' and run['completed_updates']==0
     detail=subprocess.check_output(['scontrol','show','job','-d',job_id],text=True)
     job=fields(detail)
-    allocated=allocated_indices(detail,node)
+    from reproduction.common8.shared_slurm import POLICY as SHARED_POLICY
+    sharing=run.get('slurm_gpu_sharing_policy')==SHARED_POLICY
+    allocated=[] if sharing else allocated_indices(detail,node)
     assert job['JobId']==job_id
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     active=subprocess.check_output(['squeue','-h','-w',node,'-t','RUNNING,COMPLETING','-o','%i'],text=True).split()
@@ -114,17 +118,32 @@ def admit(base):
         assert run.get('shared_gpu_policy') == 'preserve_bound_existing_processes'
         from reproduction.a800.owned_processes import same
         allowed = [record['application'] for record in cohosts if same(record['process_identity'])]
-    validate(job,node,visible,active,rows,applications,allocated,actual,allowed)
+    if sharing:
+        from reproduction.common8.shared_slurm import validate as validate_shared
+        assert allowed is not None
+        for cohost,birth in run['shared_native_cohost_births'].items():
+            if cohost in active:
+                current=fields(subprocess.check_output(['scontrol','show','job','-o',cohost],text=True))
+                assert all(current[k]==birth[k] for k in ('JobId','StartTime','NodeList','Command'))
+                assert current['JobState'] in ('RUNNING','COMPLETING')
+        validate_shared(job,node,visible,active,rows,applications,actual,allowed,run)
+    else:
+        validate(job,node,visible,active,rows,applications,allocated,actual,allowed)
     memory_raw = subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used,memory.free',
         '--format=csv,noheader,nounits'],text=True)
     memory_rows = [[x.strip() for x in r] for r in csv.reader(io.StringIO(memory_raw))]
     proof=dict(accepted=True,run_id=run['run_id'],slurm_job_id=job_id,node=node,
-        actual_job_state=job['JobState'],requested_gres=job['TresPerNode'],
+        actual_job_state=job['JobState'],requested_gres=job.get('TresPerNode'),
         visible_devices=visible,actual_allocated_indices=allocated,actual_cuda_runtime_uuids=actual,
         actual_allocation_detail=detail,physical_gpu_inventory=rows,active_node_jobs=active,
         foreign_compute_applications=applications,shared_gpu_policy=run.get('shared_gpu_policy'),
         bound_cohosts=cohosts,actual_memory_inventory=memory_rows,checked_unix=time.time(),
         scope='native allocation and actual UUID mapping before project GPU work; bound foreign processes preserved under explicit shared policy; not model/GRPO acceptance')
+    if sharing:
+        proof.update(slurm_gpu_sharing_policy=SHARED_POLICY,slurm_reserved_gpu_count=0,
+            actual_shared_physical_indices=list(range(8)),
+            slurm_shared_authorization_sha256=run['slurm_shared_authorization_sha256'],
+            scope='actual native CPU/memory allocation plus authorized shared physical8 CUDA UUIDs; no exclusive or second Slurm GPU reservation claimed')
     target=base/'logs/native-allocation-admission.json'
     with target.open('x') as f:
         json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())

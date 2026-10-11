@@ -19,11 +19,11 @@ def validate_native_queue(active):
     assert all(len(row)==2 and row[0].isdecimal() and row[1] for row in native_jobs)
     assert not any(row[1].startswith('search-g1-') for row in native_jobs), 'An active Search-G1 allocation already exists; inspect its intent/receipt'
     # Slurm may queue behind unrelated allocations. It remains responsible for
-    # exclusive resources; this does not cancel or oversubscribe another job.
+    # ordinary allocations; explicit shared admission is separately authorized.
     return native_jobs
 
 
-def submit(base,commit,expected_files,restore_receipt=None,execution_profile=None):
+def submit(base,commit,expected_files,restore_receipt=None,execution_profile=None,shared_authorization=None):
     base=Path(base).resolve();assert str(base).startswith('/mnt/data/shaoshitong/')
     intent=base/'preparation/native-submit-intent.json';receipt=base/'preparation/native-submit-receipt.json'
     if intent.exists() or receipt.exists():
@@ -47,16 +47,22 @@ def submit(base,commit,expected_files,restore_receipt=None,execution_profile=Non
         from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
         assert execution_profile == NATIVE_BF16_PROFILE and restore_receipt
         text+='export SEARCH_G1_EXECUTION_PROFILE='+shlex.quote(execution_profile)+'\n'
+    if shared_authorization:
+        from reproduction.common8.shared_slurm import authorization
+        authorization(shared_authorization,base)
+        assert execution_profile and restore_receipt
+        text+='export SEARCH_G1_SLURM_SHARED_AUTHORIZATION='+shlex.quote(str(shared_authorization))+'\n'
     for key,value in dict(SEARCH_G1_BASE=str(base),SEARCH_G1_SOURCE_COMMIT=commit,
         SEARCH_G1_ALLOW_EXISTING_GPU_PROCESSES='1',SEARCH_G1_ROLLOUT_MEMORY_UTILIZATION='0.1',
         SEARCH_G1_LOCAL_RETRIEVAL_ASSETS=str(assets)).items():text+='export '+key+'='+shlex.quote(value)+'\n'
     text+='exec bash '+shlex.quote(str(base/'repo/reproduction/common8/launch_native.sh'))+'\n'
     with launcher.open('x') as f:f.write(text);f.flush();os.fsync(f.fileno())
     command=['sbatch','--parsable','--job-name=search-g1-mixed200','--partition=gpu',
-        '--nodelist=h100-8','--nodes=1','--ntasks=1','--cpus-per-task=96','--gres=gpu:h100:8',
-        '--mem=512G','--exclusive','--time=7-00:00:00','--signal=B:TERM@60',
+        '--nodelist=h100-8','--nodes=1','--ntasks=1','--cpus-per-task=96',
+        '--mem=512G','--time=7-00:00:00','--signal=B:TERM@60',
         '--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),
         '--export=NONE',str(launcher)]
+    command[1:1]=(['--oversubscribe'] if shared_authorization else ['--exclusive','--gres=gpu:h100:8'])
     publish_exclusive(intent,dict(created_unix=time.time(),base=str(base),source_commit=commit,
         verified_files=len(expected_files),observed_unrelated_native_jobs=native_jobs,command=command,shared_gpu_policy='preserve_bound_existing_processes'))
     r=subprocess.run(command,capture_output=True,text=True,timeout=30)
@@ -71,5 +77,5 @@ def submit(base,commit,expected_files,restore_receipt=None,execution_profile=Non
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True)
     parser.add_argument('--source-commit',required=True);parser.add_argument('--source-manifest',required=True)
-    parser.add_argument('--restore-receipt');parser.add_argument('--execution-profile')
-    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()),args.restore_receipt,args.execution_profile)
+    parser.add_argument('--restore-receipt');parser.add_argument('--execution-profile');parser.add_argument('--shared-authorization')
+    args=parser.parse_args();submit(args.base,args.source_commit,json.loads(Path(args.source_manifest).read_text()),args.restore_receipt,args.execution_profile,args.shared_authorization)
