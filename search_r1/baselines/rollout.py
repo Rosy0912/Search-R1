@@ -3,6 +3,7 @@
 Only new algorithms use this engine. The original GRPO/validation path is kept.
 All metadata is row-local, so DataProto permutations also permute provenance.
 """
+import time
 from dataclasses import dataclass, field
 import copy
 import hashlib
