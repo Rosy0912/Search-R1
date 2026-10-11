@@ -6,10 +6,6 @@ from omegaconf import OmegaConf
 from types import SimpleNamespace
 from verl.workers.fsdp_workers import ActorRolloutRefWorker
 
-class InferenceWorker(ActorRolloutRefWorker):
-    def __init__(self,config,role=None):
-        super().__init__(config=config,role='rollout')
-
 @ray.remote
 def evaluate(config,run):
     from torch.utils.data import DataLoader
@@ -35,13 +31,23 @@ def evaluate(config,run):
     t=RayPPOTrainer.__new__(RayPPOTrainer)
     t.config=config;t.tokenizer=tokenizer;t.hybrid_engine=True
     t.use_reference_policy=False;t.use_rm=False
-    t.role_worker_mapping={Role.ActorRollout:ray.remote(InferenceWorker)}
+    t.role_worker_mapping={Role.ActorRollout:ray.remote(ActorRolloutRefWorker)}
     t.resource_pool_manager=ResourcePoolManager({'eval':[8]},{Role.ActorRollout:'eval'})
     t.ray_worker_group_cls=RayWorkerGroup
     t.baseline_controller=SimpleNamespace(method='bapo',ranker=None)
     t.val_reward_fn=RewardManager(tokenizer,num_examine=0)
     t.val_dataloader=batches();t.global_steps=150
-    t.init_workers()
+    # Construct the unchanged worker directly as rollout-only. The colocated
+    # factory requires its direct Worker parent, so do not subclass the actor.
+    from verl.single_controller.ray import RayClassWithInitArgs
+    from verl.single_controller.ray.base import create_colocated_worker_cls
+    t.resource_pool_manager.create_resource_pool()
+    pool=t.resource_pool_manager.get_resource_pool(Role.ActorRollout)
+    cls=RayClassWithInitArgs(cls=ray.remote(ActorRolloutRefWorker),config=config.actor_rollout_ref,role='rollout')
+    wg=RayWorkerGroup(resource_pool=pool,ray_cls_with_init=create_colocated_worker_cls({'actor_rollout':cls}))
+    t.actor_rollout_wg=wg.spawn(prefix_set={'actor_rollout'})['actor_rollout']
+    t.wg_dicts=[wg]
+    t.actor_rollout_wg.init_model()
     # Only the validation metadata branch; native training initialization stays disabled.
     config.trainer.fresh200_enabled=True
     result=t._validate()
