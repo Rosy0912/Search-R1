@@ -1183,7 +1183,8 @@ class RayPPOTrainer(object):
                             metrics.update(self.baseline_controller.stage_validation(self.global_steps))
 
                     if self.config.trainer.save_freq > 0 and \
-                            (self.global_steps % self.config.trainer.save_freq == 0 or
+                            (self.config.actor_rollout_ref.actor.get('recursive_document_objective',False) or
+                             self.global_steps % self.config.trainer.save_freq == 0 or
                              self.global_steps == getattr(self.config.trainer, 'acceptance_step', 0) or
                              self.global_steps + 1 >= self.total_training_steps):
                         # Save the final updated policy before the counter advances.
@@ -1191,6 +1192,10 @@ class RayPPOTrainer(object):
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
+                            if self.config.actor_rollout_ref.actor.get('recursive_document_objective',False):
+                                from search_r1.baselines.recursive_rolling import prune
+                                pruned=prune(self.config.trainer.default_local_dir,self.global_steps)
+                                metrics['recursive/rolling_snapshots_pruned']=len(pruned)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
