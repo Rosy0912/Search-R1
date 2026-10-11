@@ -20,7 +20,7 @@ def check_local_runtime(config, ray_nodes=None):
         raise ValueError('Runtime is not on the expected local host')
     direct=os.environ.get('SEARCH_R1_EXECUTION_BACKEND')=='hkust_direct'
     if direct:
-        identities={'xielab1':1005,'xielab5':1001}
+        identities={'xielab1':1005,'xielab5':1001,'xie-lab-4':1001}
         if identities.get(expected)!=os.getuid() or not os.environ.get('SEARCH_R1_BASELINE_RUN_ID'):
             raise ValueError('Direct HKUST runtime identity changed')
         from .preflight import validate_inherited_gpu_leases
@@ -28,10 +28,10 @@ def check_local_runtime(config, ray_nodes=None):
     elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
         raise ValueError('Local runtime requires the matching Slurm allocation')
     parsed = urlparse(config.retriever.url)
-    local_retriever = loopback(parsed.hostname or '') or (direct and expected=='xielab5' and parsed.hostname=='10.123.4.11')
+    local_retriever = loopback(parsed.hostname or '') or (direct and expected in ('xielab5','xie-lab-4') and parsed.hostname=='10.123.4.11' and parsed.port==18003)
     if (parsed.scheme != 'http' or not local_retriever or parsed.username
             or parsed.password or parsed.path != '/retrieve'):
-        raise ValueError('Retriever must be a local loopback HTTP service')
+        raise ValueError('Retriever must be the approved HKUST HTTP service')
     address = os.environ.get('RAY_ADDRESS', '')
     if not (direct and address=='local') and not loopback(urlparse('http://' + address).hostname or ''):
         raise ValueError('Ray must use an explicit local loopback address')

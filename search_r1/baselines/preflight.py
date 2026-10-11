@@ -26,7 +26,10 @@ def check_selected_gpus(selected, inventory, processes):
     if not selected or len(set(selected)) != len(selected):
         raise ValueError('CUDA_VISIBLE_DEVICES must select distinct GPUs')
     if os.environ.get('RECURSIVE_BRAN_STRICT_GPU_GATE')=='1':
-        from .recursive_admission import exact_gpu_gate
+        if os.environ.get('RECURSIVE_BRAN_HARDWARE')=='hkust5':
+            from .recursive_admission_hkust5 import exact_gpu_gate
+        else:
+            from .recursive_admission import exact_gpu_gate
         exact_gpu_gate(selected,inventory)
     records = []
     for device in selected:
@@ -143,7 +146,8 @@ def validate_assets_and_retriever(config):
 
 
 def gpu_snapshot():
-    inventory = subprocess.check_output(['nvidia-smi', '--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu',
+    scope=['-i',os.environ['CUDA_VISIBLE_DEVICES']] if os.environ.get('RECURSIVE_BRAN_HARDWARE')=='hkust5' else []
+    inventory = subprocess.check_output(['nvidia-smi'] + scope + ['--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu',
                                           '--format=csv,noheader,nounits'], text=True)
     apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
                                     '--format=csv,noheader,nounits'], text=True)
