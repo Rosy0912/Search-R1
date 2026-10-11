@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 import os
 import queue
 import threading
+from collections import Counter
 import numpy as np
 import torch
 from pinned_overlap import (VECTOR_ROWS, QUERY_MICRO, Tile, tile_plan,
@@ -38,6 +39,7 @@ def eight_gpu_memory_plan(ntotal, dimension, total_queries=0, k=3):
         per_gpu_query_copy_bytes=total_queries*dimension*4,
         per_gpu_distances_peak_bytes=base['max_one_query_micro_distances_bytes'],
         cpu_two_ready_tiles_per_gpu_bytes_upper=GPU_COUNT*2*total_queries*k*12,
+        cpu_one_pending_producer_tile_per_gpu_bytes_upper=GPU_COUNT*total_queries*k*12,
         merge_gpu=MERGE_GPU, resident_full_index=False,
         limits='Not measured peaks: CUDA contexts, allocator reserve, FAISS heap/mmap pages, merge scratch and oracle coexistence excluded')
 
@@ -59,6 +61,9 @@ class ScanJob:
     output: queue.Queue = field(default_factory=lambda: queue.Queue(maxsize=2))
     done: threading.Event = field(default_factory=threading.Event)
     error: object = None
+    actual_gemm_shapes: Counter = field(default_factory=Counter)
+    actual_tile_starts: list = field(default_factory=list)
+    thread_native_id: object = None
 
 
 def publish(job, value):
@@ -101,6 +106,7 @@ class TileWorker(threading.Thread):
     @torch.no_grad()
     def execute(self, job):
         if not job.tiles: return
+        job.thread_native_id = threading.get_native_id()
         device = torch.device('cuda:%d' % self.gpu)
         with torch.cuda.device(device):
             if self.buffers is None:
@@ -118,6 +124,7 @@ class TileWorker(threading.Thread):
                         self.buffers.stage(Tile(number+1, following.start, following.stop))
                     buffer_tile = Tile(number, tile.start, tile.stop)
                     vectors = self.buffers.acquire(buffer_tile)
+                    job.actual_tile_starts.append(tile.start)
                     if job.trace is not None:
                         job.trace(dict(event='vector_transfer', start=tile.start,
                             shape=list(vectors.shape), gpu=self.gpu,
@@ -129,6 +136,8 @@ class TileWorker(threading.Thread):
                             stop = min(offset+QUERY_MICRO, len(q))
                             left, right = tq[offset:stop], vectors.T
                             distances = left @ right
+                            job.actual_gemm_shapes[(request_id,offset,stop-offset,self.host.shape[1],
+                                len(vectors),local_k,k,str(distances.dtype))] += 1
                             if distances.dtype != torch.float32:
                                 raise ValueError('Worker GEMM was not FP32')
                             if job.trace is not None:
@@ -228,6 +237,12 @@ class EightGpuStreamingFlatIP:
                 if any(job.error is not None for job in jobs):
                     raise RuntimeError('Worker error after tile production')
                 self.last_scan_profile = dict(tiles_merged=tiles_consumed, merge_gpu=MERGE_GPU,
+                    actual_worker_shapes=[dict(gpu=gpu,thread_native_id=job.thread_native_id,
+                        tile_starts=job.actual_tile_starts, gemm_shape_counts=[dict(
+                            request=key[0],offset=key[1],left=[key[2],key[3]],right=[key[3],key[4]],
+                            local_k=key[5],k=key[6],dtype=key[7],count=count)
+                            for key,count in sorted(job.actual_gemm_shapes.items())])
+                        for gpu,job in enumerate(jobs)],
                     partition='round_robin_whole_original_tiles',
                     memory=eight_gpu_memory_plan(self.ntotal,self.d,sum(len(q) for _,q,_ in requests)))
                 return [(np.empty((0,k),np.float32), np.empty((0,k),np.int64)) if not len(q)

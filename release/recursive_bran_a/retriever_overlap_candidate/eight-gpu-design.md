@@ -40,10 +40,12 @@ Memory budget at dimension768 and shared 40 queries, top3:
 - Per GPU: 201,326,592B (192MiB) double device vector buffers, at most8MiB for one
   query64 distance matrix, query matrix replicated on eachGPU (122880B for40Q).
 - Pinned CPU: 192MiB per worker, 1,610,612,736B (1.5GiB) for eight workers.
-- Two queued top3 tile results per GPU: <=7680B for40Q, excluding Python objects.
+- Two queued top3 tile results per GPU: <=23,040B for40Q across eight GPUs, plus <=11,520B for one pending producer tile per GPU and Python objects.
 - GPU7 owns global best-score/ID tensors and small merge scratch in addition.
 - CUDA contexts, allocator reserves, cublas workspace, host index pages and
   concurrent oracle/training are excluded. These are planned, not actual peaks.
+
+`last_scan_profile.actual_worker_shapes` also keeps per-worker actual tensor shapes/counts, tile-start coverage and native threadID when an ordinary HTTP call supplies no trace callback. This is worker-side operand instrumentation; it does not claim that a main-thread TorchDispatchMode observed worker kernels.
 
 The existing HTTP collection queue preserves independently encoded requests and
 limits one shared scan at a time; the backend adds a `scan_lock`. Query lists are
