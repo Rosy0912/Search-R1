@@ -124,6 +124,7 @@ class SearchRollout:
 
     def timed_rewards(self, states):
         started=time.perf_counter()
+        self.timing("reward_callback_start", rows=len(states))
         try:
             return self.reward_callback(states)
         finally:
@@ -350,6 +351,7 @@ class SearchRollout:
 
     def compose(self, states):
         started=time.perf_counter()
+        self.timing("compose_start", rows=len(states))
         try:
             if self.token_preservation is not None:
                 from .tree_raw_tokens import tokenizer_validation_scope
