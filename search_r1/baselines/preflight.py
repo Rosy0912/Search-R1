@@ -168,6 +168,11 @@ def main():
         print('BASELINE_INHERITED_GPU_LEASES_OK', flush=True)
         os.execvp(command[0], command)
         return
+    shared_lock=os.environ.get('RECURSIVE_BRAN_EXPERIMENT_LOCK')
+    if shared_lock:
+        study_fd=os.open(shared_lock,os.O_CREAT|os.O_RDWR,0o600)
+        fcntl.flock(study_fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        os.set_inheritable(study_fd,True)
     selected = [v.strip() for v in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if v.strip()]
     inventory, processes = gpu_snapshot()
     records = check_selected_gpus(selected, inventory, processes)
