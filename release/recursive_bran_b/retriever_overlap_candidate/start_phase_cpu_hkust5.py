@@ -23,6 +23,7 @@ def main():
     env=dict(CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(source)+':'+str(helper),
         PYTHONDONTWRITEBYTECODE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='16',MKL_NUM_THREADS='16',
         OPENBLAS_NUM_THREADS='16',TOKENIZERS_PARALLELISM='false',HF_HUB_OFFLINE='1',
+        NVIDIA_TF32_OVERRIDE='0',
         HF_DATASETS_OFFLINE='1',HF_HOME=str(root/'cache/hf'),
         HF_DATASETS_CACHE=str(root/'cache/phase-datasets'),XDG_CACHE_HOME=str(root/'cache'),TMPDIR=str(root/'tmp'))
     python='/home/shaoshitong/search-e1-config-study-20261004/env/bin/python'
@@ -30,7 +31,11 @@ def main():
         '--assets',a.assets,'--asset-proof',a.asset_proof,'--base',a.base,'--token-file',str(token),'--gpu-count','4']
     command='exec '+shlex.join(cmd)+' > '+shlex.quote(str(base/'logs/server.log'))+' 2>&1'
     script=base/'receipts/cpu-launch.sh';script.write_text(command+'\n');script.chmod(0o700)
-    subprocess.run(['tmux','new-session','-d','-s',base.name,'bash '+shlex.quote(str(script))],check=True)
+    physical_source=Path('/home/shaoshitong/search-e1-migration-20261011')/source.relative_to('/')
+    wrapper=physical_source/'release/recursive_bran_b/view_hkust5.sh'
+    # The already-running tmux server is outside this bwrap filesystem view.
+    start=['bash',str(wrapper),'bash',str(script)]
+    subprocess.run(['tmux','new-session','-d','-s',base.name,shlex.join(start)],check=True)
     record=dict(source=str(source),commit=(source/'SOURCE_COMMIT').read_text().strip(),base=str(base),
         session=base.name,gpu_activation=False,gpu_devices=[0,1,2,3],
         launch_sha256=hashlib.sha256(script.read_bytes()).hexdigest())

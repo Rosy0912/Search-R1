@@ -38,9 +38,9 @@ def main():
     assert proof['index']['sha256']=='69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166'
     for name,key in [('index/e5_Flat.index','index'),('corpus/wiki-18.jsonl','corpus')]:
         assert file_metadata(assets/name)==proof[key]['metadata'], 'Transferred asset changed after checksum verification'
-    encoder=original.Encoder('e5',str(assets/'encoder'),'mean',256,False,device='cpu')
     corpus=original.load_corpus(str(assets/'corpus/wiki-18.jsonl'))
     assert len(corpus)==21015324
+    encoder=original.Encoder('e5',str(assets/'encoder'),'mean',256,False,device='cpu')
     scan=PhaseGpuScanner(SimpleNamespace(d=768,ntotal=21015324,vector_rows=32768,query_micro=64),
         str(assets/'index/e5_Flat.index'),gpu_count=a.gpu_count)
     assert not torch.cuda.is_initialized(), 'CPU parent must never create a CUDA context'
@@ -65,7 +65,9 @@ def main():
                 and gate['scope']=='four_gpu_full_scan_and_http_oracle_equality')
         except (OSError,KeyError,ValueError):return False
     def retrieve(request):
-        k=request.topk or 3
+        if request.topk is not None and not 1<=request.topk<=4:
+            raise HTTPException(400,'topk must be 1..4')
+        k=3 if request.topk is None else request.topk
         if not 1<=k<=4 or len(request.queries)>2560:raise HTTPException(400,'topk 1..4; at most 2560 queries')
         if not request.queries:return {'result':[]}
         with lock:
