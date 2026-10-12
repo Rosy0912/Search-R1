@@ -106,12 +106,13 @@ class RemoteFile(io.BufferedIOBase):
         super().close()
 
 
-import concurrent.futures,threading
+import concurrent.futures,threading,re
+SOURCE_OPEN_GATE=threading.Semaphore(2)
 class ParallelRemoteFile(io.BufferedIOBase):
     BLOCK=8*1024*1024
     LANES=4
     def __init__(self,record):
-        self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0
+        self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0;self.source_opens=0
     def readable(self):return True
     def seekable(self):return True
     def tell(self):return self.position
@@ -122,13 +123,14 @@ class ParallelRemoteFile(io.BufferedIOBase):
             try:p.wait(timeout=5)
             except subprocess.TimeoutExpired:p.kill();p.wait()
             p.stdout.close()
+            if p.stderr:p.stderr.close()
         if self.executor:self.executor.shutdown(wait=True,cancel_futures=True)
         self.processes=[];self.futures={};self.executor=None
     def seek(self,offset,whence=0):
         new=offset if whence==0 else (self.position+offset if whence==1 else self.record['archive_bytes']+offset)
         if not 0<=new<=self.record['archive_bytes']:raise ValueError('Invalid source offset')
         key=new//self.BLOCK
-        if self.futures and key not in self.futures and new!=self.record['archive_bytes']:self.stop_stream()
+        # Defer restart until a real read; HF SliceFileObj restores old offsets between parts.
         self.position=new;return new
     def _start(self):
         base=self.position//self.BLOCK
@@ -137,8 +139,27 @@ class ParallelRemoteFile(io.BufferedIOBase):
             key=base+lane;offset=key*self.BLOCK
             if offset>=self.record['archive_bytes']:break
             code="import sys,pathlib; p=pathlib.Path(%r); assert p.stat().st_size==%d; f=p.open('rb'); off=%d\nwhile off<%d:\n f.seek(off); data=f.read(min(%d,%d-off)); sys.stdout.buffer.write(data); sys.stdout.buffer.flush(); off+=%d\n"%(self.record['archive'],self.record['archive_bytes'],offset,self.record['archive_bytes'],self.BLOCK,self.record['archive_bytes'],self.BLOCK*self.LANES)
-            p=subprocess.Popen(source_args('python3 -c '+shlex.quote(code)),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
-            self.processes.append(p);self.futures[key]=(p,self.executor.submit(p.stdout.read,min(self.BLOCK,self.record['archive_bytes']-offset)))
+            expected=min(self.BLOCK,self.record['archive_bytes']-offset)
+            for attempt in range(3):
+                with SOURCE_OPEN_GATE:
+                    p=subprocess.Popen(source_args('python3 -c '+shlex.quote(code)),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+                    self.source_opens+=1
+                    prefix=p.stdout.read(min(512,expected))
+                    if len(prefix)==min(512,expected):break
+                    if p.poll() is None:p.terminate()
+                    try:p.wait(timeout=5)
+                    except subprocess.TimeoutExpired:p.kill();p.wait()
+                    err=p.stderr.read(2048).decode(errors='replace')
+                    err=re.sub(r'https?://\S+','[redacted-url]',err)
+                    err=re.sub(r'hf_[A-Za-z0-9]+','[redacted-token]',err)
+                    with (ROOT/'source-connection-errors.jsonl').open('a') as log:
+                        log.write(json.dumps({'epoch':time.time(),'file':self.record['repo_path'],'lane':lane,'attempt':attempt+1,'returncode':p.returncode,'stderr':err})+'\n')
+                    p.stdout.close();p.stderr.close()
+                if attempt==2:raise OSError('Source SSH startup failed after bounded retries')
+                time.sleep(1)
+            self.processes.append(p)
+            def read_first(proc=p,head=prefix,n=expected):return head+proc.stdout.read(n-len(head))
+            self.futures[key]=(p,self.executor.submit(read_first))
     def read(self,size=-1):
         remaining=self.record['archive_bytes']-self.position
         self.max_read_requested=max(self.max_read_requested,size)
@@ -148,6 +169,7 @@ class ParallelRemoteFile(io.BufferedIOBase):
             size=remaining
         if size>64*1024*1024:raise ValueError('Read exceeds 64MiB response bound')
         size=min(size,remaining);parts=[]
+        if self.executor and self.position//self.BLOCK not in self.futures:self.stop_stream()
         if not self.executor:self._start()
         while size:
             key=self.position//self.BLOCK;off=self.position%self.BLOCK
@@ -158,7 +180,7 @@ class ParallelRemoteFile(io.BufferedIOBase):
                 del self.futures[key];nextkey=key+self.LANES;nextoffset=nextkey*self.BLOCK
                 if nextoffset<self.record['archive_bytes']:self.futures[nextkey]=(p,self.executor.submit(p.stdout.read,min(self.BLOCK,self.record['archive_bytes']-nextoffset)))
         if time.time()-self.last_progress>=2 or self.position==self.record['archive_bytes']:
-            (ROOT/('progress-'+hashlib.sha256(self.record['repo_path'].encode()).hexdigest()[:16]+'.json')).write_text(json.dumps({'epoch':time.time(),'file':self.record['repo_path'],'position':self.position,'total':self.record['archive_bytes'],'lanes':self.LANES,'bounded_cache_bytes':self.BLOCK*self.LANES,'max_read_requested':self.max_read_requested}))
+            p=ROOT/('progress-'+hashlib.sha256(self.record['repo_path'].encode()).hexdigest()[:16]+'.json'); tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps({'epoch':time.time(),'file':self.record['repo_path'],'position':self.position,'total':self.record['archive_bytes'],'lanes':self.LANES,'bounded_cache_bytes':self.BLOCK*self.LANES,'max_read_requested':self.max_read_requested,'source_opens':self.source_opens}));tmp.replace(p)
             self.last_progress=time.time()
         return b''.join(parts)
     def close(self):
