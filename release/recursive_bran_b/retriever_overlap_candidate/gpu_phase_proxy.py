@@ -160,6 +160,13 @@ def gpu_worker(connection, configuration):
                 scan.close(); scan = None
                 timing('scanner_close_end', stopped)
                 connection.send(dict(status='RELEASED',identity=identity))
+                if configuration.get('fast_worker_exit', False):
+                    # All queues joined and streams synchronized by scan.close().
+                    # Skip Python/CUDA object finalizers; actual OS process exit
+                    # still owns context release and is joined by the parent.
+                    connection.close()
+                    timing('child_immediate_exit')
+                    os._exit(0)
                 return
             if request['op'] != 'scan': raise ValueError('Unknown private worker operation')
             verify_unchanged(proof)
@@ -184,7 +191,7 @@ def gpu_worker(connection, configuration):
 
 
 class PhaseGpuScanner:
-    def __init__(self, original, index_path, oracle_source=None, timeout=180, gpu_count=8):
+    def __init__(self, original, index_path, oracle_source=None, timeout=180, gpu_count=8, fast_worker_exit=False):
         if gpu_count not in (4,8):raise ValueError('Four/eight devices must be explicitly selected')
         dimension = original.d
         if original.vector_rows != 32768 or original.query_micro != 64:
@@ -202,7 +209,8 @@ class PhaseGpuScanner:
         self.vector_rows, self.query_micro = 32768, 64
         self.scan_lock = threading.Lock()
         self.runtime = SpawnedRuntime(gpu_worker,dict(index_path=proof['path'],
-            dimension=dimension,index_identity=proof,source_manifest=source_manifest(),gpu_count=gpu_count),timeout)
+            dimension=dimension,index_identity=proof,source_manifest=source_manifest(),gpu_count=gpu_count,
+            fast_worker_exit=fast_worker_exit),timeout)
         self.last_scan_profile = None
         self.last_worker_identity = None
 
