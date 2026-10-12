@@ -135,6 +135,16 @@ components, not a complete recovery launcher: deployment admission, durable
 chain/partial-loss accounting and final verifier integration remain pending.
 The ordinary fresh0 pipeline explicitly rejects a recovery manifest.
 
+Counter-chain auditing reads the fully returned driver attempts and actual
+update rows, rederives every segment, and checks exact saved write/attempt
+offsets at namespace transitions. The retained logical intervals must cover
+1..200 once. Parent updates beyond the selected checkpoint remain explicit
+discarded evidence; their writes cannot be inherited or double-counted. G1
+and binary reward phases stay separate. This scalar audit deliberately has no
+full-acceptance flag: independent rank/scheduler/source/checkpoint/Head binding,
+rank-local incomplete tails and the complete final/cleanup audit are separate
+mandatory evidence, and production recovery integration remains pending.
+
 ## Required evidence before launch
 
 1. Focused tests:100/101 reward boundary,10-step refresh boundaries, strict
