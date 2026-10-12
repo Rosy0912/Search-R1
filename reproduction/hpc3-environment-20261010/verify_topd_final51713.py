@@ -42,8 +42,24 @@ def main():
  rank_audits=[]
  for rank in range(4):
   p=RUN/('actor-resource-audit/actor-updates-rank%d-outer200.json'%rank);record=json.loads(p.read_text());assert record['rank']==rank and record['actual_scheduler_last_epoch']==200 and len(record['updates'])==200
-  assert all(len(u['optimizer_step_records'])==20 and len(u['micro_forward_records'])==160 and all(x['finite'] for x in u['optimizer_step_records']) for u in record['updates'])
+  assert all(all(u['input_finite'].values()) and len(u['optimizer_step_records'])==20 and len(u['micro_forward_records'])==160 and all(x['finite'] for x in u['optimizer_step_records']) for u in record['updates'])
   rank_audits.append({'rank':rank,'actual_optimizer_steps':4000,'microforwards':32000,'source_sha256':sha(p)})
+ math_steps=[]
+ with (RUN/'topd-math-audit/driver.jsonl').open() as f:
+  for line in f:
+   item=json.loads(line)
+   if item['kind']!='driver_outer':continue
+   assert item['run_id']=='707690' and item['rows']==2560 and item['unique_questions']==512 and item['teacher_targets_none']
+   assert all(t['finite']==t['count'] and t['count']>0 for t in item['tensors'].values())
+   math_steps.append(item['outer_step'])
+ assert math_steps==list(range(1,201))
+ for step in range(1,201):
+  teacher=json.loads((RUN/('teacher/round-%04d.json'%step)).read_text())
+  assert teacher['outer_step']==step and teacher['rows']==2560 and teacher['no_gold'] and teacher['full_vocab_normalization']==152064 and teacher['generated_tokens_used_for_supervision']==0
+  assert teacher['status']=='ACTUAL_TP4_KV_RELEASE_ACK_BEFORE_STUDENT_UPDATE' and len(teacher['released_workers'])==4
+  assert all(w['requires_grad_parameters']==0 and w['cache_engine_absent'] and w['gpu_cache_absent'] for w in teacher['released_workers'])
+ for record in outer['records']:
+  assert record['metrics']['rollout/context_mismatches']==0 and record['metrics']['rollout/trajectories']==2560
  identity=json.loads((RUN/'official-student-identity.json').read_text());assert identity['revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
  for name,item in identity['official_files'].items():assert sha(ROOT/'assets/qwen2.5-3b-instruct-aa8e725'/name)==item['sha256']
  c=json.loads((ROOT/'logs/topd-hpc3-707690/config.json').read_text())
@@ -59,6 +75,6 @@ def main():
  jobs=subprocess.check_output(['sacct','-j','707690,712266','-n','-P','--format=JobID,State,ExitCode'],text=True)
  assert '712266|COMPLETED|0:0' in jobs and '707690|FAILED|' in jobs
  cleanup=json.loads((FINAL/'owned-cleanup-712266.json').read_text());assert cleanup['all_spawned_children_reaped'] and cleanup['only_exact_spawned_process_handles']
- report={'status':'ORIGINAL_ALPHA01_TOPD200_AND_FINAL51713_CPU_ACCEPTANCE_PASS','epoch':time.time(),'original_training_job':707690,'final_evaluation_job':712266,'complete_outers':200,'rank_update_audits':rank_audits,'fixed_initial_revision':identity['revision'],'final_rows':51713,'correct':correct,'EM':correct/51713,'F1':metrics['val/f1/all'],'source_counts':expected['source_counts'],'independent_prediction_rescoring_pass':True,'all_scheduled_checkpoint_read_audits_pass':True,'original_termination_error_preserved':True,'original_training_gpu_resource_release_evidence':'terminal Slurm FAILED batch and step accounting, no active allocation','final_owned_cleanup_pass':True,'alpha1_is_separate_and_not_accepted_by_this_report':True,'final_completion_receipt_sha256':sha(FINAL/'complete.json')}
+ report={'status':'ORIGINAL_ALPHA01_TOPD200_AND_FINAL51713_CPU_ACCEPTANCE_PASS','epoch':time.time(),'original_training_job':707690,'final_evaluation_job':712266,'complete_outers':200,'rank_update_audits':rank_audits,'fixed_initial_revision':identity['revision'],'final_rows':51713,'correct':correct,'EM':correct/51713,'F1':metrics['val/f1/all'],'source_counts':expected['source_counts'],'independent_prediction_rescoring_pass':True,'all_scheduled_checkpoint_read_audits_pass':True,'all_200_probability_and_frozen_teacher_round_audits_pass':True,'original_termination_error_preserved':True,'original_training_gpu_resource_release_evidence':'terminal Slurm FAILED batch and step accounting, no active allocation','final_owned_cleanup_pass':True,'alpha1_is_separate_and_not_accepted_by_this_report':True,'final_completion_receipt_sha256':sha(FINAL/'complete.json')}
  p=ROOT.parent/'outputs/training-preparation/topd200-final-acceptance.json';p.write_text(json.dumps(report,indent=2));print(json.dumps(report))
 if __name__=='__main__':main()
