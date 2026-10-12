@@ -183,7 +183,7 @@ def run_driver(config):
     return result
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--case',choices=['old_opsd','repaired_b'],required=True);p.add_argument('--output',required=True)
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--case',choices=['old_opsd','repaired_b'],required=True);p.add_argument('--output',required=True);p.add_argument('--prepare-only',action='store_true')
     a=p.parse_args(); output=Path(a.output);output.mkdir(exist_ok=False)
     os.environ.update(COST80_CASE=a.case,COST80_OUTPUT=str(output))
     from omegaconf import OmegaConf
@@ -221,6 +221,11 @@ def main():
         os.environ.update(RECURSIVE_B_CACHE_DETOKENIZER_LENGTH='1',RECURSIVE_B_OMIT_FULL_BETA='1',TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1')
     text=OmegaConf.to_yaml(config);(output/'resolved.yaml').write_text(text)
     os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256']=hashlib.sha256(text.encode()).hexdigest()
+    if a.prepare_only:
+        emit('configuration_prepared',questions=16,training_rows=80,gpus=4,
+             config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
+             scope='CPU preparation only; no model, CUDA, generation or update claimed')
+        return
     env={k:v for k,v in os.environ.items() if k.startswith(('COST80_','SEARCH_R1_','RECURSIVE_B_','TREE_','SLURM_'))}
     ray.init(num_gpus=4,runtime_env={'env_vars':env},include_dashboard=False)
     try:
