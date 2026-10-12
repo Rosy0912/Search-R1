@@ -1,0 +1,25 @@
+{
+  "bindings_sha256": "d76de881afd92eaf89dd78ef2aab027ca6ec6881ec418fa741728d79a8936726",
+  "comment": "BAPO_ALIGNED_EM200:formal:0fe642bd0c71f0b5f9813cbbad7bdd94e0625244:16c570e111f947e2b0026983df2f7938",
+  "deployment_directory": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/tools/deployment/cohost-node11-v11",
+  "files": {
+    "bind_retrieval_proof.py": "681242bdcbd4cf50311afa8774a3d3d363160e69cdaa5f3af62fce920fdea52f",
+    "bootstrap.py": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e",
+    "formal.sbatch": "7773faba96d9a6f6f4da9ba4f1d2769a79cc2f48438f6d8b306ae59307eefc1a",
+    "formal_admission.py": "236c193274dcd4d31093607084c92fc6ee3a38509b85711fc298e1fbf8506f0a",
+    "formal_driver.py": "fe56f31f8cf7052a856ad4210ded1bd082d7905bf0c90ad6959f03b210c2461d",
+    "formal_inner.sh": "9f1841d9a3a6cb93cd5c397c1ceec5dfa09e6eda5a4d27c5bd5d2cce200800e5",
+    "formal_service_proof.py": "3a6f00ff421b289ed0cab6cc09d7519da78019d2fa0574c0f6e1400d4dc0ae07",
+    "formal_worker.sh": "02ad2f58a96ff8bff25f31499b69516e0bfa021dfca214e057296d7b95b3298a",
+    "ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "submit_formal.py": "6b4e45110149905282158247e2eca4262d77695f08f542df9ec3c409984c6eeb",
+    "tools/resource_watch.py": "1ed35c408a9cbb898cdd980c46b46c8ef7eb8d0cf35a331a6e41978547e38d50"
+  },
+  "host": "h100-11",
+  "previous_failed_job": "3357",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009",
+  "scope": "FORMAL_FRESH200_SINGLE_SUBMISSION_NOT_TRAINING_COMPLETION",
+  "source": "0fe642bd0c71f0b5f9813cbbad7bdd94e0625244",
+  "time": "2026-10-09T10:25:09.624335+00:00",
+  "token": "16c570e111f947e2b0026983df2f7938"
+}

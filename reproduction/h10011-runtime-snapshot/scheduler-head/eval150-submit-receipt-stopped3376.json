@@ -1,0 +1,1 @@
+{"job": "3376", "run": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/eval150-final51713-852d701d694d4dfe98f2c2f6985740a8-3376", "token": "852d701d694d4dfe98f2c2f6985740a8", "source": "ed5e2a5", "batch_size": 512, "gpus": 8, "physical_cohost": true, "retired_failed_job": "3375", "static_vllm": true}
