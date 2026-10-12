@@ -63,7 +63,7 @@ def observe(run, source, log, pane):
         result['restore'] = dict(driver_equal=p['driver_actual_state_equal'], next_outer=p['next_outer'],
             workers=[{k: w[k] for k in ('rank', 'actual_cold_native_state_equal', 'actual_total_optimizer_calls', 'scheduler_step', 'adam_steps')} for w in p['workers']])
     try:
-        p = subprocess.run(['nvidia-smi', '--query-gpu=index,memory.used,utilization.gpu', '--format=csv,noheader,nounits'],
+        p = subprocess.run(['nvidia-smi', '-i', '0,1,2,3', '--query-gpu=index,memory.used,utilization.gpu', '--format=csv,noheader,nounits'],
                            text=True, capture_output=True, timeout=20)
         result['gpu_samples'] = [row for row in csv.reader(io.StringIO(p.stdout)) if row and row[0].strip() in ('0', '1', '2', '3')]
         result['gpu_sample_rc'] = p.returncode
