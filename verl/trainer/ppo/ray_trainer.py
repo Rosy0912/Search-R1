@@ -1088,13 +1088,12 @@ class RayPPOTrainer(object):
                     from reproduction.profile import refresh_after_checkpoint
                     isolation_before = None
                     if actor_probe_run is not None:
-                        isolation_before = dict(actor=self.actor_rollout_wg.probe_isolation_state(),
-                                                reference=self.ref_policy_wg.probe_isolation_state())
+                        from reproduction.common8.actor_probe_checkpoint import refresh_isolation_snapshot
+                        isolation_before = refresh_isolation_snapshot(self)
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
                     if isolation_before is not None:
                         from reproduction.common8.actor_probe_checkpoint import record_refresh_isolation
-                        isolation_after = dict(actor=self.actor_rollout_wg.probe_isolation_state(),
-                                               reference=self.ref_policy_wg.probe_isolation_state())
+                        isolation_after = refresh_isolation_snapshot(self)
                         record_refresh_isolation(os.environ['SEARCH_G1_BASE'], self.global_steps,
                             isolation_before, isolation_after, self.reward_fn.expected_probe_version)
 

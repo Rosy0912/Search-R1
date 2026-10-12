@@ -1,6 +1,7 @@
 """Check real per-rank actor readout receipts against completed outer records."""
 
 import json
+import re
 from pathlib import Path
 
 from search_g1.actor_probe_contract import actor_probes
@@ -36,7 +37,9 @@ def verify_actor_readouts(base, run, records, *, retained_prefix=None):
             assert record['probe_actor_binding']['feature_rows'] == 5120
             per_rank = 5120 // ranks
             assert receipt['row_ids'] == list(range(rank * per_rank, (rank + 1) * per_rank))
-            assert receipt['feature_rows'] == per_rank and len(receipt['feature_sha256']) == 64
+            assert receipt['feature_rows'] == per_rank and isinstance(receipt['feature_sha256'],str) and re.fullmatch('[0-9a-f]{64}',receipt['feature_sha256'])
+            assert isinstance(receipt['rng_before_sha256'],str) and re.fullmatch('[0-9a-f]{64}',receipt['rng_before_sha256'])
+            assert receipt['rng_before_sha256'] == receipt['rng_after_sha256']
             if record['step'] == 1:
                 assert receipt['isolation_before'] and receipt['isolation_before'] == receipt['isolation_after']
             proof.append(dict(rank=rank, step=record['step'], feature_sha256=receipt['feature_sha256']))

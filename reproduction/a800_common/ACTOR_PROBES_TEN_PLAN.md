@@ -6,6 +6,16 @@ after50 reward schedule remain unchanged. Admission for this experiment requires
 that predecessor training, final evaluation, checkpoint acceptance and owned
 cleanup have completed, followed by resource and source verification.
 
+The read-only retained segment acceptance now composes actual frozen source,
+data/config, trainer birth/session exit, strong saved-origin admission, driver
+and rank probability/monitor/scheduler receipts, canonical file SHA and435finite
+checks, full-state identity/Adam/RNG/sampler/Head receipts, and version-bound
+refresh isolation. Final ordered51713 EM/F1/count reconstruction is a shared
+reader for the fresh verifier and future chain entry. Both are components:
+the complete ancestor calibration provenance, root first5, assembled final chain
+and owned cleanup acceptance still require integration; the production recovery
+entry remains unavailable until that complete pinned verifier exists.
+
 The persisted deployment intent must include the accepted predecessor's base,
 run/execution/source identity and full-acceptance/cleanup receipt hashes.
 Admission pins the specific human-authorized predecessor, checks all200 actual
@@ -33,6 +43,10 @@ existing question-grouped classifier selection, calibration data and G1 formula.
   representations. The RPC preserves module modes and existing gradients and
   cannot invoke Adam or the scheduler. Heads score these representations on the
   driver; the old frozen encoder server must not supply predictions in this mode.
+  Readouts preserve Python, NumPy and Torch RNG on success and failure, and each
+  rank records matching before/after RNG hashes. Refresh isolation additionally
+  binds driver RNG, actor/reference RNG and both actor rollout random streams;
+  parameter/Adam equality alone is insufficient proof of training isolation.
 * Pad requests to a multiple of four and use equal forward counts on all ranks,
   so root/layer FSDP collectives remain matched. Remove duplicate padding rows
   before head scoring. BF16 autocast and actor microbatch two are preserved.

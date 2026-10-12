@@ -185,6 +185,7 @@ class RetainedPrefixTests(unittest.TestCase):
                         logical_update=record['step'],completed_outer=record['step']-1,
                         optimizer_writes=record['optimizer_writes_before'],head_version=record['probe_version'])
                     receipts.append(dict(rank=rank,detached=True,binding=binding,feature_rows=1280,
+                        rng_before_sha256='c'*64,rng_after_sha256='c'*64,
                         row_ids=list(range(rank*1280,(rank+1)*1280)),feature_sha256='a'*64))
                 path=base/'logs'/f'actor-probe-features-rank-{rank}.jsonl'
                 rows(path,receipts);path.write_bytes(path.read_bytes()+b'{"partial')

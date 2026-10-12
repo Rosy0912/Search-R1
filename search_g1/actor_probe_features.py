@@ -29,6 +29,8 @@ def detached_last_token_features(module, input_ids, attention_mask, layers,
     captured = {}
     handles = []
     collected = {layer: [] for layer in layers}
+    from search_g1.actor_probe_state import rng_state, restore_rng
+    saved_rng = rng_state()
     def capture(layer):
         def hook(_module, _inputs, output):
             hidden = output[0] if isinstance(output, tuple) else output
@@ -67,3 +69,4 @@ def detached_last_token_features(module, input_ids, attention_mask, layers,
         # Preserve mixed eval/train submodule settings as well as the root mode.
         for m, mode in modes:
             m.training = mode
+        restore_rng(saved_rng)

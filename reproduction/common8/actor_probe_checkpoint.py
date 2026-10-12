@@ -136,6 +136,14 @@ def verify_roundtrip_receipt(base, run, state):
     return proof
 
 
+def refresh_isolation_snapshot(trainer):
+    """Probe fitting must preserve driver and every actor/reference RNG too."""
+    from search_g1.actor_probe_state import tree_digest
+    return dict(actor=trainer.actor_rollout_wg.probe_isolation_state(),
+        reference=trainer.ref_policy_wg.probe_isolation_state(),
+        driver_rng_sha256=tree_digest(rng_state()))
+
+
 def record_refresh_isolation(base, step, before, after, version):
     assert before == after, 'Probe refresh changed actor/reference parameters, gradients, modes or GRPO state'
     target = Path(base)/'logs'/f'actor-probe-refresh-isolation-{step}.json'
@@ -153,7 +161,8 @@ def verify_full_state(base, run, step, *, load_optimizer=False, retained_prefix=
     base = Path(base)
     directory = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
     receipt = json.loads((directory/'full-state-complete.json').read_text())
-    assert receipt['identity']['run_id'] == run['run_id'] and receipt['identity']['execution_id'] == run['execution_id']
+    from search_g1.actor_probe_model_state import validate_roundtrip_receipt
+    validate_roundtrip_receipt(receipt,run,step,0)
     assert receipt['completed_outer'] == step and receipt['next_logical_update'] == step + 1
     if retained_prefix is None:
         actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]

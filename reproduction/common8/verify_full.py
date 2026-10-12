@@ -178,14 +178,15 @@ def verify_full(base):
         from reproduction.common8.actor_probe_evidence import verify_actor_readouts
         verify_actor_readouts(base, run, records)
         from reproduction.common8.actor_probe_checkpoint import verify_full_state, verify_roundtrip_receipt
+        full_states = {}
         for step in SAVE_STEPS:
             checkpoint_state = verify_full_state(base, run, step, load_optimizer=True)
+            full_states[str(step)] = checkpoint_state
             if step == 5: verify_roundtrip_receipt(base, run, checkpoint_state)
             next_record = records[min(step, 199)]
             assert checkpoint_state['probe_version'] == next_record['probe_version']
-        for step in range(10, 200, 10):
-            isolation = json.loads((base/'logs'/f'actor-probe-refresh-isolation-{step}.json').read_text())
-            assert isolation['accepted'] and isolation['step'] == step and isolation['before'] == isolation['after']
+        from reproduction.common8.actor_probe_segment_acceptance import verify_refresh_isolation
+        verify_refresh_isolation(base,run,records,full_states)
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
     verify_write_receipt_links(base, behavior_gates, 1, TARGET_UPDATES)
@@ -297,22 +298,9 @@ def verify_full(base):
     for r in records:
         round_id=((r['step']-1)//interval)*interval
         assert r['probe_version']==versions[round_id]['version']
-    evaluation=json.loads((base/'logs/final-identity.json').read_text())
-    assert evaluation['run_id']==run['run_id'] and evaluation['step']==TARGET_UPDATES and evaluation['final'] is True
-    canonical,frame,ids=expected(base,'final')
-    assert evaluation['validation_sha256']==canonical['sha256']
-    assert evaluation['question_ids']==ids and evaluation['data_sources']==frame['data_source'].tolist()
-    scores=evaluation['em'];assert len(scores)==51713 and all(x in (0,1) for x in scores)
-    f1=evaluation['f1'];assert len(f1)==51713 and all(type(x) in (int,float) and math.isfinite(x) and 0<=x<=1 for x in f1)
-    assert all(em<=score for em,score in zip(scores,f1))
-    assert evaluation['weighted_f1']==math.fsum(f1)/len(f1)
-    assert evaluation['counts']==canonical['source_counts']
-    assert evaluation['correct']==sum(scores) and evaluation['weighted_em']==sum(scores)/len(scores)
-    counts=Counter(evaluation['data_sources']);correct={s:0 for s in counts}
-    assert len(counts)==7 and counts['nq']==3610
-    source_f1={s:[] for s in counts}
-    for source,score in zip(evaluation['data_sources'],scores):correct[source]+=score
-    for source,score in zip(evaluation['data_sources'],f1):source_f1[source].append(score)
+    from reproduction.common8.final_evaluation_acceptance import read_final_evaluation
+    evaluation=read_final_evaluation(base,run)
+    counts=evaluation['counts'];correct=evaluation['source_correct']
     proof=dict(run_id=run['run_id'],contract_kind=run['contract_kind'],structural_accepted=True,actual_outer_updates=TARGET_UPDATES,
         optimizer_completion_rule=FORMAL_COUNTING,per_rank_optimizer_opportunities=TARGET_UPDATES*20,
         per_rank_actual_optimizer_writes={rank:receipt['cumulative_actual_optimizer_writes']
@@ -325,8 +313,8 @@ def verify_full(base):
         formal_inline_first_five=inline_first_five,formal_inline_all_attempts=inline_all_attempts,
         paired_development=paired_development,
         final_correct=correct,final_weighted_em=evaluation['weighted_em'],
-        final_source_em={s:correct[s]/counts[s] for s in counts},
-        final_source_f1={s:math.fsum(source_f1[s])/counts[s] for s in counts},
+        final_source_em=evaluation['source_em'],
+        final_source_f1=evaluation['source_f1'],
         final_weighted_f1=evaluation['weighted_f1'],
         semantics='full training/data/numerical structure verified; accuracy is the measured result, not automatically reproduction success',
         checked_unix=time.time())

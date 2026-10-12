@@ -508,10 +508,15 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def probe_isolation_state(self):
-        from search_g1.actor_probe_state import isolation_state
+        from search_g1.actor_probe_state import isolation_state, rng_state, tree_digest
         module = self.actor_module_fsdp if self._is_actor else self.ref_module_fsdp
         result = isolation_state(module, self.actor_optimizer if self._is_actor else None,
                                  self.actor_lr_scheduler if self._is_actor else None)
+        result['rng_sha256'] = tree_digest(rng_state())
+        if self._is_actor and self._is_rollout:
+            manager = self.rollout_sharding_manager
+            result['rollout_rng_sha256'] = tree_digest(dict(
+                training=manager.torch_random_states, generation=manager.gen_random_states))
         return dict(rank=self.rank, role='actor' if self._is_actor else 'reference', **result)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
@@ -733,6 +738,8 @@ class ActorRolloutRefWorker(Worker):
                 device_id=torch.cuda.current_device(), load_grad=self._is_offload_grad)
         try:
             data = data.to(torch.device('cuda', torch.cuda.current_device()))
+            from search_g1.actor_probe_state import rng_state, tree_digest
+            readout_rng_before = tree_digest(rng_state())
             isolation_before = None
             if logical == 1:
                 from search_g1.actor_probe_state import isolation_state
@@ -741,6 +748,10 @@ class ActorRolloutRefWorker(Worker):
                 data.batch['input_ids'], data.batch['attention_mask'], layers,
                 micro_batch_size=2, position_ids=data.batch['position_ids'],
                 autocast_dtype=torch.bfloat16, agree=collective_call)
+            readout_rng_after = tree_digest(rng_state())
+            collective_call(lambda: {'accepted': readout_rng_before == readout_rng_after} if readout_rng_before == readout_rng_after
+                else (_ for _ in ()).throw(ValueError('Probe feature readout changed actor RNG')),
+                stage='actor_probe_feature_rng_isolation')
             assert getattr(self.actor, '_optimizer_writes', 0) == binding['optimizer_writes']
             isolation_after = None
             if isolation_before is not None:
@@ -753,6 +764,7 @@ class ActorRolloutRefWorker(Worker):
                 receipt = dict(rank=self.rank, binding=binding, feature_rows=len(data),
                     layers=layers, feature_sha256=tree_digest(values), detached=True,
                     row_ids=[int(value) for value in data.batch['probe_row_ids'].cpu()],
+                    rng_before_sha256=readout_rng_before,rng_after_sha256=readout_rng_after,
                     isolation_before=isolation_before, isolation_after=isolation_after)
                 path = Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'actor-probe-features-rank-{self.rank}.jsonl'
                 with path.open('a') as f:

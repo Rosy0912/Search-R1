@@ -1,5 +1,7 @@
 import copy
+import random
 import unittest
+import numpy as np
 import torch
 from search_g1.actor_probe_features import detached_last_token_features
 
@@ -25,6 +27,22 @@ class Actor(torch.nn.Module):
 
 
 class ActorFeatureTests(unittest.TestCase):
+    def test_stochastic_readout_and_failure_preserve_all_cpu_rng_streams(self):
+        from search_g1.actor_probe_state import rng_state, tree_digest
+        class StochasticActor(Actor):
+            def forward(self,*args,**kwargs):
+                random.random(); np.random.random(); torch.rand(3)
+                return super().forward(*args,**kwargs)
+        actor=StochasticActor().train();ids=torch.tensor([[1,2],[2,3]]);mask=torch.ones_like(ids)
+        before=tree_digest(rng_state())
+        detached_last_token_features(actor,ids,mask,(1,2),micro_batch_size=1)
+        self.assertEqual(before,tree_digest(rng_state()))
+        with torch.no_grad():actor.model.layers[1].linear.bias.fill_(float('nan'))
+        with self.assertRaises(ValueError):detached_last_token_features(actor,ids,mask,(1,2))
+        self.assertEqual(before,tree_digest(rng_state()))
+        self.assertTrue(actor.training)
+        self.assertTrue(all(not layer._forward_hooks for layer in actor.model.layers))
+
     def test_head_learning_preserves_actor_generation_reference_adam_and_gradients(self):
         torch.manual_seed(4); actor = Actor().train(); actor.model.layers[0].eval()
         reference = copy.deepcopy(actor); adam = torch.optim.Adam(actor.parameters(), lr=.01)
