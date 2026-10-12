@@ -1,4 +1,4 @@
-"""Single actual HKUST1 startup attempt at a time; retry initialization OOM only."""
+"""Single HKUST1 startup attempt at a time; retain resource admission and retry initialization OOM only."""
 import argparse,fcntl,json,os,signal,subprocess,time
 from pathlib import Path
 p=argparse.ArgumentParser()
@@ -47,10 +47,10 @@ while True:
   write(dict(state='HOLD_NEW_COMPLETE_CHECKPOINT',reason='Never roll back newly persisted progress toCP4'));break
  cmd=[os.sys.executable,'-B',str(source/'release/recursive_bran_a/launch_search_only_eight.py')]
  for k in ('base','source','gate','previous_owner','previous_session','previous_receipt'):cmd+=['--'+k.replace('_','-'),getattr(a,k)]
- cmd+=['--attempt-contention'];write(dict(state='ACTUAL_START_ATTEMPT'))
+ write(dict(state='START_ATTEMPT_WITH_RESOURCE_ADMISSION'))
  r=subprocess.run(cmd,capture_output=True,text=True)
  if r.returncode:
-  write(dict(state='LAUNCH_FAILED',returncode=r.returncode,stdout=r.stdout,stderr=r.stderr));time.sleep(5);continue
+  write(dict(state='LAUNCH_FAILED',returncode=r.returncode,stdout=r.stdout,stderr=r.stderr));time.sleep(15);continue
  proof=json.loads(r.stdout.splitlines()[-1]);run=proof['run_id'];log=Path(proof['log']);session=proof['session']
  write(dict(state='MODEL_STARTING',launch=proof))
  while True:
