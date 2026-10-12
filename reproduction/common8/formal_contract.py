@@ -55,9 +55,10 @@ def has_formal_markers(run):
 
 def assert_formal_run(run):
     if 'reward_schedule' in run:
-        from search_g1.reward_schedule import SCHEDULE
-        assert run['reward_schedule'] == SCHEDULE
-        assert type(run.get('reward_schedule_boundary')) is int and run['reward_schedule_boundary'] == 50
+        from search_g1.reward_schedule import reward_boundary
+        assert type(run.get('reward_schedule_boundary')) is int and run['reward_schedule_boundary'] == reward_boundary(run['reward_schedule'])
+    from search_g1.actor_probe_contract import actor_probes
+    actor_probes(run)
     assert run['profile'] == 'common8' and run['contract_kind'] == CONTRACT_KIND
     assert run.get('policy_calibration_role', 'production') == 'production'
     assert run['policy_safety_mode']==SAFETY_MODE, 'Formal training requires the explicit prospective inline mode'

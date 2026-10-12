@@ -14,7 +14,7 @@ LEGACY_METRICS=('critic/rewards/mean','actor/pg_loss','actor/entropy_loss',
 METRICS=LEGACY_METRICS+('actor/update_opportunities_this_attempt','actor/skipped_update_opportunities')
 
 
-def record(step,metrics,probe_version,attempt_result=None):
+def record(step,metrics,probe_version,attempt_result=None,probe_actor_binding=None):
     base=Path(os.environ['SEARCH_G1_BASE'])
     run=json.loads((base/'logs/run-manifest.json').read_text())
     inline=run.get('policy_safety_mode')==SAFETY_MODE
@@ -67,6 +67,21 @@ def record(step,metrics,probe_version,attempt_result=None):
     row=dict(run_id=run['run_id'],step=step,metrics=scalar,probe_version=probe_version,
              behavior_probability_gate_sha256=gate['proof_sha256'],
              behavior_trace_sha256=gate['private_trace_sha256'])
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        assert isinstance(probe_actor_binding, dict), 'Actual current actor readout identity missing'
+        assert probe_actor_binding['run_id'] == run['run_id']
+        assert probe_actor_binding['execution_id'] == run['execution_id']
+        assert probe_actor_binding['completed_outer'] == step - 1
+        assert probe_actor_binding['logical_update'] == step
+        assert probe_actor_binding['optimizer_writes'] == before
+        assert probe_actor_binding['head_version'] == probe_version
+        assert probe_actor_binding['attempt_id'] == attempt_result['attempt_id']
+        assert probe_actor_binding['attempt_index'] == attempt_result['attempt_index']
+        assert probe_actor_binding['row_order_verified'] is True and probe_actor_binding['feature_rows'] == 5120
+        row['probe_actor_binding'] = probe_actor_binding
+    else:
+        assert probe_actor_binding is None, 'Live-actor identity in a legacy run'
     if inline:
         row.update(attempt_id=attempt_result['attempt_id'],attempt_index=attempt_result['attempt_index'],
              optimizer_writes_before=before,optimizer_writes_after=after,opportunities_processed=20,

@@ -392,9 +392,20 @@ class RayPPOTrainer(object):
                 self.train_dataset.dataframe = self.train_dataset.dataframe.sample(self.config.data.train_data_num, random_state=42)
         print(f"filtered training dataset size: {len(self.train_dataset.dataframe)}")
 
+        recorded_sampler = None
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            import json
+            from pathlib import Path
+            from search_g1.actor_probe_contract import actor_probes
+            run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            if actor_probes(run):
+                from search_g1.actor_probe_sampler import RecordedRandomSampler
+                assert self.config.data.shuffle_train_dataloader
+                recorded_sampler = RecordedRandomSampler(self.train_dataset)
         self.train_dataloader = DataLoader(dataset=self.train_dataset,
                                            batch_size=self.config.data.train_batch_size,
-                                           shuffle=self.config.data.shuffle_train_dataloader,
+                                           shuffle=self.config.data.shuffle_train_dataloader if recorded_sampler is None else False,
+                                           sampler=recorded_sampler,
                                            drop_last=True,
                                            collate_fn=collate_fn)
 
@@ -747,6 +758,18 @@ class RayPPOTrainer(object):
         from verl.utils.weight_continuation import completed_updates
         continuation_k = completed_updates(self.config, self.total_training_steps)
         self.global_steps = continuation_k
+        actor_probe_run = None
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            import json
+            from pathlib import Path
+            from search_g1.actor_probe_contract import actor_probes
+            run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            if actor_probes(run):
+                from search_g1.actor_probe_scoring import ActorProbeScorer
+                actor_probe_run = run
+                self.reward_fn.actor_probe_scorer = ActorProbeScorer(
+                    self.tokenizer, self.actor_rollout_wg, os.environ['SEARCH_G1_BASE'], run)
+                self.reward_fn.expected_probe_version = run['initial_probe_version']
         calibration_phase = None
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
             from reproduction.common8.calibration_runtime import active_plan
@@ -798,7 +821,7 @@ class RayPPOTrainer(object):
 
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
-            for batch_dict in self.train_dataloader:
+            for consumed_batch_index, batch_dict in enumerate(self.train_dataloader):
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
@@ -927,6 +950,8 @@ class RayPPOTrainer(object):
                         # we combine with rule-based rm
                         # This is the formal logical iteration, not the attempt ordinal.
                         batch.meta_info['reward_logical_update'] = self.global_steps
+                        if actor_probe_run is not None:
+                            batch.meta_info.update(attempt_identity)
                         reward_tensor = self.reward_fn(batch)
                         if getattr(self.reward_fn, 'last_reward_schedule', None) is not None:
                             metrics['train/reward_binary_phase'] = float(self.reward_fn.last_reward_binary_phase)
@@ -1012,6 +1037,7 @@ class RayPPOTrainer(object):
                 if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
                     from reproduction.common8.update_evidence import record
                     record(self.global_steps, metrics, self.reward_fn.expected_probe_version,
+                           probe_actor_binding=getattr(self.reward_fn, 'last_probe_actor_binding', None),
                            **(dict(attempt_result=attempt_result) if inline_attempts is not None else {}))
                 if calibration_phase is not None:
                     assert self.global_steps == 1, 'Only one fresh calibration outer is permitted'
@@ -1026,10 +1052,38 @@ class RayPPOTrainer(object):
                         from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
                         if active_run() is not None:evaluate_development(self)
                     from reproduction.profile import accept_five_updates
+                    if actor_probe_run is not None:
+                        from reproduction.common8.actor_probe_checkpoint import save_full_state
+                        save_full_state(self, actor_probe_run, inline_attempts, epoch, consumed_batch_index)
                     accept_five_updates(checkpoint, five_update_records)
-                if self.global_steps in (50,100,150,200,250) and self.global_steps + 1 < self.total_training_steps:
+                from search_g1.actor_probe_contract import probe_rounds
+                refresh_steps = (probe_rounds(actor_probe_run) if actor_probe_run is not None
+                                 else (50,100,150,200,250))
+                if self.global_steps in refresh_steps and self.global_steps + 1 < self.total_training_steps:
+                    if actor_probe_run is not None and self.global_steps % 50 != 0:
+                        # An immutable fitting export is distinct from a milestone
+                        # full-state checkpoint. It never changes the actor.
+                        self._save_checkpoint()
+                        from reproduction.profile import checkpoint_complete
+                        checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor',
+                                                  f'global_step_{self.global_steps}')
+                        checkpoint_complete(self.global_steps, checkpoint)
                     from reproduction.profile import refresh_after_checkpoint
+                    isolation_before = None
+                    if actor_probe_run is not None:
+                        isolation_before = dict(actor=self.actor_rollout_wg.probe_isolation_state(),
+                                                reference=self.ref_policy_wg.probe_isolation_state())
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
+                    if isolation_before is not None:
+                        from reproduction.common8.actor_probe_checkpoint import record_refresh_isolation
+                        isolation_after = dict(actor=self.actor_rollout_wg.probe_isolation_state(),
+                                               reference=self.ref_policy_wg.probe_isolation_state())
+                        record_refresh_isolation(os.environ['SEARCH_G1_BASE'], self.global_steps,
+                            isolation_before, isolation_after, self.reward_fn.expected_probe_version)
+
+                if actor_probe_run is not None and self.global_steps in (50, 100, 150, 200):
+                    from reproduction.common8.actor_probe_checkpoint import save_full_state
+                    save_full_state(self, actor_probe_run, inline_attempts, epoch, consumed_batch_index)
 
                 self.global_steps += 1
 

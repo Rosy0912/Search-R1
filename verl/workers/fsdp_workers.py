@@ -506,6 +506,100 @@ class ActorRolloutRefWorker(Worker):
         torch.cuda.empty_cache()
         return output
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def probe_isolation_state(self):
+        from search_g1.actor_probe_state import isolation_state
+        module = self.actor_module_fsdp if self._is_actor else self.ref_module_fsdp
+        result = isolation_state(module, self.actor_optimizer if self._is_actor else None,
+                                 self.actor_lr_scheduler if self._is_actor else None)
+        return dict(rank=self.rank, role='actor' if self._is_actor else 'reference', **result)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def save_probe_training_state(self, local_path, completed_outer):
+        import json
+        from pathlib import Path
+        from search_g1.actor_probe_contract import actor_probes
+        from search_g1.actor_probe_state import durable_torch_save, worker_payload
+        from reproduction.common8.scheduler import collective_call
+        base = Path(os.environ['SEARCH_G1_BASE'])
+        run = json.loads((base/'logs/run-manifest.json').read_text())
+        assert self._is_actor and actor_probes(run)
+        target = Path(local_path)/f'training-state-rank-{self.rank}.pt'
+        receipt = {}
+        def save():
+            receipt.update(durable_torch_save(worker_payload(self, run, completed_outer), target, base))
+            return dict(completed_outer=completed_outer, optimizer_writes=self.actor._optimizer_writes)
+        # Disk errors on one rank must reach all ranks before the next collective.
+        collective_call(save, stage='actor_probe_full_state_save')
+        return dict(rank=self.rank, completed_outer=completed_outer,
+                    optimizer_writes=self.actor._optimizer_writes, **receipt)
+
+    @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
+    def compute_probe_features(self, data: DataProto) -> DataProto:
+        """Synchronous detached readout of this actor, never of a teacher snapshot."""
+        import json
+        from pathlib import Path
+        from search_g1.actor_probe_contract import actor_probes, LAYER_CHOICES
+        from search_g1.actor_probe_features import detached_last_token_features
+        from reproduction.common8.scheduler import collective_call
+        run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+        assert self._is_actor and actor_probes(run)
+        logical = data.meta_info['probe_logical_update']
+        assert type(logical) is int and 1 <= logical <= 200
+        assert data.meta_info['probe_run_id'] == run['run_id']
+        assert data.meta_info['probe_execution_id'] == run['execution_id']
+        layers = data.meta_info['probe_layers']
+        assert all(layer in LAYER_CHOICES for layer in layers)
+        scheduler = getattr(self, '_outer_scheduler_evidence', None)
+        completed = scheduler.completed_outer if scheduler is not None else 0
+        binding = dict(run_id=run['run_id'], execution_id=run['execution_id'],
+            completed_outer=completed, optimizer_writes=getattr(self.actor, '_optimizer_writes', 0),
+            head_version=data.meta_info['probe_head_version'], logical_update=logical,
+            attempt_id=data.meta_info['probe_attempt_id'], attempt_index=data.meta_info['probe_attempt_index'])
+        bindings = [None] * torch.distributed.get_world_size()
+        torch.distributed.all_gather_object(bindings, binding)
+        assert all(value == binding for value in bindings), 'Actor readout ranks disagree'
+        assert completed == logical - 1, 'Probe cannot use stale actor parameters'
+        if self._is_offload_param:
+            load_fsdp_param_and_grad(module=self.actor_module_fsdp,
+                device_id=torch.cuda.current_device(), load_grad=self._is_offload_grad)
+        try:
+            data = data.to(torch.device('cuda', torch.cuda.current_device()))
+            isolation_before = None
+            if logical == 1:
+                from search_g1.actor_probe_state import isolation_state
+                isolation_before = isolation_state(self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler)
+            values = detached_last_token_features(self.actor_module_fsdp,
+                data.batch['input_ids'], data.batch['attention_mask'], layers,
+                micro_batch_size=2, position_ids=data.batch['position_ids'],
+                autocast_dtype=torch.bfloat16, agree=collective_call)
+            assert getattr(self.actor, '_optimizer_writes', 0) == binding['optimizer_writes']
+            isolation_after = None
+            if isolation_before is not None:
+                isolation_after = isolation_state(self.actor_module_fsdp, self.actor_optimizer, self.actor_lr_scheduler)
+                collective_call(lambda: {'accepted': isolation_before == isolation_after} if isolation_before == isolation_after
+                    else (_ for _ in ()).throw(ValueError('Actor changed during probe feature readout')),
+                    stage='actor_probe_initial_gradient_parameter_isolation')
+            def publish_features():
+                from search_g1.actor_probe_state import tree_digest
+                receipt = dict(rank=self.rank, binding=binding, feature_rows=len(data),
+                    layers=layers, feature_sha256=tree_digest(values), detached=True,
+                    row_ids=[int(value) for value in data.batch['probe_row_ids'].cpu()],
+                    isolation_before=isolation_before, isolation_after=isolation_after)
+                path = Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'actor-probe-features-rank-{self.rank}.jsonl'
+                with path.open('a') as f:
+                    f.write(json.dumps(receipt, sort_keys=True, allow_nan=False)+'\n'); f.flush(); os.fsync(f.fileno())
+                return dict(binding=binding, rows=len(data), detached=True)
+            collective_call(publish_features, stage='actor_probe_actual_feature_receipt')
+            output = DataProto.from_dict(tensors={f'probe_layer_{layer}': value for layer, value in values.items()} |
+                {'probe_row_ids': data.batch['probe_row_ids'].detach().cpu()},
+                meta_info={'probe_actor_binding': binding})
+        finally:
+            if self._is_offload_param:
+                offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+            torch.cuda.empty_cache()
+        return output
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
         """mostly copying from generate_sequences"""

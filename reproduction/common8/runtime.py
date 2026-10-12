@@ -287,6 +287,14 @@ def accept_five_updates(checkpoint, records):
     assert [r['step'] for r in records] == list(range(1,6))
     actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     assert [r['step'] for r in actual] == list(range(1,6))
+    from search_g1.actor_probe_contract import actor_probes
+    actor_readout_proof = None
+    if actor_probes(run):
+        from reproduction.common8.actor_probe_evidence import verify_actor_readouts
+        actor_readout_proof = verify_actor_readouts(base, run, actual)
+        from reproduction.common8.actor_probe_checkpoint import verify_full_state
+        state = verify_full_state(base, run, 5, load_optimizer=True)
+        assert state['completed_outer'] == 5 and state['identity']['run_id'] == run['run_id']
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in actual}
     verify_write_receipt_links(base, behavior_gates, 1, 5)
@@ -334,6 +342,7 @@ def accept_five_updates(checkpoint, records):
         del a,z
     assert changed
     result = dict(run_id=run['run_id'], accepted=True, actual_updates=records,
+        actual_actor_readouts=actor_readout_proof,
         checkpoint=proof, changed_parameters=changed, budget_rows=budgets,
         independently_verified_saved_tensor_count=fresh_tensor_count,
         shared_data=data_proof, stage_validation=validation, checked_unix=time.time(),
@@ -355,14 +364,14 @@ def accept_five_updates(checkpoint, records):
 
 
 def refresh_after_checkpoint(step, checkpoint):
-    # Common8 has an explicitly admitted probe device; never borrow A800 GPU6.
-    if step not in PROBE_ROUNDS or step == 0:
-        return
     import subprocess
     import requests
     base = Path(os.environ['SEARCH_G1_BASE'])
     run = json.loads((base/'logs/run-manifest.json').read_text())
     assert_formal_run(run)
+    from search_g1.actor_probe_contract import probe_rounds
+    if step not in probe_rounds(run) or step == 0:
+        return
     session = requests.Session()
     session.trust_env = False
     previous = json.loads((base/'artifacts/live/manifest.json').read_text())

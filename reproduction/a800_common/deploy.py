@@ -247,9 +247,12 @@ assert source['source_commit']==intent['source_commit'] and source['source_sha25
 assert subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()==intent['source_commit']
 for name,sha in intent['source_sha256'].items():assert digest(repo/name)==sha
 run=read('logs/run-manifest.json');method=read('preparation/formal-inline-method.json');template=read('preparation/formal-inline-method-template.json')
+sys.path.insert(0,str(repo))
 assert run['source_commit']==intent['source_commit'] and run['source_sha256']==intent['source_sha256']
 assert run.get('reward_schedule')==intent.get('reward_schedule'), 'Deployment reward schedule differs'
-if intent.get('reward_schedule') is not None:assert run['reward_schedule_boundary']==50
+if intent.get('reward_schedule') is not None:
+ from search_g1.reward_schedule import reward_boundary
+ assert run['reward_schedule_boundary']==reward_boundary(intent['reward_schedule'])
 assert run['execution_backend']=='ssh_local' and run['slurm_job_id'] is None and run['execution_host']==socket.gethostname()
 assert run['completed_updates']==0 and run['training_world_size']==4 and run['initial_probe_version'] is None
 for row in intent['inputs']:
@@ -727,7 +730,7 @@ def main():
     parser.add_argument('--method', type=Path, default=PROJECT / 'preparation/formal-inline-method.json')
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--initial-probes-source-base')
-    parser.add_argument('--reward-schedule', choices=['g1_through50_then_binary'])
+    parser.add_argument('--reward-schedule', choices=['g1_through50_then_binary','g1_through100_then_binary'])
     parser.add_argument('--reuse-published-bundle', action='store_true')
     args = parser.parse_args()
     if args.execute or args.observe or args.launch_prepared or args.retry_unclaimed:

@@ -1,0 +1,32 @@
+{
+  "role": "actor_probe_ten_implementation_progress",
+  "checked_unix": 1791817319.684201,
+  "deployed": false,
+  "launched": false,
+  "predecessor_run": "1db662001a0f4d998928bcf6f5f33c9d",
+  "user_head_clarification": "existing two independent binary readouts on current actor detached features",
+  "implemented": [
+    "after100 reward binding",
+    "ten-step fitting/version boundaries",
+    "current FSDP actor feature RPC",
+    "per-micro collective finite disposition",
+    "row-order and worker provenance",
+    "gradient/parameter/optimizer isolation fingerprints",
+    "milestone full-state saving and sampler cursor",
+    "extended retained-export and Adam disk reserve"
+  ],
+  "verification": {
+    "focused_local_tests_passed": 11,
+    "real_collective_test": "four CPU Gloo ranks; one rank nonfinite rejects all before second forward",
+    "actual_A800_four_rank_rpc_verified": false,
+    "actual_full_state_resume_verified": false
+  },
+  "pending": [
+    "source/deployment review of final implementation",
+    "predecessor200 final acceptance and owned cleanup",
+    "explicit predecessor launch admission",
+    "production head metadata/calibration and state restore checks",
+    "actual A800 RPC/calibration/state roundtrip and first-five acceptance",
+    "new full200 and final51713 acceptance"
+  ]
+}

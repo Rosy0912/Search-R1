@@ -173,6 +173,16 @@ def verify_full(base):
             assert r['reward_logical_update']==r['step']
             assert r['reward_mode']==('binary_em' if binary_phase(run['reward_schedule'],r['step']) else 'search_g1')
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        from reproduction.common8.actor_probe_evidence import verify_actor_readouts
+        verify_actor_readouts(base, run, records)
+        from reproduction.common8.actor_probe_checkpoint import verify_full_state
+        for step in SAVE_STEPS:
+            verify_full_state(base, run, step, load_optimizer=True)
+        for step in range(10, 200, 10):
+            isolation = json.loads((base/'logs'/f'actor-probe-refresh-isolation-{step}.json').read_text())
+            assert isolation['accepted'] and isolation['step'] == step and isolation['before'] == isolation['after']
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in records}
     verify_write_receipt_links(base, behavior_gates, 1, TARGET_UPDATES)
@@ -222,10 +232,20 @@ def verify_full(base):
             archived[live['version']]=live
             archived_paths[live['version']]=path
     versions={}
-    for round_id in PROBE_ROUNDS:
-        adopted={r['probe_version'] for r in records if round_id<r['step']<=round_id+50}
+    from search_g1.actor_probe_contract import actor_probes, probe_rounds, validate_version
+    interval = run.get('probe_refresh_interval', 50)
+    for round_id in probe_rounds(run):
+        adopted={r['probe_version'] for r in records if round_id<r['step']<=round_id+interval}
         assert len(adopted)==1
         live=archived[adopted.pop()];assert live['round']==round_id
+        if actor_probes(run):
+            validate_version(run, live, round_id + 1)
+            for record in (r for r in records if round_id < r['step'] <= round_id + interval):
+                binding = record['probe_actor_binding']
+                assert binding['run_id'] == run['run_id'] and binding['execution_id'] == run['execution_id']
+                assert binding['logical_update'] == record['step'] and binding['completed_outer'] == record['step'] - 1
+                assert binding['optimizer_writes'] == record['optimizer_writes_before']
+                assert binding['head_version'] == record['probe_version']
         versions[round_id]=live
     initial_probe_adoption=None
     for round_id,live in versions.items():
@@ -248,7 +268,14 @@ def verify_full(base):
             assert initial_probe['input_sha256']==run['input_sha256']
             assert initial_probe['archive']==str(archive_path.relative_to(base)) and initial_probe['archive_sha256']==digest(archive_path)
         else:
-            snapshot=snapshots[str(round_id)]
+            if str(round_id) in snapshots:
+                snapshot=snapshots[str(round_id)]
+            else:
+                fitting_export=Path(run['checkpoint_dir'])/'actor'/f'global_step_{round_id}'
+                snapshot=json.loads((fitting_export/'complete.json').read_text())
+                assert snapshot['run_id']==run['run_id'] and snapshot['step']==round_id
+                assert snapshot['finite_all_saved_tensors'] is True
+                assert Path(snapshot['checkpoint']).resolve()==fitting_export.resolve()
             expected_encoder=dict(snapshot['files_sha256'])
             expected_encoder.update(checkpoint_tokenizer_hashes(encoder,Path(run['initial_model'])))
             assert encoder.resolve()==Path(snapshot['checkpoint']).resolve()
@@ -265,7 +292,7 @@ def verify_full(base):
         assert report['require_all_cv_folds'] is True and report['configured_cv_folds']==2
         assert all(math.isfinite(report[key+'_cv_auc']) and 0<=report[key+'_cv_auc']<=1 for key in ('commit','boundary'))
     for r in records:
-        round_id=((r['step']-1)//50)*50
+        round_id=((r['step']-1)//interval)*interval
         assert r['probe_version']==versions[round_id]['version']
     evaluation=json.loads((base/'logs/final-identity.json').read_text())
     assert evaluation['run_id']==run['run_id'] and evaluation['step']==TARGET_UPDATES and evaluation['final'] is True

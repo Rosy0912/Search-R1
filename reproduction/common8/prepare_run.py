@@ -72,8 +72,8 @@ def verify_model(model, official_path):
 
 
 def prepare(base,model,official_path,commit,reward_schedule=None):
-    from search_g1.reward_schedule import SCHEDULE
-    assert reward_schedule in (None, SCHEDULE), 'Unknown reward schedule'
+    from search_g1.reward_schedule import SCHEDULES, reward_boundary
+    assert reward_schedule is None or reward_schedule in SCHEDULES, 'Unknown reward schedule'
     base,model,official_path=map(Path,(base,model,official_path))
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
@@ -104,7 +104,9 @@ def prepare(base,model,official_path,commit,reward_schedule=None):
         probe_visible_device=None)
     if reward_schedule is not None:
         result['reward_schedule'] = reward_schedule
-        result['reward_schedule_boundary'] = 50
+        result['reward_schedule_boundary'] = reward_boundary(reward_schedule)
+    from search_g1.actor_probe_contract import experiment_fields
+    result.update(experiment_fields(reward_schedule))
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:json.dump(result,f,indent=2)
@@ -115,6 +117,6 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',required=True);p.add_argument('--official-manifest',required=True)
     p.add_argument('--source-commit',required=True)
-    p.add_argument('--reward-schedule',choices=['g1_through50_then_binary'])
+    p.add_argument('--reward-schedule',choices=['g1_through50_then_binary','g1_through100_then_binary'])
     a=p.parse_args()
     print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.reward_schedule)))

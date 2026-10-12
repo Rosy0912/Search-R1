@@ -246,6 +246,21 @@ class EcoRewardManager():
         """Retry transport failures; reject invalid rewards and programming errors."""
         if not items:
             return []
+        scorer = getattr(self, 'actor_probe_scorer', None)
+        if scorer is not None:
+            expected = getattr(self, 'expected_probe_version', None) or scorer.run['initial_probe_version']
+            self.expected_probe_version = expected
+            scores = scorer.predict(items, logical_update=self.last_reward_logical_update,
+                                    expected_version=expected)
+            self.last_probe_version = expected
+            self.last_probe_actor_binding = scorer.last_actor_binding
+            return scores
+        if os.environ.get('SEARCH_G1_BASE'):
+            from pathlib import Path
+            from search_g1.actor_probe_contract import actor_probes
+            run = json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            if actor_probes(run):
+                raise ValueError('Live actor probe RPC was not bound; frozen-encoder fallback forbidden')
         import time as _t
         attempt = 0
         started = _t.monotonic()
@@ -394,6 +409,9 @@ class EcoRewardManager():
                     schedule = json.loads(manifest.read_text()).get('reward_schedule')
         from search_g1.reward_schedule import binary_phase, scheduled_score
         logical_update = data.meta_info.get('reward_logical_update')
+        if getattr(self, 'actor_probe_scorer', None) is not None:
+            self.actor_probe_scorer.attempt_identity = {
+                key: data.meta_info[key] for key in ('attempt_id','attempt_index')}
         active_binary = binary_phase(schedule, logical_update)
         self.last_reward_schedule = schedule
         self.last_reward_logical_update = logical_update

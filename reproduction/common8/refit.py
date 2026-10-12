@@ -6,12 +6,13 @@ from search_g1.resource import evaluator_gpu_lock
 from reproduction.common8.verify_data import digest
 from reproduction.a800.recovery_binding import finite_fitted_values
 from reproduction.common8.formal_contract import PROBE_ROUNDS, assert_formal_run
+from search_g1.actor_probe_contract import MODE, actor_probes, probe_rounds
 
 ap=argparse.ArgumentParser();ap.add_argument('--step',type=int,required=True);ap.add_argument('--model',required=True);args=ap.parse_args()
 base=Path(os.environ.get('SEARCH_G1_BASE','/data/search-g1'));run=json.loads((base/'logs/run-manifest.json').read_text())
 assert run['profile']=='common8' and run.get('completed_updates',0)==0
 assert_formal_run(run)
-assert args.step in PROBE_ROUNDS, 'Terminal200 does not refit an unused reward evaluator'
+assert args.step in probe_rounds(run), 'Terminal200 does not refit an unused reward evaluator'
 for name,sha in run['input_sha256'].items(): assert digest(base/'data'/name)==sha
 assert run['probe_visible_device'] is not None, 'Probe placement has not passed resource admission'
 if args.step:
@@ -49,6 +50,12 @@ with evaluator_gpu_lock():
  assert all(digest(encoder/name)==sha for name,sha in encoder_hashes.items()), 'Encoder changed during calibration'
  version=run['run_id']+':'+str(args.step)+':'+uuid.uuid4().hex
  payload={'run_id':run['run_id'],'round':args.step,'version':version,'encoder':str(Path(args.model).resolve()),'commit':str(heads/'commit_probe.pkl'),'boundary':str(heads/'boundary_probe.pkl'),'encoder_sha256':encoder_hashes,'head_sha256':{n:hashlib.sha256((heads/n).read_bytes()).hexdigest() for n in ['commit_probe.pkl','boundary_probe.pkl']},'calibration_report':report,'label_proof':proof,'published_unix':time.time()}
+ if actor_probes(run):
+  payload.update(representation_source=MODE,actor_step=args.step,
+   calibration_data_sha256=run['input_sha256']['calibration-300.parquet'],
+   parameter_ownership='independent_binary_heads_only',
+   fitting_input_semantics='immutable current-actor export; production features come from current actor RPC',
+   fitted_state_semantics='serialized sklearn classifier/scaler parameters; no GRPO optimizer ownership')
  payload['calibration_report_sha256']=digest(heads/'calibration-report.json')
  payload['dump_sha256']={p.name:digest(p) for p in sorted(dump.iterdir()) if p.is_file()}
  with (round_dir/'version-manifest.json').open('x') as f:json.dump(payload,f,indent=2)
