@@ -227,7 +227,7 @@ def main():
              scope='CPU preparation only; no model, CUDA, generation or update claimed')
         return
     env={k:v for k,v in os.environ.items() if k.startswith(('COST80_','SEARCH_R1_','RECURSIVE_B_','TREE_','SLURM_'))}
-    ray.init(num_gpus=4,runtime_env={'env_vars':env},include_dashboard=False)
+    ray.init(num_gpus=4,num_cpus=12,runtime_env={'env_vars':env},include_dashboard=False)
     try:
         ray.get(ray.remote(run_driver).remote(config))
     finally:
