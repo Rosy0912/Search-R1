@@ -101,7 +101,11 @@ def _emission(action, context, expected_provenance):
     required = set(PLAIN_DISTRIBUTION)
     required |= {'min_tokens', 'max_tokens', 'ignore_eos', 'stop', 'stop_token_ids',
                  'include_stop_str_in_output', 'logprobs', 'prompt_logprobs', 'seed'}
-    require(set(settings) == required, 'Complete recorded native settings required')
+    decoder_fields={'skip_special_tokens','spaces_between_special_tokens'}
+    require(set(settings) in (required,required|decoder_fields), 'Complete recorded native settings required')
+    if decoder_fields<=set(settings):
+        require(all(settings[key] is True for key in decoder_fields),
+                'Unsupported native decoder settings')
     validate_distribution({key: settings[key] for key in PLAIN_DISTRIBUTION})
     require(settings['min_tokens'] == 0 and settings['max_tokens'] == 500 and
             type(settings['min_tokens']) is int and type(settings['max_tokens']) is int and
