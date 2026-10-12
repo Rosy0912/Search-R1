@@ -116,6 +116,9 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     assert_formal_run(run)
     assert 1 <= first <= last <= TARGET_UPDATES
     base = Path(base)
+    from reproduction.common8.actor_probe_restore_evidence import read_origin, check_scheduler_anchor
+    origin_evidence=read_origin(base,run); origin=origin_evidence['origin']
+    assert first>origin['completed_outer'], 'Only this namespace actual updates may be selected'
     console_check=verify_no_fatal_scheduler_console(base,run)
     claim = json.loads((base/'logs/training-launch-claim.json').read_text())
     assert claim['run_id'] == run['run_id']
@@ -141,12 +144,19 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
         path = base/'logs'/f'scheduler-rank-{rank}.jsonl'
         raw = path.read_bytes()
         rows = [json.loads(line) for line in raw.splitlines()]
+        anchor=None
+        if origin_evidence['restored'] is not None:
+            assert rows and rows[0]['kind']=='RESTORE', 'Missing actual scheduler restore anchor'
+            anchor=check_scheduler_anchor(rows[0],run,origin_evidence,rank); rows=rows[1:]
+        assert all(row['kind']!='RESTORE' for row in rows), 'Unexpected or repeated scheduler restore'
         worker_rows=[json.loads(line) for line in (base/'logs'/f'optimizer-rank-{rank}.jsonl').read_text().splitlines()]
         selected = [r for r in rows if first <= r['logical_update'] <= last]
         history=[r for r in rows if r['logical_update']<=last]
         actual=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+        assert [row['step'] for row in actual if row['step']<=last]==list(range(origin['completed_outer']+1,last+1)), \
+            'Actual completed records are duplicated, omitted or reordered'
         completed={row['step']:row for row in actual if row['step']<=last}
-        assert set(completed)==set(range(1,last+1)), 'Missing actual completed logical updates'
+        assert set(completed)==set(range(origin['completed_outer']+1,last+1)), 'Missing actual completed logical updates'
         from reproduction.common8.behavior_runtime import read_gate_receipt
         attempt_rows=[]
         for row in history:
@@ -154,9 +164,9 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             assert type(row['attempt_index']) is int and row['attempt_index']>0
             if not attempt_rows or row['attempt_id']!=attempt_rows[-1][0]['attempt_id']:attempt_rows.append([])
             attempt_rows[-1].append(row)
-        complete_count=0;physical_writes=0;seen=set();attempt_signatures=[]
+        complete_count=origin['completed_outer'];physical_writes=origin['actual_optimizer_writes'];seen=set();attempt_signatures=[]
         expected_by_row=[]
-        for ordinal,attempt in enumerate(attempt_rows,1):
+        for ordinal,attempt in enumerate(attempt_rows,origin['attempt_index']+1):
             beginning=attempt[0];ending=attempt[-1]
             attempt_id=beginning['attempt_id'];step=complete_count+1
             assert attempt_id not in seen and beginning['attempt_index']==ordinal
@@ -205,27 +215,32 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
         else:assert attempt_signatures==canonical_attempts, 'Rank attempt/partial-write history differs'
         process = None
         previous_unix = 0.
+        def header(row):
+            assert row['schema_version']==1 and row['role']=='fresh200_outer_scheduler'
+            assert row['contract_kind']==CONTRACT_KIND and row['run_id']==run['run_id']
+            assert row['source_commit']==run['source_commit'] and row['source_map_sha256']==source_map_sha
+            assert row['scheduler_contract_sha256']==contract_sha and row['slurm_job_id']==claim['slurm_job_id']
+            if run.get('execution_backend','slurm')=='ssh_local':
+                assert row['execution_backend']=='ssh_local' and row['execution_id']==run['execution_id']
+                assert row['hostname']==allocation['node']
+            assert type(row['rank']) is int and row['rank']==rank
+            assert type(row['world_size']) is int and row['world_size']==world_size(run)
+            assert row['warmup_steps']==WARMUP_STEPS and row['base_learning_rate']==1e-6
+            assert type(row['observed_unix']) in (int,float) and math.isfinite(row['observed_unix']) and row['observed_unix']>0
+            identity=(row['process_pid'],row['process_start_ticks'])
+            assert all(type(value) is int and value>0 for value in identity) and identity in admitted_births
+            return identity
+        if anchor is not None:
+            process=header(anchor);previous_unix=anchor['observed_unix']
         for row,step,before,writes,complete,gate_sha,processed in expected_by_row:
             for name in ('logical_update','rank','world_size','warmup_steps','completed_outer_before',
                          'completed_outer_after','scheduler_last_epoch_before','scheduler_last_epoch_after',
                          'scheduler_step_count_before','scheduler_step_count_after','writes_before',
                          'writes_after','actual_optimizer_writes','opportunities_processed','optimizer_opportunities'):
                 assert type(row[name]) is int, 'Noninteger actual scheduler counter: '+name
-            assert row['schema_version']==1 and row['role']=='fresh200_outer_scheduler'
-            assert row['contract_kind']==CONTRACT_KIND and row['run_id']==run['run_id']
-            assert row['source_commit']==run['source_commit'] and row['source_map_sha256']==source_map_sha
-            assert row['scheduler_contract_sha256']==contract_sha
-            assert row['slurm_job_id']==claim['slurm_job_id']
-            if run.get('execution_backend', 'slurm') == 'ssh_local':
-                assert row['execution_backend'] == 'ssh_local' and row['execution_id'] == run['execution_id']
-                assert row['hostname'] == allocation['node']
-            assert row['rank']==rank and row['world_size']==world_size(run)
-            assert row['warmup_steps']==WARMUP_STEPS and row['base_learning_rate']==1e-6
-            assert type(row['observed_unix']) in (int,float) and math.isfinite(row['observed_unix'])
             assert row['observed_unix'] >= previous_unix and row['observed_unix'] > 0
             previous_unix = row['observed_unix']
-            identity = (row['process_pid'], row['process_start_ticks'])
-            assert all(type(v) is int and v>0 for v in identity)
+            identity=header(row)
             if process is None: process=identity
             assert identity==process, 'Scheduler rank process changed inside the admitted segment'
             assert identity in admitted_births, 'Scheduler process birth absent from independent owned trainer ledger'
@@ -257,6 +272,8 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             cumulative_actual_optimizer_writes=physical_writes,
             complete_outer_optimizer_opportunities=complete_count*20,
             optimizer_completion_rule=FORMAL_COUNTING,
+            namespace_origin=origin,restore_proof_sha256=origin_evidence['proof_sha256'],
+            restore_anchor=anchor,namespace_new_complete_outers=complete_count-origin['completed_outer'],
             semantics='selected completed outer receipts bound to independently recorded trainer births; '
                       'observed files may subsequently append; historical birth binding is not a current liveness claim')
     return result

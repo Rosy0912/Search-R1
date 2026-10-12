@@ -137,7 +137,7 @@ class ResumeLoopTests(unittest.TestCase):
     def test_missing_rank_or_wrong_restore_binding_is_rejected(self):
         _, run, binding, receipt=documents();receipt['canonical_model_receipt_sha256']='9'*64
         context=dict(binding=binding,receipt=receipt)
-        workers=[dict(rank=rank,identity=identity(run),last_attempt_index=5,
+        workers=[dict(rank=rank,identity=identity(run),last_attempt_index=5,policy_rejections=0,
             completed_outer=5,optimizer_writes=5,canonical_model_loaded=True,
             canonical_model_receipt_sha256='9'*64,recovery_binding_sha256=binding_digest(binding),
             original_worker_state_sha256='a'*64,rebound_worker_state_sha256='b'*64,
@@ -185,7 +185,7 @@ class ResumeLoopTests(unittest.TestCase):
                 if malformed:saved['attempt_progress']['cumulative_writes']+=1
                 receipt['driver']={'path':'RAM-only-patched-load'}
                 context=dict(binding=binding,parent=parent,receipt=receipt,probe_manifest=manifest)
-                workers=[dict(rank=rank,identity=identity(run),last_attempt_index=5,
+                workers=[dict(rank=rank,identity=identity(run),last_attempt_index=5,policy_rejections=0,
                     completed_outer=5,optimizer_writes=5,canonical_model_loaded=True,
                     canonical_model_receipt_sha256='9'*64,recovery_binding_sha256=binding_digest(binding),
                     original_worker_state_sha256='a'*64,rebound_worker_state_sha256='b'*64,

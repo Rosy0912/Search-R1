@@ -282,18 +282,24 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
     from reproduction.common8.behavior_runtime import read_gate_receipt
     base = Path(base).resolve(); _integer(last, 'last', minimum=1); _hash(plan_sha256, 'prospective plan')
     _require(last <= 200 and run['policy_safety_mode'] == 'inline_first_five', 'Invalid formal attempt scope')
-    _require([row['step'] for row in complete_records] == list(range(1, last + 1)), 'Incomplete actual completed selection')
+    from reproduction.common8.actor_probe_restore_evidence import read_origin, check_scheduler_anchor
+    origin_evidence=read_origin(base,run);origin=origin_evidence['origin']
+    _require([row['step'] for row in complete_records] == list(range(origin['completed_outer']+1, last + 1)), 'Incomplete actual completed selection')
     cutoff = _integer(complete_records[-1]['attempt_index'], 'cutoff attempt', minimum=1)
     _require(set(scheduler_receipts) == {str(rank) for rank in ranks(run)}, 'Need every actual scheduler receipt')
     all_attempts = _owned_rows(base, 'logs/actual-attempts.jsonl')
     attempts = [row for row in all_attempts if _attempt_identity(row)[1] <= cutoff]
     _require(last < 200 or len(attempts) == len(all_attempts), 'Actual driver contains attempts after final COMPLETE200')
-    _require([row['attempt_index'] for row in attempts] == list(range(1, cutoff + 1)),
+    _require([row['attempt_index'] for row in attempts] == list(range(origin['attempt_index']+1, cutoff + 1)),
              'Actual driver attempt prefix is omitted, duplicated or reordered')
-    _require(len({row['attempt_id'] for row in attempts}) == cutoff, 'Actual driver attempt UUID reused')
+    _require(len({row['attempt_id'] for row in attempts}) == cutoff-origin['attempt_index'], 'Actual driver attempt UUID reused')
     rank_workers = {}; rank_schedulers = {}; selected_hashes = {}; scheduler_hashes = {}
     for rank in ranks(run):
         all_scheduler = _owned_rows(base, f'logs/scheduler-rank-{rank}.jsonl')
+        if origin_evidence['restored'] is not None:
+            anchor=check_scheduler_anchor(all_scheduler[0],run,origin_evidence,rank)
+            _require(anchor==scheduler_receipts[str(rank)]['restore_anchor'], 'Restore anchor differs from independent scheduler audit')
+            all_scheduler=all_scheduler[1:]
         scheduler = [row for row in all_scheduler if _attempt_identity(row)[1] <= cutoff]
         _require(last < 200 or len(scheduler) == len(all_scheduler), 'Actual scheduler continues after final COMPLETE200')
         _require(scheduler == scheduler_receipts[str(rank)]['selected_rows'],
@@ -305,10 +311,11 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         selected_hashes[str(rank)] = document_sha256(workers)
         scheduler_hashes[str(rank)] = document_sha256(scheduler)
     binding = dict(run_id=run['run_id'], calibration_sha256=plan_sha256)
-    completed = 0; writes = 0; aborted = 0; rejections = 0; summaries = []
+    completed=origin['completed_outer'];writes=origin['actual_optimizer_writes']
+    aborted=origin['aborted_attempts'];rejections=origin_evidence['policy_rejections'];summaries=[]
     scheduler_cursors = {rank: 0 for rank in ranks(run)}; worker_cursors = {rank: 0 for rank in ranks(run)}
     job = rank_schedulers[0][0]['slurm_job_id']
-    for ordinal, raw_attempt in enumerate(attempts, 1):
+    for ordinal, raw_attempt in enumerate(attempts, origin['attempt_index']+1):
         attempt = copy.deepcopy(raw_attempt); outer = completed + 1
         for name in ('logical_update', 'optimizer_writes_before', 'optimizer_writes_after',
                      'completed_outer', 'cumulative_aborted_attempts'):
@@ -340,7 +347,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                  'Actual driver skip/fatal/rollback semantics differ')
         aborted += int(not complete)
         _require(attempt['cumulative_aborted_attempts'] == aborted, 'Actual driver retry counter differs')
-        record = complete_records[completed] if complete else None
+        record = complete_records[completed-origin['completed_outer']] if complete else None
         if record is not None:
             _require(record['run_id'] == run['run_id'] and record['attempt_id'] == attempt['attempt_id'] and
                      record['attempt_index'] == ordinal and record['optimizer_writes_before'] == writes and
@@ -394,10 +401,13 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                      selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes)
     return dict(schema_version=1, role='actual_formal_all_attempt_monitor_audit', run_id=run['run_id'],
         structural_accepted=True, completed_outer_count=completed, cutoff_attempt_index=cutoff,
-        actual_attempt_count=cutoff, fully_skipped_attempt_count=aborted,
-        processed_opportunities_per_rank=cutoff * 20, actual_optimizer_writes_per_rank=writes,
-        completed_outer_global_monitor_count=completed * 40, retry_global_monitor_count=aborted * 40,
-        unique_global_monitor_count=cutoff * 40, cumulative_policy_rejections=rejections,
+        actual_attempt_count=cutoff-origin['attempt_index'], fully_skipped_attempt_count=aborted-origin['aborted_attempts'],
+        processed_opportunities_per_rank=(cutoff-origin['attempt_index']) * 20, actual_optimizer_writes_per_rank=writes,
+        completed_outer_global_monitor_count=(completed-origin['completed_outer']) * 40,
+        retry_global_monitor_count=(aborted-origin['aborted_attempts']) * 40,
+        unique_global_monitor_count=(cutoff-origin['attempt_index']) * 40, cumulative_policy_rejections=rejections,
+        namespace_origin=origin,restore_proof_sha256=origin_evidence['proof_sha256'],
+        namespace_new_complete_outers=completed-origin['completed_outer'],
         guard_triggered_monitor_count=sum(row['guard_triggered_monitor_count'] for row in summaries),
         attempts=summaries, selected_driver_attempts_sha256=document_sha256(attempts),
         selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes,

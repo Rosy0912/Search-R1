@@ -19,6 +19,7 @@ def verify_worker_restores(run, context, workers):
     for row in workers:
         assert row['identity'] == identity(run), 'Worker confirmation belongs to another child'
         assert type(row['last_attempt_index']) is int and row['last_attempt_index'] == origin['attempt_index']
+        assert type(row['policy_rejections']) is int and row['policy_rejections'] >= 0
         assert row['completed_outer'] == receipt['completed_outer']
         assert row['optimizer_writes'] == receipt['actual_optimizer_writes']
         assert row['canonical_model_loaded'] is True
@@ -27,6 +28,7 @@ def verify_worker_restores(run, context, workers):
         for key in ('original_worker_state_sha256', 'rebound_worker_state_sha256',
                     'local_actor_parameters_sha256'):
             assert isinstance(row[key], str) and re.fullmatch('[0-9a-f]{64}', row[key])
+    assert len({row['policy_rejections'] for row in workers}) == 1
     return workers
 
 

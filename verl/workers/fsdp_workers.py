@@ -673,6 +673,7 @@ class ActorRolloutRefWorker(Worker):
             self._outer_scheduler_evidence._check_state()
             result.update(rank=self.rank, completed_outer=current['completed_outer'],
                 identity=current['identity'], last_attempt_index=current['actor_accounting']['last_attempt_index'],
+                policy_rejections=current['actor_accounting']['policy_rejections'],
                 optimizer_writes=current['optimizer_writes'], canonical_model_loaded=True,
                 canonical_model_receipt_sha256=context['receipt']['canonical_model_receipt_sha256'],
                 original_worker_state_sha256=tree_digest(saved['original']),
@@ -681,12 +682,17 @@ class ActorRolloutRefWorker(Worker):
                 recovery_binding_sha256=binding_digest(context['binding']))
             return dict(completed_outer=current['completed_outer'], optimizer_writes=current['optimizer_writes'],
                         identity=current['identity'], last_attempt_index=current['actor_accounting']['last_attempt_index'],
+                        policy_rejections=current['actor_accounting']['policy_rejections'],
                         recovery_binding_sha256=result['recovery_binding_sha256'])
         collective_call(restore_state, stage='actor_probe_restore_optimizer_scheduler_rng')
         def record():
             self._outer_scheduler_evidence._append(dict(kind='RESTORE',
                 completed_outer=context['receipt']['completed_outer'], actual_writes=self.actor._optimizer_writes,
                 last_attempt_index=self.actor._last_attempt_index,
+                policy_rejections=self.actor._policy_rejections,scheduler_advances=0,
+                scheduler_last_epoch=self.actor_lr_scheduler.last_epoch,
+                scheduler_step_count=self.actor_lr_scheduler._step_count,
+                learning_rates=[float(group['lr']) for group in self.actor_optimizer.param_groups],
                 recovery_binding_sha256=result['recovery_binding_sha256'],
                 parent_run_id=context['parent']['run_id'], parent_execution_id=context['parent']['execution_id'],
                 full_state_receipt_sha256=context['binding']['full_state_receipt_sha256']))

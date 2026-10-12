@@ -162,6 +162,21 @@ the actual Ray serialization check requires target dependencies unavailable on
 the Mac. The separate production launcher, real rank/tail chain reader and
 complete final verifier integration still remain mandatory before recovery use.
 
+The real scheduler and attempt readers now admit namespace-local intervals
+beginning at the actual saved origin. They read the bound parent manifest and
+full-state receipt hashes plus the child launch/restore proof, require four
+child-bound confirmations and the saved policy-rejection count, and independently
+bind the first RESTORE row to source/contract and an owned trainer PID birth.
+Its actual scheduler counter/LR, write total and attempt cursor must agree.
+The existing BEGIN/COMMIT/COMPLETE/ABORT, warmup, write receipts and per-attempt
+40 monitors/20 opportunities remain mandatory. Counter and monitor increments
+report only work performed in this namespace; inherited totals are explicit.
+Constructed scalar-file tests cover resume at5/50/100, zero-origin four/eight
+rank regressions and wrong origin/LR/birth/hash/parent-prefix rejection. This
+does not verify canonical/RNG tensor bytes or incomplete tails and is not the
+complete chain/final acceptance; the admitted recovery launcher and those final
+checks still require implementation and actual A800 execution.
+
 ## Required evidence before launch
 
 1. Focused tests:100/101 reward boundary,10-step refresh boundaries, strict
