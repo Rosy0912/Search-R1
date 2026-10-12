@@ -644,6 +644,43 @@ class SearchRollout:
                             target=tree.leaves,budget=tree.continuation_budget_per_question,
                             variant='inverse_generation' if tree.branch_sampling=='recursive_inverse_generation_v1' else 'uniform')
             holder['planner']=planner;planners.append(planner)
+        def finish_child(planner, request, child, suffix, reward, started):
+            parent,index,attempt=request
+            snapshot=parent.snapshots[index];n=len(snapshot.response)
+            if (child.response[:n]!=snapshot.response or child.model_mask[:n]!=snapshot.model_mask or
+                fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
+                raise ValueError('Continuation changed inherited prefix')
+            result=record(child,parent.snapshots[:index]+suffix,parent,reward)
+            result.cost=dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
+                retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
+                batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
+            trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
+            if self.record_details:
+                with trajectory_path.open('x') as f:
+                    json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
+            planner.accept_result(result)
+
+        if os.environ.get('RECURSIVE_B_READY_QUESTION_FRONTIER')=='1':
+            from .recursive_frontier import run_frontier
+            run_frontier(planners, self, meta, finish_child)
+        else:
+            self._recursive_whole_suffix_waves(planners, meta, finish_child)
+        selected=[]
+        self.recursive_summaries=[]
+        for planner in planners:
+            final=planner.finish()
+            self.recursive_summaries.append(dict(attempts=planner.attempts,selected=len(final),
+                accepted=len(planner.accepted)-1,same=len(planner.pool),
+                filled=sum(r.source=='failure_fill' for r in final),reason=planner.reason))
+            for r in final:
+                r.state.branch_metadata=dict(protocol=tree.branch_sampling,generation=r.generation,
+                    parent_id=r.parent_id,root_id=r.root_id,source=r.source,sampled_reward=r.reward)
+                selected.append(r.state)
+        self.tree_candidate_counts=[x['attempts'] for x in self.recursive_summaries]
+        return selected
+
+    def _recursive_whole_suffix_waves(self, planners, meta, finish_child):
+        from .tree_audit import state_signature
         while True:
             requests=[]
             for planner in planners:
@@ -670,29 +707,4 @@ class SearchRollout:
                 # Full search/pool terminal evidence precedes refusing this training outer.
                 raise
             for (planner,(parent,index,attempt)),child,suffix,reward in zip(requests,children,suffixes,rewards):
-                snapshot=parent.snapshots[index];n=len(snapshot.response)
-                if (child.response[:n]!=snapshot.response or child.model_mask[:n]!=snapshot.model_mask or
-                    fingerprint(child.raw_ledger[:index])!=fingerprint(snapshot.raw_ledger)):
-                    raise ValueError('Continuation changed inherited prefix')
-                result=record(child,parent.snapshots[:index]+suffix,parent,reward)
-                result.cost=dict(new_generated_tokens=sum(x['action']['native_emission']['true_emitted_length'] for x in child.raw_ledger[index:]),
-                    retrieval_calls=int(child.valid_searches-snapshot.valid_searches),model_calls=len(suffix),
-                    batched_wave_wall_seconds=time.time()-started,full_training_model_tokens=sum(child.model_mask))
-                trajectory_path=directory/str(child.source)/(child.trajectory+'.json')
-                if self.record_details:
-                    with trajectory_path.open('x') as f:
-                        json.dump(dict(state=dataclasses.asdict(child),cost=result.cost),f,allow_nan=False);f.flush();os.fsync(f.fileno())
-                planner.accept_result(result)
-        selected=[]
-        self.recursive_summaries=[]
-        for planner in planners:
-            final=planner.finish()
-            self.recursive_summaries.append(dict(attempts=planner.attempts,selected=len(final),
-                accepted=len(planner.accepted)-1,same=len(planner.pool),
-                filled=sum(r.source=='failure_fill' for r in final),reason=planner.reason))
-            for r in final:
-                r.state.branch_metadata=dict(protocol=tree.branch_sampling,generation=r.generation,
-                    parent_id=r.parent_id,root_id=r.root_id,source=r.source,sampled_reward=r.reward)
-                selected.append(r.state)
-        self.tree_candidate_counts=[x['attempts'] for x in self.recursive_summaries]
-        return selected
+                finish_child(planner,(parent,index,attempt),child,suffix,reward,started)
