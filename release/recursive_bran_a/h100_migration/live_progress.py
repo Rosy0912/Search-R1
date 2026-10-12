@@ -1,6 +1,17 @@
 """Small read-only H100 progress record; no Torch, GPU allocation, or signals."""
-import json, pathlib, time, collections
+import json, pathlib, time, collections, subprocess
 b = pathlib.Path('/dataset/shaoshitong/recursive-bran-a-h100-20261012')
+if not (b/'receipts/train-start.json').exists():
+    submission = json.loads((b/'receipts/accounting-restart-new-allocation.json').read_text())
+    job = submission['stdout'].strip()
+    assert submission['returncode'] == 0 and job.isdigit()
+    query = subprocess.run(['squeue','-h','-j',job,'-o','%i %T %R'],capture_output=True,text=True,timeout=10)
+    log = b/'logs'/('slurm-'+job+'.log')
+    print(json.dumps(dict(time=time.time(),waiting_entry=True,job=job,
+        queue=query.stdout.strip(),job_query_returncode=query.returncode,
+        query_error=query.stderr,ready=(b/'control/launch-ready.sh').exists(),
+        setup_tail=log.read_text(errors='replace')[-1500:] if log.exists() else None)))
+    raise SystemExit(0)
 entry = json.loads((b/'receipts/train-start.json').read_text())
 proc = pathlib.Path('/proc')/str(entry['pid'])
 text = (b/'logs/training.log').read_text(errors='replace')
