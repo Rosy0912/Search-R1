@@ -20,8 +20,8 @@ def timing(stage, started=None, **values):
 
 
 def join_owned_process(process, timeout):
-    # Reap via waitpid through is_alive() as well as the multiprocessing
-    # sentinel: native helpers may retain the sentinel writer after child exit.
+    # Poll authoritative waitpid through is_alive() in bounded intervals.
+    # A zombie leader alone is not proof all native threads have exited.
     deadline=time.monotonic()+timeout
     while process.is_alive():
         remaining=deadline-time.monotonic()
