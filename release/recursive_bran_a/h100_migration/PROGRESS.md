@@ -21,3 +21,16 @@ b103cbc 将明确身份绑定的 H100 fresh profile 接入三处原入口：不�
 当前主日志可见两项cache phase实际记录：policy_version[0,0]、32generation calls、1weight sync、1KV init、released_before_hf_or_policy_change=true；Ray日志有去重，不能将这两项冒称八rank完整直接日志核验。首轮参考前向/更新尚未验收。2秒observer累计本作业采样峰约34.7GiB，包含以前尝试，不是本轮独占连续最大值；15:47当前directfree最小17315MiB、observer age0.58秒。
 
 用户15:38授权的子智能体仅做本地入口静态检查，未发现新的确定性阻断bug：Ray环境、guard语义、缓存版本变化、保存/评测释放和稀疏节点一致。其结果不代替实际训练验收。主线没有等待该检查。
+
+
+## 20:47CST：当前运行前5轮已闭合，第6轮实际继续
+
+下列状态取代上述历史尝试的“当前运行”：h100-11，实际八卡共享Slurm step3389.0，owner3714909/UID0/tick658086351，run1c806d15752d44a7ac99687f0737d7e3。部署运行源71d4e69d0b098ef37df00b1267ab4b9804e5024d；配置与断点声明的科学源7966a1e76d6abddb4349d57c4727d69fe62fb16d保持，两者分别记录。原20次更新后NameError且无断点的尝试已保留；当前运行是人工明确授权从官方权重重新开始，不称无损恢复该失败尝试。
+
+5个outer已真实完成，8rank各累计100次Adam调用，正常防护跳过0。第5轮完整state manifest为b14c7793aff7e9986789270d0b88b1a2df8387d5588885bdd5b11722f1f41677，native八rank及driver同world reload全部通过；评测后state manifest为cd6fb84617aa3944ea8ac0a7d805108c52a45074ad286f0d37d0a26cf4000c6c，完整保存实际评测后状态，未另外执行重复reload。这里是原生验收和小manifest回读，不是root独立反序列化全部Adam或重新计算logits。
+
+第5轮原生dev512完整完成：EM96/512=18.75%，NQ54/256，Hotpot42/256；采用冻结评测函数val/em，协议格式另轴（format_rate298/512）。本次从官方初始权重开始，不能与旧source100训练权重239/512直接作为同起点增益比较。未追加第10轮评测；正常评测、关键断点及详细tree仅5/50/100/150/200。
+
+实测整轮耗时1–4为22.39、24.78、21.45、11.67分钟。第4轮原始生成窗口6.60分钟、actor更新2.79分钟；第5轮非testing部分13.32分钟，含计划内testing及保存总25.84分钟。testing750.92秒包含边界保存，不称纯生成耗时；绕过重复save计时接近0不代表真实存储没有耗时。GPU共享负载及题目工作量变化，不能把速度变化单因果归给某项修改，不承诺后续固定分钟数。
+
+20:47:35新实读同owner无错误，第6轮真实生成/RPC及reward产物增长。只读follower改为已发布14fa4a2，处理评测outer=null，不改训练；旧只读follower已退役，远端运行未重启。私有小证据first5-closed-metrics.json、first5-closed-checkpoints.json、first-five-accepted-current.json及follow-v2目录保留在Mac，权重/原轨迹仍在H100。初期5+下一轮运行验收通过，完整goal仍要求10健康outer及实际11继续，之后让作业运行至200。
