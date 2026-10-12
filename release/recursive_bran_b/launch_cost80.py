@@ -21,13 +21,15 @@ def main():
     assert (native/'SOURCE_COMMIT').is_file() and (tools/'SOURCE_COMMIT').is_file()
     expected=['GPU-15061c70-49d6-3014-da87-915b370c1e89','GPU-0c0aeed1-c7b9-c9ad-4b1f-7396b6c19f4c',
               'GPU-d2609c94-e30a-a106-e1cc-6d4ae3e044c2','GPU-d6d81990-8737-f64c-aaef-d0ceabb5123a']
+    # The user assigned devices 0-3. NVML queries can themselves block in this
+    # node's driver; use exact device nodes and exclusive leases for this pair.
+    # UUIDs are the previously observed fixed-host mapping, not live telemetry.
     records=[]
-    for line in subprocess.check_output(['nvidia-smi','-i','0,1,2,3',
-        '--query-gpu=index,uuid,memory.used,utilization.gpu','--format=csv,noheader,nounits'],text=True,timeout=20).splitlines():
-        i,gpu,mem,util=[x.strip() for x in line.split(',')]
-        assert expected[int(i)]==gpu and float(mem)<100 and float(util)<5
-        records.append(dict(index=int(i),uuid=gpu,memory_used_mib=float(mem)))
-    assert len(records)==4
+    for i,gpu in enumerate(expected):
+        device=os.stat('/dev/nvidia'+str(i))
+        assert os.major(device.st_rdev)==195 and os.minor(device.st_rdev)==i
+        records.append(dict(index=i,uuid=gpu,uuid_scope='previous fixed-host inventory',
+            admission='user-assigned device minor and exclusive lease; no NVML query'))
     leases=Path('/tmp')/f'search-r1-gpu-leases-{os.getuid()}';leases.mkdir(exist_ok=True,mode=0o700)
     handles=[]
     for gpu in sorted(expected):
