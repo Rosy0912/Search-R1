@@ -81,7 +81,8 @@ def params():
     return NS(n=1,best_of=1,_real_n=1,temperature=1.,top_p=1.,top_k=-1,min_p=0.,presence_penalty=0.,frequency_penalty=0.,
         repetition_penalty=1.,min_tokens=0,max_tokens=500,ignore_eos=False,stop=None,stop_token_ids=[],
         include_stop_str_in_output=False,logprobs=1,prompt_logprobs=None,seed=None,logits_processors=None,
-        truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None)
+        truncate_prompt_tokens=None,guided_decoding=None,logit_bias=None,allowed_token_ids=None,
+        detokenize=True,skip_special_tokens=True,spaces_between_special_tokens=True)
 
 
 ENV={'SEARCH_R1_BASELINE_COMMIT':'a'*40,'SEARCH_R1_BASELINE_CONFIG_SHA256':'b'*64,

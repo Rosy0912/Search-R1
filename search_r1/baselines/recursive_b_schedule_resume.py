@@ -17,6 +17,9 @@ def binding(environ=None):
  raw=Path(e['RECURSIVE_B_CONTINUATION_BINDING']).read_bytes()
  require(hashlib.sha256(raw).hexdigest()==e['RECURSIVE_B_CONTINUATION_SHA256'],'binding bytes changed')
  b=json.loads(raw)
+ if b.get('protocol')=='recursive_b_complete8_native_rng_resume_v1':
+  from .recursive_b_completed_resume import validate_binding
+  return validate_binding(b)
  require(b['protocol']==PROTOCOL and b['parent_completed_step'] in (3,4,5),'only explicit completed3/4/5 boundary')
  require((b['parent_commit'],b['parent_config_sha256'])==('3da904591125f117b1eae1ba09546ebe793cb2d4','95d9f8f2195a35f189ff06af8e449d419040ae96c4cde4fc50f9d7062db414f7'),'wrong parent chain')
  require(b['parent_run_id']=='ef09290e69454f20b6a9594ad8e485b6','wrong parent run')
@@ -29,7 +32,7 @@ def binding(environ=None):
 def _bind():
  global PARENT_MANIFEST,PARENT_MANIFEST_SHA256,PARENT_OPTIMIZER_CALLS,PARENT_COMPLETED_STEP
  b=binding();PARENT_MANIFEST=Path(b['parent_manifest']);PARENT_MANIFEST_SHA256=b['parent_manifest_sha256']
- PARENT_COMPLETED_STEP=b['parent_completed_step'];PARENT_OPTIMIZER_CALLS=20*PARENT_COMPLETED_STEP
+ PARENT_COMPLETED_STEP=b['parent_completed_step'];PARENT_OPTIMIZER_CALLS=b.get('parent_optimizer_calls',20*PARENT_COMPLETED_STEP)
  return b
 
 def validate_entry(config=None,environ=None,initialized=False):

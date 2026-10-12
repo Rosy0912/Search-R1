@@ -15,14 +15,18 @@ def main():
  if sha(r['config'])!=r['config_sha256'] or sha(r['binding'])!=r['binding_sha256']:raise ValueError('Config/binding changed')
  if sha(r['parent_terminal'])!=r['parent_terminal_sha256']:raise ValueError('Parent terminal changed')
  terminal=json.loads(Path(r['parent_terminal']).read_text())
- if terminal['protocol']!='recursive-b-speed-parent-terminal-v1' or terminal['status'] not in ('TECHNICAL_SWITCH_ALL_OWNED_ABSENT','TECHNICAL_SWITCH_ALL_OWNED_KERNEL_EXITED'):raise ValueError('No actual technical terminal')
- if terminal['original_controller']!={'pid':401228,'uid':1001,'tick':651299742} or not terminal['all_original_owned_kernel_exited']:raise ValueError('Wrong parent owner/release')
- for identity in terminal['owned_processes']:
-  if Path('/proc/%d'%identity['pid']).exists():
-   raw=Path('/proc/%d/stat'%identity['pid']).read_text();tick=int(raw.rsplit(')',1)[1].split()[19])
-   if tick==identity['tick']:
-    state=raw.rsplit(')',1)[1].split()[0]
-    if state!='Z' or list(Path('/proc/%d/fd'%identity['pid']).glob('*')):raise ValueError('Original owner still alive or has open descriptors')
+ if r.get('recovery_kind')=='complete8_native_rng':
+  from search_r1.baselines.recursive_b_completed_resume import validate_terminal
+  validate_terminal(terminal)
+ else:
+  if terminal['protocol']!='recursive-b-speed-parent-terminal-v1' or terminal['status'] not in ('TECHNICAL_SWITCH_ALL_OWNED_ABSENT','TECHNICAL_SWITCH_ALL_OWNED_KERNEL_EXITED'):raise ValueError('No actual technical terminal')
+  if terminal['original_controller']!={'pid':401228,'uid':1001,'tick':651299742} or not terminal['all_original_owned_kernel_exited']:raise ValueError('Wrong parent owner/release')
+  for identity in terminal['owned_processes']:
+   if Path('/proc/%d'%identity['pid']).exists():
+    raw=Path('/proc/%d/stat'%identity['pid']).read_text();tick=int(raw.rsplit(')',1)[1].split()[19])
+    if tick==identity['tick']:
+     state=raw.rsplit(')',1)[1].split()[0]
+     if state!='Z' or list(Path('/proc/%d/fd'%identity['pid']).glob('*')):raise ValueError('Original owner still alive or has open descriptors')
  if 'retry_terminal' in r:
   from search_r1.baselines.recursive_b_retry import validate_retry_terminal
   validate_retry_terminal(r['retry_terminal'],r['retry_terminal_sha256'])
