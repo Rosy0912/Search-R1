@@ -48,7 +48,7 @@ def main():
         SEARCH_R1_TREE_RANK_AUDIT_DIR=str(out/'rank-audit'),
         SLURM_JOB_ID='cost80-'+run,SLURM_JOB_NODELIST='xie-lab-4',
         TREE_COMMON_DATA=str(root/'common-data'),TREE_INSTRUCT_MODEL='/home/shaoshitong/search-e1-config-study-20261004/assets/model',
-        TMPDIR=str(root/'tmp'),RAY_TMPDIR='/home/shaoshitong/rbb5-cost80-'+run,
+        TMPDIR=str(root/'tmp'),RAY_TMPDIR='/tmp/rb80-'+run[:16],
         HF_HOME=str(root/'cache/hf'),XDG_CACHE_HOME=str(root/'cache'),
         HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',WANDB_MODE='offline',
         OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',OPENBLAS_NUM_THREADS='4',
