@@ -9,6 +9,8 @@ export RECURSIVE_BRAN_BASE="$base" CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export PATH="$runtime/env/bin:/usr/local/bin:/usr/bin:/bin"
 export PYTHONPATH="$source:$runtime/retriever-gpu-lib:$source/release/recursive_bran_a/retriever_overlap_candidate:$source/release/recursive_bran_a/h100_migration/oracle_source"
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 NVIDIA_TF32_OVERRIDE=0
+export CPATH=/root/miniconda3/pkgs/python-3.10.21-h17756b0_0/include/python3.10
+export TRITON_LIBCUDA_PATH="$runtime/lib/driver" LIBRARY_PATH="$runtime/lib/driver"
 export VLLM_ATTENTION_BACKEND=XFORMERS HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 WANDB_MODE=offline
 export TMPDIR="$base/tmp" RAY_TMPDIR="/tmp/rba-h100-${RBA_H100_ALLOCATION_ID}" XDG_CACHE_HOME="$base/cache" HF_HOME="$base/cache/hf"
 unset LD_LIBRARY_PATH HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
