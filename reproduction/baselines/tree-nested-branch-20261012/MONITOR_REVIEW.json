@@ -1,0 +1,44 @@
+{
+  "status": "MONITOR_STATIC_SYNTHETIC_REVIEW_ACCEPTED",
+  "reviewed_at": "2026-10-12T15:07:16.648908+00:00",
+  "blocking_findings": [],
+  "reviewed_files_sha256": {
+    "work/tree-nested-branch-monitor-20261012/poll_nested_run.py": "3490f5bdcd33cf6831634072f7433d9a7f3927a5588b14a2d71b7c2bbbb4c805",
+    "work/tree-speed-repair-20261008/nested-branch-source/reproduction/tree-nested-branch-monitor-20261012/poll_nested_run.py": "3490f5bdcd33cf6831634072f7433d9a7f3927a5588b14a2d71b7c2bbbb4c805"
+  },
+  "tests": {
+    "local_ast_passed": true,
+    "remote_payload_ast_passed": true,
+    "parser_synthetic_cases": 1,
+    "parser_case_passed": true,
+    "dryrun_passed": true,
+    "backup_bytes_equal": true
+  },
+  "synthetic_observation": {
+    "logger_step": 6,
+    "completed_outer": 6.0,
+    "attempt_id": 7.0,
+    "metrics": {
+      "tree_variance/group_raw_reward_population_variance": 0.25,
+      "tree_sampling/continuations": 3.0
+    },
+    "rollout_sampling_costs": {
+      "rollout/candidate_attempts": 9.0,
+      "rollout/candidate_accepted": 3.0,
+      "rollout/candidate_discarded": 6.0,
+      "rollout/candidate_fallbacks": 1.0,
+      "rollout/branch_generated_tokens": 1234.0,
+      "rollout/branch_retrieval_calls": 8.0,
+      "rollout/scoring_calls": 11.0,
+      "rollout/scoring_wall_seconds": 0.012
+    }
+  },
+  "read_only_scope": "Exact positive requested job squeue/sacct --local; own nested run logs/accounting/checkpoints directory names and statvfs; no mutation commands, weights/tensors/archives/downloads. Route construction only in dryrun.",
+  "limits": [
+    "No remote access or live run observation",
+    "No training/GPU/probability acceptance",
+    "Per-iteration metrics array and cumulative accounting are small numeric summaries for bounded200-run; log last_lines/error_lines are bounded, JSON reads limited2MiB",
+    "Monitor commit must remain separate from frozen executing package0a123e4"
+  ],
+  "training_source_package_changed": false
+}
