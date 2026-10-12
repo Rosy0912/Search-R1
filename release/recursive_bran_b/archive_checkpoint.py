@@ -39,8 +39,16 @@ def regular(path):
         raise RuntimeError(f'Not an owned regular file: {path}')
 
 
+def within(path, base):
+    try:
+        path.relative_to(base)
+        return True
+    except ValueError:
+        return False
+
+
 def safe_dirs(path, base):
-    if not path.is_relative_to(base):
+    if not within(path, base):
         raise RuntimeError('Path outside archive boundary')
     for parent in [base, *reversed(path.relative_to(base).parents), path.relative_to(base)]:
         p = parent if parent == base else base / parent
@@ -94,7 +102,7 @@ def payload(root, run, step, source):
         directories.append(hf)
     for directory in directories:
         actual = {str(p.relative_to(root)) for p in directory.rglob('*') if p.is_file() or p.is_symlink()}
-        expected = {n for n in files if Path(n).is_relative_to(directory.relative_to(root))}
+        expected = {n for n in files if within(Path(n), directory.relative_to(root))}
         if actual != expected:
             raise RuntimeError('Unexpected checkpoint payload members')
     data = dict(run=run, step=step, source_commit=source, source_checkpoint_root=str(root),
@@ -162,6 +170,7 @@ def copy(args):
     final = Path(data['destination_root']) / 'checkpoint-bundles' / staging.name
     preparation = f'''import os,json,shutil,socket
 from pathlib import Path
+{inspect.getsource(within)}
 {inspect.getsource(safe_dirs)}
 assert os.getuid()==1001 and socket.gethostname().split('.')[0]=='xielab5'
 p=Path({str(staging)!r})
