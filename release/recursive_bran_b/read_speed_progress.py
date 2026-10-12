@@ -3,16 +3,21 @@ import argparse,json,os,socket,functools,re
 
 def read_worker(worker, expected_run, expected_source):
  import os
+ import time
+ import torch
  assert os.getuid()==1001
  assert os.environ['SEARCH_R1_BASELINE_RUN_ID']==expected_run
  assert os.environ['SEARCH_R1_BASELINE_COMMIT']==expected_source
  assert worker.world_size==4 and worker._is_actor
  m=worker.rollout_sharding_manager
- return dict(pid=os.getpid(),rank=worker.rank,uid=os.getuid(),source=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+ return dict(pid=os.getpid(),rank=worker.rank,uid=os.getuid(),time=time.time(),source=os.environ['SEARCH_R1_BASELINE_COMMIT'],
   run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],actual_optimizer_calls=worker.actor._fresh_total_committed_optimizer_calls,
   scheduler=worker.actor_lr_scheduler.last_epoch,cache_generation_calls=m.cache_phase_calls,
   total_weight_sync_calls=m.weight_sync_calls,weights_resident=m.weights_resident,
-  cached_policy_version=m.cached_policy_version,CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'))
+  cached_policy_version=m.cached_policy_version,CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),
+  native_cuda_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+  native_cuda_peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+  peak_scope='Since existing worker startup; read-only counters, no peak reset')
 
 p=argparse.ArgumentParser();p.add_argument('--ray-address',required=True);p.add_argument('--pids',required=True);p.add_argument('--run-id',required=True);p.add_argument('--source-commit',required=True);a=p.parse_args()
 assert re.fullmatch('[0-9a-f]{32}',a.run_id) and re.fullmatch('[0-9a-f]{40}',a.source_commit)
