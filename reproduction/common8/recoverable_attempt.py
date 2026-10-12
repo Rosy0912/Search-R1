@@ -66,9 +66,16 @@ def record_attempt(result):
     base=Path(os.environ['SEARCH_G1_BASE'])
     run=json.loads((base/'logs/run-manifest.json').read_text())
     assert run['policy_safety_mode']=='inline_first_five' and result['all_ranks_agreed'] is True
+    from search_g1.actor_probe_namespace import namespace_origin
+    origin=namespace_origin(run)
     path=base/'logs/actual-attempts.jsonl'
     previous=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
-    assert [row['attempt_index'] for row in previous]==list(range(1,result['attempt_index']))
+    assert type(result['attempt_index']) is int and result['attempt_index']==origin['attempt_index']+len(previous)+1
+    assert type(result['logical_update']) is int and 1<=result['logical_update']<=200
+    assert result['logical_update']==(previous[-1]['completed_outer'] if previous else origin['completed_outer'])+1
+    assert result['optimizer_writes_before']==(previous[-1]['optimizer_writes_after'] if previous else origin['actual_optimizer_writes'])
+    assert [row['attempt_index'] for row in previous]==list(range(origin['attempt_index']+1,result['attempt_index']))
+    assert all(row['run_id']==run['run_id'] for row in previous)
     assert result['attempt_id'] not in {row['attempt_id'] for row in previous}
     assert type(result['real_rank_count']) is int and result['real_rank_count']==world_size(run)
     row=dict(run_id=run['run_id'],slurm_job_id=execution_job_id(run),**result)

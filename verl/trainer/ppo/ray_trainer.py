@@ -778,9 +778,11 @@ class RayPPOTrainer(object):
                 assert continuation_k == 0 and self.total_training_steps == 301
         five_update_records = []
         inline_attempts=None
+        probe_resume=None
         # perform validation before training
         # currently, we only support validation using the reward_function.
-        if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
+        recovering_actor_probes = actor_probe_run is not None and actor_probe_run.get('actor_probe_recovery') is not None
+        if not recovering_actor_probes and self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
             val_metrics = self._validate()
             pprint(f'Initial validation metrics: {val_metrics}')
             logger.log(data=val_metrics, step=self.global_steps)
@@ -795,7 +797,15 @@ class RayPPOTrainer(object):
                 assert self.config.trainer.critic_warmup<=1 and not self.use_critic
                 from reproduction.common8.recoverable_attempt import AttemptProgress
                 inline_attempts=AttemptProgress()
-                evaluate_development(self)
+                if actor_probe_run is not None and actor_probe_run.get('actor_probe_recovery') is not None:
+                    from reproduction.common8.actor_probe_driver_restore import restore_driver_and_actor
+                    probe_resume=restore_driver_and_actor(self, actor_probe_run, inline_attempts)
+                else:
+                    evaluate_development(self)
+
+        if actor_probe_run is not None:
+            assert inline_attempts is not None, 'Actor probes require the formal complete-outer accounting path'
+            assert not recovering_actor_probes or probe_resume is not None, 'Recovery cannot silently start fresh'
 
         # we start from step 1
         self.global_steps += 1
@@ -820,8 +830,14 @@ class RayPPOTrainer(object):
         )
 
         # start training loop
-        for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
-            for consumed_batch_index, batch_dict in enumerate(self.train_dataloader):
+        if actor_probe_run is not None:
+            from search_g1.actor_probe_sampler import epoch_batches
+            batches_by_epoch=epoch_batches(self.train_dataloader, probe_resume)
+        else:
+            batches_by_epoch=((epoch, enumerate(self.train_dataloader)) for epoch in
+                (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)))
+        for epoch, epoch_iterator in batches_by_epoch:
+            for consumed_batch_index, batch_dict in epoch_iterator:
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}

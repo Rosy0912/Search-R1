@@ -50,6 +50,10 @@ def validate_recovery(binding, child, parent, receipt, *, rank=None):
     assert type(step) is int and step in (5, 50, 100, 150)
     assert receipt['identity'] == identity(parent)
     assert receipt['completed_outer'] == step and receipt['next_logical_update'] == step + 1
+    if 'actual_optimizer_writes' in binding:
+        from search_g1.actor_probe_namespace import namespace_origin
+        assert child['actor_probe_recovery'] == binding
+        assert namespace_origin(child)['actual_optimizer_writes'] == receipt['actual_optimizer_writes']
     for key in ('parent_manifest_sha256', 'full_state_receipt_sha256'):
         assert re.fullmatch('[0-9a-f]{64}', binding[key])
     from search_g1.actor_probe_model_state import validate_roundtrip_receipt
@@ -62,6 +66,9 @@ def rebound_worker_payload(payload, binding, child, parent, receipt, rank):
     assert payload['identity'] == identity(parent) and payload['rank'] == rank
     assert payload['completed_outer'] == receipt['completed_outer']
     assert payload['optimizer_writes'] == receipt['actual_optimizer_writes']
+    if 'actual_optimizer_writes' in binding:
+        from search_g1.actor_probe_namespace import validate_worker_origin
+        validate_worker_origin(child, payload)
     # Only namespace identity changes. Tensors, Adam, scheduler, counters and
     # random streams retain the exact saved values; the original is preserved.
     return dict(payload, identity=identity(child))
@@ -80,6 +87,9 @@ def rebound_driver_payload(payload, binding, child, parent, receipt):
     assert progress['cumulative_writes'] == receipt['actual_optimizer_writes']
     assert type(progress['attempt_index']) is int and progress['attempt_index'] >= progress['completed_outer']
     assert type(progress['aborted_attempts']) is int and progress['aborted_attempts'] >= 0
+    if 'actual_optimizer_writes' in binding:
+        from search_g1.actor_probe_namespace import validate_driver_origin
+        validate_driver_origin(child, payload)
     assert payload['probe_version'] == receipt['probe_version']
     assert payload['probe_actor_step'] == receipt['probe_actor_step']
     assert type(payload['epoch']) is int and payload['epoch'] >= 0

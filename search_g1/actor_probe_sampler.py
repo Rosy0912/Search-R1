@@ -59,3 +59,16 @@ def restored_iterator(loader, sampler_state, driver_rng):
     # Undo just that extra consumption before the saved permutation is resumed.
     restore_rng(driver_rng)
     return iterator
+
+
+def epoch_batches(loader, resume=None):
+    """Use the restored iterator once, then create each new epoch normally."""
+    epoch = 0 if resume is None else resume['epoch']
+    while True:
+        if resume is not None:
+            iterator, start = resume['iterator'], resume['next_batch_index']
+            resume = None
+        else:
+            iterator, start = iter(loader), 0
+        yield epoch, enumerate(iterator, start=start)
+        epoch += 1

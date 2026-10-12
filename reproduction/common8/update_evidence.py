@@ -59,7 +59,10 @@ def record(step,metrics,probe_version,attempt_result=None,probe_actor_binding=No
         assert scalar['actor/optimizer_steps_this_update']==20
     path=base/'logs/actual-updates.jsonl'
     prior=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
-    assert [row['step'] for row in prior]==list(range(1,step))
+    from search_g1.actor_probe_namespace import namespace_origin
+    origin=namespace_origin(run)
+    assert step > origin['completed_outer']
+    assert [row['step'] for row in prior]==list(range(origin['completed_outer']+1,step))
     assert all(row['run_id']==run['run_id'] for row in prior)
     from reproduction.common8.behavior_runtime import read_gate_receipt
     gate_args=dict(attempt_id=attempt_result['attempt_id'],attempt_index=attempt_result['attempt_index']) if inline else {}

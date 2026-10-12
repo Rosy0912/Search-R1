@@ -100,9 +100,10 @@ iterator. For a future new-process recovery, a replacement DataLoader iterator
 must undo its extra base-seed draw, finish the saved epoch (even when exhausted),
 then enter the next shuffled epoch normally. CPU tests cover persisted state
 restoration after deliberate state perturbation, sampler tail, next-epoch order
-and driver RNG. Cross-namespace canonical model loading and the complete
-production resume entry remain pending; a same-process roundtrip is not proof
-that this separate entry is available. Actual A800 execution remains untested.
+and driver RNG. Cross-namespace canonical model loading components are now
+implemented, while the complete admitted production resume entry and actual
+A800 validation remain pending; a same-process roundtrip is not proof that
+the separate production entry has been exercised.
 
 The first-five roundtrip now also reads the actual canonical actor checkpoint,
 checks the receipt and all bound file hashes, canonical key/shape/FP32 master
@@ -144,6 +145,22 @@ and binary reward phases stay separate. This scalar audit deliberately has no
 full-acceptance flag: independent rank/scheduler/source/checkpoint/Head binding,
 rank-local incomplete tails and the complete final/cleanup audit are separate
 mandatory evidence, and production recovery integration remains pending.
+
+The driver recovery path is now connected to the training loop behind an
+explicit separate launch-admission receipt. Before actor loading it validates
+the saved driver sampler/RNG, Head bytes and exact saved write/attempt origin.
+Each worker preflight and collective confirmation binds the child identity and
+saved attempt cursor. The driver checks all four actual RPC returns, unchanged
+fixed reference, then restores its saved state and verifies the resulting digest.
+It uses the saved iterator once, preserving epoch/batch indices and undoing the
+replacement iterator's extra seed draw, then creates new epochs normally. No
+repeated baseline or artificial first-five run is inserted during recovery.
+Namespace-local update and attempt writers begin at the saved K+1/cursor+1,
+reject old parent rows/counters, and retain the original parent files separately.
+Twenty focused CPU tests cover this path and existing writer/accounting behavior;
+the actual Ray serialization check requires target dependencies unavailable on
+the Mac. The separate production launcher, real rank/tail chain reader and
+complete final verifier integration still remain mandatory before recovery use.
 
 ## Required evidence before launch
 

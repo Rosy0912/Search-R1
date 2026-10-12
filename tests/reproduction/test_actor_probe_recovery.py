@@ -41,7 +41,9 @@ def documents():
         state_semantics='full_model_optimizer_scheduler_rng_sampler_and_heads',
         parent_run_id=parent['run_id'], parent_execution_id=parent['execution_id'],
         parent_source_commit=parent['source_commit'], experiment_root_run_id=parent['run_id'],
-        completed_outer=5, parent_manifest_sha256='3'*64, full_state_receipt_sha256='4'*64)
+        completed_outer=5, actual_optimizer_writes=5, attempt_index=5, aborted_attempts=0,
+        parent_manifest_sha256='3'*64, full_state_receipt_sha256='4'*64)
+    child['actor_probe_recovery'] = binding
     receipt = dict(role='actor_probe_full_state_checkpoint', identity=identity(parent),
         completed_outer=5, next_logical_update=6, actual_optimizer_writes=5,
         workers=[dict(rank=r, completed_outer=5, optimizer_writes=5) for r in range(4)],

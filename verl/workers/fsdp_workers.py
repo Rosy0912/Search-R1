@@ -644,7 +644,8 @@ class ActorRolloutRefWorker(Worker):
             saved['rebound'] = rebound_worker_payload(payload, parent['binding'], run,
                 parent['parent'], parent['receipt'], self.rank)
             validate_worker_payload(self, run, saved['rebound'])
-            return dict(child_run_id=run['run_id'], completed_outer=parent['receipt']['completed_outer'],
+            return dict(identity=saved['rebound']['identity'], completed_outer=parent['receipt']['completed_outer'],
+                last_attempt_index=saved['rebound']['actor_accounting']['last_attempt_index'],
                 recovery_binding_sha256=binding_digest(parent['binding']))
         collective_call(preflight, stage='actor_probe_cross_namespace_restore_preflight')
         def load_device():
@@ -671,6 +672,7 @@ class ActorRolloutRefWorker(Worker):
             assert tree_digest(current) == tree_digest(saved['rebound']), 'Actual restored worker state differs'
             self._outer_scheduler_evidence._check_state()
             result.update(rank=self.rank, completed_outer=current['completed_outer'],
+                identity=current['identity'], last_attempt_index=current['actor_accounting']['last_attempt_index'],
                 optimizer_writes=current['optimizer_writes'], canonical_model_loaded=True,
                 canonical_model_receipt_sha256=context['receipt']['canonical_model_receipt_sha256'],
                 original_worker_state_sha256=tree_digest(saved['original']),
@@ -678,11 +680,13 @@ class ActorRolloutRefWorker(Worker):
                 local_actor_parameters_sha256=isolation_state(self.actor_module_fsdp)['parameters_sha256'],
                 recovery_binding_sha256=binding_digest(context['binding']))
             return dict(completed_outer=current['completed_outer'], optimizer_writes=current['optimizer_writes'],
+                        identity=current['identity'], last_attempt_index=current['actor_accounting']['last_attempt_index'],
                         recovery_binding_sha256=result['recovery_binding_sha256'])
         collective_call(restore_state, stage='actor_probe_restore_optimizer_scheduler_rng')
         def record():
             self._outer_scheduler_evidence._append(dict(kind='RESTORE',
                 completed_outer=context['receipt']['completed_outer'], actual_writes=self.actor._optimizer_writes,
+                last_attempt_index=self.actor._last_attempt_index,
                 recovery_binding_sha256=result['recovery_binding_sha256'],
                 parent_run_id=context['parent']['run_id'], parent_execution_id=context['parent']['execution_id'],
                 full_state_receipt_sha256=context['binding']['full_state_receipt_sha256']))
