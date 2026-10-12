@@ -153,7 +153,9 @@ def validate_completed_result(trainer, output):
 def record_completed_result(trainer, output):
     from .training_state import atomic_save
     candidate = validate_completed_result(trainer, output)
-    directory = Path(trainer.config.trainer.default_local_dir)/'training_state'/'attempt-results'
+    # Attempt numbers restart at the restored checkpoint across independent runs.
+    # Keep immutable receipts under this run's already identity-bound output.
+    directory = Path(os.environ['SEARCH_R1_BASELINE_OUTPUT'])/'attempt-results'
     writes = output.meta_info['tree_fresh_actor_result']['ranks'][0]['optimizer_calls']
     value = dict(protocol=RESULT_PROTOCOL, status=('ALL_OPPORTUNITIES_SKIPPED_SAMPLING_ROUND_CONSUMED'
             if writes == 0 else 'COMPLETED_OPPORTUNITIES_OUTER_CREDITED'),
