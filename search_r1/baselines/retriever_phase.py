@@ -6,7 +6,10 @@ def release_retriever_gpu(config,stage):
  settings=config.get('retriever',{})
  url=settings.get('gpu_release_url')
  if not url:return False
- if url!='http://10.120.17.101:18006/release-gpu':raise ValueError('Unbound retrieval lifecycle endpoint')
+ expected='http://10.120.17.101:18006/release-gpu'
+ if os.environ.get('SEARCH_R1_EXECUTION_BACKEND')=='slurm_h100':
+  expected='http://127.0.0.1:18086/release-gpu'
+ if url!=expected:raise ValueError('Unbound retrieval lifecycle endpoint')
  path=Path(settings['control_token_file'])
  if path.is_symlink() or path.stat().st_uid!=os.getuid():raise ValueError('Unowned retrieval control file')
  import requests
