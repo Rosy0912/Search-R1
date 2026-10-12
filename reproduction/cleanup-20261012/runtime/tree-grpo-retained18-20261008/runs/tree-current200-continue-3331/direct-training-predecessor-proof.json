@@ -1,0 +1,271 @@
+{
+  "status": "OWN_DIRECT_TRAIN_FAILED_WITH_CLEANUP",
+  "job_id": 3331,
+  "code_commit": "9693f0c846fab483a03e1d70ce1109aeddc5e118",
+  "scheduler_state": "FAILED",
+  "scheduler_exit_code": "1:0",
+  "observed_at": "2026-10-07T13:28:43.381433+00:00",
+  "positive_scheduler_observation": {
+    "observed_at": "2026-10-07T13:28:43.381433+00:00",
+    "observation_sha256": "e2f336e19af337150eaa34c268202fb8d71ca3e5d3a9d0905ccd2f0b51f9e634",
+    "returncode": 0,
+    "stderr": "",
+    "fields": {
+      "BatchHost": "h100-9",
+      "CPUs/Task": "32",
+      "EndTime": "2026-10-07T21:27:00",
+      "ExitCode": "1:0",
+      "JobId": "3331",
+      "JobState": "FAILED",
+      "MinMemoryNode": "256G",
+      "NodeList": "h100-9",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "NumTasks": "1",
+      "Reason": "NonZeroExitCode",
+      "Requeue": "0",
+      "RunTime": "02:20:29",
+      "StartTime": "2026-10-07T19:06:31",
+      "SubmitTime": "2026-10-07T19:06:31",
+      "TimeLimit": "7-00:00:00"
+    },
+    "raw_stdout_retained": true,
+    "stdout": "JobId=3331 JobName=tree-fresh200-train UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898735 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=02:20:29 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-07T19:06:31 EligibleTime=2026-10-07T19:06:31 AccrueTime=2026-10-07T19:06:31 StartTime=2026-10-07T19:06:31 EndTime=2026-10-07T21:27:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-07T19:06:31 Scheduler=Main Partition=gpu AllocNode:Sid=h100-9:1772609 ReqNodeList=h100-9 ExcNodeList=(null) NodeList=h100-9 BatchHost=h100-9 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=256G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=(null) WorkDir=/root StdErr=/root/slurm-3331.out StdIn=/dev/null StdOut=/root/slurm-3331.out Power= TresPerNode=gres:gpu:8 \n",
+    "raw_stdout_evidence_sha256": "5311b6c8b85eebd3bff22e3f3d4ed9c2ad709c6fa35102412cc094dbc660fc50"
+  },
+  "cleanup_residual": {},
+  "native_final_gpu_processes": [],
+  "own_cgroup_process_count_at_terminal_observation": 0,
+  "own_cgroup_terminal_observation": {
+    "observed_at": "2026-10-07T13:28:43.381433+00:00",
+    "observation_sha256": "e2f336e19af337150eaa34c268202fb8d71ca3e5d3a9d0905ccd2f0b51f9e634",
+    "own_count": 0
+  },
+  "original_eight_pid_start_times_preserved": null,
+  "background_identity_disposition": "ORIGINAL_BACKGROUND_MISSING_AT_FAILED3331_CAUSE_UNKNOWN",
+  "historical_original_background_missing_observation": {
+    "sha256": "25ef248763a6693de8135cda88ffaef2754bac697a6df25951ef8a737008f3d9",
+    "observation": {
+      "management_returncode": 0,
+      "stderr": "",
+      "management_observed_at": "2026-10-07T13:29:02.544402+00:00",
+      "job_id": 3331,
+      "node": "h100-9",
+      "scope": "Single read-only original8 proc stat with explicit exception type/errno; no assets, no signals, no training mutation.",
+      "native": {
+        "observed_at": "2026-10-07T13:29:02.254506+00:00",
+        "observer_hostname": "h100-9",
+        "job_id": 3331,
+        "native_original_eight_proc_reads": [
+          {
+            "pid": 1680782,
+            "expected_starttime_jiffies": 1502352181,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1680783,
+            "expected_starttime_jiffies": 1502352181,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1680784,
+            "expected_starttime_jiffies": 1502352181,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1680785,
+            "expected_starttime_jiffies": 1502352181,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1696443,
+            "expected_starttime_jiffies": 1502398762,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1696444,
+            "expected_starttime_jiffies": 1502398762,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1696445,
+            "expected_starttime_jiffies": 1502398762,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          },
+          {
+            "pid": 1696446,
+            "expected_starttime_jiffies": 1502398762,
+            "stat_read_success": false,
+            "exists": null,
+            "error_type": "FileNotFoundError",
+            "error_errno": 2,
+            "path_exists": false
+          }
+        ],
+        "slurm": {
+          "returncode": 0,
+          "stdout": ""
+        },
+        "training_mutation": false,
+        "process_signals_sent": false
+      }
+    }
+  },
+  "current_original_background_observation": [
+    {
+      "pid": 1680782,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1680783,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1680784,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1680785,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1696443,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1696444,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1696445,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    },
+    {
+      "pid": 1696446,
+      "status": "ORIGINAL_PROC_STAT_MISSING",
+      "identity_known": false,
+      "error_errno": 2
+    }
+  ],
+  "current_foreign_processes_untouched": true,
+  "background_process_signals_sent": false,
+  "run_result": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/run-result.json",
+    "sha256": "1d53066e4d88eb50013bed5db8608bbc71123aa030bf65eb8c9f7f65cd7e684f"
+  },
+  "cost": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/cost.json",
+    "sha256": "2491c56d38c0370dddaa67a97015e12f691075e041fb0137ad776d3fb66fccb5"
+  },
+  "once_journal": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-current-fresh200-chain-mask-v8-9693f0c.json",
+    "sha256": "3c21806a61183c5e63735463bff1e37aff1be56bd7d7bca63d2ca9bbfcd10bc7"
+  },
+  "prior_manifest_sha256": "336a0a60df561fd3fcf50e7fdc03cee344a0b33e9d916193c7b4a4716b1b6a12",
+  "phase": "OBSERVER_FAILED_AFTER_COMPLETED_CURRENT_CHAIN_ROLLING4",
+  "failure_component": "supervisor_contract_proc_stat",
+  "native_optimizer_committed": null,
+  "native_scheduler_advanced": null,
+  "native_null_counters_not_converted_to_zero": true,
+  "direct_completed_outer_observation": {
+    "credited_outer": 4,
+    "training_attempts": 4,
+    "actual_optimizer_calls_per_rank": [
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80,
+      80
+    ],
+    "actual_scheduler_steps_per_rank": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "logical_optimizer_writes": 80,
+    "physical_rank_optimizer_calls": 640,
+    "child_completed_outer": 2,
+    "child_optimizer_calls_per_rank": [
+      40,
+      40,
+      40,
+      40,
+      40,
+      40,
+      40,
+      40
+    ],
+    "child_physical_rank_optimizer_calls": 320
+  },
+  "current_chain_parent_manifest": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/checkpoints/training_state/rolling-completed/global_step_4/manifest.json",
+    "sha256": "84cf98caf0e7e67b52edf72a3cd57455d58c7e08ef020c4e665d81cf969a3b73"
+  },
+  "parent_failed_attempt": {
+    "attempt_id": 5,
+    "completed_outer_credit": 0,
+    "optimizer_writes": null,
+    "published_rank_optimizer_record": null,
+    "error_type": "FileNotFoundError",
+    "failure_component": "supervisor_contract_proc_stat"
+  },
+  "model_optimizer_scheduler_checkpoint_available": true,
+  "automatic_resume_supported": false,
+  "exact_executor_resume_verified": false,
+  "empty_own_queue_observation": {
+    "observed_at": "2026-10-07T13:37:22.148185+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

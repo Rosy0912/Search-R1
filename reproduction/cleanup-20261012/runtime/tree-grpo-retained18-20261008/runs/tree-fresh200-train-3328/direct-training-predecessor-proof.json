@@ -1,0 +1,100 @@
+{
+  "status": "OWN_DIRECT_TRAIN_FAILED_WITH_CLEANUP",
+  "job_id": 3328,
+  "code_commit": "4a65e9a3ab87e84e1e9dd283b664cdef3a224c8a",
+  "scheduler_state": "FAILED",
+  "scheduler_exit_code": "1:0",
+  "observed_at": "2026-10-07T10:37:13.249410+00:00",
+  "positive_scheduler_observation": {
+    "observed_at": "2026-10-07T10:37:13.249410+00:00",
+    "observation_sha256": "b82054dde7ee2e8b66aa59eae21ad9dd524fcbcdab9a4cd939da73f0f073c79d",
+    "returncode": 0,
+    "stderr": "",
+    "fields": {
+      "BatchHost": "h100-9",
+      "CPUs/Task": "32",
+      "EndTime": "2026-10-07T18:37:07",
+      "ExitCode": "1:0",
+      "JobId": "3328",
+      "JobState": "FAILED",
+      "MinMemoryNode": "256G",
+      "NodeList": "h100-9",
+      "NumCPUs": "192",
+      "NumNodes": "1",
+      "NumTasks": "1",
+      "Reason": "NonZeroExitCode",
+      "Requeue": "0",
+      "RunTime": "01:44:53",
+      "StartTime": "2026-10-07T16:52:14",
+      "SubmitTime": "2026-10-07T16:52:14",
+      "TimeLimit": "7-00:00:00"
+    },
+    "raw_stdout_retained": true,
+    "stdout": "JobId=3328 JobName=tree-fresh200-train UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898738 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=01:44:53 TimeLimit=7-00:00:00 TimeMin=N/A SubmitTime=2026-10-07T16:52:14 EligibleTime=2026-10-07T16:52:14 AccrueTime=2026-10-07T16:52:14 StartTime=2026-10-07T16:52:14 EndTime=2026-10-07T18:37:07 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-07T16:52:14 Scheduler=Main Partition=gpu AllocNode:Sid=h100-9:1715767 ReqNodeList=h100-9 ExcNodeList=(null) NodeList=h100-9 BatchHost=h100-9 NumNodes=1 NumCPUs=192 NumTasks=1 CPUs/Task=32 ReqB:S:C:T=0:0:*:* TRES=cpu=192,mem=256G,node=1,billing=192 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=32 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=NO Contiguous=0 Licenses=(null) Network=(null) Command=(null) WorkDir=/root StdErr=/root/slurm-3328.out StdIn=/dev/null StdOut=/root/slurm-3328.out Power= TresPerNode=gres:gpu:8 \n",
+    "raw_stdout_evidence_sha256": "7e921fa3fb3377d7b30f8a4a2e7e08fd2f85b0af6da54810e77e708764b5c2ef"
+  },
+  "cleanup_residual": {},
+  "original_eight_pid_start_times_preserved": true,
+  "run_result": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-train-3328/run-result.json",
+    "sha256": "7386e708ee492f618085b9dcede97d22704dd58bc6676abf1a5650fa8a41cbf6"
+  },
+  "cost": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-train-3328/cost.json",
+    "sha256": "abd0336c14967af8eac5c01327f427b529ba8f021c7ac3143a2d10b3f3dc00b2"
+  },
+  "once_journal": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/SUBMISSION_ONCE-fresh200-direct-4a65e9a-v6.json",
+    "sha256": "431736b39b6547cf709ff12372f7fc1babc9f84edad99aac9b252012f5d2561a"
+  },
+  "prior_manifest_sha256": "ef2817200f999c74deca43ea3de501f6bf18276ea838b38b35342ebf3368265f",
+  "phase": "FAILED_THIRD_GENERATION_AFTER_COMPLETED_ROLLING2",
+  "native_optimizer_committed": null,
+  "native_scheduler_advanced": null,
+  "native_null_counters_not_converted_to_zero": true,
+  "direct_completed_outer_observation": {
+    "credited_outer": 2,
+    "training_attempts": 2,
+    "actual_optimizer_calls_per_rank": [
+      40,
+      40,
+      40,
+      40,
+      40,
+      40,
+      40,
+      40
+    ],
+    "actual_scheduler_steps_per_rank": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "logical_optimizer_writes": 40,
+    "physical_rank_optimizer_calls": 320
+  },
+  "current_chain_parent_manifest": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-train-3328/checkpoints/training_state/rolling-completed/global_step_2/manifest.json",
+    "sha256": "067d71ee3c7fa0e00da471bebbd9e8913ec7e5de0b1c98bdb7598d7a022565a4"
+  },
+  "parent_failed_attempt": {
+    "attempt_id": 3,
+    "completed_outer_credit": 0,
+    "optimizer_writes": null,
+    "published_rank_optimizer_record": false
+  },
+  "model_optimizer_scheduler_checkpoint_available": true,
+  "automatic_resume_supported": false,
+  "exact_executor_resume_verified": false,
+  "empty_own_queue_observation": {
+    "observed_at": "2026-10-07T10:52:27.806003+00:00",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

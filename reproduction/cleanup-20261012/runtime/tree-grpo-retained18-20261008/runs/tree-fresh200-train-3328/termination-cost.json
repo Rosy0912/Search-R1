@@ -1,0 +1,1 @@
+{"job_id": "3328", "stage": "fresh_mu_train200", "start_epoch": 1791363135.7210526, "termination_epoch": 1791369411.1975458, "allocated_gpus": 8, "requested_cpus": 32, "allocated_cpus": 192, "scope": "own supervisor before cleanup"}

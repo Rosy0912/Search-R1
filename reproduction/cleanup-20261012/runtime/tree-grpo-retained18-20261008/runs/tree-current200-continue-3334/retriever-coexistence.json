@@ -1,0 +1,41 @@
+{
+  "held_lease_identity": {
+    "job_id": "3334",
+    "uuid": [
+      "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+      "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+      "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+      "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+      "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+      "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+      "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+    ],
+    "whole_card_idle_check": false,
+    "foreign_memory_and_sm_15_percent_checked": true,
+    "held_ofd_identity_checked": true
+  },
+  "snapshot": {
+    "gpus": [
+      "0, GPU-2c3bdc08-b976-0fb5-79bd-04def458046b, 6615, 81559, 0",
+      "1, GPU-6e00764e-3916-65f2-436e-568aa0c70fc5, 6003, 81559, 0",
+      "2, GPU-db94211b-42d5-88d0-f626-60e777af3be6, 6003, 81559, 0",
+      "3, GPU-308b13c1-44ea-47b7-7b33-01a928099618, 6003, 81559, 0",
+      "4, GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, 6003, 81559, 0",
+      "5, GPU-d61d94cd-3d24-fa07-8761-33961a14d995, 6003, 81559, 0",
+      "6, GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 6003, 81559, 0",
+      "7, GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 6003, 81559, 0"
+    ],
+    "processes": [
+      "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b, 105072, 6602",
+      "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5, 105072, 5990",
+      "GPU-db94211b-42d5-88d0-f626-60e777af3be6, 105072, 5990",
+      "GPU-308b13c1-44ea-47b7-7b33-01a928099618, 105072, 5990",
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, 105072, 5990",
+      "GPU-d61d94cd-3d24-fa07-8761-33961a14d995, 105072, 5990",
+      "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 105072, 5990",
+      "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 105072, 5990"
+    ]
+  },
+  "retriever_pid": 105072
+}

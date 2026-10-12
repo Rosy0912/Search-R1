@@ -1,0 +1,162 @@
+{
+  "status": "FAILED",
+  "stage": "fresh_mu_train200",
+  "execution_mode": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "parent_completed_outer": 2,
+  "planned_new_completed_outer": 198,
+  "resumed_current_chain": true,
+  "exact_executor_resume": false,
+  "job_id": "3331",
+  "code_commit": "9693f0c846fab483a03e1d70ce1109aeddc5e118",
+  "actual_training_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "optimizer_committed": null,
+  "scheduler_advanced": null,
+  "allocated_gpus": 8,
+  "requested_cpus": 32,
+  "allocated_cpus": 192,
+  "production_input_pins": {
+    "human_training_authority": "0f666ed691d82195b740535313175060908b7c1bf07452eb115bc99994722d94",
+    "human_direct_release": "7e6c586d3555156435115b5893df3935613bf8603cc20172540a99a2cee9c677"
+  },
+  "bootstrap_thresholds_accepted": false,
+  "actual_zero_ready": false,
+  "actual_calibration_accepted": false,
+  "production_thresholds_accepted": false,
+  "configured_prospective_thresholds": {
+    "target_old_policy_kl": 0.2,
+    "negative_tail_limit": 0.01,
+    "initial_actor_repeat_max_abs_delta": 0.0
+  },
+  "cluster_name": "wuhan-h100",
+  "allocation_identity_sha256": "f7c8b83ecc7b80ac7e392c431fd3f979c8804bbcd027e1559aa68f62560e785e",
+  "original_sampler_actor_probability_gate_accepted": false,
+  "historical_synthetic_receipts": {
+    "ACTUAL3262_RECEIPT.json": "104086becfaf0177ab8d030fc0b13d1a166d134050fd995ecca6dfde7c0b5959",
+    "scope": "Historical synthetic/native replay proofs only; no fresh model/optimizer acceptance and no repeat GPU invocation",
+    "source_package3268_manifest_sha256": "84e3e18682afa880f1053a0025eda595fca332d550ec1f6905bc1334049b5a48"
+  },
+  "synthetic_gpu_probes_reexecuted": false,
+  "cold_official_initialization": {
+    "status": "ACTUAL_COLD_OFFICIAL_INITIALIZATION_OBSERVED_BEFORE_MIGRATION",
+    "evidence_sha256": "36a123d60fb6f3e57f0e8f00a0674d403faa5768d5ba5d1755a6c6bb5c43db7e",
+    "resumed_current_chain": false,
+    "parent_state_loaded_at_this_cold_boundary": false,
+    "workers": 8,
+    "independent_acceptance": false,
+    "complete_model_parameter_bytes_verified": false
+  },
+  "actual_current_chain_migration": {
+    "status": "ACTUAL_CURRENT_FRESH200_CHAIN_COLD_MIGRATION_OBSERVED",
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3331/output/current-chain-migrated.json",
+    "sha256": "c960a8bccc5ea3f67b9a3771152a6901ccf1ca22ff7232e680c74e447035a858",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-fresh200-train-3328/checkpoints/training_state/rolling-completed/global_step_2/manifest.json",
+      "sha256": "067d71ee3c7fa0e00da471bebbd9e8913ec7e5de0b1c98bdb7598d7a022565a4"
+    },
+    "parent_source": "4a65e9a3ab87e84e1e9dd283b664cdef3a224c8a",
+    "child_source": "9693f0c846fab483a03e1d70ce1109aeddc5e118",
+    "parent_completed_outer": 2,
+    "next_outer_update": 3,
+    "parent_actual_optimizer_calls_per_rank": {
+      "0": 40,
+      "1": 40,
+      "2": 40,
+      "3": 40,
+      "4": 40,
+      "5": 40,
+      "6": 40,
+      "7": 40
+    },
+    "parent_scheduler_step": 2,
+    "resumed_current_chain": true,
+    "exact_executor_resume": false,
+    "executor_equivalence": false,
+    "automatic_resume_supported": false,
+    "initial_evaluation_added": false,
+    "step5_approval_hold_added": false,
+    "cold_initialization": {
+      "status": "ACTUAL_COLD_OFFICIAL_INITIALIZATION_OBSERVED_BEFORE_MIGRATION",
+      "evidence_sha256": "36a123d60fb6f3e57f0e8f00a0674d403faa5768d5ba5d1755a6c6bb5c43db7e",
+      "resumed_current_chain": false,
+      "parent_state_loaded_at_this_cold_boundary": false,
+      "workers": 8,
+      "independent_acceptance": false,
+      "complete_model_parameter_bytes_verified": false
+    },
+    "metadata_only_wrapper_observation": true,
+    "raw_payloads_reopened": false,
+    "pt_deserialized": false,
+    "independent_acceptance": false
+  },
+  "error_type": "FileNotFoundError",
+  "error": "[Errno 2] No such file or directory: '/proc/1680782/stat'",
+  "cleanup_residual": {},
+  "final_gpu": {
+    "gpus": [
+      "0, GPU-5ce08490-ec39-8338-c2a7-e7195347bc86, 0, 81559, 0",
+      "1, GPU-170e33e7-ea28-4e38-eeed-03ff1541801f, 0, 81559, 0",
+      "2, GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c, 0, 81559, 0",
+      "3, GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5, 0, 81559, 0",
+      "4, GPU-25743909-367e-cdd3-2347-9689533ca6dc, 0, 81559, 0",
+      "5, GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13, 0, 81559, 0",
+      "6, GPU-70dab460-3cb4-9670-33da-3076434c223b, 0, 81559, 0",
+      "7, GPU-2f1266da-4362-3643-0840-d2f97b07e38f, 0, 81559, 0"
+    ],
+    "processes": []
+  },
+  "cleanup_error": "RuntimeError('Original8 must be preserved, no unexpected GPU remainder')",
+  "wall_seconds": 8427.638496637344,
+  "actual_progress_evidence": {
+    "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+    "resumed_current_chain": true,
+    "parent_completed_outer": 2,
+    "planned_parent_completed_outer": 2,
+    "actual_completed_outer_from_attempt_results": 4,
+    "new_completed_outer": 2,
+    "training_attempts_seen": 4,
+    "new_training_attempts_seen": 2,
+    "all_skipped_attempts": 0,
+    "parent_actual_optimizer_calls_per_rank": {
+      "0": 40,
+      "1": 40,
+      "2": 40,
+      "3": 40,
+      "4": 40,
+      "5": 40,
+      "6": 40,
+      "7": 40
+    },
+    "completed_actual_optimizer_calls_per_rank": {
+      "0": 80,
+      "1": 80,
+      "2": 80,
+      "3": 80,
+      "4": 80,
+      "5": 80,
+      "6": 80,
+      "7": 80
+    },
+    "new_completed_actual_optimizer_calls_per_rank": {
+      "0": 40,
+      "1": 40,
+      "2": 40,
+      "3": 40,
+      "4": 40,
+      "5": 40,
+      "6": 40,
+      "7": 40
+    },
+    "partial_attempt_evidence": [],
+    "errors": [],
+    "exact_resume_supported": false,
+    "exact_executor_resume": false,
+    "automatic_rollback": false,
+    "unrecorded_partial_optimizer_calls": null,
+    "metadata_only_progress_not_independent_acceptance": true,
+    "partial_writes_not_credited_as_completed": true
+  },
+  "failed_unrecorded_partial_optimizer_writes_unknown": true
+}

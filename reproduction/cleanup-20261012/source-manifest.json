@@ -1,0 +1,299 @@
+{
+  "source_commit": "4d133efeb1f675139d2558640f1e21d50780f133",
+  "files": [
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/retriever-coexistence.json",
+      "sha256": "9e0ed6d7be9ad101b08871edda462aad3bc96020cf65684978acbef75e0c7013",
+      "size": 1770
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/resolved.yaml",
+      "sha256": "c9415c0096853f78d870e205fc956f20045cde985836de5225f609eaf091d4b3",
+      "size": 8173
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/launch-manifest.json",
+      "sha256": "002abc4a2cab90acd6bec9956c8a8797a5a2de05c77b73998c37e9c8b7d35e18",
+      "size": 3374
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/input-config.yaml",
+      "sha256": "221643a8c54d69b29f4207c8cd35b79564e26d85e707862ac7e00655d3181787",
+      "size": 8012
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-branpo-fresh200-3360/allocation-identity.json",
+      "sha256": "1ae6294c76ab3ca8585adae3bc019dbd59d9b338fd5dbfe82ee2aaa15b4048e0",
+      "size": 9898
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/retriever-coexistence.json",
+      "sha256": "a123c54977e51fb28545ad90d7bddc5a9aec89519f2b97b6f35a4f2e8c6b3e5b",
+      "size": 1761
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/resolved.yaml",
+      "sha256": "5e530fc597e26e113c42418ca54faa9bdd0a42ad40bc1998e22c9599be9668fb",
+      "size": 8033
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/launch-manifest.json",
+      "sha256": "a7c854ff54d5d87d2a59f57b52d3c12240d04b39561419b36210976d21df6334",
+      "size": 3383
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/input-config.yaml",
+      "sha256": "bde2561cef2458a95c82eb4aa8fbfcad9839e3de8492bb0764c97a3ff762f6d3",
+      "size": 7872
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3335/allocation-identity.json",
+      "sha256": "c39794857c531fcbb399f7e7b9183814457fe95e602ef8ba12f9092ea0b96846",
+      "size": 9900
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/retriever-coexistence.json",
+      "sha256": "742e8720dcbced369f23dcdc631291540827370344ed172e83dd12c139a3d396",
+      "size": 1761
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/resolved.yaml",
+      "sha256": "98a88882c09d8bbba89908b04d1f72930b4fccccc2bbcb5b6eb6886584655f3b",
+      "size": 8033
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/launch-manifest.json",
+      "sha256": "223d25ffb8548df00ff5fa820116f952e9258518068573305825f8c2bc77aeb5",
+      "size": 3383
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/input-config.yaml",
+      "sha256": "cddbb214b846ae91a311526985f7f3d9273a2bf27ac30c38cfd84123aa7650e4",
+      "size": 7872
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3339/allocation-identity.json",
+      "sha256": "1602f64d8de9bd388b27b6ae54694cac72f93055592dddffd30711b7fecf79af",
+      "size": 9900
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/retriever-coexistence.json",
+      "sha256": "ec352aff709710a5f36a5160d54c68322af1a54965e686cb83c7bd7e4868052f",
+      "size": 1761
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/termination-cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/termination-cost.json",
+      "sha256": "91075b9a753269ee2ae92017417a2916c690bdf40869f145ab7db67186c167cc",
+      "size": 233
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/resolved.yaml",
+      "sha256": "72502a1e48e757540f33fd848bacf681ba2a8796fc8b448e8b18d2f9cdf4ba47",
+      "size": 8033
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/launch-manifest.json",
+      "sha256": "4a14c9b0c19eb096d458845e025278296e7030030a47e472a0a027b60be7c2ad",
+      "size": 3383
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/cost.json",
+      "sha256": "f41220a5447719152ac2badc2466d117e19010708b56ff8b3ecaaa97847079c8",
+      "size": 705
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/input-config.yaml",
+      "sha256": "3035d1052021536a64f6062e726a4e5e87a35c8e7b8c69bf04eadfc604435d8b",
+      "size": 7872
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/run-result.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/run-result.json",
+      "sha256": "67e67a7374977b6eb87411d15c99dbbad3e3b4dcaf12f9cbe538658b1c18d83b",
+      "size": 14596
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3341/allocation-identity.json",
+      "sha256": "bfc5cfbf0e6ddb582b8046c07de5303a456569aa983ba173c032410a7d63aa60",
+      "size": 9900
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/retriever-coexistence.json",
+      "sha256": "cddfa3efb2f86f04280ade1c6e4905454de2a906ef64ed7f55b4c55c5e074416",
+      "size": 2290
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/termination-cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/termination-cost.json",
+      "sha256": "5c82ce3987b1a7ef7386caba95f43a9c2cb7d1da30ba13901c477e4361ab45d4",
+      "size": 233
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/resolved.yaml",
+      "sha256": "6715a4276599724aaaae1511d973f3dff3d6994c3f41074506d17a016e7ef644",
+      "size": 7938
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/launch-manifest.json",
+      "sha256": "4954d49e6bd9e9e3fe9a38f072ec5e001afe420dc829f8f5ce577869b4b4d688",
+      "size": 3742
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/cost.json",
+      "sha256": "abd0336c14967af8eac5c01327f427b529ba8f021c7ac3143a2d10b3f3dc00b2",
+      "size": 582
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/input-config.yaml",
+      "sha256": "4079333829670b6991bb5b88a638d04353aeae7682b4a9e84775e443e697c226",
+      "size": 7861
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/direct-training-predecessor-proof.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/direct-training-predecessor-proof.json",
+      "sha256": "9e907f68bdac597d5b3b091e3e1199fcd715170694e71cd1f9b42b80a75e482a",
+      "size": 4414
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/run-result.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/run-result.json",
+      "sha256": "7386e708ee492f618085b9dcede97d22704dd58bc6676abf1a5650fa8a41cbf6",
+      "size": 3595
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-fresh200-train-3328/allocation-identity.json",
+      "sha256": "8f490b34c7951d20cec5b43fd17d434d4322ab3c018531b628506556e958019c",
+      "size": 9774
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/retriever-coexistence.json",
+      "sha256": "34f34e5f0b53698cde77052a0cc1e8e44bf50892bb9f59866a05fafcb5817f88",
+      "size": 2290
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/termination-cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/termination-cost.json",
+      "sha256": "6d4bce4a3b062d3e6cef30d3c2d70b28d1dfd98688024e46f5ec01b19f12474e",
+      "size": 231
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/resolved.yaml",
+      "sha256": "f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7",
+      "size": 7948
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/launch-manifest.json",
+      "sha256": "af547b55392e2fd27b9e7922dc8c046e2c91bcceafcbe4bb4813fe13b1df2eea",
+      "size": 3929
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/cost.json",
+      "sha256": "2491c56d38c0370dddaa67a97015e12f691075e041fb0137ad776d3fb66fccb5",
+      "size": 704
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/input-config.yaml",
+      "sha256": "e376fcd4d9404d2be5ecee88e6315821e0cefb80d476536741c1d5501252ea7e",
+      "size": 7871
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/direct-training-predecessor-proof.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/direct-training-predecessor-proof.json",
+      "sha256": "a117c3149d11b1abe0c5d6c8878c4791228c0069b0151bb98019a35561d64c1d",
+      "size": 9542
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/run-result.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/run-result.json",
+      "sha256": "1d53066e4d88eb50013bed5db8608bbc71123aa030bf65eb8c9f7f65cd7e684f",
+      "size": 6137
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3331/allocation-identity.json",
+      "sha256": "f7c8b83ecc7b80ac7e392c431fd3f979c8804bbcd027e1559aa68f62560e785e",
+      "size": 9779
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/retriever-coexistence.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/retriever-coexistence.json",
+      "sha256": "d4c3f36ac339fa9878a5b680e0abad9b7ec8356424c65fe38bf3f03143ecc992",
+      "size": 1761
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/termination-cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/termination-cost.json",
+      "sha256": "a67911e51ee02cd15967ba751a5ce62d82fc1946391028e56700a6115a2e1125",
+      "size": 233
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/resolved.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/resolved.yaml",
+      "sha256": "b777ba5cd22f8045aacb501b5a26ea94528a9e89e1a16e87760308c85b92e5ff",
+      "size": 8033
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/launch-manifest.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/launch-manifest.json",
+      "sha256": "2b6335e5980bf2478f38188f32f16c28ea5536e1b13911f10fc2a86f9ecf9d8c",
+      "size": 3383
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/cost.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/cost.json",
+      "sha256": "9d4cbb31d1baac3fa008f1192db3614db060b868ead3a86c6d8d97f67291fb0d",
+      "size": 705
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/input-config.yaml",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/input-config.yaml",
+      "sha256": "09d6c1837f30d6e17971e2d1a488f067bf7be0d4064c8484f38402681c3e4b80",
+      "size": 7872
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/run-result.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/run-result.json",
+      "sha256": "b1d4df3d93d3988a784aea6009874192ffe9615148fa3e5636b717520634b4f7",
+      "size": 11246
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/allocation-identity.json",
+      "path": "reproduction/cleanup-20261012/runtime/tree-grpo-retained18-20261008/runs/tree-current200-continue-3334/allocation-identity.json",
+      "sha256": "5142c8b3e746fe8cf03f98bef5ebf7dcbb228c1cd4dfb2030db5b67d341bcf6c",
+      "size": 9899
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "status": "FAILED",
+  "stage": "fresh_mu_train200",
+  "execution_mode": "HUMAN_AUTHORIZED_DIRECT_TRAIN200",
+  "scope": "CURRENT_FRESH200_CHAIN_CONTINUATION",
+  "parent_completed_outer": 2,
+  "planned_new_completed_outer": 198,
+  "resumed_current_chain": false,
+  "exact_executor_resume": false,
+  "job_id": "3331",
+  "code_commit": "9693f0c846fab483a03e1d70ce1109aeddc5e118",
+  "actual_training_accepted": false,
+  "independent_acceptance": false,
+  "training_accepted": false,
+  "optimizer_committed": null,
+  "scheduler_advanced": null,
+  "allocated_gpus": 8,
+  "requested_cpus": 32,
+  "allocated_cpus": 192,
+  "production_input_pins": {
+    "human_training_authority": "0f666ed691d82195b740535313175060908b7c1bf07452eb115bc99994722d94",
+    "human_direct_release": "7e6c586d3555156435115b5893df3935613bf8603cc20172540a99a2cee9c677"
+  },
+  "bootstrap_thresholds_accepted": false,
+  "actual_zero_ready": false,
+  "actual_calibration_accepted": false,
+  "production_thresholds_accepted": false,
+  "configured_prospective_thresholds": {
+    "target_old_policy_kl": 0.2,
+    "negative_tail_limit": 0.01,
+    "initial_actor_repeat_max_abs_delta": 0.0
+  },
+  "cluster_name": "wuhan-h100",
+  "allocation_identity_sha256": "f7c8b83ecc7b80ac7e392c431fd3f979c8804bbcd027e1559aa68f62560e785e",
+  "original_sampler_actor_probability_gate_accepted": false,
+  "config_sha256": "f6c518769e4d65d05e578afde53e3b5cfc8d04396acf9d95f5505084f6f16fa7",
+  "split_content_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "cuda_visible_devices": "0,1,2,3,4,5,6,7",
+  "gpu_leases": [
+    {
+      "uuid": "GPU-170e33e7-ea28-4e38-eeed-03ff1541801f",
+      "fd": 3
+    },
+    {
+      "uuid": "GPU-25743909-367e-cdd3-2347-9689533ca6dc",
+      "fd": 4
+    },
+    {
+      "uuid": "GPU-2f1266da-4362-3643-0840-d2f97b07e38f",
+      "fd": 5
+    },
+    {
+      "uuid": "GPU-5ce08490-ec39-8338-c2a7-e7195347bc86",
+      "fd": 6
+    },
+    {
+      "uuid": "GPU-70dab460-3cb4-9670-33da-3076434c223b",
+      "fd": 7
+    },
+    {
+      "uuid": "GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5",
+      "fd": 8
+    },
+    {
+      "uuid": "GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13",
+      "fd": 9
+    },
+    {
+      "uuid": "GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c",
+      "fd": 10
+    }
+  ],
+  "cgroup": "/sys/fs/cgroup/freezer/slurm_h100-9/uid_0/job_3331/step_batch",
+  "runtime": "same h100-9 allocation: GPU E5 and complete 8-GPU sharded FP16 index, trainer, Ray; loopback only; zero online remote RPC",
+  "supervisor_source_sha256": "04046559fffbee79369b49895a1aea4d38f88e6175a3df255cc26da4efdef3d8",
+  "guard_source_sha256": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88",
+  "owned_runtime_source_sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0",
+  "initial_gpu": {
+    "gpus": [
+      "0, GPU-5ce08490-ec39-8338-c2a7-e7195347bc86, 1131, 81559, 0",
+      "1, GPU-170e33e7-ea28-4e38-eeed-03ff1541801f, 1131, 81559, 0",
+      "2, GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c, 1131, 81559, 0",
+      "3, GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5, 1131, 81559, 0",
+      "4, GPU-25743909-367e-cdd3-2347-9689533ca6dc, 1131, 81559, 0",
+      "5, GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13, 1131, 81559, 0",
+      "6, GPU-70dab460-3cb4-9670-33da-3076434c223b, 1131, 81559, 0",
+      "7, GPU-2f1266da-4362-3643-0840-d2f97b07e38f, 1131, 81559, 0"
+    ],
+    "processes": [
+      "GPU-5ce08490-ec39-8338-c2a7-e7195347bc86, 1680782, 1122",
+      "GPU-170e33e7-ea28-4e38-eeed-03ff1541801f, 1680783, 1122",
+      "GPU-db6b7423-65a5-3d73-7581-cd5fabbac28c, 1680784, 1122",
+      "GPU-777e0a67-eca5-d3c0-4f55-ee01f8994ff5, 1680785, 1122",
+      "GPU-25743909-367e-cdd3-2347-9689533ca6dc, 1696443, 1122",
+      "GPU-9ca1eb9d-2186-1b98-54e9-0c97fbd29e13, 1696444, 1122",
+      "GPU-70dab460-3cb4-9670-33da-3076434c223b, 1696445, 1122",
+      "GPU-2f1266da-4362-3643-0840-d2f97b07e38f, 1696446, 1122"
+    ]
+  }
+}
