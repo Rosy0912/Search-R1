@@ -115,7 +115,9 @@ class LocalPipeline(Pipeline):
                 sampled_peak_mib=self.max_used,sampling_interval_seconds=2,
                 occupancy_policy='monitor_only',sampled_peak_fraction_stop_limit=None,
                 historical_gpu_smoke_executed=False,
-                scope='actual assigned-GPU sampling during local original retrieval and real initial300 calibration; full2560 behavior gate and first-five health remain prospective'))
+                scope=('actual assigned-GPU sampling during local original retrieval and saved binary Head startup; full-state restore and next2560 behavior gate remain prospective'
+                    if self.run.get('actor_probe_recovery') is not None else
+                    'actual assigned-GPU sampling during local original retrieval and real initial300 calibration; full2560 behavior gate and first-five health remain prospective')))
             self.stage('REAL_FITTED_PROBE_TRAINING_ADMISSION')
             admission=self.start('probe-admission',[self.python,'-m','reproduction.common8.probe_admission'],self.probe_gpus)
             self.wait('probe-admission',admission,300)

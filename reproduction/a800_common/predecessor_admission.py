@@ -32,10 +32,10 @@ def validate_binding(binding):
     return dict(binding)
 
 
-def read_owned_json(path):
+def read_owned_json(path, *, limit=32*1024**2):
     path = Path(path)
     assert path.resolve() == path and path.stat().st_uid == os.getuid()
-    assert path.is_file() and path.stat().st_size < 32 * 1024**2
+    assert path.is_file() and path.stat().st_size <= limit
     return json.loads(path.read_text())
 
 
@@ -83,7 +83,9 @@ def admit(base, child):
     assert updates_path.resolve() == updates_path and updates_path.stat().st_size < 32 * 1024**2
     updates = [json.loads(line) for line in updates_path.read_text().splitlines()]
     writes = validate_documents(binding, child, parent, proof, cleanup, updates)
-    ledger = read_owned_json(parent_base/'logs/process-ledger.json')
+    # The actual long-running predecessor ledger already exceeds32MiB. Keep
+    # this one historical process inventory bounded, without relaxing other JSON.
+    ledger = read_owned_json(parent_base/'logs/process-ledger.json', limit=256*1024**2)
     claim = read_owned_json(parent_base/'logs/pipeline-launch-claim.json')
     assert ledger['run_id'] == claim['run_id'] == parent['run_id']
     assert claim['execution_id'] == parent['execution_id']

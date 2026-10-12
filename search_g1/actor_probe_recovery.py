@@ -178,7 +178,7 @@ def read_recovery_context(child, rank):
     for name, sha in parent['source_sha256'].items():
         source = _owned(repo/name)
         assert source.is_relative_to(repo) and digest(source) == sha
-    ledger_path = _owned(parent_base/'logs/process-ledger.json', 32 * 1024**2)
+    ledger_path = _owned(parent_base/'logs/process-ledger.json', 256 * 1024**2)
     ledger = json.loads(ledger_path.read_bytes()); assert ledger['run_id'] == parent['run_id']
     trainers = [job for name, job in ledger['jobs'].items() if name == 'trainer']
     assert len(trainers) == 1, 'Missing actual predecessor trainer ledger'

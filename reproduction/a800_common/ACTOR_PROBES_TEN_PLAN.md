@@ -287,6 +287,19 @@ entry rejects recovery binding. The separate owned recovery pipeline and full
 final chain acceptance remain required before production recovery is exercised.
 CPU mechanics and constructed scalar admissions are not native A800 evidence.
 
+The independent owned recovery pipeline now reuses the exact saved binary Head
+pair, starts the distinct full-state trainer entry atK+1 and uses assigned-only
+service startup and recorded-birth cleanup. Before any lock, allocation or
+pipeline claim, it requires the pinned complete-chain verifier source file.
+That verifier remains unimplemented, so this entry currently refuses launch;
+the new source is groundwork, not production recovery acceptance. Focused
+scalar-file checks cover missing/changed verifier bytes, changed candidate or
+second Head, rebound version/archive and existing or broken-symlink claims.
+The actual predecessor process ledger has exceeded32MiB. Only the specified
+historical process inventory may now read up to256MiB; other JSON admissions
+retain their original32MiB bounds. Small-file stat fixtures test this limit
+without storing large local artifacts. Native A800 restoration is still pending.
+
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
 full-state receipt hashes plus the child launch/restore proof, require four
