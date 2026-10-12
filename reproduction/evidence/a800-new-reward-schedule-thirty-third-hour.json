@@ -1,0 +1,143 @@
+{
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "checked_unix": 1791793309.915144,
+  "complete_outers": 94,
+  "partial_outer": 95,
+  "opportunities": 1895,
+  "successful_adam": 1895,
+  "skips": 0,
+  "partial_successful_adam": 15,
+  "trainer_birth_verified": true,
+  "reward_mode": "binary_em",
+  "reward_latest": 0.400390625,
+  "new_complete_window_steps": [
+    91,
+    92,
+    93,
+    94
+  ],
+  "new_complete_window_mean": 0.4169921875,
+  "new_complete_window_range": [
+    0.400390625,
+    0.435546875
+  ],
+  "change_from_previous_window_mean": 0.00439453125,
+  "dev512": {
+    "step": 50,
+    "correct": 199,
+    "count": 512,
+    "em": 0.388671875,
+    "f1": 0.4652502987463925,
+    "receipt_sha256": "66b9ea0ccc74e4e248d0b0dfe2ff010d07a3069cf4a6cb821ecc997a6ac4d0d6",
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    }
+  },
+  "stage64": {
+    "step": 5,
+    "correct": 11,
+    "count": 64,
+    "em": 0.171875,
+    "f1": 0.2429738082116004
+  },
+  "scores_not_updated": true,
+  "gpu_samples": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/gpu-samples-1db662001a0f4d998928bcf6f5f33c9d.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 83122778,
+    "scan_from_start": false,
+    "scan_start_byte": 49568346,
+    "matching_sample_count": 22953,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": null,
+    "first_scanned_sample_unix": 1791744335.6172657,
+    "latest_sample_unix": 1791793309.554288,
+    "latest_sample_age_seconds": 1.3212697505950928,
+    "maximum_scanned_sampling_gap_seconds": 2.5648703575134277,
+    "sampled_run_peak_mib": null,
+    "sampled_scanned_peak_mib": {
+      "0": 50035,
+      "1": 54885,
+      "2": 54885,
+      "3": 50035,
+      "5": 28469,
+      "6": 38090
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1347580,
+      "start_ticks": 575162271,
+      "birth_matches": true,
+      "state": "R",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 32563,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 32213,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 32657,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 32117,
+        "total_mib": 81920,
+        "util_percent": 100,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 25647,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      }
+    ]
+  },
+  "cumulative_sampled_peak_mib": {
+    "0": 60433,
+    "1": 60035,
+    "2": 60035,
+    "3": 59939,
+    "5": 28469,
+    "6": 38090
+  },
+  "prior_peak_evidence": "a800-new-reward-schedule-twenty-fourth-hour.json",
+  "errors": []
+}
