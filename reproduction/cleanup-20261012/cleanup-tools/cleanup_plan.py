@@ -19,10 +19,7 @@ for run in (t/'runs').iterdir():
 for c in (op/'runs/formal-3304/checkpoints/actor').iterdir():
  if c.name not in ['global_step_200','global_step_150']:o['candidate'].append(str(c))
 cur=t/'runs/tree-branpo-fresh200-3360'
-for cat in ['actor','training_state']:
- d=cur/'checkpoints'/cat
- for c in d.iterdir():
-  if c.name in ['global_step_5','global_step_50']:o['candidate'].append(str(c))
+# Active run milestones 5/50/100/150/200 are required by verify_terminal; never delete.
 for p in [cur,op/'runs/formal-3304']:
  o[str(p)]=subprocess.check_output(['find',str(p/'checkpoints'),'-maxdepth','4','-type','f','-name','*.json'],text=True)[:20000]
 print(json.dumps(o))
