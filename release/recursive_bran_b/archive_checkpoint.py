@@ -56,12 +56,21 @@ def safe_dirs(path, base):
             raise RuntimeError(f'Archive directory owner/type changed: {p}')
 
 
-def payload(root, run, step, source):
+def pin_root(run, step):
+    return SOURCE_BASE / 'checkpoint-archive-pins' / run / f'global_step_{step}'
+
+
+def payload(root, run, step, source, physical_root=None):
     if len(run) != 32 or any(c not in '0123456789abcdef' for c in run):
         raise RuntimeError('Invalid run identity')
     expected_root = SOURCE_BASE / f'output-speed-resume3-{run}' / 'checkpoints'
     if root != expected_root or root.resolve() != root:
         raise RuntimeError('Unexpected checkpoint root')
+    logical_root = root
+    if physical_root is not None:
+        if physical_root != pin_root(run, step) or physical_root.resolve() != physical_root:
+            raise RuntimeError('Unexpected archive pin root')
+        root = physical_root
     native = root / 'training_state' / f'global_step_{step}'
     safe_dirs(native, SOURCE_BASE)
     regular(native / 'manifest.json')
@@ -105,11 +114,46 @@ def payload(root, run, step, source):
         expected = {n for n in files if within(Path(n), directory.relative_to(root))}
         if actual != expected:
             raise RuntimeError('Unexpected checkpoint payload members')
-    data = dict(run=run, step=step, source_commit=source, source_checkpoint_root=str(root),
+    data = dict(run=run, step=step, source_commit=source, source_checkpoint_root=str(logical_root),
                 manifest_sha256=hashlib.sha256(raw).hexdigest(), files=files,
                 destination_root=str(DEST_BASE / run),
                 storage_kind='independent_node_ext4_archive_over_SSH_not_shared_mount')
     return data, directories
+
+
+def pin_snapshot(root, run, step, source):
+    """Keep immutable file inodes alive if normal rolling pruning advances."""
+    pinned = pin_root(run, step)
+    ready = pinned / 'PIN_READY.json'
+    safe_dirs(pinned, SOURCE_BASE)
+    if ready.exists():
+        regular(ready)
+        data, directories = payload(root, run, step, source, physical_root=pinned)
+        if json.loads(ready.read_text()) != data:
+            raise RuntimeError('Existing pinned snapshot identity differs')
+        return data, directories, pinned
+    data, _ = payload(root, run, step, source)
+    pinned.mkdir(parents=True, exist_ok=True)
+    for relative in data['files']:
+        src, dest = root / relative, pinned / relative
+        safe_dirs(dest.parent, SOURCE_BASE)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if dest.exists():
+            regular(dest)
+            if not src.samefile(dest):
+                raise RuntimeError('Incomplete pin belongs to another inode')
+        else:
+            os.link(src, dest)
+    current, directories = payload(root, run, step, source, physical_root=pinned)
+    if current != data:
+        raise RuntimeError('Pinned snapshot differs from producer manifest')
+    with ready.open('x') as f:
+        json.dump(data, f, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
+    emit(event='archive_source_pinned', step=step, bytes=sum(e['bytes'] for e in data['files'].values()),
+         scope='Hardlinks only; original checkpoint paths and bytes unchanged')
+    return data, directories, pinned
 
 
 def receiver(data):
@@ -136,7 +180,7 @@ def receiver(data):
             os.fsync(f.fileno())
         emit(event='archive_file_verified', relative=relative, bytes=entry['bytes'])
     receipt = dict(data, status='COMPLETE_CHECKPOINT_ARCHIVE_SHA_VERIFIED',
-                   verified_at=time.time(), local_source_deleted=False,
+                   verified_at=time.time(), local_source_deleted_by_archiver=False,
                    recovery='Copy bundle members back to source_checkpoint_root and verify SHA before native restore.')
     if not final.exists():
         with (staging / 'archive-complete.json').open('x') as f:
@@ -165,7 +209,7 @@ def receiver(data):
 
 def copy(args):
     assert os.getuid() == 1001 and socket.gethostname().split('.')[0] == 'xie-lab-4'
-    data, directories = payload(Path(args.checkpoint_root), args.run, args.step, args.source_commit)
+    data, directories, pinned = pin_snapshot(Path(args.checkpoint_root), args.run, args.step, args.source_commit)
     staging = Path(data['destination_root']) / '.partial' / f'global_step_{args.step}'
     final = Path(data['destination_root']) / 'checkpoint-bundles' / staging.name
     preparation = f'''import os,json,shutil,socket
@@ -186,7 +230,7 @@ print(json.dumps(dict(existing_complete=exists)))
     state = json.loads(subprocess.check_output(SSH + ['python3 -c ' + shlex.quote(preparation)], text=True))
     if not state['existing_complete']:
         for directory in directories:
-            relative = directory.relative_to(Path(args.checkpoint_root))
+            relative = directory.relative_to(pinned)
             dest = staging / relative
             subprocess.run(SSH + ['mkdir -p ' + shlex.quote(str(dest))], check=True)
             command = ['rsync', '-rt', '--partial', '--append-verify', '--bwlimit=65536',
@@ -204,11 +248,20 @@ print(json.dumps(dict(existing_complete=exists)))
             if process.returncode:
                 raise RuntimeError(f'Checkpoint copy failed: {process.returncode}')
     # The producer must remain the same complete immutable manifest after copying.
-    current, _ = payload(Path(args.checkpoint_root), args.run, args.step, args.source_commit)
+    current, _ = payload(Path(args.checkpoint_root), args.run, args.step, args.source_commit, physical_root=pinned)
     if current != data:
         raise RuntimeError('Source checkpoint changed during copy')
     command = 'python3 - --receiver ' + shlex.quote(json.dumps(data))
     subprocess.run(SSH + [command], input=Path(__file__).read_text(), text=True, check=True)
+    # Only this private transfer staging is reclaimed, after complete remote SHA.
+    safe_dirs(pinned, SOURCE_BASE)
+    for member in pinned.rglob('*'):
+        if member.is_symlink():
+            raise RuntimeError('Pinned staging changed before cleanup')
+        if member.is_file():
+            regular(member)
+    shutil.rmtree(pinned)
+    emit(event='archive_pin_released', step=args.step, original_checkpoint_deleted_by_archiver=False)
 
 
 def main():
