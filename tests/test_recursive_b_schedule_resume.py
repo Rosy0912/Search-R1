@@ -7,6 +7,17 @@ from omegaconf import OmegaConf
 import search_r1.baselines.recursive_b_schedule_resume as resume
 
 class ResumeTests(unittest.TestCase):
+ def test_isolated_child_checkpoint_path_allowed_but_shared_path_rejected(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   p=Path(tmp)/'parent.yaml';old=OmegaConf.create(dict(trainer=dict(default_local_dir='/parent/checkpoints',evaluation_steps=None,checkpoint_save_steps=None),actor_rollout_ref=dict(actor=dict(optim=dict(lr=1e-6)),rollout=dict(tree_action_tag_stop=False))))
+   p.write_text(OmegaConf.to_yaml(old));run='a'*32;target='/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/output-speed-resume3-'+run+'/checkpoints'
+   b=dict(parent_config=str(p),parent_config_sha256=hashlib.sha256(p.read_bytes()).hexdigest(),child_run_id=run,child_checkpoint_dir=target)
+   new=copy.deepcopy(old);new.trainer.evaluation_steps=[5,50,100,150,200];new.trainer.checkpoint_save_steps=[5,50,100,150,200];new.trainer.default_local_dir=target;new.actor_rollout_ref.rollout.tree_action_tag_stop=True;new.actor_rollout_ref.rollout.tree_action_stop_mode='search_only'
+   with patch.object(resume,'binding',return_value=b),patch.dict(os.environ,RECURSIVE_B_CONTINUATION_BINDING='present'):
+    self.assertTrue(resume.validate_entry(new))
+    b['child_checkpoint_dir']='/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/checkpoints'
+    new.trainer.default_local_dir=b['child_checkpoint_dir']
+    with self.assertRaisesRegex(ValueError,'not isolated'):resume.validate_entry(new)
  def test_only_schedule_changes_allowed(self):
   with tempfile.TemporaryDirectory() as tmp:
    p=Path(tmp)/'parent.yaml';old=OmegaConf.create(dict(trainer=dict(evaluation_steps=None,checkpoint_save_steps=None,total_training_steps=201),actor_rollout_ref=dict(actor=dict(optim=dict(lr=1e-6,total_training_steps=200)),rollout=dict(tree_action_tag_stop=False)),critic=dict(optim=dict(total_training_steps=0))))

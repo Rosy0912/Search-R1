@@ -43,6 +43,12 @@ def validate_entry(config=None,environ=None,initialized=False):
   expected=json.loads(json.dumps(old))
   expected['trainer']['evaluation_steps']=[5,50,100,150,200]
   expected['trainer']['checkpoint_save_steps']=[5,50,100,150,200]
+  if 'child_checkpoint_dir' in b:
+   root=Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011')
+   run=b['child_run_id']
+   require(len(run)==32 and all(c in '0123456789abcdef' for c in run),'invalid child run identity')
+   require(Path(b['child_checkpoint_dir'])==root/('output-speed-resume3-'+run)/'checkpoints','child artifact path not isolated')
+   expected['trainer']['default_local_dir']=b['child_checkpoint_dir']
   expected['actor_rollout_ref']['rollout']['tree_action_tag_stop']=True
   expected['actor_rollout_ref']['rollout']['tree_action_stop_mode']='search_only'
   if initialized:

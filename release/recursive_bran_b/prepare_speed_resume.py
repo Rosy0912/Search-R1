@@ -10,20 +10,22 @@ terminal=json.loads(a.terminal.read_text());assert terminal['status'] in ('TECHN
 parent=root/'checkpoints/training_state/global_step_3/manifest.json';m=json.loads(parent.read_text());assert m['identity']['completed_step']==3
 old=root/'receipts/configuration-d79908be70f74dd2a0ce38b5ef880f1e/resolved.yaml';assert sha(old)=='95d9f8f2195a35f189ff06af8e449d419040ae96c4cde4fc50f9d7062db414f7'
 run=uuid.uuid4().hex;target=root/'receipts'/('speed-resume3-'+run);target.mkdir(exist_ok=False)
+out=root/('output-speed-resume3-'+run)
 binding=dict(protocol='recursive_b_sparse_schedule_continuation_v1',parent_completed_step=3,
  parent_commit='3da904591125f117b1eae1ba09546ebe793cb2d4',parent_run_id='ef09290e69454f20b6a9594ad8e485b6',
  parent_config=str(old),parent_config_sha256=sha(old),parent_manifest=str(parent),parent_manifest_sha256=sha(parent),parent_identity=m['identity'],
  sampling_streams=[],sampling_stream_status='PARENT_STREAM_NOT_RECORDED_COLD_EXECUTOR_REINITIALIZED',
- latest_human_authority='Stop current B, fix according to acceleration-handoff, resume same complete checkpoint; retain partial4, no repeated completed updates')
+ child_run_id=run,child_checkpoint_dir=str(out/'checkpoints'),
+ latest_human_authority='User explicitly authorized: 允许从第 3 轮恢复，重新计算第 4 轮. Keep failed-run evidence; restore native Adam/scheduler/RNG/cursor from complete3, never initialize fresh Adam.')
 bpath=target/'binding.json';bpath.write_text(json.dumps(binding,sort_keys=True))
-cfg=OmegaConf.load(old);cfg.trainer.evaluation_steps=[5,50,100,150,200];cfg.trainer.checkpoint_save_steps=[5,50,100,150,200];cfg.actor_rollout_ref.rollout.tree_action_tag_stop=True;cfg.actor_rollout_ref.rollout.tree_action_stop_mode='search_only';cpath=target/'resolved.yaml';cpath.write_text(OmegaConf.to_yaml(cfg))
+cfg=OmegaConf.load(old);cfg.trainer.evaluation_steps=[5,50,100,150,200];cfg.trainer.checkpoint_save_steps=[5,50,100,150,200];cfg.trainer.default_local_dir=str(out/'checkpoints');cfg.actor_rollout_ref.rollout.tree_action_tag_stop=True;cfg.actor_rollout_ref.rollout.tree_action_stop_mode='search_only';cpath=target/'resolved.yaml';cpath.write_text(OmegaConf.to_yaml(cfg))
 os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=str(bpath),RECURSIVE_B_CONTINUATION_SHA256=sha(bpath))
 from search_r1.baselines.recursive_b_schedule_resume import validate_entry,parent_manifest
 validate_entry(cfg);parent_manifest()
 record=dict(run_id=run,config=str(cpath),config_sha256=sha(cpath),binding=str(bpath),binding_sha256=sha(bpath),
  source=str(repo),source_commit=source,model=cfg.actor_rollout_ref.model.path,data_identity=m['identity']['data_identity'],
- output=str(root/('output-speed-resume3-'+run)),parent_terminal=str(a.terminal),parent_terminal_sha256=sha(a.terminal),
- preparation_time=time.time(),parent_completed_step=3,ready=True,scientific_config_change='Only explicit eval/checkpoint lists; runtime acceleration preserves native mu objective')
+ output=str(out),parent_terminal=str(a.terminal),parent_terminal_sha256=sha(a.terminal),
+ preparation_time=time.time(),parent_completed_step=3,ready=True,scientific_config_change='Explicit eval/checkpoint lists, native search-stop, and isolated child artifact root; model/data/reward/temperature/objective unchanged')
 if a.retry_terminal:
  from search_r1.baselines.recursive_b_retry import validate_retry_terminal
  validate_retry_terminal(a.retry_terminal,sha(a.retry_terminal))

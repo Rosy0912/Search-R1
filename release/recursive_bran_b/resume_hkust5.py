@@ -30,6 +30,9 @@ def main():
   from release.recursive_bran_b.capture_driver_stage_terminal import validate
   validate(r['driver_fault_terminal'],r['driver_fault_terminal_sha256'])
  out=Path(r['output']);out.relative_to(root)
+ if 'child_checkpoint_dir' in json.loads(Path(r['binding']).read_text()):
+  b=json.loads(Path(r['binding']).read_text())
+  if b['child_run_id']!=r['run_id'] or Path(b['child_checkpoint_dir'])!=out/'checkpoints':raise ValueError('Child artifact root does not belong to this run')
  if out.exists():raise ValueError('No blind restart/overwrite of speed output')
  os.environ.update(RECURSIVE_B_CONTINUATION_BINDING=r['binding'],RECURSIVE_B_CONTINUATION_SHA256=r['binding_sha256'],
   RECURSIVE_B_OMIT_FULL_BETA='1',RECURSIVE_B_CACHE_DETOKENIZER_LENGTH='1',
