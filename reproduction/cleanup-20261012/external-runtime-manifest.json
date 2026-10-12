@@ -1,0 +1,1267 @@
+[
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.shared-output-backup-20261008/backup_native_once-1721d96d21df5a2f.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/.shared-output-backup-20261008/backup_native_once-1721d96d21df5a2f.py",
+    "sha256": "1721d96d21df5a2f36dfa0793a1c099df0ddd31722ebe10ffeb207ecc9e21c22"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.shared-output-backup-20261008/backup_native_once-d1da993cbba2442c.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/.shared-output-backup-20261008/backup_native_once-d1da993cbba2442c.py",
+    "sha256": "d1da993cbba2442cce29ff7dcffb0aad40891eb04a118bceee86c338b7415d07"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.shared-output-backup-20261008/finalize_existing_backup-f1f0b524a1a83be1.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/.shared-output-backup-20261008/finalize_existing_backup-f1f0b524a1a83be1.py",
+    "sha256": "f1f0b524a1a83be194118b9cdd201b504c84b9c54a685266dec0cc6051f62863"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.shared-output-backup-20261008/supplement_external_provenance.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/.shared-output-backup-20261008/supplement_external_provenance.py",
+    "sha256": "3bc7c5488fa2435a78a71f27a310e497b681b7c0634eb87ec8213102f7cbffe5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/train_tree_stage_versioned.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/train_tree_stage_versioned.sh",
+    "sha256": "90fa5074f3ba3e5f27e8e0d5bf7a100c81a8615b407b7c7d25f78d7ecbcb6cc2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_checkpoint_review.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_checkpoint_review.py",
+    "sha256": "97a1e5d322746ca449a1cbd90889b722c52e82e502b9280750b98a9082a211d3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_actor_compile.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_actor_compile.py",
+    "sha256": "80c5a6bb45f0b4447a87ca286b68766d445c437df655bc1b758f68886997329a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a_v3.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a_v3.sh",
+    "sha256": "682be03c9ea508e829337f31281dac60bc3aeef6fb77f801ff4ba64257a7995f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/copy_verified_assets.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/copy_verified_assets.py",
+    "sha256": "4dc4ed9dd62d2ff9e1fcbc758e9823226fc189ce718650244863e4b0eb882023"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/sample_retriever_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/sample_retriever_cpu.py",
+    "sha256": "eb28c398f00008bd784b6d15ec43dc199c293921a15c85cc3d3c2ba911d82092"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_fixed_two_afterany_296217a.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_fixed_two_afterany_296217a.py",
+    "sha256": "9db6826e2c286c1c65daa5d3b176a01b73a957b99385055b9e88cf1375ef9ae2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_validation_cost_configuration.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_validation_cost_configuration.sh",
+    "sha256": "4c54c3937778c3070cb1e2d277df70656eebe63000d658c02c59f313f30555e1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/h100_retrieval_resource_guard.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/h100_retrieval_resource_guard.py",
+    "sha256": "2a1089284b01eeb3cfc9857cbfc99a03eecf3ce0b986a084e3c6a177328f108e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_fixed_formal_afterany_296217a.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_fixed_formal_afterany_296217a.py",
+    "sha256": "19aac6802322dbaf5af370f13b890813456cbd940d1ab14dd5f1c0972acd6091"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/copy_small_assets.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/copy_small_assets.py",
+    "sha256": "48f2aaf97828b9cb0ba88830f660a3df8b9ee38b5c15fe42253572fe047622b1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/real_retrieval_probe.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/real_retrieval_probe.py",
+    "sha256": "0c3496c7eb2fdab56d031bee70dbbce338abebae582b96d375795680e199d370"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validation_cost_ray_fixture.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validation_cost_ray_fixture.py",
+    "sha256": "7cd29a450016bd47fbf3ee4cfbb2673b84f70cf1e5eed50090edadd000f51878"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/extract_wandb_metrics.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/extract_wandb_metrics.py",
+    "sha256": "009c48a1975f83dcb685b0482f7b2ea1054266b7344dc8376e7a9fe47bde7bf9"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_owned_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_owned_runtime.py",
+    "sha256": "31d8e50b08df5d39cb28efc799863f99edfe81e02d86baa594508120b3ca676f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_busy_hybrid.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_busy_hybrid.py",
+    "sha256": "8f262f0566132c1079c887c3951e63ef3b7fef99b7923507c86d07c7da09fe76"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a_v2.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a_v2.sh",
+    "sha256": "7b330925800e62a52f6919df858daebbd4dfdd63c1af0c76bfd0de21bc479183"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validate_tree_stage.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validate_tree_stage.py",
+    "sha256": "2c2590a7830e2433d79122d329f488607f1e5697ca110348945383aff2dd0fb9"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/gpu_hardware_gate.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/gpu_hardware_gate.sh",
+    "sha256": "22f295f62e3907adb6e147ddafd43dd882273a33004df21103a57a4dbc3946f8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_tree_cleanup_fixed_zombie.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_tree_cleanup_fixed_zombie.py",
+    "sha256": "82c3e7cc022a671d50dec3249adae6108ff257302f4e9620285d3395c01695d3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_validation_cost_configuration.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_validation_cost_configuration.py",
+    "sha256": "dd65f88fce2c3da0c490c21178c09a66e6ac35bca2cc012108b993db4845b8e6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/dispatch_five_hybrid_versioned.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/dispatch_five_hybrid_versioned.sh",
+    "sha256": "3be5c0b6c6a9d95674cf736a99ed1c662556d67c99a18f882d3346ce9b7d740d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validate_cpu_stage.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validate_cpu_stage.sh",
+    "sha256": "8354ddfba5325aafb27eb084fa06a5caf73c6ebb78021a2745b3d0eea32cc54e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_formal_cost_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_formal_cost_identity.py",
+    "sha256": "21a50c834a61ced93ae3616f9f87d5d40ad7078c9e6b5a387550b3eeb28fd73a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_supervisor.py",
+    "sha256": "7b6be0bea308da63150c68aeff27876d3dcb7f8edbc4d7680b762b6b38e83dcc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_h100_native_probe.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_h100_native_probe.sh",
+    "sha256": "75f75942ef819bbca52e259b0da1d4b60c39b7ad28383ff42b52ae5913ba2890"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_h100_gpu_retrieval.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_h100_gpu_retrieval.sh",
+    "sha256": "8bfcb1b46ddb85cac14cb1972ba870dad5d138b624565e31bab92b4ce5ae5f59"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_aux_http.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_aux_http.py",
+    "sha256": "c9a74ba012bf221362447f955ce2f1c11d7cb3082911c19c47eb08c7c44af3a8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/prepare_derived_assets.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/prepare_derived_assets.py",
+    "sha256": "61b18c47bc9da2c1ef60d692f3f1a918f054b8bad9cf197bc4fd2b835965c3dc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_native_numeric_296217a.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_native_numeric_296217a.sh",
+    "sha256": "cc1f6483a99bbe7d4c0b4e69e6e324c3f665672c088b76fc46bf2f3406199cc1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/run_tree_with_validation_cost.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/run_tree_with_validation_cost.sh",
+    "sha256": "96f88eabef1c43ff582889dea4cae388a80ee7edac4f467794a03029c21a9554"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/gpu_hardware_probe.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/gpu_hardware_probe.py",
+    "sha256": "b1b27461e89dd86dee5169a0ce96a0e9cf7455ff97ef2d2035fb0785f0cb5e00"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_fixed_five_afterany_296217a.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_fixed_five_afterany_296217a.py",
+    "sha256": "a6a73cf43a659d55402d56005d975749a5766536ceec54bffa8e0f364f3b96d3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/test_validation_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/test_validation_cost_hooks.py",
+    "sha256": "3649d4ae8b920508daa65f864ef9f391d1416c79f2ea10bfe7e46d0a1c0f14fa"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_formal_cost_fixed.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_formal_cost_fixed.py",
+    "sha256": "ba336d31f59c503dd24b6a6e194b262cb95961ea2b7857689774c206e8d3abcc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validate_native_tree_stage.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validate_native_tree_stage.sh",
+    "sha256": "359079e24fa158faf894e0871eb4aa6e6a43815ccadecaacadf28e37f506feba"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/copy_direct_assets.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/copy_direct_assets.py",
+    "sha256": "36193953e2d8b474e288391dfdcc06f464a0f81ecd41f256087712cb98b69d5b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/dispatch_two_hybrid.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/dispatch_two_hybrid.sh",
+    "sha256": "b318164f77fb2f3a688a6ec496a9c3ebc371ee2b64c3e3f304a2aa04840faa30"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_tree_shared_retrieval.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_tree_shared_retrieval.py",
+    "sha256": "335a3410bdc19fac01d5d29aa7eea3832c031fae5093f1f9f2d65f76374157b5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/real_model_probe.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/real_model_probe.py",
+    "sha256": "12c0665b4d9ca7eda9bc60463f380aaeb9f17be20282543e2d45504853f3792b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/prepare_gpu_faiss.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/prepare_gpu_faiss.py",
+    "sha256": "abcb63f19bb0c369b34d13d306cfef079c8e78a7366f40f6195f4280291d2738"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/run_tree_with_validation_cost_shared.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/run_tree_with_validation_cost_shared.sh",
+    "sha256": "d867a3205cfb03e03fad59a1110bab908785dfa8e02f7b323012f5b52a24b74d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_fixed_five_296217a.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_fixed_five_296217a.sh",
+    "sha256": "b5f2932c507d75defd83b9b84e203e3634f0f0b1d94daf120377e9c59b0e624a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/real_model_gate.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/real_model_gate.sh",
+    "sha256": "dace1c1edc301b360536c2a2f6ca588e2ef01003e1f9dc9280296553749c79a2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_fixed_two_296217a.sh",
+    "sha256": "9a8804de6153d60b4e0192cdc085d42368684ce2b48a3793d84c02cc31dd8a43"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validation_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validation_cost_hooks.py",
+    "sha256": "63fafc8555d23e78c474e311dec96526eaf1a9e8bb5b57fc7599e5fcdc323e8c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/prepare_remote_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/prepare_remote_runtime.py",
+    "sha256": "4205be19c4dfa73114699111cd5c86700336a33d767ad7a7442442765287c79a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_fixed_formal_296217a.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_fixed_formal_296217a.sh",
+    "sha256": "1e34668c228c48642a8610a20a4ec98f875bd826e41f05e1451acb7b33843b06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/dispatch_two_hybrid_async.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/dispatch_two_hybrid_async.sh",
+    "sha256": "a72dc02c93b5b9e13601342c30673cb411c337f966c10b2fa59c960b008e842d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_fixed.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_supervisor_fixed.py",
+    "sha256": "be4e9f057c4e28a6cd25f4172ec8fd62f789549e3a9b8faeff3102028b993378"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/validation_cost_entry.py",
+    "sha256": "9d36c4df859ae152975515ae105b1ad2df10bae68064265d09cdb5fcdcc68fe8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_shared_formal_cost_fixed.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_shared_formal_cost_fixed.sh",
+    "sha256": "6245ed99bd936c7ae4f1ba55c129755599ff63de65943446b57c87b0779777aa"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/resource_guard_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/resource_guard_identity.py",
+    "sha256": "284c014cd6e273816c112ea8a7b515f3afa4e55bef5c74d23f319f93f146ff88"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_failed_tree_checkpoint300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_failed_tree_checkpoint300.py",
+    "sha256": "e41a9999acba7c26aa46d840ef2fd81bd41e10dd8bc0da2cfe80bd162c0902a9"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/download_remote_wheels.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/download_remote_wheels.py",
+    "sha256": "cdf2de6eff552391d5a1a050f78af9d33d8d1876ef4e937a92f381ebd14df9cb"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/supervise_asset_copy.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/supervise_asset_copy.sh",
+    "sha256": "e67e191bafa515012d329b0d63f6550c0b9995f031afdd03c670699a2c021e6c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_tree_cleanup_fixed.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_tree_cleanup_fixed.py",
+    "sha256": "6c6ffa65aef62a70b324d5d0c05277c1cff809c38a8a85205e2a5f41b6731d93"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_ray_loopback.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_ray_loopback.py",
+    "sha256": "6690161addd7af7449adf7a48fd7d07cb655227e28a597d1e2bfa24cacfccdae"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_validation_cost_ray.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_validation_cost_ray.py",
+    "sha256": "597c2550401f173ceaa6facd9be69545e8d099c895807899ff05beb6da643a1f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/hybrid_retrieval_server.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/hybrid_retrieval_server.py",
+    "sha256": "ebdb3f40714e0d081572563a6ae0b582f4d733ac93f39b8ea0e8e6accd5c4049"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/hybrid_retrieval_server_async.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/hybrid_retrieval_server_async.py",
+    "sha256": "b057a34876036c1e7bc8005ccc23e0aa10c170d0dca77c2f71782c4b7c9b4429"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_validation_cost_probe_h100.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_validation_cost_probe_h100.sh",
+    "sha256": "94864f6d9e96036b92918167dc78a9b64c0ef4320b92e790fa0297dc715d227d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_shared_fixed.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_shared_fixed.sh",
+    "sha256": "d8c941ebc259fd1db181d3fdcfc289aa247a1e8a8063e3576bc61399c4758e88"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/train_tree_stage_h100_native.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/train_tree_stage_h100_native.sh",
+    "sha256": "98f1fa27cc3a79505599ce003bd6b321dacc02c7cd32a7cb3710d7b07fa372e6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_shared_formal_cost_identity.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_shared_formal_cost_identity.sh",
+    "sha256": "2e5cc727b6136b6e58a02e88a21a25d220acef079f352511a4ea4fbb3304bf7b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/train_tree_stage_async.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/train_tree_stage_async.sh",
+    "sha256": "096da836b1690e7489550d29dc1f6b50644a4e6ea23e6c0affbbddc0cf72e265"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/train_tree_stage.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/train_tree_stage.sh",
+    "sha256": "3c86a98937cb79eff08a0ee8c0a73ee1df62dad7b76e2baa4200a2030e63c05b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/index_gpu_server.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/index_gpu_server.py",
+    "sha256": "a50654c46e816bd7084992dfaef5cb70b802dd4499c0e9bb19cf04bc0391b5a5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_h100_native_retriever.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_h100_native_retriever.py",
+    "sha256": "5d7c81e1afa7a8f836a7dbb26a5b2886e727d4e9fc75beecb26ae0698dc7e4b1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_real_checkpoint.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_real_checkpoint.py",
+    "sha256": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/check_hybrid_retriever.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/check_hybrid_retriever.py",
+    "sha256": "f93e4fe3d39e0f44f9b299511d27fd23a580b1b09bd65d487849532647970496"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/resource_guard.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/resource_guard.py",
+    "sha256": "790c349e117c2020778c606115e8c94abf425008d96db8f5539ceaaa5df74381"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/hybrid_cpu_gate.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/hybrid_cpu_gate.sh",
+    "sha256": "223a9c4f4550e9624782ac6b965f8215754d4642e6da462ddeca3b71fb63e0a1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/summarize_tree_formal.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/summarize_tree_formal.py",
+    "sha256": "69f846246c0933a6e46dfaae4c0351729eaa0f609c785987b2463e138f41f718"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_binary_index.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_binary_index.py",
+    "sha256": "8683994e41d729e234733d815632a776229f34cf2127e534ead8aa4271492dc3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/hybrid_cpu_gate_async.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/hybrid_cpu_gate_async.sh",
+    "sha256": "92ac01673ad79bbe7b2562d774ef26bb04e94f84222fe3e9da46aa2fa3a93733"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/start_tree_shared.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/start_tree_shared.sh",
+    "sha256": "42b1460d8bad9cca9f7a9c2fb3cbfee36416605610a28717ded2e1817cd5456d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/h100_gpu_retrieval_service.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/h100_gpu_retrieval_service.py",
+    "sha256": "b969f9e97a737389d0b8cd066ab1a1ffea5f77dc6b4809a90b32ff986d046c8d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/tree_shared_owned_runtime_fixed.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/tree_shared_owned_runtime_fixed.py",
+    "sha256": "4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_h100_gpu_retrieval_http.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_h100_gpu_retrieval_http.py",
+    "sha256": "966f8789d6d74308f9b231b96e133e0bb7dee71e3afcc7ed2b4be87ba9e76212"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/summarize_tree_fixed_formal_296217a.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/summarize_tree_fixed_formal_296217a.py",
+    "sha256": "6de20c7d04a5773471385a195d7977d3bf903de8ccdb72c8584b6316a1ece61b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/probe_tree_guard_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/probe_tree_guard_identity.py",
+    "sha256": "25d7f722a6ae4c2b99bbd84becd1283e5caf7fa493a97a684bcd58b0cb73d867"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/tools/real_retrieval_gate.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/tools/real_retrieval_gate.sh",
+    "sha256": "c9505536375e1d239aa019b9d82f7880156210f64a41ef4dcae50d11dad7ea9f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/.node-migration/migrate_assets.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/.node-migration/migrate_assets.py",
+    "sha256": "a9d0572651208acbda47f4c7841338eda83fe6026f1e79de1221835b738ca356"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/python-dev/usr/lib/python3.10/config-3.10-x86_64-linux-gnu/python-config.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/python-dev/usr/lib/python3.10/config-3.10-x86_64-linux-gnu/python-config.py",
+    "sha256": "cc99a494ab1935668b0dace9666eca42c6c26fed0bfe661fd99c7216cc2dea04"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_hooks_instruct300.py",
+    "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/build_package_draft.py",
+    "sha256": "4c8d26a20cb0099845f7a7cdf73e7845bfd2c975ce8b50186172eb6e5f54fb92"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/production_contract.py",
+    "sha256": "01ac1099a7c95e84c2c02129de642900a83c17e4b3597fdb30c957dbf45a078b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/owned_lease_identity.py",
+    "sha256": "a344e45aaf361a4ca643efbbd0a81472c3353749cfa24541699966fdfd41d2e6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/train_monitor.py",
+    "sha256": "4a21c47cc6ade0b95b2b77d256cb348d11bdf354a18b24f96668d6b0334a7604"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_behavior_mu_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_behavior_mu_cpu.py",
+    "sha256": "c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_partial_raw_cpu.py",
+    "sha256": "1ea27878799d826c894b443c55cb1d248c9193b274f69454ed843590818ccf95"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/current_chain_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/current_chain_runtime.py",
+    "sha256": "72aeb8ae145d5955f058212ec08e37d1c6f5defeb168f2069259d13eaf8c96cf"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/slurm_identity.py",
+    "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_production_v2_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_production_v2_cpu.py",
+    "sha256": "c9b35f54c0e7f246fc881aea0d2357cd54364bcf9c1f49bba358dc1c3d3b8a9d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/submit_once.py",
+    "sha256": "e3cfb240474850c6a1d1019a79fe69a7e48d18741152473eb3ea777e753baf1c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_partial_raw_cpu.py",
+    "sha256": "14c46640165e9bf5e225a6f438f477c059ba0119b54998ca378bcba893717db3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_entry.py",
+    "sha256": "f13d3e88dafc7faf7423081ee0985ddb406fc515dcea74c205041e775ba707c8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_training_cost_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_training_cost_cpu.py",
+    "sha256": "d61be96a3ae38e9a7e9e20c7aef6a81b9f1d6a88caa7be44b09c977c39a7cf0c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_runtime_contract_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_runtime_contract_cpu.py",
+    "sha256": "0fc80aea7b9e367b1f05a45255826f721946036795282f658e4ddff32ba075ee"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_validation_adapter_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/test_validation_adapter_cpu.py",
+    "sha256": "332c449734bfe866668ffec073e134632a17c7c8481f84227fc2128a3a9ad1b2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_training_state_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/check_training_state_cpu.py",
+    "sha256": "6406d85c0d1470b5196da4f970fa6da20194f6dee74ea22a3221f561694ef236"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/render_dispatch.py",
+    "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/supervisor.py",
+    "sha256": "72c03b5c9f717dccaa388830103685a1c014f549c4da9c13037a8eed4ddc9be5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/calibration_contract.py",
+    "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/run_tree.sh",
+    "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/guard_entry.py",
+    "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_hooks_instruct300.py",
+    "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/build_package_draft.py",
+    "sha256": "4c8d26a20cb0099845f7a7cdf73e7845bfd2c975ce8b50186172eb6e5f54fb92"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/production_contract.py",
+    "sha256": "ed815c424a35a0a39de35e6e5f8dc02cfb47f5c1e7b6949d1d11f7f6c5b85916"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/owned_lease_identity.py",
+    "sha256": "8898fa31df881710bd1cff04b3480986bee1a13d80b4508348e9e390e574d028"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/train_monitor.py",
+    "sha256": "4a21c47cc6ade0b95b2b77d256cb348d11bdf354a18b24f96668d6b0334a7604"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_behavior_mu_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_behavior_mu_cpu.py",
+    "sha256": "c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_partial_raw_cpu.py",
+    "sha256": "1ea27878799d826c894b443c55cb1d248c9193b274f69454ed843590818ccf95"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/current_chain_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/current_chain_runtime.py",
+    "sha256": "61f9f8967298ff7caeb4440a0b030c0d539c712fef9087950a34390d5151086d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/slurm_identity.py",
+    "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_production_v2_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_production_v2_cpu.py",
+    "sha256": "c9b35f54c0e7f246fc881aea0d2357cd54364bcf9c1f49bba358dc1c3d3b8a9d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/submit_once.py",
+    "sha256": "d3b48104ff4a05927604906c5cc85be49c670df4b37ad062d0a8fd02c8441d8e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_partial_raw_cpu.py",
+    "sha256": "14c46640165e9bf5e225a6f438f477c059ba0119b54998ca378bcba893717db3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/validation_cost_entry.py",
+    "sha256": "f13d3e88dafc7faf7423081ee0985ddb406fc515dcea74c205041e775ba707c8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_training_cost_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_training_cost_cpu.py",
+    "sha256": "d61be96a3ae38e9a7e9e20c7aef6a81b9f1d6a88caa7be44b09c977c39a7cf0c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_runtime_contract_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_runtime_contract_cpu.py",
+    "sha256": "0fc80aea7b9e367b1f05a45255826f721946036795282f658e4ddff32ba075ee"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_validation_adapter_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/test_validation_adapter_cpu.py",
+    "sha256": "332c449734bfe866668ffec073e134632a17c7c8481f84227fc2128a3a9ad1b2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_training_state_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/check_training_state_cpu.py",
+    "sha256": "6406d85c0d1470b5196da4f970fa6da20194f6dee74ea22a3221f561694ef236"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/render_dispatch.py",
+    "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/supervisor.py",
+    "sha256": "dc875ffa435ecedbe49fbc1022e68e1a99a54c02eb895e32045c8a7ae6ab345b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/calibration_contract.py",
+    "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/run_tree.sh",
+    "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/guard_entry.py",
+    "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v13-6227108/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/validation_cost_hooks_instruct300.py",
+    "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/build_package_draft.py",
+    "sha256": "4c8d26a20cb0099845f7a7cdf73e7845bfd2c975ce8b50186172eb6e5f54fb92"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/production_contract.py",
+    "sha256": "c57001c3c790d7218973587e534e19f657cdee5b7d9d97f82298842e7886c476"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/owned_lease_identity.py",
+    "sha256": "2d76aa53b88a521b4f3bc4d18cf0f3680fd7e79e858485d828ac6495e17b2e3e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/train_monitor.py",
+    "sha256": "2602d4978960cf010ee0369bff299c49c57cdf459b45f1d044d4b4f4650c9ab7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_behavior_mu_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_behavior_mu_cpu.py",
+    "sha256": "c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_partial_raw_cpu.py",
+    "sha256": "1ea27878799d826c894b443c55cb1d248c9193b274f69454ed843590818ccf95"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/current_chain_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/current_chain_runtime.py",
+    "sha256": "106585f97db751f4c5937fb609852d65f3d272f1c54f4447e434ab469da849a0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/slurm_identity.py",
+    "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_production_v2_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_production_v2_cpu.py",
+    "sha256": "c9b35f54c0e7f246fc881aea0d2357cd54364bcf9c1f49bba358dc1c3d3b8a9d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/submit_once.py",
+    "sha256": "b3d7523f2aa99fd7b61049e5d6ecb5dedcf807564f892e2e71f3c57cb1a54a4d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_partial_raw_cpu.py",
+    "sha256": "14c46640165e9bf5e225a6f438f477c059ba0119b54998ca378bcba893717db3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/validation_cost_entry.py",
+    "sha256": "f13d3e88dafc7faf7423081ee0985ddb406fc515dcea74c205041e775ba707c8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_training_cost_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_training_cost_cpu.py",
+    "sha256": "d61be96a3ae38e9a7e9e20c7aef6a81b9f1d6a88caa7be44b09c977c39a7cf0c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_runtime_contract_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_runtime_contract_cpu.py",
+    "sha256": "0fc80aea7b9e367b1f05a45255826f721946036795282f658e4ddff32ba075ee"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_validation_adapter_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/test_validation_adapter_cpu.py",
+    "sha256": "332c449734bfe866668ffec073e134632a17c7c8481f84227fc2128a3a9ad1b2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_training_state_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/check_training_state_cpu.py",
+    "sha256": "6406d85c0d1470b5196da4f970fa6da20194f6dee74ea22a3221f561694ef236"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/render_dispatch.py",
+    "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/supervisor.py",
+    "sha256": "2e82f5e735a2eb922e7a0cf1ee6bdc2c235a946ebc738a6414d5677a4129e513"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/calibration_contract.py",
+    "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/run_tree.sh",
+    "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/guard_entry.py",
+    "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v14-ebef786/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/validation_cost_hooks_instruct300.py",
+    "sha256": "50c026bfab5e60f3c8becef7ecdf797562ed6b6b48365ec64436eef14f731dab"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/build_package_draft.py",
+    "sha256": "b07c9cab8c500dcc202a00eda3af724ae14fb27bad1e5a7fa4c9abf0dc27815a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/production_contract.py",
+    "sha256": "df82d7641d66f3ac6d21ae8b4df6976d9fa8c204bd1909ad2648e3cee2e80b8f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/owned_lease_identity.py",
+    "sha256": "06a352383ae6564d07219a783d5c75687f4e14c085b1c4bcc49909215dd0df51"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/train_monitor.py",
+    "sha256": "d72aad8f8ee59dc4297dc70ea5f1bf5b7dd804c932602bf017428008c7f43f4b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/slurm_identity.py",
+    "sha256": "7e66b29846b30b134d3542a931e03b2f3147591783b56bd220cb98064da6ff8e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/build_package.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/build_package.py",
+    "sha256": "ea5bafa23d2677932e521125b67e53d9298b2120ad09388f93a332bece546220"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/deploy_package.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/deploy_package.py",
+    "sha256": "e6d23a7a926ddec16ab47f1f0ebaaf87408477e96a366e178a59a9f87cb0f3af"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/submit_once.py",
+    "sha256": "2b1e2d0b6aa00095eb4c4da49dcf1305f121fe2bd58e3d0a9e331790dfe4d38b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/validation_cost_entry.py",
+    "sha256": "fb993d920d7cab3ef77d63cb4f3eedef7a3e9260b588aec3eb37045567146572"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/storage_guard.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/storage_guard.py",
+    "sha256": "5493afe3ae25c1b5a52ef6affa698378de5eac133ca4390c8a7425a2bfa69519"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/render_dispatch.py",
+    "sha256": "a09d6e531880cb4898893ab6215ca8168e98d75414a492e2b04f8b55b1e40fb6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/make_release.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/make_release.py",
+    "sha256": "b0684d0a5d804ade2a611cc3954bd6a1f4851636d536b9020b72a16f28991cb4"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/ssh_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/ssh_retained18.py",
+    "sha256": "e69daf1d10dc112c20198e71449507b8dfbaddf3232d494dbbd71ada5ded9f7f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/supervisor.py",
+    "sha256": "ceca3b1e658e41aa47c6ddfca166ec7c765cdb4f542d1c16ead26f49b56e0cac"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/calibration_contract.py",
+    "sha256": "152644a42c87fa4046ccc1b7aaac892a6e9bbfb388e305469ba54646384698cb"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/run_tree.sh",
+    "sha256": "426541e35cf85e82336acffa9859a8cbc278df962642b00eca189456a73ea3ce"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/guard_entry.py",
+    "sha256": "a1fe93075a42bdf9aeaa4284eabfd6eac3e845215628e0dce2184f54e1b09d3d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/branpo-fresh200-8b6f99d1b3353145200eb3fa7c16a579a79a987c/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/validation_cost_hooks_instruct300.py",
+    "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/build_package_draft.py",
+    "sha256": "4c8d26a20cb0099845f7a7cdf73e7845bfd2c975ce8b50186172eb6e5f54fb92"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/production_contract.py",
+    "sha256": "557936a57e4899e973f13d161d33bdfcf9f5c5c0eeaa1c72add2464b7ca6678a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/owned_lease_identity.py",
+    "sha256": "d07b5b9eb55893ee5667b5768db0e44de819d009fa818e2b18c8fe63e308cf74"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/train_monitor.py",
+    "sha256": "2b32b48b1cd2983b5355ebdbb2ce13f5b3b1571f54052396ca78d72583209bc2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_behavior_mu_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_behavior_mu_cpu.py",
+    "sha256": "c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_partial_raw_cpu.py",
+    "sha256": "1ea27878799d826c894b443c55cb1d248c9193b274f69454ed843590818ccf95"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/current_chain_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/current_chain_runtime.py",
+    "sha256": "c2254b718145a555455a79084c3fffd27adeb82f0a659ee6ec0aa0f155ac24bf"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/slurm_identity.py",
+    "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_production_v2_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_production_v2_cpu.py",
+    "sha256": "c9b35f54c0e7f246fc881aea0d2357cd54364bcf9c1f49bba358dc1c3d3b8a9d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/submit_once.py",
+    "sha256": "b7aff545450bb771f0e278323b3d1be2aadb2098788e74b86c496b44b1cbb029"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_partial_raw_cpu.py",
+    "sha256": "14c46640165e9bf5e225a6f438f477c059ba0119b54998ca378bcba893717db3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/validation_cost_entry.py",
+    "sha256": "f13d3e88dafc7faf7423081ee0985ddb406fc515dcea74c205041e775ba707c8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_training_cost_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_training_cost_cpu.py",
+    "sha256": "d61be96a3ae38e9a7e9e20c7aef6a81b9f1d6a88caa7be44b09c977c39a7cf0c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_runtime_contract_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_runtime_contract_cpu.py",
+    "sha256": "0fc80aea7b9e367b1f05a45255826f721946036795282f658e4ddff32ba075ee"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_validation_adapter_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/test_validation_adapter_cpu.py",
+    "sha256": "332c449734bfe866668ffec073e134632a17c7c8481f84227fc2128a3a9ad1b2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_training_state_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/check_training_state_cpu.py",
+    "sha256": "6406d85c0d1470b5196da4f970fa6da20194f6dee74ea22a3221f561694ef236"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/render_dispatch.py",
+    "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/supervisor.py",
+    "sha256": "86479b45fc56438723c538ac9ba61779f35e2291fbf2ba26625bb481f4b8441a"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/calibration_contract.py",
+    "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/run_tree.sh",
+    "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/guard_entry.py",
+    "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v11-6efb604/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/validation_cost_hooks_instruct300.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/validation_cost_hooks_instruct300.py",
+    "sha256": "321e421aca6c240746498753fa9f30a836e73cebe1835bd8b1ca44debfbce669"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/build_package_draft.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/build_package_draft.py",
+    "sha256": "4c8d26a20cb0099845f7a7cdf73e7845bfd2c975ce8b50186172eb6e5f54fb92"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/production_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/production_contract.py",
+    "sha256": "be235e33f2f4328033a275cc9e826b9f2a1c93bcb44d35a7552bd1f6094d29b6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/owned_lease_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/owned_lease_identity.py",
+    "sha256": "135bd1e93e8070168b2c4ce84b545a62e66b74629a832f7829ee0fc7f694ba1e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/train_monitor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/train_monitor.py",
+    "sha256": "2b32b48b1cd2983b5355ebdbb2ce13f5b3b1571f54052396ca78d72583209bc2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_behavior_mu_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_behavior_mu_cpu.py",
+    "sha256": "c56e3c79959c501d6256ba51f0cd455b2de0a7540ea0c1ff9231fae066afe5bc"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_partial_raw_cpu.py",
+    "sha256": "1ea27878799d826c894b443c55cb1d248c9193b274f69454ed843590818ccf95"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/sitecustomize.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/sitecustomize.py",
+    "sha256": "093d326aaa1a767206b94109482c0143a988507c90be7ce8c409a9ef9ada47f6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/current_chain_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/current_chain_runtime.py",
+    "sha256": "d86baade65d00c85dd1becde82263b13617a6a79c2ef49e91320a14c8c4dd2d9"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/slurm_identity.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/slurm_identity.py",
+    "sha256": "7ebb5da8af72c8d58b2e77a47bd1e1cdcd551d59a05d4b34ebe868828897158e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_production_v2_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_production_v2_cpu.py",
+    "sha256": "c9b35f54c0e7f246fc881aea0d2357cd54364bcf9c1f49bba358dc1c3d3b8a9d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/submit_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/submit_once.py",
+    "sha256": "332481a27e9e7d73c023519c92d74d5f475b8bb1b3e000390f249f28790673ea"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/attempt_accounting.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/attempt_accounting.py",
+    "sha256": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_partial_raw_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_partial_raw_cpu.py",
+    "sha256": "14c46640165e9bf5e225a6f438f477c059ba0119b54998ca378bcba893717db3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/validation_cost_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/validation_cost_entry.py",
+    "sha256": "f13d3e88dafc7faf7423081ee0985ddb406fc515dcea74c205041e775ba707c8"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_training_cost_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_training_cost_cpu.py",
+    "sha256": "d61be96a3ae38e9a7e9e20c7aef6a81b9f1d6a88caa7be44b09c977c39a7cf0c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/partial_raw_evidence.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/partial_raw_evidence.py",
+    "sha256": "438b42314fff4940d8ae7a0070973154ef52590bfb954b345746b0b5f0ff0f06"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_runtime_contract_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_runtime_contract_cpu.py",
+    "sha256": "0fc80aea7b9e367b1f05a45255826f721946036795282f658e4ddff32ba075ee"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_validation_adapter_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/test_validation_adapter_cpu.py",
+    "sha256": "332c449734bfe866668ffec073e134632a17c7c8481f84227fc2128a3a9ad1b2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/rolling_training_state_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/rolling_training_state_hooks.py",
+    "sha256": "5d42585e9b355ccd2aa85cc1d47160e0ae1a831afa58c5645e24c7cc6363aa85"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_training_state_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/check_training_state_cpu.py",
+    "sha256": "6406d85c0d1470b5196da4f970fa6da20194f6dee74ea22a3221f561694ef236"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/render_dispatch.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/render_dispatch.py",
+    "sha256": "9b2ea59e48dee3d22ece7d9acc165ba582eafbbeea401dd4281f3d0489fbe501"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/resource_guard_retained18.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/resource_guard_retained18.py",
+    "sha256": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/supervisor.py",
+    "sha256": "d679a726b09523b7ad7a6f6b6b12041f33808b6e49d2b615997cfa8fd6de1149"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/calibration_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/calibration_contract.py",
+    "sha256": "c8aef5445f1283f37dfbf23993b43ea7c2ce8cb7ca9d896406324241da1965f0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/run_tree.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/run_tree.sh",
+    "sha256": "8c81c362cc702c1bc5ed0f09cf6c9bd8bf971aab27cac941313d58694f76f56f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/guard_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/guard_entry.py",
+    "sha256": "aa9890b9aeeb5c173832ff0e8f5bd8f323c48ae6a3fa7e6aa7f24fa11fe90af7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/training_cost_hooks.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-v10-6efb604/training_cost_hooks.py",
+    "sha256": "f97e9bf3a84959bac8946e4536ba81cfd51e0de99267efc5be7e3ce6b3fabe1b"
+  }
+]
