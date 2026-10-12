@@ -1,0 +1,152 @@
+{
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "checked_unix": 1791819178.826152,
+  "complete_outers": 120,
+  "opportunities": 2400,
+  "successful_adam": 2393,
+  "skips": 7,
+  "partial_successful_adam": 0,
+  "trainer_birth_verified": true,
+  "trainer": {
+    "pid": 1358996,
+    "birth": 575207394,
+    "state": "S",
+    "birth_matches": true
+  },
+  "reward_latest": 0.4339843690395355,
+  "reward_mode": "binary_em",
+  "dev512": {
+    "step": 100,
+    "count": 512,
+    "correct": 221,
+    "em": 0.431640625,
+    "f1": 0.5117420014880952,
+    "counts": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "receipt_sha256": "1d1aedc84acc09f35fdaf67df9cbe29b53c691321a1982b17df090dca8269763"
+  },
+  "gpu_samples": {
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/gpu-samples-1db662001a0f4d998928bcf6f5f33c9d.jsonl",
+    "exists": true,
+    "malformed_complete_lines": 0,
+    "oversized_lines": 0,
+    "partial_final_line": false,
+    "file_bytes": 100831075,
+    "scan_from_start": false,
+    "scan_start_byte": 67276643,
+    "matching_sample_count": 22956,
+    "identity_or_scalar_rejected_rows": 0,
+    "cumulative_sample_count": null,
+    "first_scanned_sample_unix": 1791770174.7467463,
+    "latest_sample_unix": 1791819178.619145,
+    "latest_sample_age_seconds": 1.236220359802246,
+    "maximum_scanned_sampling_gap_seconds": 2.6220130920410156,
+    "sampled_run_peak_mib": null,
+    "sampled_scanned_peak_mib": {
+      "0": 46041,
+      "1": 46137,
+      "2": 46137,
+      "3": 46541,
+      "5": 20519,
+      "6": 38090
+    },
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only",
+    "training_claimed": true,
+    "pretraining_history_only": false,
+    "sampler": {
+      "pid": 1347580,
+      "start_ticks": 575162271,
+      "birth_matches": true,
+      "state": "S",
+      "alive": true
+    },
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "assignment": "training",
+        "used_mib": 2945,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 1,
+        "assignment": "training",
+        "used_mib": 3041,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 2,
+        "assignment": "training",
+        "used_mib": 3039,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 3,
+        "assignment": "training",
+        "used_mib": 2945,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 5,
+        "assignment": "auxiliary",
+        "used_mib": 17887,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      },
+      {
+        "physical_index": 6,
+        "assignment": "auxiliary",
+        "used_mib": 25397,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": null
+      }
+    ]
+  },
+  "errors": [],
+  "monitor_scope": "one bounded observer plus missing actual PID birth/scalars; no extra training tests or evaluation",
+  "new_complete_window_steps": [
+    117,
+    118,
+    119,
+    120
+  ],
+  "new_complete_window_mean": 0.4239257723093033,
+  "new_complete_window_range": [
+    0.3890624940395355,
+    0.44804686307907104
+  ],
+  "change_from_previous_window_mean": -0.015209970995783806,
+  "new_successful_adam": 80,
+  "new_skips": 0,
+  "stage64": {
+    "step": 5,
+    "correct": 11,
+    "count": 64,
+    "em": 0.171875,
+    "f1": 0.2429738082116004
+  },
+  "cumulative_sampled_peak_mib": {
+    "0": 60433,
+    "1": 60035,
+    "2": 60035,
+    "3": 59939,
+    "5": 28469,
+    "6": 38090
+  },
+  "cumulative_peak_scope": "carried previously verified overlapping sampled windows; current scan is bounded and not full history",
+  "latest_scores_unchanged": true,
+  "probe_implementation_scope": "new isolated source branch; not deployed or launched"
+}
