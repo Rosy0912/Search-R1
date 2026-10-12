@@ -9,6 +9,7 @@ import time
 
 def read_actor(worker, run, source):
     import os
+    import torch
     assert os.environ['SEARCH_R1_BASELINE_RUN_ID']==run
     assert os.environ['SEARCH_R1_BASELINE_COMMIT']==source
     assert worker.world_size==4 and worker._is_rollout
@@ -24,6 +25,12 @@ def read_actor(worker, run, source):
         actor_training_microbatch=worker.config.actor.ppo_micro_batch_size,
         baseline_optimizer_calls=worker.actor._fresh_total_committed_optimizer_calls,
         scheduler_step=worker.actor_lr_scheduler.last_epoch,
+        cuda_allocated_bytes=torch.cuda.memory_allocated(),
+        cuda_reserved_bytes=torch.cuda.memory_reserved(),
+        cuda_recorded_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+        cuda_recorded_peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+        cuda_oom_count=torch.cuda.memory_stats().get('num_ooms'),
+        cuda_peak_scope='Existing allocator counters since their last reset; this probe does not reset counters or allocate tensors.',
         detokenizer_length_cache_enabled=os.environ.get('RECURSIVE_B_CACHE_DETOKENIZER_LENGTH')=='1')
 
 
