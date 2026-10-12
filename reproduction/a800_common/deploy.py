@@ -84,6 +84,7 @@ try:
     first=archive.next();assert first is not None and first.name=='deployment-intent.json' and first.isfile()
     intent=json.load(archive.extractfile(first))
     assert intent['role']=='fresh_a800_common_deployment_intent' and intent['host']=='baai-a800'
+    assert intent.get('reward_schedule')!='g1_through100_then_binary', 'Actor probes require remote-only reviewed preparation, never this fresh execute entry'
     assert re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
     assert re.fullmatch('[0-9a-f]{40}',intent['source_commit'])
     base=Path(intent['base'])
@@ -235,8 +236,15 @@ def digest(path):
         for part in iter(lambda:f.read(1024*1024),b''):h.update(part)
     return h.hexdigest()
 def write_once(path,value):
-    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
-    with os.fdopen(fd,'w') as f:json.dump(value,f);f.flush();os.fsync(f.fileno())
+    # Publish only a complete durable JSON file. The Popen child may inspect
+    # its receipt immediately; direct creation of the final name exposes an
+    # empty/partial document before this supervisor finishes writing.
+    temp=path.with_name('.'+path.name+'.'+str(os.getpid())+'.'+str(time.time_ns())+'.tmp')
+    fd=os.open(temp,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    try:
+        with os.fdopen(fd,'w') as f:json.dump(value,f,allow_nan=False);f.flush();os.fsync(f.fileno())
+        os.link(temp,path,follow_symlinks=False)  # Exclusive publication, no overwrite.
+    finally:temp.unlink()
     fd=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY)
     try:os.fsync(fd)
     finally:os.close(fd)
@@ -268,6 +276,10 @@ from reproduction.common8.formal_inline_safety import verify_method
 from reproduction.common8.formal_contract import assert_formal_run
 assert_formal_run(run)
 verify_method(method,run)
+from search_g1.actor_probe_contract import actor_probes
+if actor_probes(run):
+    from reproduction.a800_common.actor_probe_production_review import verify_before_popen
+    verify_before_popen(base,run)
 original=None;retry_provenance={}
 if preclaim_retry:
     for name in ('logs/preclaim-retry-claim.json','logs/deployment-retry-receipt.json','logs/deployment-preclaim-retry.log',
@@ -611,6 +623,7 @@ def published_source(repo, commit):
 
 
 def create_intent(args):
+    assert args.reward_schedule!='g1_through100_then_binary', 'Use deploy_actor_probes; the legacy constructor reads local QA and is not an actor-probe preparation'
     assert args.source_commit is not None and re.fullmatch('[0-9a-f]{40}', args.source_commit)
     repo = Path(__file__).resolve().parents[2]
     shared = args.shared_data.resolve(); official = args.official_manifest.resolve(); method = args.method.resolve()
@@ -676,6 +689,9 @@ def perform(args):
     assert intent['role'] == 'fresh_a800_common_deployment_intent' and intent['host'] == 'baai-a800'
     assert re.fullmatch('[0-9a-f]{32}', intent['deployment_id']) and re.fullmatch('[0-9a-f]{40}', intent['source_commit'])
     assert intent['base'] == '/data/shaoshitong/Search-G1-a800-fresh200-' + intent['deployment_id']
+    if intent.get('reward_schedule')=='g1_through100_then_binary':
+        assert not (args.execute or args.launch_prepared or args.retry_unclaimed), \
+            'Actor probes require deploy_actor_probes prepare/review/launch; legacy mutations are forbidden'
     if args.execute:
         # An exclusive claim precedes even the SSH attempt. A timeout or lost
         # receipt cannot make a later invocation launch a duplicate process.

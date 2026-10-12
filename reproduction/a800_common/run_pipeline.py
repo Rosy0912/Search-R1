@@ -160,6 +160,10 @@ def launch(base,run):
         'A bound full-state recovery requires its separate chain-aware launcher; fresh0 cannot impersonate resume'
     assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
     assert os.environ.get('CUDA_VISIBLE_DEVICES')=='0,1,2,3'
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        from reproduction.a800_common.actor_probe_production_review import verify
+        verify(base,run,pipeline_entry=True)
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):
         (base/name).mkdir(parents=True,exist_ok=True)
     lock=(base/'gpu-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

@@ -84,6 +84,33 @@ Hydra-generated run YAML/logging lives under the remote namespace's
 break its exact runtime source map. Local artifacts remain code/config/docs and
 small scalar/hash audits; model/state/environment/raw outputs stay remote.
 
+## Remote preparation, independent review and one launch
+
+Use `a800_common.deploy_actor_probes` with a persisted small deployment handle.
+After the exact predecessor's real acceptance and owned cleanup, derive that
+handle from its existing input hash metadata and the exact latest published
+source-only staging receipt. The predecessor's real200/final/canonical receipts
+and process births are checked remotely before creating the new namespace.
+Copy the eight original data/official/method files only within A800; clone the
+verified pinned source there. No local QA, model or environment copy is required.
+
+`--prepare` performs CPU input/source/official-weight-file/configuration/space
+verification and writes a prepared deployment receipt. It does not fit Heads,
+allocate GPU, start services or a trainer, or claim native algorithm acceptance.
+`--inspect-prepared` returns actual small metadata for a no-parent-context
+sub-agent source and actual deployment review. Record that genuine review with
+the prepared receipt SHA and exact run/execution/source identity; the production
+entry has no automatic accepted-review writer.
+
+Only then use `--launch`. The remote wrapper rechecks the real reviewed bytes,
+configuration, model/input identity and reserved disk receipt before the existing
+exclusive Popen claim. The fresh pipeline repeats admission before its GPU lock
+and native allocation. Separate exclusive local prepare/launch claims survive an
+SSH timeout: inspect the same handle; never retry the uncertain mutation.
+The existing after50 predecessor does not use these opt-in fresh actor-probe
+gates. Native actor RPC, gradient/RNG isolation and first-five acceptance still
+must run in the new same-process training chain after launch.
+
 ## Checkpoints and fault recovery
 
 Save5/50/100/150/200 canonical actor weights plus four rank-local full Adam,
