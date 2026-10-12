@@ -86,6 +86,11 @@ def worker_type():
                 peak_allocated_bytes=torch.cuda.max_memory_allocated(),
                 peak_reserved_bytes=torch.cuda.max_memory_reserved(),
                 cuda_scope='current-stream events; forward/backward stages may be nested; do not sum nested stages')
+
+        @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
+        def generate_sequences(self, prompts):
+            with stage('native_generation_call'):
+                return super().generate_sequences(prompts)
     return ProfileWorker
 
 def run_driver(config):
@@ -134,6 +139,22 @@ def run_driver(config):
         max_turns=4,max_start_length=2048,max_prompt_length=4096,max_response_length=500,
         max_obs_length=500,num_gpus=4,no_think_rl=config.algorithm.no_think_rl,
         search_url=config.retriever.url,topk=config.retriever.topk,force_final_answer=False))
+    import requests
+    original_request=requests.sessions.Session.request
+    def request(session,method,url,*args,**kwargs):
+        if url!=config.retriever.url:
+            return original_request(session,method,url,*args,**kwargs)
+        body=kwargs.get('json',{})
+        emit('retrieval_request_shape',queries=len(body.get('queries',[])))
+        with stage('retrieval_http'):
+            return original_request(session,method,url,*args,**kwargs)
+    requests.sessions.Session.request=request
+    from search_r1.baselines.rollout import SearchRollout
+    original_compose=SearchRollout.compose
+    def compose(engine,*args,**kwargs):
+        with stage('compose_training_tensors'):
+            return original_compose(engine,*args,**kwargs)
+    SearchRollout.compose=compose
     metrics={}; manager.timing_raw={}; started=time.perf_counter()
     batch=batch.repeat(repeat_times=config.actor_rollout_ref.rollout.n_agent,interleave=True)
     gen=batch.pop(batch_keys=['input_ids','attention_mask','position_ids'])
