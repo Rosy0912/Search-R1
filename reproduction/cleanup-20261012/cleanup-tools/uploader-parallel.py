@@ -115,7 +115,7 @@ class ParallelRemoteFile(io.BufferedIOBase):
     BLOCK=8*1024*1024
     LANES=4
     def __init__(self,record):
-        self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0;self.source_opens=0
+        self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0;self.source_opens=0;self.high_water=0;self.total_read_bytes=0
     def readable(self):return True
     def seekable(self):return True
     def tell(self):return self.position
@@ -171,7 +171,7 @@ class ParallelRemoteFile(io.BufferedIOBase):
             if remaining>self.BLOCK:raise ValueError('Unbounded source read forbidden')
             size=remaining
         if size>64*1024*1024:raise ValueError('Read exceeds 64MiB response bound')
-        size=min(size,remaining);parts=[]
+        size=min(size,remaining);requested=size;parts=[]
         if self.executor and self.position//self.BLOCK not in self.futures:self.stop_stream()
         if not self.executor:self._start()
         while size:
@@ -182,8 +182,9 @@ class ParallelRemoteFile(io.BufferedIOBase):
             if off+n==len(data):
                 del self.futures[key];nextkey=key+self.LANES;nextoffset=nextkey*self.BLOCK
                 if nextoffset<self.record['archive_bytes']:self.futures[nextkey]=(p,self.executor.submit(p.stdout.read,min(self.BLOCK,self.record['archive_bytes']-nextoffset)))
+        self.high_water=max(self.high_water,self.position);self.total_read_bytes+=requested
         if time.time()-self.last_progress>=2 or self.position==self.record['archive_bytes']:
-            p=ROOT/('progress-'+hashlib.sha256(self.record['repo_path'].encode()).hexdigest()[:16]+'.json'); tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps({'epoch':time.time(),'file':self.record['repo_path'],'read_position':self.position,'size':self.record['archive_bytes'],'lanes':self.LANES,'bounded_cache_bytes':self.BLOCK*self.LANES,'max_read_requested':self.max_read_requested,'source_opens':self.source_opens}));tmp.replace(p)
+            p=ROOT/('progress-'+hashlib.sha256(self.record['repo_path'].encode()).hexdigest()[:16]+'.json'); tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps({'epoch':time.time(),'file':self.record['repo_path'],'read_position':self.position,'size':self.record['archive_bytes'],'lanes':self.LANES,'bounded_cache_bytes':self.BLOCK*self.LANES,'max_read_requested':self.max_read_requested,'source_opens':self.source_opens,'high_water':self.high_water,'total_read_bytes':self.total_read_bytes,'attempt':self.record.get('_attempt',0)}));tmp.replace(p)
             self.last_progress=time.time()
         return b''.join(parts)
     def close(self):
@@ -218,14 +219,17 @@ def main():
         if receipt.exists():
             old=json.loads(receipt.read_text());assert old['archive_sha256']==r['archive_sha256'];verify(a,plan,r,token,'main');mark(n,old);return
         for attempt in range(3):
-            stream=ParallelRemoteFile(r) if r['archive_bytes']>16*1048576 else RemoteFile(r)
+            stream=ParallelRemoteFile(dict(r,_attempt=attempt)) if r['archive_bytes']>16*1048576 else RemoteFile(r)
             try:
                 sample=stream.read(min(512,r['archive_bytes']));stream.seek(0);op=CommitOperationAdd(path_in_repo=r['repo_path'],path_or_fileobj=sample);op.path_or_fileobj=stream;op.upload_info=UploadInfo(size=r['archive_bytes'],sha256=bytes.fromhex(r['archive_sha256']),sample=sample)
                 commit=a.create_commit(plan['repo'],operations=[op],commit_message='H100 cleanup bounded RAM backup '+r['group']);verify(a,plan,r,token,commit.oid)
                 item=dict(r,status='HF_OFFICIAL_SHA_VERIFIED',commit=commit.oid,epoch=time.time());write_json(receipt,item);mark(n,item);print(json.dumps({'status':item['status'],'path':r['repo_path'],'bytes':r['archive_bytes']}),flush=True);return
             except Exception as e:
                 import re,traceback
-                diagnostic={'message':re.sub(r'https?://\S+|hf_[A-Za-z0-9]+|Bearer\s+\S+','[redacted]',str(e))[:300],'frames':[{'file':pathlib.Path(f.filename).name,'line':f.lineno,'func':f.name} for f in traceback.extract_tb(e.__traceback__)]}
+                chain=[];cause=e
+                while cause and len(chain)<6:
+                    chain.append({'type':type(cause).__name__,'message':re.sub(r'https?://\S+|hf_[A-Za-z0-9]+|Bearer\s+\S+','[redacted]',str(cause))[:400],'frames':[{'file':pathlib.Path(f.filename).name,'line':f.lineno,'func':f.name} for f in traceback.extract_tb(cause.__traceback__)]});cause=cause.__cause__
+                diagnostic={'chain':chain,'message':re.sub(r'https?://\S+|hf_[A-Za-z0-9]+|Bearer\s+\S+','[redacted]',str(e))[:300],'frames':[{'file':pathlib.Path(f.filename).name,'line':f.lineno,'func':f.name} for f in traceback.extract_tb(e.__traceback__)]}
                 write_json(ROOT/('file-%04d-error.json'%n),{'epoch':time.time(),'type':type(e).__name__,'attempt':attempt,'path':r['repo_path'],'diagnostic':diagnostic})
                 print(json.dumps({'status':'UPLOAD_ERROR','type':type(e).__name__,'attempt':attempt,'path':r['repo_path'],'diagnostic':diagnostic}),flush=True)
                 if attempt==2:raise RuntimeError('Bounded retries exhausted: '+type(e).__name__) from None
