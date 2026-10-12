@@ -292,9 +292,10 @@ def accept_five_updates(checkpoint, records):
     if actor_probes(run):
         from reproduction.common8.actor_probe_evidence import verify_actor_readouts
         actor_readout_proof = verify_actor_readouts(base, run, actual)
-        from reproduction.common8.actor_probe_checkpoint import verify_full_state
+        from reproduction.common8.actor_probe_checkpoint import verify_full_state, verify_roundtrip_receipt
         state = verify_full_state(base, run, 5, load_optimizer=True)
         assert state['completed_outer'] == 5 and state['identity']['run_id'] == run['run_id']
+        verify_roundtrip_receipt(base, run, state)
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
     behavior_gates = {str(r['step']): read_gate_receipt(base, run, r['step'], update_record=r) for r in actual}
     verify_write_receipt_links(base, behavior_gates, 1, 5)

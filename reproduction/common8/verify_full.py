@@ -177,9 +177,10 @@ def verify_full(base):
     if actor_probes(run):
         from reproduction.common8.actor_probe_evidence import verify_actor_readouts
         verify_actor_readouts(base, run, records)
-        from reproduction.common8.actor_probe_checkpoint import verify_full_state
+        from reproduction.common8.actor_probe_checkpoint import verify_full_state, verify_roundtrip_receipt
         for step in SAVE_STEPS:
             checkpoint_state = verify_full_state(base, run, step, load_optimizer=True)
+            if step == 5: verify_roundtrip_receipt(base, run, checkpoint_state)
             next_record = records[min(step, 199)]
             assert checkpoint_state['probe_version'] == next_record['probe_version']
         for step in range(10, 200, 10):

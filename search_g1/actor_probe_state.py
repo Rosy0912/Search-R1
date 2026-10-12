@@ -108,3 +108,50 @@ def worker_payload(worker, run, completed_outer):
         rollout_rng=dict(training=worker.rollout_sharding_manager.torch_random_states,
                          generation=worker.rollout_sharding_manager.gen_random_states),
         rng=rng_state())
+
+
+def restore_worker_payload(worker, run, payload):
+    """Restore a validated rank state; model weights must be bound separately.
+
+    This is also used by the first-five same-process load verification. A
+    cross-namespace resume needs an explicit parent binding before calling it.
+    """
+    import torch
+    from reproduction.common8.scheduler import expected_lr
+    identity = {key: run[key] for key in ('run_id', 'execution_id', 'source_commit',
+        'execution_backend', 'training_world_size', 'profile', 'slurm_job_id')}
+    assert payload['identity'] == identity and payload['rank'] == worker.rank
+    assert payload['role'] == 'actor_probe_full_worker_state'
+    assert payload['torch_version'] == torch.__version__, 'Optimizer shard runtime changed'
+    layout = [dict(name=name, shape=list(p.shape), dtype=str(p.dtype))
+              for name, p in worker.actor_module_fsdp.named_parameters()]
+    assert layout == payload['flat_parameter_layout'], 'FSDP flat optimizer layout differs'
+    outer = payload['outer_accounting']; completed = payload['completed_outer']
+    assert type(completed) is int and 1 <= completed <= 200
+    assert outer['completed_outer'] == completed and outer['pending'] is None
+    assert outer['prepared'] is None and outer['rejected'] is False
+    assert outer['actual_writes'] == payload['optimizer_writes'] > 0
+    assert outer['last_attempt_index'] >= completed
+    assert len(set(outer['used_attempt_ids'])) == outer['last_attempt_index']
+    assert payload['scheduler']['last_epoch'] == completed
+    assert payload['scheduler']['_step_count'] == completed + 1
+    assert all(group['lr'] == expected_lr(completed) for group in payload['optimizer']['param_groups'])
+    assert payload['optimizer']['state']
+    for values in payload['optimizer']['state'].values():
+        assert int(values['step']) == payload['optimizer_writes']
+        for value in values.values():
+            if isinstance(value, torch.Tensor): assert torch.isfinite(value).all()
+    assert payload['rng']['torch_cpu'].dtype == torch.uint8
+    for key in ('training', 'generation'):
+        assert payload['rollout_rng'][key].dtype == torch.uint8
+    evidence = worker._outer_scheduler_evidence
+    assert evidence.pending is None and evidence.prepared is None and not evidence.rejected
+    worker.actor_optimizer.load_state_dict(payload['optimizer'])
+    worker.actor_lr_scheduler.load_state_dict(payload['scheduler'])
+    worker.actor._optimizer_writes = payload['optimizer_writes']
+    for key in ('actual_writes', 'last_attempt_index', 'completed_outer'):
+        setattr(evidence, key, outer[key])
+    evidence.used_attempt_ids = set(outer['used_attempt_ids'])
+    worker.rollout_sharding_manager.torch_random_states = payload['rollout_rng']['training'].clone()
+    worker.rollout_sharding_manager.gen_random_states = payload['rollout_rng']['generation'].clone()
+    restore_rng(payload['rng'])

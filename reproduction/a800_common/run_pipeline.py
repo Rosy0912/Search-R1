@@ -153,6 +153,8 @@ def launch(base,run):
     assert not (base/'logs/process-ledger.json').exists(), 'Inspect/clean this attempt; never duplicate launch'
     assert not (base/'logs/pipeline-launch-claim.json').exists(), 'Fresh local execution has already been claimed'
     for name,sha in run['source_sha256'].items():assert digest(base/'repo'/name)==sha
+    from reproduction.a800_common.predecessor_admission import admit as admit_predecessor
+    predecessor = admit_predecessor(base, run)
     for port in (18010,18012):
         with socket.socket() as sock:sock.bind(('127.0.0.1',port))
     from reproduction.common8.native_allocation import admit
@@ -169,6 +171,9 @@ def launch(base,run):
     fd=os.open(base/'logs',os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
     try:os.fsync(fd)
     finally:os.close(fd)
+    if predecessor is not None:
+        from reproduction.common8.calibration_runtime import write_once
+        write_once(base/'logs/predecessor-completion-admission.json', predecessor)
     run['pipeline_identity']=allocation['pipeline_identity'];publish(base/'logs/run-manifest.json',run)
     from reproduction.common8.disk_admission import admit as admit_disk
     admit_disk(base)

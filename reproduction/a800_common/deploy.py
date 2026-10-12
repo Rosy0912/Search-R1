@@ -185,6 +185,8 @@ try:
         prepare.extend(['--initial-probes-source-base',intent['initial_probes_source_base']])
     if intent.get('reward_schedule') is not None:
         prepare.extend(['--reward-schedule',intent['reward_schedule']])
+    if intent.get('predecessor_completion') is not None:
+        prepare.extend(['--predecessor-binding-json',json.dumps(intent['predecessor_completion'])])
     assert command(prepare,'prepare-run',600,environment)==0
     run=json.loads((base/'logs/run-manifest.json').read_text());verify_method(method,run)
     environment['RAY_TMPDIR']=run['ray_tmp_dir']
@@ -250,6 +252,7 @@ run=read('logs/run-manifest.json');method=read('preparation/formal-inline-method
 sys.path.insert(0,str(repo))
 assert run['source_commit']==intent['source_commit'] and run['source_sha256']==intent['source_sha256']
 assert run.get('reward_schedule')==intent.get('reward_schedule'), 'Deployment reward schedule differs'
+assert run.get('predecessor_completion')==intent.get('predecessor_completion'), 'Deployment predecessor differs'
 if intent.get('reward_schedule') is not None:
  from search_g1.reward_schedule import reward_boundary
  assert run['reward_schedule_boundary']==reward_boundary(intent['reward_schedule'])
@@ -636,6 +639,14 @@ def create_intent(args):
         execution_policy='one explicit execution; inspect the same handle after failure or uncertainty; no automatic retry')
     if args.reward_schedule is not None:
         value['reward_schedule']=args.reward_schedule
+    from search_g1.reward_schedule import ACTOR_PROBE_SCHEDULE
+    if args.reward_schedule == ACTOR_PROBE_SCHEDULE:
+        from reproduction.a800_common.predecessor_admission import validate_binding
+        assert args.predecessor_binding is not None, 'Accepted predecessor binding is required for actor probes'
+        value['predecessor_completion'] = validate_binding(json.loads(args.predecessor_binding.read_text()))
+        assert args.initial_probes_source_base is None
+    else:
+        assert args.predecessor_binding is None
     if args.initial_probes_source_base is not None:
         source_base=args.initial_probes_source_base
         assert re.fullmatch('/data/shaoshitong/Search-G1-a800-fresh200-[0-9a-f]{32}',source_base)
@@ -731,10 +742,11 @@ def main():
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--initial-probes-source-base')
     parser.add_argument('--reward-schedule', choices=['g1_through50_then_binary','g1_through100_then_binary'])
+    parser.add_argument('--predecessor-binding', type=Path)
     parser.add_argument('--reuse-published-bundle', action='store_true')
     args = parser.parse_args()
     if args.execute or args.observe or args.launch_prepared or args.retry_unclaimed:
-        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and args.reward_schedule is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
+        assert args.source_commit is None and args.bundle is None and args.initial_probes_source_base is None and args.reward_schedule is None and args.predecessor_binding is None and not args.reuse_published_bundle, 'Use the persisted intent without replacement inputs'
         return perform(args)
     create_intent(args)
     return 0

@@ -6,6 +6,15 @@ after50 reward schedule remain unchanged. Admission for this experiment requires
 that predecessor training, final evaluation, checkpoint acceptance and owned
 cleanup have completed, followed by resource and source verification.
 
+The persisted deployment intent must include the accepted predecessor's base,
+run/execution/source identity and full-acceptance/cleanup receipt hashes.
+Admission pins the specific human-authorized predecessor, checks all200 actual
+complete update records, final seven-source/NQ3610 counts, milestone receipts,
+preserved source, recorded process births and surviving owned sessions. Another
+already-finished experiment cannot substitute for this predecessor. If it needs
+recovery, the successor gate requires an explicitly verified recovery-chain
+extension rather than accepting a self-selected different parent.
+
 On 2026-10-12 the user clarified that “independent LLM Head” means the existing
 two binary probes, not a vocabulary projection. Preserve the answer-state
 evidence-deletion sensitivity target and prompt-state closed-book target, their
@@ -82,6 +91,18 @@ fresh official weights, Adam, scheduler, RNG and sampler. Resume is a separate
 identity/namespace bound to a validated parent and original logical200 chain.
 If full state is unavailable, report weights-only state loss and lost unsaved
 updates explicitly; do not count them twice or restart as fresh0.
+
+Implemented: at first-five acceptance, deserialize and reload the actual saved
+rank-local Adam/scheduler/counters plus training and rollout RNG, with before/after
+state digests and unchanged parameters/gradients/reference; reload the saved
+driver sampler/counters/reward/RNG in the same process without creating an
+iterator. For a future new-process recovery, a replacement DataLoader iterator
+must undo its extra base-seed draw, finish the saved epoch (even when exhausted),
+then enter the next shuffled epoch normally. CPU tests cover persisted state
+restoration after deliberate state perturbation, sampler tail, next-epoch order
+and driver RNG. Cross-namespace canonical model loading and the complete
+production resume entry remain pending; a same-process roundtrip is not proof
+that this separate entry is available. Actual A800 execution remains untested.
 
 ## Required evidence before launch
 

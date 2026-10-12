@@ -10,9 +10,12 @@ class RecordedRandomSampler(Sampler):
         self.permutation = None
         self.cursor = 0
         self.epoch = -1
+        self._resume_existing_epoch = False
 
     def __iter__(self):
-        if self.permutation is None or self.cursor == len(self.permutation):
+        resume = self._resume_existing_epoch
+        self._resume_existing_epoch = False
+        if self.permutation is None or (self.cursor == len(self.permutation) and not resume):
             # Delegate to the existing torch sampler rather than inventing a
             # different question order. DataLoader has already consumed its seed.
             self.permutation = list(RandomSampler(self.dataset))
@@ -31,10 +34,28 @@ class RecordedRandomSampler(Sampler):
         return dict(permutation=self.permutation[:], cursor=self.cursor, epoch=self.epoch,
                     dataset_size=len(self.dataset), semantics='actual yielded positions including abandoned attempts')
 
-    def load_state_dict(self, state):
+    def load_state_dict(self, state, *, resume_existing_epoch=False):
         permutation = state['permutation']
-        if state['dataset_size'] != len(self.dataset) or sorted(permutation) != list(range(len(self.dataset))):
+        if (state['dataset_size'] != len(self.dataset) or
+                any(type(value) is not int for value in permutation) or
+                sorted(permutation) != list(range(len(self.dataset)))):
             raise ValueError('Restored sampler question domain differs')
         if type(state['cursor']) is not int or not 0 <= state['cursor'] <= len(permutation):
             raise ValueError('Invalid restored sampler cursor')
+        if type(state['epoch']) is not int or state['epoch'] < 0:
+            raise ValueError('Invalid restored sampler epoch')
         self.permutation = permutation[:]; self.cursor = state['cursor']; self.epoch = state['epoch']
+        self._resume_existing_epoch = resume_existing_epoch
+
+
+def restored_iterator(loader, sampler_state, driver_rng):
+    """Finish the saved epoch without consuming another DataLoader base seed."""
+    from search_g1.actor_probe_state import restore_rng
+    if loader.num_workers != 0 or not isinstance(loader.sampler, RecordedRandomSampler):
+        raise ValueError('Exact iterator restore requires the admitted synchronous sampler')
+    loader.sampler.load_state_dict(sampler_state, resume_existing_epoch=True)
+    iterator = iter(loader)
+    # A replacement iterator consumes a base seed, even with no loader workers.
+    # Undo just that extra consumption before the saved permutation is resumed.
+    restore_rng(driver_rng)
+    return iterator

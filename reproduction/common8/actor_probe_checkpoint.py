@@ -10,6 +10,21 @@ from search_g1.actor_probe_contract import actor_probes, head_round
 from search_g1.actor_probe_state import durable_torch_save, rng_state
 
 
+def driver_payload(trainer, run, attempts, epoch, batch_index, live):
+    identity = {k: run[k] for k in ('run_id','execution_id','source_commit','execution_backend',
+                                  'training_world_size','profile','slurm_job_id')}
+    return dict(schema_version=1, role='actor_probe_full_driver_state',
+        identity=identity, completed_outer=trainer.global_steps, epoch=epoch,
+        consumed_batch_index=batch_index, next_logical_update=trainer.global_steps + 1,
+        sampler=trainer.train_dataloader.sampler.state_dict(),
+        attempt_progress=dict(world_size=attempts.world_size, completed_outer=attempts.completed_outer,
+            cumulative_writes=attempts.cumulative_writes, attempt_index=attempts.attempt_index,
+            aborted_attempts=attempts.aborted_attempts, pending=None),
+        probe_version=live['version'], probe_actor_step=live['actor_step'],
+        reward_state={k: getattr(trainer.reward_fn, k) for k in ('alpha', 'ema_em', 'ema_trust', '_init', '_calls')},
+        rng=rng_state())
+
+
 def save_full_state(trainer, run, attempts, epoch, batch_index):
     assert actor_probes(run)
     base = Path(os.environ['SEARCH_G1_BASE'])
@@ -49,15 +64,7 @@ def save_full_state(trainer, run, attempts, epoch, batch_index):
         with (directory/name).open('rb') as f: os.fsync(f.fileno())
     identity = {k: run[k] for k in ('run_id','execution_id','source_commit','execution_backend',
                                   'training_world_size','profile','slurm_job_id')}
-    reward_keys = ('alpha', 'ema_em', 'ema_trust', '_init', '_calls')
-    driver = durable_torch_save(dict(schema_version=1, role='actor_probe_full_driver_state',
-        identity=identity, completed_outer=step, epoch=epoch, consumed_batch_index=batch_index,
-        next_logical_update=step + 1, sampler=trainer.train_dataloader.sampler.state_dict(),
-        attempt_progress=dict(world_size=attempts.world_size, completed_outer=attempts.completed_outer,
-            cumulative_writes=attempts.cumulative_writes, attempt_index=attempts.attempt_index,
-            aborted_attempts=attempts.aborted_attempts, pending=None),
-        probe_version=live['version'], probe_actor_step=live['actor_step'],
-        reward_state={k: getattr(trainer.reward_fn, k) for k in reward_keys}, rng=rng_state()),
+    driver = durable_torch_save(driver_payload(trainer, run, attempts, epoch, batch_index, live),
         directory/'training-state-driver.pt', base)
     result = dict(schema_version=1, role='actor_probe_full_state_checkpoint', identity=identity,
         completed_outer=step, next_logical_update=step + 1, actual_optimizer_writes=attempts.cumulative_writes,
@@ -72,6 +79,59 @@ def save_full_state(trainer, run, attempts, epoch, batch_index):
     try: os.fsync(fd)
     finally: os.close(fd)
     return result
+
+
+def verify_roundtrip(trainer, run, attempts, epoch, batch_index):
+    """Load the actual persisted state at five without creating a new iterator."""
+    import torch
+    from reproduction.common8.verify_data import digest
+    from search_g1.actor_probe_state import tree_digest, restore_rng
+    base = Path(os.environ['SEARCH_G1_BASE']); step = trainer.global_steps
+    assert actor_probes(run) and step == 5 and attempts.pending is None
+    directory = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
+    receipt = json.loads((directory/'full-state-complete.json').read_text())
+    assert receipt['completed_outer'] == step and receipt['identity']['run_id'] == run['run_id']
+    live = json.loads((base/'artifacts/live/manifest.json').read_text())
+    current = tree_digest(driver_payload(trainer, run, attempts, epoch, batch_index, live))
+    reference_before = trainer.ref_policy_wg.probe_isolation_state()
+    workers = trainer.actor_rollout_wg.verify_probe_training_state_roundtrip(str(directory), step)
+    row = receipt['driver']; path = Path(row['path'])
+    assert path.parent.resolve() == directory.resolve() and digest(path) == row['sha256']
+    payload = torch.load(path, map_location='cpu', weights_only=False)
+    assert tree_digest(payload) == current, 'Persisted driver differs from live training state'
+    trainer.train_dataloader.sampler.load_state_dict(payload['sampler'])
+    for key, value in payload['attempt_progress'].items(): setattr(attempts, key, value)
+    for key, value in payload['reward_state'].items(): setattr(trainer.reward_fn, key, value)
+    restore_rng(payload['rng'])
+    after = tree_digest(driver_payload(trainer, run, attempts, epoch, batch_index, live))
+    assert current == after and reference_before == trainer.ref_policy_wg.probe_isolation_state()
+    target = base/'logs/actor-probe-state-roundtrip-5.json'
+    from reproduction.common8.calibration_runtime import write_once
+    write_once(target, dict(run_id=run['run_id'], execution_id=run['execution_id'],
+        source_commit=run['source_commit'], completed_outer=step, accepted=True,
+        full_state_receipt_sha256=digest(directory/'full-state-complete.json'),
+        workers=workers, driver_before_sha256=current, driver_after_sha256=after,
+        reference_unchanged=True, no_new_optimizer_updates=True,
+        scope='same-process persisted optimizer/scheduler/accounting/sampler and training/generation RNG load; canonical actor model separately verified'))
+
+
+def verify_roundtrip_receipt(base, run, state):
+    from reproduction.common8.verify_data import digest
+    directory = Path(run['checkpoint_dir'])/'actor/global_step_5'
+    proof = json.loads((Path(base)/'logs/actor-probe-state-roundtrip-5.json').read_text())
+    assert all(proof[key] == run[key] for key in ('run_id', 'execution_id', 'source_commit'))
+    assert proof['accepted'] is True and proof['completed_outer'] == 5
+    assert proof['reference_unchanged'] is True and proof['no_new_optimizer_updates'] is True
+    assert proof['full_state_receipt_sha256'] == digest(directory/'full-state-complete.json')
+    assert proof['driver_before_sha256'] == proof['driver_after_sha256']
+    assert sorted(row['rank'] for row in proof['workers']) == list(range(run['training_world_size']))
+    states = {row['rank']: row for row in state['workers']}
+    for row in proof['workers']:
+        assert row['before_sha256'] == row['after_sha256']
+        assert row['state_file_sha256'] == states[row['rank']]['sha256']
+        assert row['parameters_and_gradients_unchanged'] is True
+        assert row['optimizer_scheduler_rollout_and_rng_loaded'] is True
+    return proof
 
 
 def record_refresh_isolation(base, step, before, after, version):

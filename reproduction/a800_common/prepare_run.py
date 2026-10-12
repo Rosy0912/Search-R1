@@ -22,8 +22,16 @@ from reproduction.common8.precision_contract import BF16_PROFILE,SAMPLING_JOURNA
 from search_g1.reward_schedule import SCHEDULES, reward_boundary
 
 
-def prepare(base,model,official_path,commit,initial_probes_source_base=None,reward_schedule=None):
+def prepare(base,model,official_path,commit,initial_probes_source_base=None,reward_schedule=None,
+            predecessor_completion=None):
     assert reward_schedule is None or reward_schedule in SCHEDULES, 'Unsupported reward schedule'
+    from search_g1.reward_schedule import ACTOR_PROBE_SCHEDULE
+    if reward_schedule == ACTOR_PROBE_SCHEDULE:
+        from reproduction.a800_common.predecessor_admission import validate_binding
+        predecessor_completion = validate_binding(predecessor_completion)
+        assert initial_probes_source_base is None, 'Actor probes require fresh initial calibration'
+    else:
+        assert predecessor_completion is None, 'Predecessor binding belongs to the new actor-probe experiment'
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
         slurm_job_id=None,execution_id=uuid.uuid4().hex,precision_profile=BF16_PROFILE,
@@ -117,6 +125,7 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None,rewa
         result.update(reward_schedule=reward_schedule,reward_schedule_boundary=reward_boundary(reward_schedule))
     from search_g1.actor_probe_contract import experiment_fields
     result.update(experiment_fields(reward_schedule))
+    if predecessor_completion is not None: result['predecessor_completion'] = predecessor_completion
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:
@@ -132,5 +141,7 @@ if __name__=='__main__':
     p.add_argument('--model',default='/data/search-g1/assets/qwen2.5-3b-instruct')
     p.add_argument('--official-manifest',required=True);p.add_argument('--source-commit',required=True)
     p.add_argument('--initial-probes-source-base')
-    p.add_argument('--reward-schedule',choices=list(SCHEDULES));a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base,a.reward_schedule)))
+    p.add_argument('--reward-schedule',choices=list(SCHEDULES))
+    p.add_argument('--predecessor-binding-json');a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base,
+        a.reward_schedule,json.loads(a.predecessor_binding_json) if a.predecessor_binding_json else None)))

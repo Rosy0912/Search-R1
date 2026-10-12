@@ -534,6 +534,45 @@ class ActorRolloutRefWorker(Worker):
         return dict(rank=self.rank, completed_outer=completed_outer,
                     optimizer_writes=self.actor._optimizer_writes, **receipt)
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def verify_probe_training_state_roundtrip(self, local_path, completed_outer):
+        import json
+        from pathlib import Path
+        from reproduction.common8.verify_data import digest
+        from reproduction.common8.scheduler import collective_call
+        from search_g1.actor_probe_contract import actor_probes
+        from search_g1.actor_probe_state import (worker_payload, restore_worker_payload,
+                                               tree_digest, isolation_state)
+        base = Path(os.environ['SEARCH_G1_BASE']).resolve()
+        run = json.loads((base/'logs/run-manifest.json').read_text())
+        directory = Path(local_path).resolve()
+        assert self._is_actor and actor_probes(run) and completed_outer == 5
+        assert directory.is_relative_to(base)
+        receipt = json.loads((directory/'full-state-complete.json').read_text())
+        row = next(row for row in receipt['workers'] if row['rank'] == self.rank)
+        result = {}
+        def roundtrip():
+            path = directory/f'training-state-rank-{self.rank}.pt'
+            assert str(path) == row['path'] and path.stat().st_size == row['bytes']
+            assert digest(path) == row['sha256']
+            current = tree_digest(worker_payload(self, run, completed_outer))
+            unchanged = isolation_state(self.actor_module_fsdp)
+            payload = torch.load(path, map_location='cpu', weights_only=False)
+            assert tree_digest(payload) == current, 'Checkpoint differs from the actual live worker state'
+            restore_worker_payload(self, run, payload)
+            if self._is_offload_optimizer:
+                offload_fsdp_optimizer(self.actor_optimizer)
+            restored = tree_digest(worker_payload(self, run, completed_outer))
+            assert current == restored and unchanged == isolation_state(self.actor_module_fsdp)
+            self._outer_scheduler_evidence._check_state()
+            result.update(rank=self.rank, before_sha256=current, after_sha256=restored,
+                state_file_sha256=row['sha256'], parameters_and_gradients_unchanged=True,
+                optimizer_scheduler_rollout_and_rng_loaded=True)
+            return dict(completed_outer=completed_outer, optimizer_writes=self.actor._optimizer_writes,
+                        accepted=True)
+        collective_call(roundtrip, stage='actor_probe_worker_persisted_state_roundtrip')
+        return result
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_probe_features(self, data: DataProto) -> DataProto:
         """Synchronous detached readout of this actor, never of a teacher snapshot."""

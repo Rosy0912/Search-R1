@@ -1053,8 +1053,9 @@ class RayPPOTrainer(object):
                         if active_run() is not None:evaluate_development(self)
                     from reproduction.profile import accept_five_updates
                     if actor_probe_run is not None:
-                        from reproduction.common8.actor_probe_checkpoint import save_full_state
+                        from reproduction.common8.actor_probe_checkpoint import save_full_state, verify_roundtrip
                         save_full_state(self, actor_probe_run, inline_attempts, epoch, consumed_batch_index)
+                        verify_roundtrip(self, actor_probe_run, inline_attempts, epoch, consumed_batch_index)
                     accept_five_updates(checkpoint, five_update_records)
                 from search_g1.actor_probe_contract import probe_rounds
                 refresh_steps = (probe_rounds(actor_probe_run) if actor_probe_run is not None
