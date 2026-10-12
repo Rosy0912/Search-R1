@@ -1,0 +1,1 @@
+{"status": "DIAGNOSTIC_MULTIPART_HF_SHA_PASS", "commit": "fb3b9b94a32d81b0fbd071d01f34f838d6f53f9a", "bytes": 256123456, "elapsed": 115.99683594703674, "source_opens": 4, "protocol": [{"method": "multipart", "chunk_size": 16000000, "parts": 17}]}
