@@ -157,6 +157,21 @@ issue. This still requires a nonempty scored prefix and a retained update in
 the namespace; immediate failed recovery branches and partial rank-local tails
 need separate preserved evidence, not invented retained segments.
 
+The new read-only rank-tail component reads stable owned newline-terminated
+driver, rank-worker and scheduler logs without writing to the run. It derives
+the last durable driver return and retains an unreturned opportunity prefix on
+each rank. Recorded Adam write positions are lower-bound evidence; coalesce
+matching four-rank receipts once and never count a new complete outer without
+the actual driver return, even if all four scheduler COMPLETE rows exist.
+Keep trailing fragment bytes/hash and both bound and unbound fatal scheduler
+snapshots/REJECTED rows for fault review. Historical scheduler births/source-map bindings are checked;
+actual process exit, source-file bytes, complete monitor/probability proof,
+canonical/RNG/Head acceptance and restore launch remain independent gates.
+Fifteen focused scalar tail/counter tests pass. Independent static review found
+and then confirmed repair of a bound-fatal fault flag omission. This component still requires
+the namespace's scored/retained prefix; failed zero-progress branches remain a
+separate pending case, and production chain integration has not been exercised.
+
 The driver recovery path is now connected to the training loop behind an
 explicit separate launch-admission receipt. Before actor loading it validates
 the saved driver sampler/RNG, Head bytes and exact saved write/attempt origin.
