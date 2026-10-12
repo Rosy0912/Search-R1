@@ -212,6 +212,7 @@ def main():
     config=OmegaConf.load(a.config)
     config.data.train_batch_size=16;config.data.shuffle_train_dataloader=False
     config.trainer.n_gpus_per_node=4;config.trainer.total_training_steps=1
+    config.trainer.actual_update_limit=None
     config.trainer.training_state_enabled=False;config.trainer.val_before_train=False
     config.trainer.default_local_dir=str(output/'checkpoint')
     config.actor_rollout_ref.actor.training_state_enabled=False
