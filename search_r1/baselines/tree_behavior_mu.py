@@ -214,7 +214,8 @@ def compose_behavior_mu_rows(states, projections, *, response_width, expected_pr
         tensor[row, :len(values)] = torch.tensor(values, dtype=torch.float32)
         binding = dict(protocol=PROTOCOL, raw_projection_sha256=projection['binding_sha256'],
             runtime_provenance=copy.deepcopy(expected), tree_uid=state.tree, trajectory_uid=state.trajectory,
-            source_index=state.source, response_width=response_width, action_receipts=actions,
+            source_index=state.source, response_width=response_width,
+            action_receipts=copy.deepcopy(actions),
             sampled_row_fp32_sha256=fingerprint([scalar32(x) for x in tensor[row].tolist()]))
         binding['binding_sha256'] = fingerprint(binding)
         bindings.append(binding)

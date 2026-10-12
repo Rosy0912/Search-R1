@@ -26,6 +26,15 @@ class ProofCache(unittest.TestCase):
   self.assertEqual(cache.misses,2);self.assertEqual(cache.hits,4)
   bad=copy.deepcopy(cached);bad.batch['sampled_old_log_probs'][0,-1]=1
   with self.assertRaises(ValueError):validate_behavior_mu_batch(bad,expected_provenance=expected,proof_cache=cache)
+ def test_resealed_receipt_cannot_mutate_cached_native_proof(self):
+  from search_r1.baselines.tree_behavior_mu import FIELD
+  cache=BehaviorMuProofCache();self.f.engine.behavior_mu_proof_cache=cache
+  data=self.f.output()
+  binding=data.non_tensor_batch[FIELD][0]
+  binding['action_receipts'][0]['sample_id']='mutated-after-compose'
+  binding['binding_sha256']=raw.fingerprint({k:v for k,v in binding.items() if k!='binding_sha256'})
+  with self.assertRaisesRegex(ValueError,'Sampled action/context/identity binding changed'):
+   validate_behavior_mu_batch(data,expected_provenance=runtime_provenance(os.environ),proof_cache=cache)
  def test_repeat_and_permutation_keep_tensor_mu_mask_checks(self):
   data=self.f.output([self.f.state(),self.f.state(call='second')]);cache=BehaviorMuProofCache()
   expected=runtime_provenance(os.environ)
