@@ -1,6 +1,6 @@
 """Open one task-scoped management SSH connection; never modify global SSH."""
 import json,pathlib,subprocess,tempfile,time,sys
-root=pathlib.Path(tempfile.mkdtemp(prefix='rba-h100-management-'));root.chmod(0o700);socket=root/'control.sock';attempts=[]
+root=pathlib.Path(tempfile.mkdtemp(prefix='rba-',dir='/tmp'));root.chmod(0o700);socket=root/'control.sock';attempts=[]
 for index in range(20):
  args=['ssh','-M','-N','-f','-S',str(socket),'-oControlMaster=yes','-oControlPersist=3600','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oProxyCommand=none','-oProxyJump=none','-oBatchMode=yes','-oConnectTimeout=8','mgmt-host']
  try:
