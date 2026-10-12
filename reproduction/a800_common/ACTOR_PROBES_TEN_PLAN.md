@@ -146,6 +146,17 @@ full-acceptance flag: independent rank/scheduler/source/checkpoint/Head binding,
 rank-local incomplete tails and the complete final/cleanup audit are separate
 mandatory evidence, and production recovery integration remains pending.
 
+The counter audit also handles an exit after the durable all-rank driver return
+but before its reward/scalar row is written. Only the final complete attempt may
+have this missing scalar, and it must lie beyond the retained checkpoint. Keep
+its original attempt as an explicit unscored discarded tail and count its lost
+Adam writes; never synthesize reward or inherit those writes. Interior scalar
+holes, multiple unscored completions and altered summaries fail the audit. Nine
+focused scalar tests pass, and independent static review found no definite new
+issue. This still requires a nonempty scored prefix and a retained update in
+the namespace; immediate failed recovery branches and partial rank-local tails
+need separate preserved evidence, not invented retained segments.
+
 The driver recovery path is now connected to the training loop behind an
 explicit separate launch-admission receipt. Before actor loading it validates
 the saved driver sampler/RNG, Head bytes and exact saved write/attempt origin.

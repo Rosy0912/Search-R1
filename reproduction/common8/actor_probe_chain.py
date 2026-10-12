@@ -45,7 +45,20 @@ def account_segment(run_id, updates, attempts, *, retained_through,
         if complete:
             assert completed not in by_step
             by_step[completed] = row
-    assert completed == updates[-1]['step'] and set(by_step) == {row['step'] for row in updates}
+    scored_steps = {row['step'] for row in updates}
+    assert scored_steps.issubset(by_step)
+    # A process may exit after the durable all-rank return, but before the
+    # scalar writer (validation/model export occur between these two writes).
+    # Preserve that returned tail as lost work, without inventing its reward
+    # or admitting it into the saved checkpoint prefix. The scalar writer is
+    # contiguous, so this can only be the final complete attempt.
+    unscored = [row for step, row in by_step.items() if step not in scored_steps]
+    if unscored:
+        assert len(unscored) == 1 and unscored[0] == attempts[-1]
+        assert completed == updates[-1]['step'] + 1
+        assert unscored[0]['logical_update'] > retained_through
+    else:
+        assert completed == updates[-1]['step']
     retained = []; discarded = []
     for update in updates:
         from search_g1.reward_schedule import ACTOR_PROBE_SCHEDULE
@@ -68,6 +81,7 @@ def account_segment(run_id, updates, attempts, *, retained_through,
         observed_completed_through=completed, observed_writes=writes,
         observed_processed_opportunities=processed,
         retained_updates=retained, discarded_updates=discarded,
+        discarded_unscored_attempts=unscored,
         retained_attempts=retained_attempts, discarded_attempts=discarded_attempts,
         discarded_successful_adam=writes-checkpoint_row['optimizer_writes_after'],
         scope='durable fully returned driver attempts only; incomplete rank-local tail must be reported separately')
@@ -97,7 +111,9 @@ def assemble_counter_chain(segments, *, final_outer):
             owners[row['step']] = segment['run_id']
             phases['g1' if row['step'] <= 100 else 'binary_em'].append(row['metrics']['critic/rewards/mean'])
         discarded.append(dict(run_id=segment['run_id'],
-            complete_outers=[row['step'] for row in segment['discarded_updates']],
+            complete_outers=[row['step'] for row in segment['discarded_updates']] +
+                [row['logical_update'] for row in segment['discarded_unscored_attempts']],
+            unscored_complete_outers=[row['logical_update'] for row in segment['discarded_unscored_attempts']],
             successful_adam=segment['discarded_successful_adam'],
             attempt_indices=[row['attempt_index'] for row in segment['discarded_attempts']],
             semantics='Preserved original evidence; excluded from the retained logical chain, no rollback claimed'))

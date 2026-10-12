@@ -109,5 +109,35 @@ class ActorProbeChainTests(unittest.TestCase):
             self.assertEqual(row['reward_logical_update'], row['step'])
         self.assertEqual(assemble_counter_chain([normal], final_outer=5)['complete_outers'],5)
 
+    def test_returned_unscored_tail_is_lost_work_without_invented_reward(self):
+        root = segment('root', 0, 51, 50)
+        updates = root['retained_updates'] + root['discarded_updates']
+        attempts = root['retained_attempts'] + root['discarded_attempts']
+        unscored = account_segment('root', updates[:-1], attempts, retained_through=50)
+        self.assertEqual(unscored['observed_completed_through'], 51)
+        self.assertEqual(unscored['checkpoint_writes'], 1000)
+        self.assertEqual(unscored['discarded_successful_adam'], 20)
+        self.assertEqual(unscored['discarded_updates'], [])
+        self.assertEqual(unscored['discarded_unscored_attempts'], [attempts[-1]])
+        child = segment('child', 50, 100, 100, 1000, 50)
+        proof = assemble_counter_chain([unscored, child], final_outer=100)
+        self.assertEqual(proof['successful_adam'], 2000)
+        self.assertEqual(proof['discarded_by_namespace'][0]['unscored_complete_outers'], [51])
+        self.assertEqual(proof['discarded_by_namespace'][0]['successful_adam'], 20)
+        self.assertEqual(proof['reward_phases']['g1']['count'], 100)
+
+    def test_unscored_tail_cannot_cover_checkpoint_or_hide_a_scalar_hole(self):
+        root = segment('root', 0, 52, 50)
+        updates = root['retained_updates'] + root['discarded_updates']
+        attempts = root['retained_attempts'] + root['discarded_attempts']
+        for wrong_updates, retained in ((updates[:-1], 52), (updates[:-2], 50),
+                                         (updates[:49] + updates[50:], 50)):
+            with self.assertRaises(AssertionError):
+                account_segment('root', wrong_updates, attempts, retained_through=retained)
+        tail = account_segment('root', updates[:-1], attempts, retained_through=50)
+        tail['discarded_unscored_attempts'] = []
+        with self.assertRaisesRegex(AssertionError, 'summary differs'):
+            assemble_counter_chain([tail], final_outer=50)
+
 
 if __name__=='__main__': unittest.main()
