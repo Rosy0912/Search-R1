@@ -179,7 +179,9 @@ def verify_full(base):
         verify_actor_readouts(base, run, records)
         from reproduction.common8.actor_probe_checkpoint import verify_full_state
         for step in SAVE_STEPS:
-            verify_full_state(base, run, step, load_optimizer=True)
+            checkpoint_state = verify_full_state(base, run, step, load_optimizer=True)
+            next_record = records[min(step, 199)]
+            assert checkpoint_state['probe_version'] == next_record['probe_version']
         for step in range(10, 200, 10):
             isolation = json.loads((base/'logs'/f'actor-probe-refresh-isolation-{step}.json').read_text())
             assert isolation['accepted'] and isolation['step'] == step and isolation['before'] == isolation['after']

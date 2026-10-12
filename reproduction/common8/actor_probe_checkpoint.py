@@ -87,11 +87,17 @@ def verify_full_state(base, run, step, *, load_optimizer=False):
     import torch
     from reproduction.common8.verify_data import digest
     from reproduction.common8.scheduler import expected_lr
+    from search_g1.actor_probe_contract import validate_version
     base = Path(base)
     directory = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
     receipt = json.loads((directory/'full-state-complete.json').read_text())
     assert receipt['identity']['run_id'] == run['run_id'] and receipt['identity']['execution_id'] == run['execution_id']
     assert receipt['completed_outer'] == step and receipt['next_logical_update'] == step + 1
+    actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+    records = [row for row in actual if row['step'] == step]
+    assert len(records) == 1 and records[0]['run_id'] == run['run_id']
+    assert receipt['actual_optimizer_writes'] == records[0]['optimizer_writes_after']
+    assert receipt['completed_outer_reward_head_round'] == head_round(step)
     assert digest(directory/'complete.json') == receipt['canonical_model_receipt_sha256']
     assert sorted(r['rank'] for r in receipt['workers']) == list(range(run['training_world_size']))
     for row in receipt['workers'] + [receipt['driver']]:
@@ -111,10 +117,13 @@ def verify_full_state(base, run, step, *, load_optimizer=False):
                 assert int(values['step']) == state['optimizer_writes']
             assert all(group['lr'] == expected_lr(step) for group in state['optimizer']['param_groups'])
             assert state['rng']['torch_cpu'].dtype == torch.uint8 and state['rng']['torch_cuda']
+            assert state['rollout_rng']['generation'].dtype == torch.uint8
+            assert state['rollout_rng']['training'].dtype == torch.uint8
             del state
     probe = directory/'probe-state'
     assert digest(probe/'version-manifest.json') == receipt['probe_manifest_sha256']
     manifest = json.loads((probe/'version-manifest.json').read_text())
+    validate_version(run, manifest, min(step + 1, 200))
     assert manifest['version'] == receipt['probe_version'] and manifest['actor_step'] == receipt['probe_actor_step']
     for name, sha in receipt['probe_head_hashes'].items(): assert digest(probe/name) == sha
     driver = torch.load(receipt['driver']['path'], map_location='cpu', weights_only=False)
@@ -122,6 +131,7 @@ def verify_full_state(base, run, step, *, load_optimizer=False):
     assert driver['probe_version'] == receipt['probe_version']
     assert driver['attempt_progress']['completed_outer'] == step and driver['attempt_progress']['pending'] is None
     assert driver['attempt_progress']['cumulative_writes'] == receipt['actual_optimizer_writes']
+    assert driver['attempt_progress']['attempt_index'] == records[0]['attempt_index']
     sampler = driver['sampler']
     assert sorted(sampler['permutation']) == list(range(sampler['dataset_size']))
     assert type(sampler['cursor']) is int and 0 <= sampler['cursor'] <= sampler['dataset_size']

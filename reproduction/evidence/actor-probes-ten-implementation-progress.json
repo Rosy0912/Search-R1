@@ -1,6 +1,6 @@
 {
   "role": "actor_probe_ten_implementation_progress",
-  "checked_unix": 1791817319.684201,
+  "checked_unix": 1791817720.898077,
   "deployed": false,
   "launched": false,
   "predecessor_run": "1db662001a0f4d998928bcf6f5f33c9d",
@@ -28,5 +28,26 @@
     "production head metadata/calibration and state restore checks",
     "actual A800 RPC/calibration/state roundtrip and first-five acceptance",
     "new full200 and final51713 acceptance"
-  ]
+  ],
+  "independent_review": {
+    "scope": "no-parent-context static code review only; actual deployment still pending",
+    "fixed_findings": [
+      "50-step verifier residue",
+      "prepared launch source import ordering",
+      "single-rank feature rejection collective mismatch",
+      "same UUID cached head metadata/file drift",
+      "closedbook target label",
+      "disk reserve for21 exports and five Adam states",
+      "probe directory durability",
+      "missing slurm identity",
+      "independent rollout CUDA RNG saving",
+      "full-state receipt linkage to actual records and expected head round"
+    ],
+    "remaining": [
+      "actual A800 FSDP feature/RNG/state verification",
+      "full restore entry and DataLoader iterator RNG continuation",
+      "explicit predecessor acceptance admission",
+      "final actual deployment review before launch"
+    ]
+  }
 }

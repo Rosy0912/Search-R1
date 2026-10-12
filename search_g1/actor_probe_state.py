@@ -12,10 +12,15 @@ def tree_digest(value):
     import torch
     h = hashlib.sha256()
     def visit(item):
+        import numpy as np
         if isinstance(item, torch.Tensor):
             t = item.detach().cpu().contiguous()
             h.update(json.dumps([str(t.dtype), list(t.shape)]).encode())
             h.update(memoryview(t.reshape(-1).view(torch.uint8).numpy()))
+        elif isinstance(item, np.ndarray):
+            array = np.ascontiguousarray(item)
+            h.update(json.dumps([str(array.dtype), list(array.shape)]).encode())
+            h.update(memoryview(array))
         elif isinstance(item, dict):
             for key in sorted(item, key=repr):
                 h.update(repr(key).encode()); visit(item[key])
@@ -44,7 +49,15 @@ def rng_state():
     import torch
     return dict(python=random.getstate(), numpy=np.random.get_state(),
         torch_cpu=torch.get_rng_state(),
-        torch_cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [])
+        torch_cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_initialized() else [])
+
+
+def restore_rng(state):
+    import numpy as np
+    import torch
+    random.setstate(state['python']); np.random.set_state(state['numpy'])
+    torch.set_rng_state(state['torch_cpu'])
+    if state['torch_cuda']: torch.cuda.set_rng_state_all(state['torch_cuda'])
 
 
 def cpu_state(value):
@@ -92,4 +105,6 @@ def worker_payload(worker, run, completed_outer):
         outer_accounting=dict(actual_writes=evidence.actual_writes,
             last_attempt_index=evidence.last_attempt_index, used_attempt_ids=sorted(evidence.used_attempt_ids),
             completed_outer=completed_outer, pending=None, prepared=None, rejected=False),
+        rollout_rng=dict(training=worker.rollout_sharding_manager.torch_random_states,
+                         generation=worker.rollout_sharding_manager.gen_random_states),
         rng=rng_state())
