@@ -109,7 +109,7 @@ class RemoteFile(io.BufferedIOBase):
 import concurrent.futures,threading,re
 SOURCE_OPEN_GATE=threading.Semaphore(2)
 class ParallelRemoteFile(io.BufferedIOBase):
-    BLOCK=8*1024*1024
+    BLOCK=256*1024
     LANES=4
     def __init__(self,record):
         self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0;self.source_opens=0
@@ -205,7 +205,7 @@ def main():
     total=sum(r['archive_bytes'] for r in plan['records']);guard=threading.Lock();receipts={}
     def write(path,value):
         tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(value));tmp.replace(path)
-    write(ROOT/'controller.json',{'pid':os.getpid(),'epoch':time.time(),'repo':plan['repo'],'model_disk_staging':False,'file_concurrency':4,'source_lanes_per_file':4,'cache_per_file_bytes':33554432,'total_bytes':total})
+    write(ROOT/'controller.json',{'pid':os.getpid(),'epoch':time.time(),'repo':plan['repo'],'model_disk_staging':False,'file_concurrency':4,'source_lanes_per_file':4,'cache_per_file_bytes':ParallelRemoteFile.BLOCK*ParallelRemoteFile.LANES,'total_bytes':total})
     def mark(record,result):
         with guard:
             receipts[record['repo_path']]=result
