@@ -46,8 +46,17 @@ def timed_cuda(worker, name, fn):
 def worker_type():
     import torch
     from verl.workers.fsdp_workers import ActorRolloutRefWorker
+    from verl.single_controller.base import Worker
     from verl.single_controller.base.decorator import register, Dispatch
-    class ProfileWorker(ActorRolloutRefWorker):
+    class ProfileColocationBase(ActorRolloutRefWorker):
+        def __init__(self, *args, **kwargs):
+            # Native colocator initializes the immediate base without model args.
+            # The actual inner actor still receives native config and role.
+            if args or kwargs:
+                ActorRolloutRefWorker.__init__(self, *args, **kwargs)
+            else:
+                Worker.__init__(self)
+    class ProfileWorker(ProfileColocationBase):
         @register(dispatch_mode=Dispatch.ONE_TO_ALL)
         def init_model(self):
             with stage('worker_model_load'):
