@@ -42,13 +42,16 @@ class TreeAudit:
             key = phase+'_'+suffix
             cost[key] = cost.get(key, 0.)+elapsed
 
-    def branch(self, parent, child):
+    def branch(self, parent, child, event_parent=None, metadata=None):
         start = time.perf_counter(), time.process_time()
         signatures = state_signature(parent), state_signature(child)
         row = dict(parent_node_hash=fingerprint(parent.node), parent_trajectory_hash=fingerprint(parent.trajectory),
                    child_trajectory_hash=fingerprint(child.trajectory), tree_hash=fingerprint(parent.tree),
                    source=int(parent.source), parent_fields=signatures[0], child_fields=signatures[1],
                    prefix_length=len(parent.rolling), inherited=signatures[0] == signatures[1])
+        if event_parent is not None:
+            row.update(event_parent_trajectory_hash=fingerprint(event_parent.trajectory),
+                       branch_sampling=dict(metadata), training_leaf=True)
         self.report['branches'].append(row)
         self.add_cost('branch', start)
         self.require(row['inherited'] and parent.trajectory != child.trajectory, 'branch_inheritance')
@@ -62,6 +65,12 @@ class TreeAudit:
         counts = Counter(s.source for s in states)
         self.require(counts == Counter({i: quotas[i % tree.roots] for i in root_identity}), 'configured_leaves_per_source')
         self.require(len({s.trajectory for s in states}) == len(states), 'unique_leaf_trajectories')
+        training_ids = {fingerprint(s.trajectory) for s in states}
+        self.require(all(row['child_trajectory_hash'] in training_ids for row in self.report['branches']
+                         if row.get('training_leaf')), 'accepted_branch_is_training_leaf')
+        candidates = self.report.get('candidate_attempts', [])
+        self.require(all((fingerprint(row['child_trajectory_id']) in training_ids) == row['training_leaf']
+                         for row in candidates), 'candidate_selection_training_binding')
         self.require(len(set(root_identity.values())) == len(roots), 'unique_root_trees')
         groups = {}
         for i, question in enumerate(self.question_hashes):
@@ -160,6 +169,34 @@ class TreeAudit:
                 question_hash=previous['question_hash'], effective_tokens=int(counts[i,0]),
                 raw_model_tokens=int(info[i].sum()), policy_weight_sum=float(weights[i].sum()),
                 empty_leaf=bool(counts[i,0] == 0)))
+        # Read-only shared emission credit under the unchanged per-leaf 1/T
+        # objective. Keep only aggregate numerics, never raw tokens in this log.
+        from .tree_raw_tokens import FIELD
+        if FIELD in batch.non_tensor_batch:
+            shared = {}
+            effective_cpu = effective.detach().cpu().bool().tolist()
+            advantage_cpu = batch.batch['advantages'].detach().cpu().tolist()
+            count_cpu = counts[:, 0].detach().cpu().tolist()
+            for i, projection in enumerate(batch.non_tensor_batch[FIELD]):
+                cursor = 0
+                for ledger in projection['raw_ledger']:
+                    action = ledger['action']
+                    sample = action['native_emission']['sample_id']
+                    for offset in range(len(action['action_token_ids'])):
+                        if effective_cpu[i][cursor+offset]:
+                            key = (sample, offset)
+                            multiplicity, credit = shared.get(key, (0, 0.))
+                            shared[key] = (multiplicity+1, credit+advantage_cpu[i][cursor+offset]/max(1., count_cpu[i]))
+                    cursor += len(action['action_token_ids'])+len(ledger['observation_token_ids'])
+            repeated = [(m, c) for m, c in shared.values() if m > 1]
+            evidence.report['shared_prefix_credit'] = dict(
+                scope='fixed selected leaves; sum of original scalar advantage / leaf effective length',
+                unique_emission_tokens=len(shared), shared_emission_tokens=len(repeated),
+                multiplicity_counts=dict(Counter(m for m, _ in shared.values())),
+                shared_credit_sum=sum(c for _, c in repeated),
+                shared_credit_min=min((c for _, c in repeated), default=0.),
+                shared_credit_max=max((c for _, c in repeated), default=0.),
+                shared_credit_mean=sum(c for _, c in repeated)/max(1, len(repeated)))
         evidence.add_cost('policy', start)
         evidence.report.update(status='POLICY_BATCH_DIAGNOSTIC_COMPLETE', leaf_count=len(observed),
                                empty_leaves=int((counts == 0).sum()))

@@ -86,7 +86,7 @@ def tree_variance_metrics(score, uids, trees, branch_metadata=None, estimator_sc
             local_trees[trees[i]].append(i)
         if len(rows) != 5 or sorted(map(len, local_trees.values())) != [2, 3]:
             # Historical rectangular runs remain supported by this diagnostic.
-            if branch_metadata is not None and any(branch_metadata[i].get('protocol') == 'branpo_tail_v1' for i in rows):
+            if branch_metadata is not None and any(branch_metadata[i].get('protocol') in ('branpo_tail_v1', 'random_nested_backtrack_v1') for i in rows):
                 raise ValueError('Tail metrics lost the five-leaf 3/2 group')
         r = score[rows]
         a = actual[rows]
@@ -98,10 +98,10 @@ def tree_variance_metrics(score, uids, trees, branch_metadata=None, estimator_sc
         values['exact_reward_one_question_count'].append(float(torch.all(r == 1)))
         values['exact_reward_zero_question_count'].append(float(torch.all(r == 0)))
         values['mixed_question_count'].append(float(r.max() != r.min()))
-        means, masses, within, intra_within = [], [], [], []
+        means, reward_means, masses, within, intra_within = [], [], [], [], []
         for indices in local_trees.values():
             tr, ta = score[indices], actual[indices]
-            means.append(ta.mean()); masses.append(len(indices)/len(rows))
+            means.append(ta.mean()); reward_means.append(tr.mean()); masses.append(len(indices)/len(rows))
             v = ta.var(correction=0).item(); within.append(v)
             iv = intra[indices].var(correction=0).item(); intra_within.append(iv)
             values['within_root_raw_reward_population_variance'].append(tr.var(correction=0).item())
@@ -126,6 +126,8 @@ def tree_variance_metrics(score, uids, trees, branch_metadata=None, estimator_sc
                 values[f'root{slot}_same_reward_fraction'].append(float(tr.max() == tr.min()))
                 for label, condition in [('exact_reward_one',torch.all(tr == 1)), ('exact_reward_zero',torch.all(tr == 0)), ('mixed',tr.max() != tr.min())]:
                     values[f'root{slot}_{label}_count'].append(float(condition))
+        reward_means = torch.stack(reward_means)
+        values['root_raw_reward_mean_gap'].append((reward_means.max()-reward_means.min()).item())
         means = torch.stack(means)
         weights = score.new_tensor(masses)
         weighted_mean = (means*weights).sum()

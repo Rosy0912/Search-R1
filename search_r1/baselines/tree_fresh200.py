@@ -34,6 +34,9 @@ def validate_fresh200_config(config):
     if tree.get('branch_sampling') == 'branpo_tail_v1':
         if tree.get('continuation_budget_per_question') != 3:
             raise ValueError('BranPO-inspired sampling requires exactly three finite continuations per question')
+    elif tree.get('branch_sampling') == 'random_nested_backtrack_v1':
+        from .tree_nested_branch import validate_nested_options
+        validate_nested_options(tree)
     elif tree.get('branch_sampling') is not None:
         raise ValueError('Unknown Tree branch sampling protocol')
     correction = safety.get('sampling_probability_correction', {})
@@ -54,7 +57,7 @@ def validate_fresh200_config(config):
             or holdout.input_mode != 'prebuilt_manifest' or holdout.manifest_sha256 != DATA_SHA256):
         raise ValueError('Fresh200 model/split/protocol identity changed')
     if ((tree.roots, tree.rounds, tree.expansions, tree.leaves) != (2, 1, 2, 3)
-            or leaf_quotas(tree) != (3, 2) or rollout.n_agent != 2 or rollout.n != 1
+            or leaf_quotas(tree) != ((2, 3) if tree.get('branch_sampling') == 'random_nested_backtrack_v1' else (3, 2)) or rollout.n_agent != 2 or rollout.n != 1
             or type(rollout.get('best_of')) is not int or rollout.best_of != 1
             or config.data.train_batch_size != 512
             or (actor.ppo_mini_batch_size, actor.ppo_micro_batch_size, actor.ppo_epochs) != (128, 16, 1)

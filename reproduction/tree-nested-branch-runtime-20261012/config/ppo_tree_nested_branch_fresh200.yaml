@@ -1,0 +1,22 @@
+# Independent primary config; official base is supplied through pinned source searchpath.
+defaults:
+  - /ppo_tree_fresh200
+  - _self_
+
+baselines:
+  experiment_variant: Random nested reward-selected Tree-GRPO surrogate
+  tree:
+    branch_sampling: random_nested_backtrack_v1
+    sampling_objective: reward_selected_nested_tree_grpo_surrogate_v1
+    leaf_quotas: [2, 3]
+    # Legacy field counts retained child leaves; rejected candidate cost is additional.
+    continuation_budget_per_question: 3
+    action_positions: valid_action_start
+    exclude_initial_from_backtrack: true
+    fallback: initial_fresh_once_unconditional
+    remaining_budget: inherit_parent
+    reward_comparison: absolute_tolerance
+    reward_difference_tolerance: 0.0
+
+trainer:
+  experiment_name: tree-nested-branch-officialfresh200

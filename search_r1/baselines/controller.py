@@ -280,9 +280,10 @@ class Controller:
             self.ranker.validation = False
             self.ranker.events.clear()
         tree = self.config.tree if self.method == 'tree_grpo' else None
-        if tree is not None and option(tree, 'branch_sampling') == 'branpo_tail_v1':
+        if tree is not None and option(tree, 'branch_sampling') in ('branpo_tail_v1', 'random_nested_backtrack_v1'):
             def training_rewards(states):
-                return self.tree_training_rewards(engine, qa_batch, states)
+                return self.tree_training_rewards(engine, qa_batch, states,
+                    scoring_only=option(tree, 'branch_sampling') == 'random_nested_backtrack_v1')
             engine.reward_callback = training_rewards
         audit_dir = os.environ.get('SEARCH_R1_TREE_AUDIT_DIR')
         if tree is not None and audit_dir:
@@ -328,10 +329,10 @@ class Controller:
             metrics['tree_sampling/earliest_state_clamp_count'] = sum(b['backoff_clamped'] for b in branches)
         return output, sources
 
-    def tree_training_rewards(self, engine, qa_batch, states):
-        # Compose generated trajectories first; append only source metadata.
+    def tree_training_rewards(self, engine, qa_batch, states, scoring_only=False):
+        # Build the selected training representation or a candidate scoring-only view.
         # No targets or rewards enter model generation contexts.
-        scored, sources = engine.compose(states)
+        scored, sources = engine.reward_batch(states) if scoring_only else engine.compose(states)
         for key, values in qa_batch.non_tensor_batch.items():
             if key not in scored.non_tensor_batch:
                 scored.non_tensor_batch[key] = values[sources]

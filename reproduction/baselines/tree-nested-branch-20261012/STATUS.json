@@ -1,0 +1,17 @@
+{
+  "phase": "IMPLEMENTATION_READY_INDEPENDENT_REVIEW_IN_PROGRESS",
+  "protocol": "random_nested_backtrack_v1",
+  "existing_job": 3360,
+  "existing_job_completed_outer": 180,
+  "existing_job_state": "3360|tree-branpo-fresh200|RUNNING|1-20:07:51|h100-10",
+  "new_training_submitted": false,
+  "checkout": "work/tree-speed-repair-20261008/nested-branch-source",
+  "branch": "codex/tree-nested-branch-20261012",
+  "math_review": "MATH_REVIEW.md",
+  "selection_bias_scope": "Reward-selected fixed-data token PPO surrogate; token mu correction is not unbiased selection correction",
+  "code_review": "pending",
+  "execution_order": "Only after existing experiment completes; no old training mutation",
+  "implementation": "tree_nested_branch.py plus scoring-only representation/audit/validator/metrics changes; no old runtime edit",
+  "synthetic_test_progress": "Independent initial six cases passed; final hash-bound review pending",
+  "canonical_config": "reproduction/tree-nested-branch-runtime-20261012/config/ppo_tree_nested_branch_fresh200.yaml"
+}

@@ -250,7 +250,10 @@ class SearchRollout:
             step = len(s.anchors)
             s.anchors.append(anchor)
             s.records.append(dict(text=text[i], action_tokens=len(action), observation_tokens=len(obs),
-                                  scoring_context_matches_generation=matches[i]))
+                                  scoring_context_matches_generation=matches[i],
+                                  valid_action=bool(valid[i]), valid_search=bool(searches[i]),
+                                  generated_tokens=(prepared_actions[i][1]['native_emission']['true_emitted_length']
+                                      if prepared_actions is not None else int((raw[i] != pad).sum()))))
             if os.environ.get('SEARCH_R1_TRAJECTORY_DIR'):
                 s.records[-1].update(action_token_ids=action, observation_token_ids=obs,
                     raw_generation_token_ids=raw[i].tolist(),
@@ -284,6 +287,29 @@ class SearchRollout:
             self.advance([states[i] for i in active_indices], meta)
         self.cost['trajectories'] += len(states)
         return snapshots
+
+    def reward_batch(self, states):
+        """Scoring-only tensors; candidates never enter training compose or mu rows."""
+        from verl import DataProto
+        pad = self.tokenizer.pad_token_id
+        prompts = padded([s.prompt for s in states], pad, left=True)
+        response = padded([s.response for s in states], pad)
+        mask = padded([s.model_mask for s in states], 0)
+        prompt_attention = (padded([[1]*len(s.prompt) for s in states], 0, left=True)
+                            if self.token_preservation else (prompts != pad).long())
+        response_attention = (padded([[1]*len(s.response) for s in states], 0)
+                              if self.token_preservation else (response != pad).long())
+        tensors = dict(prompts=prompts, responses=response,
+            attention_mask=torch.cat((prompt_attention, response_attention), 1),
+            info_mask=torch.cat((prompt_attention, mask), 1))
+        non_tensors = {}
+        if self.token_preservation is not None:
+            from .tree_raw_tokens import FIELD, trajectory_projection
+            contexts = {}
+            non_tensors[FIELD] = object_array([
+                trajectory_projection(s, self.config.max_prompt_length, contexts) for s in states])
+        return DataProto.from_dict(tensors=tensors, non_tensors=non_tensors), np.asarray(
+            [s.source for s in states], dtype=np.int64)
 
     def compose(self, states):
         if self.token_preservation is not None:
@@ -374,8 +400,12 @@ class SearchRollout:
         if tree is not None:
             from .tree_fresh200 import leaf_quotas, tree_option
             quotas = leaf_quotas(tree)
-            if tree_option(tree, 'branch_sampling') == 'branpo_tail_v1':
-                states = self._tail_branches(states, snapshots, quotas, tree, gen_batch.meta_info)
+            if tree_option(tree, 'branch_sampling') in ('branpo_tail_v1', 'random_nested_backtrack_v1'):
+                if tree_option(tree, 'branch_sampling') == 'random_nested_backtrack_v1':
+                    from .tree_nested_branch import nested_branches
+                    states = nested_branches(self, states, snapshots, quotas, tree, gen_batch.meta_info)
+                else:
+                    states = self._tail_branches(states, snapshots, quotas, tree, gen_batch.meta_info)
                 self.last_states = states
                 output, sources = self.compose(states)
                 if self.audit is not None:

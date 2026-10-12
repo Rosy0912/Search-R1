@@ -1,0 +1,17 @@
+# Nested branch 独立代码与数学最少测试审查
+
+STATIC_SOURCE_RUNTIME_REVIEW_ACCEPTED
+
+仅接受当前字节的本地实现与入口静态审查；阻塞问题0。哈希范围见CODE_REVIEW.json：6份实现文件及全部新runtime/config。文件变动即使commit相同也须重新核验，不等于训练、实际模型μ概率或3360终态验收通过。
+
+实现符合A/A1/B/B1/B2固定五叶、2/3根配额。A有效动作起点choice一次；B1/B2分别尾→头非初始valid action每处一次，首异奖即停，全失败强制初始fresh fallback一次。B2 full_path从继承parent[:depth]+真实suffix构建，以B1 reward比较；event parent与actual prefix来源分开记录。失败候选不进入compose/训练，生成/prefill/retrieval/scoring总成本保留。
+
+独立CPU最少测试最终9/9通过，另现行raw/μ schema fixture1/1通过。真实SearchRollout.compose、TreeAudit.finish、select_rows联调验证genealogy同步；Controller评分路径不compose候选。真实trajectory_projection/semantic_spans与当前μ validator验证继承ledger不变；实际RewardManager对评分batch和compose输出得到相同EM [1,1]。无有效动作、缺valid_action拒绝、零保留suffix仍完整唯一五叶、全同奖有限fallback均覆盖。
+
+数学文档六项最少覆盖：1尾扫/首次接受/失败隔离/成本；2初始一次、零suffix及B2继承和μ哈希；3固定2/3、shuffle与真实新suffix/较早继承prefix来源；4等root均奖而inter非零、原sample std correction1/epsilon/零方差；5不同叶长共享prefix系数、全局N=5与分片相等、空行占分母；6同token ratio而不同选择归一化、所有叶selection_unbiased=false和fixed selected surrogate标记。原advantages与objectives未改变损失公式；没有伪造selection importance correction。
+
+Canonical Hydra从独立config目录加committed-source config搜索路径，并应用manifest全部overrides，真实compose和validate_fresh200_config通过。fresh模型/200配置、2/3及sampling_objective绑定成立。predecessor gate静态检查必须原3360 exit0/200、最终51713、native200/HF成员及冷HF receipt，不修改原任务；这些实际远端材料本review未读取或验收。commit/push及最终原任务独立验收仍须主线完成。
+
+发现并修复1项阻塞：make_release原先仅接受review文本marker，旧review可套新源码；现强制结构化review manifest覆盖实现/runtime/config，每个源码与部署副本哈希必须匹配package，任何更改拒绝。
+
+历史test_tree_behavior_mu_data_cpu尝试17项有14 fixture错误，主要未适配现行native_stopping必需参数；一项cwd依赖错误。没有把旧套件声称通过，也未改它。新增最小现行schema fixture补足本次评分与μ继承验证。CPU分片代数不等于真实多GPU验收；本review不授权提前启动、修改或停止3360。

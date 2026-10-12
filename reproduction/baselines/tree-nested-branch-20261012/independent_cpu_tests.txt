@@ -1,0 +1,16 @@
+/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-3/work/fresh200-local-test-env/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+test_compose_audit_shuffle_and_original_row_mass (__main__.Independent) ... ok
+test_controller_scoring_only_does_not_compose_candidates (__main__.Independent) ... ok
+test_equal_root_means_nonzero_inter_and_original_std (__main__.Independent) ... ok
+test_missing_validity_rejected_and_b2_earlier_inherited_prefix (__main__.Independent) ... ok
+test_same_reward_finite_initial_once_and_no_valid_fallback (__main__.Independent) ... ok
+test_selection_probability_not_corrected_by_same_token_mu (__main__.Independent) ... ok
+test_shared_prefix_length_credit_global_splits_empty_row (__main__.Independent) ... ok
+test_tail_first_failure_then_success_b2_actual_new_path (__main__.Independent) ... ok
+test_zero_retained_suffix_still_five_unique_leaves (__main__.Independent) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.070s
+
+OK
