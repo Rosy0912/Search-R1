@@ -20,7 +20,10 @@ for proc in pathlib.Path('/proc').glob('[0-9]*'):
  try:
   if proc.name in ancestors:continue
   cmd=(proc/'cmdline').read_bytes().replace(b'\0',b' ').decode(errors='replace')
-  if 'bapo-aligned-cohost-node11-' in cmd and ('python' in cmd or 'ray' in cmd or 'train' in cmd):
+  # Other experiments reuse this preserved env; its interpreter is not a run reference.
+  executable, _, remaining = cmd.partition(' ')
+  guard_cmd = remaining if '/bapo-aligned-cohost-node11-' in executable and '/env/bin/python' in executable else cmd
+  if 'bapo-aligned-cohost-node11-' in guard_cmd and ('python' in cmd or 'ray' in cmd or 'train' in cmd):
    if 'cleanup_execute' not in cmd and not 'required_hf_status' in cmd:refs.append(dict(pid=proc.name,kind='cmdline',detail=cmd[:300]))
   links=[proc/'cwd']+list((proc/'fd').glob('*'))
   for link in links:
