@@ -78,7 +78,7 @@ class RemoteFile(io.BufferedIOBase):
             return b''
         # HTTP/SliceFileObj must use bounded reads, never materialize a shard.
         if size < 0:
-            if remaining > 8 * 1048576:
+            if remaining > 16 * 1048576:
                 raise ValueError('Unbounded source read is forbidden')
             size = remaining
         size = min(size, remaining)
