@@ -24,6 +24,59 @@ def same(record):
     except (FileNotFoundError,ProcessLookupError):return False
 
 
+def remaining_cuda_contexts(records, rows):
+    """NVML reports PIDs only; a reused birth is another task's context."""
+    births = {}
+    for record in records:
+        births.setdefault(record['pid'],set()).add(tuple(record[key] for key in ('start_ticks','sid','uid')))
+    remaining = []; reused = []
+    for row in rows:
+        pid = int(row[1])
+        if pid not in births: continue
+        try: actual = identity(pid)
+        except (FileNotFoundError,ProcessLookupError):
+            # A recorded PID still reported by NVML without /proc may be an
+            # unwinding owned context. Wait for release; never signal it.
+            remaining.append(row); continue
+        if tuple(actual[key] for key in ('start_ticks','sid','uid')) in births[pid]:
+            remaining.append(row)
+        else: reused.append(pid)
+    return remaining, sorted(set(reused))
+
+
+def owned_session_survivors(leaders):
+    """Read-only private-session audit, including numeric SID/leader PID reuse.
+
+    A disappeared leader can leave owned children. A proven different birth
+    which is itself the leader of that numeric SID belongs to a new session.
+    Shared caller sessions must not be supplied as private owned sessions.
+    """
+    sessions = {}
+    for leader in leaders:
+        assert leader['pid'] == leader['sid'] and leader['start_ticks'] > 0
+        key = (leader['sid'],leader['uid'])
+        sessions.setdefault(key,set()).add(leader['start_ticks'])
+    survivors = []; reused = set()
+    for path in Path('/proc').iterdir():
+        if not path.name.isdigit(): continue
+        try: actual = identity(int(path.name))
+        except (FileNotFoundError,ProcessLookupError): continue
+        except PermissionError:
+            try: assert path.stat().st_uid != os.getuid(), 'Cannot inspect a potentially owned process'
+            except FileNotFoundError: pass
+            continue
+        key = (actual['sid'],actual['uid'])
+        if actual['state'] in ('Z','X') or key not in sessions: continue
+        recorded_births = sessions[key]
+        try: current_leader = identity(actual['sid'])
+        except (FileNotFoundError,ProcessLookupError): current_leader = None
+        if current_leader is not None and current_leader['pid'] == current_leader['sid'] == actual['sid'] \
+                and current_leader['start_ticks'] not in recorded_births:
+            reused.add(actual['sid']); continue
+        survivors.append(actual)
+    return survivors, sorted(reused)
+
+
 def signal_owned(record, sig):
     fd=os.pidfd_open(record['pid'])
     try:

@@ -285,7 +285,10 @@ class Pipeline:
             self.calibration_measurements()
             return 'FINISHED_POLICY_CALIBRATION_MEASUREMENTS_AND_OWNED_CLEANUP'
         self.stage('FINAL200_COMPLETE_SHARED_EVALUATION_ACCEPTANCE')
-        v=self.start('final-acceptance',[self.python,'-m','reproduction.common8.verify_full','--base',str(self.base)],[])
+        from search_g1.actor_probe_contract import actor_probes
+        verifier = ('reproduction.common8.verify_actor_probe_chain' if actor_probes(self.run)
+                    else 'reproduction.common8.verify_full')
+        v=self.start('final-acceptance',[self.python,'-m',verifier,'--base',str(self.base)],[])
         self.wait('final-acceptance',v)
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):

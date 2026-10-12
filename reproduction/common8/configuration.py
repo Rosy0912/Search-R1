@@ -55,6 +55,14 @@ def arguments(base):
         overrides.append(key + '=' + raw)
     overrides.append('actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank='+
                      str(monitor_trajectories_per_rank(run)))
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        # Hydra's default outputs/<date>/<time> directory is inside the repo.
+        # Its generated YAML files would change the exact runtime source map
+        # after admission. Keep those run products in this remote namespace's
+        # logs, while preserving the trainer's existing working directory.
+        overrides += ['hydra.run.dir='+json.dumps(str(base/'logs/trainer-hydra')),
+                      'hydra.job.chdir=false']
     return run, overrides
 
 

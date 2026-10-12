@@ -114,6 +114,8 @@ def verify_original(base, run, path, round_id, version):
         original_archive=file,encoder_proof=initial_file,head_sha256=manifest['head_sha256'],
         calibration_report_sha256=manifest['calibration_report_sha256'],
         calibration_data_sha256=manifest['calibration_data_sha256'],
+        encoder=str(encoder),encoder_files_sha256=expected,
+        artifact_files_sha256={p.relative_to(base).as_posix():sha for p,sha in files.items()},
         artifact_map_sha256=document_sha256({str(p.relative_to(base)):sha for p,sha in files.items()}),
         actual_calibration_arrays_and_fitted_heads_revalidated=True)
 

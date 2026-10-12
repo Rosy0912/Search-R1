@@ -184,18 +184,14 @@ def read_recovery_context(child, rank):
     assert len(trainers) == 1, 'Missing actual predecessor trainer ledger'
     records = [record for job in trainers for record in job['ledger'].values()]
     records += [job['leader'] for job in trainers]
-    sessions = {(job['leader']['sid'], job['leader']['uid']) for job in trainers}
     for record in records:
         try: current = process_identity(record['pid'])
         except (FileNotFoundError, ProcessLookupError): continue
         assert current['state'] in ('Z', 'X') or any(current[k] != record[k]
             for k in ('start_ticks', 'sid', 'uid')), 'Recovery parent trainer birth is still live'
-    for path in Path('/proc').iterdir():
-        if not path.name.isdigit(): continue
-        try: current = process_identity(int(path.name))
-        except (FileNotFoundError, ProcessLookupError): continue
-        assert current['state'] in ('Z', 'X') or (current['sid'], current['uid']) not in sessions, \
-            'Unrecorded parent trainer session member is still live'
+    from reproduction.a800.owned_processes import owned_session_survivors
+    survivors,_ = owned_session_survivors([job['leader'] for job in trainers])
+    assert not survivors, 'Unrecorded parent trainer session member is still live'
     # Validate both immutable Head bytes now, not after loading actor weights.
     probe = directory/'probe-state'
     assert digest(_owned(probe/'version-manifest.json')) == receipt['probe_manifest_sha256']

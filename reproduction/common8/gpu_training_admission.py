@@ -216,20 +216,30 @@ def verify_historical_training_gpu_samples(base, run, scheduler_receipts, saved)
     base = Path(base)
     relative = 'logs/gpu-samples-' + run['run_id'] + '.jsonl'
     assert saved['receipt_path'] == str(base/relative)
-    raw, file = _sealed_bytes(base, relative, limit=512*1024**2)
     target = saved['last_sample_unix']
     assert _number(target)
-    rows = []; prefix = bytearray(); matches = 0
-    for line in raw.splitlines(keepends=True):
-        if not line.endswith(b'\n'): break
-        row = _strict_json(line)
-        rows.append(row); prefix.extend(line)
-        if row.get('unix') == target:
-            matches += 1
-            break
-    assert matches == 1, 'Original five-gate sample is missing'
-    assert hashlib.sha256(prefix).hexdigest() == saved['observed_complete_prefix_sha256'], \
+    path=_owned(base/relative);fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
+    rows=[];size=0;h=hashlib.sha256();matched=False
+    try:
+        before=os.fstat(fd)
+        with os.fdopen(fd,'rb',closefd=False) as stream:
+            while True:
+                line=stream.readline(64*1024+1)
+                if not line or not line.endswith(b'\n'):break
+                assert len(line)<=64*1024, 'Oversized GPU sample line'
+                size+=len(line);assert size<=512*1024**2, 'Bounded historical GPU prefix exceeded'
+                row=_strict_json(line);rows.append(row);h.update(line)
+                if row.get('unix')==target:matched=True;break
+        assert path.stat().st_ino==before.st_ino
+    finally:os.close(fd)
+    assert matched, 'Original five-gate sample is missing'
+    assert h.hexdigest() == saved['observed_complete_prefix_sha256'], \
         'Original first-five GPU byte prefix changed'
+    # Re-read only the fixed prefix; appends by the live sampler are permitted.
+    from reproduction.common8.actor_probe_evidence_seals import sealed_digest
+    sealed=sealed_digest(base,path,prefix_bytes=size)
+    assert sealed['sha256']==h.hexdigest()
+    file=dict(path=str(path),**sealed,scope='original first-five byte prefix; later samples excluded')
     claim_raw, claim_file = _sealed_bytes(base,'logs/training-launch-claim.json',limit=32*1024**2)
     allocation_raw, allocation_file = _sealed_bytes(base,'logs/native-allocation-admission.json',limit=32*1024**2)
     assert hashlib.sha256(allocation_raw).hexdigest() == saved['allocation_receipt_sha256']
@@ -243,4 +253,5 @@ def verify_historical_training_gpu_samples(base, run, scheduler_receipts, saved)
     return dict(role='historical_actual_first_five_gpu_occupancy',
         accepted=True, original_gate=derived,
         observed_complete_prefix_sha256=saved['observed_complete_prefix_sha256'],
+        observed_complete_prefix_bytes=size,
         files=[file,claim_file,allocation_file], current_liveness_claimed=False)

@@ -92,6 +92,8 @@ def preflight(base, run):
     assert prep['parent_trainer_session_exit_verified'] is True and prep['canonical_finite_tensor_count'] == 435
     verify_saved_heads(base, run)
     read_recovery_context(run, 0)
+    from reproduction.common8.actor_probe_fault_review import verify as verify_fault_review
+    verify_fault_review(base,run)
     return namespace_origin(run)
 
 

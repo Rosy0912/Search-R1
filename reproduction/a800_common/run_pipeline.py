@@ -130,16 +130,20 @@ class LocalPipeline(Pipeline):
                 if (self.base/'logs/corpus-cache-claim.json').exists():
                     from reproduction.a800_common.cache import cleanup
                     cleanup(self.base)
-                recorded={r['pid'] for job in self.owned.jobs.values() for r in job['ledger'].values()}
+                from reproduction.a800.owned_processes import remaining_cuda_contexts
+                recorded=[r for job in self.owned.jobs.values() for r in job['ledger'].values()]
+                reused_cuda_pids=set()
                 deadline=time.monotonic()+30
                 while True:
-                    remaining=[r for r in gpu_rows('gpu_uuid,pid','compute-apps') if int(r[1]) in recorded]
+                    remaining,reused=remaining_cuda_contexts(recorded,gpu_rows('gpu_uuid,pid','compute-apps'))
+                    reused_cuda_pids.update(reused)
                     if not remaining:break
                     assert time.monotonic()<deadline, 'Owned CUDA contexts remain after bounded release wait'
                     time.sleep(.5)
                 publish(self.base/'logs/cleanup-status.json',dict(run_id=self.run['run_id'],
                     execution_backend='ssh_local',execution_id=self.run['execution_id'],slurm_job_id=None,
-                    cleaned=True,checked_unix=time.time(),scope='only recorded project PID births and private local corpus cache'))
+                    cleaned=True,checked_unix=time.time(),reused_cuda_pids_ignored=sorted(reused_cuda_pids),
+                    scope='only recorded project PID births and private local corpus cache'))
             except Exception as error:
                 self.stage('OWNED_CLEANUP_FAILED',error=repr(error));raise
             finally:self.finish_sampling(sampler)

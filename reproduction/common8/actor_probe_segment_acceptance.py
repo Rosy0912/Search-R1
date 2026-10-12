@@ -86,12 +86,9 @@ def verify_trainer_exit(base, run, *, terminal=False):
         except (FileNotFoundError,ProcessLookupError): continue
         assert actual['state'] in ('Z','X') or any(actual[key] != record[key]
             for key in ('start_ticks','sid','uid')), 'Owned trainer birth remains live'
-    for path in Path('/proc').iterdir():
-        if not path.name.isdigit(): continue
-        try: actual = process_identity(int(path.name))
-        except (FileNotFoundError,ProcessLookupError): continue
-        assert actual['state'] in ('Z','X') or (actual['sid'],actual['uid']) != (leader['sid'],leader['uid']), \
-            'Unrecorded trainer session survivor remains live'
+    from reproduction.a800.owned_processes import owned_session_survivors
+    survivors,_=owned_session_survivors([leader])
+    assert not survivors, 'Unrecorded trainer session survivor remains live'
     return dict(actual_trainer_exit_verified=True, recorded_births=len(checked),
         terminal_exit_code=job.get('exit_code'), files=[file,claim_file])
 

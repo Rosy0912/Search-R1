@@ -47,6 +47,7 @@ def entry_fixture(root, with_verifier=False):
         stack.enter_context(patch.object(pipeline, 'bound_ray_tmp_dir', return_value='/tmp/synthetic-ray-root'))
         stack.enter_context(patch('reproduction.common8.actor_probe_head_admission.verify_inputs_and_source'))
         context = stack.enter_context(patch('search_g1.actor_probe_recovery.read_recovery_context'))
+        stack.enter_context(patch('reproduction.common8.actor_probe_fault_review.verify'))
         allocation = stack.enter_context(patch('reproduction.common8.native_allocation.admit',
             side_effect=AssertionError('Native allocation must not be reached by fixture')))
         stack.enter_context(patch.dict(os.environ, SEARCH_G1_BASE=str(base),
@@ -56,6 +57,15 @@ def entry_fixture(root, with_verifier=False):
 
 
 class RecoveryPipelineTests(unittest.TestCase):
+    def test_missing_actual_failure_review_rejects_before_lock_and_gpu_claim(self):
+        with tempfile.TemporaryDirectory() as root:
+            with entry_fixture(root, True) as (base, run, context, allocation):
+                with patch('reproduction.common8.actor_probe_fault_review.verify',side_effect=FileNotFoundError):
+                    with self.assertRaises(FileNotFoundError):pipeline.launch(base,run)
+                context.assert_called_once_with(run,0);allocation.assert_not_called()
+                self.assertFalse((base/'gpu-job.lock').exists())
+                self.assertFalse((base/'logs/pipeline-launch-claim.json').exists())
+
     def test_absent_or_changed_final_verifier_rejects_before_parent_load_or_gpu_claim(self):
         for present in (False, True):
             with self.subTest(present=present), tempfile.TemporaryDirectory() as root:

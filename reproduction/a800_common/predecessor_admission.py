@@ -90,11 +90,11 @@ def admit(base, child):
     assert ledger['run_id'] == claim['run_id'] == parent['run_id']
     assert claim['execution_id'] == parent['execution_id']
     records = [claim['pipeline_identity']]
-    sessions = set()
+    session_leaders = []
+    if records[0]['sid'] == records[0]['pid']:session_leaders.append(records[0])
     for job in ledger['jobs'].values():
         records += list(job['ledger'].values())
-        sessions.add((job['leader']['sid'], job['leader']['uid']))
-    live = []
+        session_leaders.append(job['leader'])
     for record in records:
         try: current = identity(record['pid'])
         except (FileNotFoundError, ProcessLookupError): continue
@@ -102,18 +102,8 @@ def admit(base, child):
             for k in ('start_ticks', 'sid', 'uid')), 'Predecessor process birth is still alive'
     # Detect a surviving unrecorded child in a predecessor-owned session too.
     # This inventory is read-only and never signals any process.
-    for path in Path('/proc').iterdir():
-        if not path.name.isdigit(): continue
-        try: current = identity(int(path.name))
-        except (FileNotFoundError, ProcessLookupError): continue
-        except PermissionError:
-            # Failure for our UID prevents proof of owned exit. An unreadable
-            # process of another UID never authorizes a signal or other action.
-            try: assert path.stat().st_uid != os.getuid(), 'Cannot inspect a potentially owned process'
-            except FileNotFoundError: pass
-            continue
-        if current['state'] not in ('Z', 'X') and (current['sid'], current['uid']) in sessions:
-            live.append(current['pid'])
+    from reproduction.a800.owned_processes import owned_session_survivors
+    live,reused_sessions = owned_session_survivors(session_leaders)
     assert not live, 'Predecessor session still contains live processes'
     assert subprocess.check_output(['git', '-C', str(parent_base/'repo'), 'rev-parse', 'HEAD'],
                                   text=True).strip() == parent['source_commit']
@@ -124,5 +114,5 @@ def admit(base, child):
         assert read_owned_json(checkpoint/'complete.json') == proof['checkpoint_proofs'][str(step)]
     return dict(accepted=True, predecessor=binding, actual_complete_outers=200,
         actual_optimizer_writes=writes, checked_unix=time.time(),
-        recorded_births_checked=len(records), surviving_session_processes=0,
+        recorded_births_checked=len(records), surviving_session_processes=0,reused_session_ids=reused_sessions,
         scope='exact accepted predecessor and only-owned cleanup; no inherited model or optimizer state')
