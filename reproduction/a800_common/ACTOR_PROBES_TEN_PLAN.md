@@ -263,9 +263,18 @@ explicit recovery binding and role. Independent review found and prompted fixes
 for the worker schema dispatch, retrieval/release content checks and exact GPU6
 probe placement. The separate production recovery launcher and full final chain
 verifier remain pending; this component itself does not launch a trainer.
+
 The existing scorer still uses the current actor's detached RPC features after
 the separately admitted full state restore; staging never calls a frozen
 teacher for reward predictions or fits any new classifier.
+
+Published-source staging can run while the predecessor trains. It uses a separate
+source-only directory and an offline Git bundle based on the preserved runtime34
+repository, without modifying that repository, moving data/weights/environments,
+claiming GPUs or starting services. The new Git HEAD, clean tree and complete
+runtime SHA map must match the actually pushed commit. A source-staging receipt
+is not a run manifest, training admission or proof of native algorithm behavior.
+The full child deployment and its independent review still precede any trainer.
 
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
