@@ -1,0 +1,9 @@
+{
+  "files": {
+    "binding.json": "c6f7e7092acf96cc66aec03283849904f151d2dad4de91735136458aaa8f7330",
+    "record.json": "9ae5f47fa9ef01c8deddcdae78d355262efdab98b210fee5ce773acbc568006a",
+    "resolved.yaml": "c854be466e8cd5433de580a7ae29799f062f50281bd51fd6e6e5e5137b1016cf"
+  },
+  "run": "d3b31c6706df464e9bf699ae6808fed4",
+  "scope": "Immutable launch/config/explicit human rollback record; running training source remains f2620d1"
+}
