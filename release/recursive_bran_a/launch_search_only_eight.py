@@ -8,7 +8,7 @@ assert os.getuid()==1005 and socket.gethostname().split('.')[0]=='xielab1'
 assert source.parent==b and source.name.startswith('source-eight-') and not Path('/proc',str(a.previous_owner)).exists()
 terminal=subprocess.check_output(['tmux','display-message','-pt',a.previous_session,'#{pane_dead}:#{pane_dead_status}'],text=True).strip()
 assert terminal=='1:1',terminal
-previous=Path(a.previous_receipt).resolve();assert previous.parent==b/'receipts'
+previous=Path(a.previous_receipt).resolve();assert previous.is_relative_to(b/'receipts') and previous.is_file()
 old=json.loads(previous.read_text());assert old['source_commit']==subprocess.check_output(['git','-C',old['source'],'rev-parse','HEAD'],text=True).strip()
 mf=b/'checkpoints/training_state/global_step_4/manifest.json';raw=mf.read_bytes();m=json.loads(raw)
 assert hashlib.sha256(raw).hexdigest()=='4d781f6920ce8ea8d56bff7c488ea960aa5b60e7b99a7635d19961bbfa06816f'
