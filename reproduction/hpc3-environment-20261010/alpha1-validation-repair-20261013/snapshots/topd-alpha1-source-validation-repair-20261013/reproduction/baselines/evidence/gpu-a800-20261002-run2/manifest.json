@@ -1,0 +1,18 @@
+{
+  "host": "baai-a800",
+  "remote_directory": "/data/shaoshitong/search-r1-rl-validation-20261002-ca95b89/run-2",
+  "implementation_commit": "ca95b89fcd6b1c45a8d0c31e257ef1c34bacb807",
+  "exit_code": 0,
+  "weight_decay": 0,
+  "actor_grad_norms_finite_positive": true,
+  "sha256": {
+    "result.json": "1e04b94aa98b27bea14523686aead344a303c14100078ec560bc6cbedec09fdc",
+    "rank-1.json": "d58f6b82f8f101240a5c9485cae1af3ba860dc301fd8bb8cc7ec65d2185b84d5",
+    "allocation.json": "71cfc296693d22fc84098536a98aae1611cba32c2a7c53a58c74b4f1c9f99a62",
+    "rank-0.json": "1b28478f0be490092a31c9237fd223dec2fe9ce6f120fbb21759ffe4ee4948b0",
+    "gpu-run-2.log": "d0a43f99d67e250c540ab2ac0536280d8939f8537904aaf7d2fc6313e00eb9a6",
+    "gpu_smoke.py": "aa0594643a96e35754083e7887d9ece894678709276707b7090d408d254f86ea",
+    "post-run-gpus.csv": "dc5181036d9a724f715bd0086c11338e52cb3b66ad3f17da13ebdc2c6a81cf3b",
+    "checkpoints.sha256": "9a36a85fad9b919fadfb355625e02678c2e3fb90fa6c4ccc17ac538606b47730"
+  }
+}

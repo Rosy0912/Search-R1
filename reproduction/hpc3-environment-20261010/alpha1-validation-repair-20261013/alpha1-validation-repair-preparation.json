@@ -1,0 +1,27 @@
+{
+  "epoch": 1791835381.8931873,
+  "status": "ISOLATED_REPAIR_PREPARED_CPU_VALIDATED_NOT_SUBMITTED",
+  "source": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-source-validation-repair-20261013",
+  "launcher": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-validation-repair-20261013",
+  "config": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/hpc3-topd200-alpha1-validation-repair-PREPARED-NOT-SUBMITTED.json",
+  "changes": [
+    "scheduled full recovery save before regular and stage validation",
+    "same fixed512 rows in batches32 with row-level aggregation"
+  ],
+  "order_test": {
+    "save_line": 940,
+    "stage_validation_line": 951
+  },
+  "failure_injection_test": {
+    "injected_regular_and_stage_validation_failure_after_save": true
+  },
+  "changed_files": {
+    "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-source-validation-repair-20261013/verl/trainer/ppo/ray_trainer.py": "189dfe2b800513a8360b98dd496614a1cb26eb6b15eaf7ac5d08f66427bbe84c",
+    "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-validation-repair-20261013/runtime/student_phase.py": "707302b54c56decb1bab487d24f35e10f6b4c2853516f86ea1333f67ec09d809"
+  },
+  "GPU_validation_tested": false,
+  "CUDA_originating_kernel_proved": false,
+  "rollback_or_initialization_selected": false,
+  "GPU_job_submitted": false,
+  "existing_final_job_untouched": 712266
+}

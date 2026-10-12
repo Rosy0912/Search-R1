@@ -68,6 +68,12 @@ if n>old_proof['outer']:
  proof=audit_outer(n,actual);save(proof_path.name,proof)
 v=json.loads((OUT/'topd-alpha1-and-stage512-status.json').read_text())
 v.update(observed_at=datetime.datetime.fromtimestamp(d['epoch'],datetime.timezone(datetime.timedelta(hours=8))).isoformat(),alpha1_verified_full_outers=d['alpha1_full_outers'],final51713_scored_rows=d['final_scored_rows'],latest_observation_errors=d['errors'])
+states={line.split('|')[0]:line.split('|')[1] for line in d.get('accounting',[]) if len(line.split('|'))>=2}
+states.update({line.split('|')[0]:line.split('|')[1] for line in d['queues']})
+v['alpha1_state']=states.get('712204','UNKNOWN_NOT_IN_QUEUE')
+if v['alpha1_state']=='FAILED':
+ v['alpha1_phase']='failed_during_stage50_validation; restore_decision_required'
+ v['alpha1_stage50_checkpoint_present']=(ACTOR/'checkpoints/actor/global_step_50/resume-complete.json').is_file()
 if proof:v.update(alpha1_rank_optimizer_steps=[20*n]*4,alpha1_phase='training_continues_after_outer%d'%n)
 metrics=actual['records'][-1]['metrics'] if actual['records'] else {}
 keys=['response_length/mean','response_length/max','env/finish_ratio','env/number_of_actions/mean','critic/score/mean','timing_s/gen','timing_s/adv','timing_s/update_actor','timing_s/step']

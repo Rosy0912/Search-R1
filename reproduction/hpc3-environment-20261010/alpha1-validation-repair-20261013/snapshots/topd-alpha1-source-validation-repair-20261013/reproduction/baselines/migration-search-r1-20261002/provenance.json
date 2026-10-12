@@ -1,0 +1,64 @@
+{
+  "search_r1_base": "9ab694499ad3913b67499f7a4ea13da6b544d459",
+  "search_g1_reference": "4e7448d66a78996467134441571fda0a6844d180",
+  "algorithm_source": "68184965c532fe30fef0d89c3ea19f976ac3bd63",
+  "base_is_ancestor": true,
+  "base_files_unchanged_count": 296,
+  "base_files_changed": [
+    {
+      "path": ".gitignore",
+      "base_sha256": "e6ff543f6da2f728393966472d0a561769705fbddbf3b0adf287fb24d661d51a",
+      "current_sha256": "8e7891099edac50748afb333a7fdfaa64d7a989e220f343f899f5c38476f49a8"
+    },
+    {
+      "path": "README.md",
+      "base_sha256": "e59ac9be3b36c7cec4194076ad973e75b67aab0213ff40551b4f4953a491911b",
+      "current_sha256": "f1c85f36b2eddcfa260b5fdf2298fd0aad37c13437d2445b208e1586c4ad2d14"
+    },
+    {
+      "path": "verl/trainer/main_ppo.py",
+      "base_sha256": "badc741ed8a888bd491e1540d0be8f7385f33984cd438c0c93239bdeb8bb82e9",
+      "current_sha256": "636c9cb40f9a1ea092afabb449e15eb024aa392725efb0bac72fd1971aadfc04"
+    },
+    {
+      "path": "verl/trainer/ppo/core_algos.py",
+      "base_sha256": "f7a0260fcc9dd73a856d358e9da325b74cc24a5e360da08eb31749457f752e33",
+      "current_sha256": "2a08d977f3aff8a8011b2c80a8ff48c4d6e4b4cf9404ebd9b8710fb95d6b8b55"
+    },
+    {
+      "path": "verl/trainer/ppo/ray_trainer.py",
+      "base_sha256": "8baf9e1f10d632c60e116260823de741b0a5ab02d4796d71cb1128023478203d",
+      "current_sha256": "907a62c3bb545511e1e292cf180d996373bbf0129d936517ee00b40fd87c8400"
+    },
+    {
+      "path": "verl/utils/torch_functional.py",
+      "base_sha256": "e6f0578b0f52b530d52e9fc69968108d67badeb8374f18f39258e3550ac35454",
+      "current_sha256": "21eedf934c643b6c0a6809df89915c17b80796254920dcd4cbe2ec5850a7f575"
+    },
+    {
+      "path": "verl/workers/actor/dp_actor.py",
+      "base_sha256": "71cc289d50076e6fc3bb30c26d69c2e98486834c28fe02548eb2a4c1c4301e33",
+      "current_sha256": "7c2604803241dd603d34d872ece2d865017e688097c58172943df5de030e69b8"
+    },
+    {
+      "path": "verl/workers/fsdp_workers.py",
+      "base_sha256": "7240fc2a9334a6a521f7e51836a031d09d2b4422796b40d5bcb4e3e897867e26",
+      "current_sha256": "5de013391855d10a2500d24001f41e3ef80106dcd79f9390ab856747b3e97430"
+    }
+  ],
+  "algorithm_kernels_byte_identical_to_prior": [
+    "search_r1/baselines/actor.py",
+    "search_r1/baselines/advantages.py",
+    "search_r1/baselines/bapo.py",
+    "search_r1/baselines/cosearch.py",
+    "search_r1/baselines/distillation.py",
+    "search_r1/baselines/objectives.py",
+    "search_r1/baselines/rollout.py",
+    "verl/workers/actor/dp_actor.py",
+    "verl/workers/fsdp_workers.py",
+    "verl/utils/torch_functional.py",
+    "verl/trainer/ppo/core_algos.py"
+  ],
+  "removed_base_files": [],
+  "original_branches_modified": false
+}

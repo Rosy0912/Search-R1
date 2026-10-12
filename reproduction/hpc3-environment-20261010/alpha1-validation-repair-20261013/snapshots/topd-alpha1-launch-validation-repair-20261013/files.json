@@ -1,0 +1,161 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "461261758f1cae1e42c339263a137a8f60de734580efe3068bc74c867538cbf4",
+      "size": 3948
+    },
+    "build_command.py": {
+      "sha256": "541ca044797388f0de21b0cdeda3c151b918a304344649aa9cbc0bb7974baf93",
+      "size": 996
+    },
+    "launch.sbatch": {
+      "sha256": "37d90234a59cd77562798f6d98bd579f5ca15ffc9e6d725649ff3718f7fc1b83",
+      "size": 1379
+    },
+    "prepare.py": {
+      "sha256": "e7432eef039ecb2d594394e018e512ac61d5190f416ef22fe13a8e0f18b6ea95",
+      "size": 3845
+    },
+    "recipe.json": {
+      "sha256": "eda27512173543f25f4bd3e53b19f0ce52f38179ffc37d0662740d5de122b3a1",
+      "size": 3385
+    },
+    "runtime/allocator_policy.py": {
+      "sha256": "0a04dd6ef798529418c1a923e1d139bb9d5dfc6484bf0f4df4c69fdbfc7accda",
+      "size": 2265
+    },
+    "runtime/bind_hpc3_run.py": {
+      "sha256": "7392aa8bbe3c97096a2b521ee2d135c9622a13732d9f59a7a65dd3b3415bcd87",
+      "size": 1593
+    },
+    "runtime/checkpoint_inventory.py": {
+      "sha256": "ffc648031dcd368163f2103abcbc279776277c03dd7cb4fc42d35646e093af14",
+      "size": 5696
+    },
+    "runtime/compiler_headers.py": {
+      "sha256": "329658d35573a6c5411cd87001d6d45e48b7ae0cddea2c87286711b9da9a0e69",
+      "size": 1412
+    },
+    "runtime/files.json": {
+      "sha256": "c12f6585f548fa3930df8bd81e9ca3a858d3703aba7441ea4067560d49d15ef0",
+      "size": 4768
+    },
+    "runtime/final_cleanup.py": {
+      "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d",
+      "size": 4027
+    },
+    "runtime/hpc3_owned_processes.py": {
+      "sha256": "5771f8e1e09582ed1fec305183a8bc873ed86570e1da61986bf3ab897ce2e4cd",
+      "size": 10475
+    },
+    "runtime/ipc.py": {
+      "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10",
+      "size": 1488
+    },
+    "runtime/observed_worker.py": {
+      "sha256": "00ee9faebda572cb5277a0181b2bd93dfb5932c39e6c62656d8dfcad65966e58",
+      "size": 3459
+    },
+    "runtime/observed_worker.py.before-topd200": {
+      "sha256": "4dd4dfea492e53a2bfc44372b739b1c4335a20e252a218919207ece435f5ac2a",
+      "size": 3266
+    },
+    "runtime/official_student.py": {
+      "sha256": "d7fd50ba651805b1fa77d4e0bd818af233bdd85c8eb69caad324886368debb93",
+      "size": 1838
+    },
+    "runtime/original-native-server.py": {
+      "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052",
+      "size": 15344
+    },
+    "runtime/owner_support.py": {
+      "sha256": "8e2092e6fb3188c3bc25c257d46ecab230b7624279805670f92621721cadedfa",
+      "size": 61389
+    },
+    "runtime/owner_support.py.before-topd200": {
+      "sha256": "ff1ea49c70916bbd176ac75fdcc73bf6b773c76dd947703f1706460971f4bd7b",
+      "size": 61389
+    },
+    "runtime/pipeline.py": {
+      "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0",
+      "size": 2455
+    },
+    "runtime/process_observation.py": {
+      "sha256": "a9d56a290903412ee0caa2ab979eb40826e8f0c28d319476614f7e77002cc441",
+      "size": 2051
+    },
+    "runtime/r1_observation.py": {
+      "sha256": "58038dbb5568fdf1f6e5025f5bdd4ddef9c1e8dc30c2bae2a22253fa442f45c7",
+      "size": 1361
+    },
+    "runtime/resource_audit.py": {
+      "sha256": "008a0bc0ec4c49a864977904ba5dd18ac4baa21bd8ba4b1e831f202a86e82f28",
+      "size": 8073
+    },
+    "runtime/resource_audit.py.before-topd200": {
+      "sha256": "d4ff27e49c0b58f1b98a568c3c57607bf589bb3a6717eea2691e531db290a778",
+      "size": 8073
+    },
+    "runtime/retrieval_gate.py": {
+      "sha256": "83f5bf7e7eb61124ae4b0a3450e15dd646fdc5e82ad54783b6110b070214e779",
+      "size": 4000
+    },
+    "runtime/retrieval_server.py": {
+      "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2",
+      "size": 15476
+    },
+    "runtime/retrieval_startup.py": {
+      "sha256": "3bc1b2a9a5eb104cff57033b18988524b396bcd916bf43cc61314ee1acc107e6",
+      "size": 19258
+    },
+    "runtime/retrieval_startup.py.before-topd200": {
+      "sha256": "6b5576552cd6b3f4bd3cb37d39fea7d3543e80a344e45a17c3bb1d5137788afc",
+      "size": 19258
+    },
+    "runtime/student_binding.py": {
+      "sha256": "6c99c46992839a57933c3de1f47d0a40740b012c26722d1cc7f95b71070b3626",
+      "size": 2596
+    },
+    "runtime/student_binding.py.before-topd200": {
+      "sha256": "707481e5da3f6168b81dfa8177d6a9e85161aa382a1aee619b982eeffe6bc01b",
+      "size": 2596
+    },
+    "runtime/student_observation.py": {
+      "sha256": "53886189b1cc4de4ecdfb82646b9b0934eda749bcc25d282ece2bf6ce31409de",
+      "size": 1700
+    },
+    "runtime/student_observation.py.before-topd200": {
+      "sha256": "b6803c9d42710bda880db2cd20ce021c150ee97d134ae537d8d227c29d993c9e",
+      "size": 1700
+    },
+    "runtime/student_phase.py": {
+      "sha256": "707302b54c56decb1bab487d24f35e10f6b4c2853516f86ea1333f67ec09d809",
+      "size": 1770
+    },
+    "runtime/supervise.py": {
+      "sha256": "feecd4cb56720d729c479af6581c5c4c38c50646fca4af73238510bce6b4f8f7",
+      "size": 16815
+    },
+    "runtime/supervise.py.before-topd200": {
+      "sha256": "0f65a7090de6cf6b198d462d715462df68111a067ff814f737849ae5244f61e8",
+      "size": 16786
+    },
+    "runtime/topd_resume_state.py": {
+      "sha256": "e9ff3585b07fd5d175ce38aef20f2311dc15e6ddd0b5262c4742585f724c542b",
+      "size": 7266
+    },
+    "runtime/train_entry.py": {
+      "sha256": "b4a19ff8439b26b6ad8449e7815a4e3648577a31d0a22b6f1c785e03a88adee4",
+      "size": 6707
+    },
+    "runtime/window_guardian.py": {
+      "sha256": "8e2d62eef6d3e65f009eb1f02cbc91cd43a75dd0e64db9b5c0cfeab2716fd09a",
+      "size": 9267
+    }
+  },
+  "hpc3_adaptation": {
+    "original_manifest_sha256": "316b6904ee463cc38eb13ad39618e9c11d4c64d7514dd317088f12909b03a2a5",
+    "status": "HPC3_INFRASTRUCTURE_PORT_NO_GPU_EXECUTION"
+  },
+  "schema": "EXACT_LOCAL_SOURCE_BYTES_V1"
+}

@@ -1,0 +1,52 @@
+{
+  "rank": 1,
+  "device": "NVIDIA A800-SXM4-80GB",
+  "methods": {
+    "gigpo": {
+      "parameter_delta_l1": 94.76504516601562,
+      "optimizer_steps": 2,
+      "grad_norms": [
+        0.77946537733078,
+        1.8605754375457764
+      ],
+      "weight_decay": 0.0
+    },
+    "tree_grpo": {
+      "parameter_delta_l1": 95.7998046875,
+      "optimizer_steps": 2,
+      "grad_norms": [
+        1.2484041452407837,
+        2.985090494155884
+      ],
+      "weight_decay": 0.0
+    },
+    "bapo": {
+      "parameter_delta_l1": 94.15945434570312,
+      "optimizer_steps": 2,
+      "grad_norms": [
+        0.6883255839347839,
+        1.644160270690918
+      ],
+      "weight_decay": 0.0
+    },
+    "topd": {
+      "parameter_delta_l1": 88.05313110351562,
+      "optimizer_steps": 2,
+      "grad_norms": [
+        2.2097110748291016,
+        0.7097967267036438
+      ],
+      "weight_decay": 0.0
+    },
+    "opsd": {
+      "parameter_delta_l1": 79.31362915039062,
+      "optimizer_steps": 2,
+      "grad_norms": [
+        0.07348430901765823,
+        0.0948786661028862
+      ],
+      "weight_decay": 0.0
+    }
+  },
+  "peak_allocated_mib": 20.134765625
+}

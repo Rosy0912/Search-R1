@@ -1,0 +1,302 @@
+[
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "config.json",
+    "path": "qwen2.5-3b/config.json",
+    "size": 683,
+    "sha256": null,
+    "git_blob_sha1": "acd0065677f7999d568f327c94188adbbcb6e158"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "generation_config.json",
+    "path": "qwen2.5-3b/generation_config.json",
+    "size": 138,
+    "sha256": null,
+    "git_blob_sha1": "cbbb3133034e192527e5321b4c679154e4819ab8"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "merges.txt",
+    "path": "qwen2.5-3b/merges.txt",
+    "size": 1671839,
+    "sha256": null,
+    "git_blob_sha1": "20024bfe7c83998e9aeaf98a0cd6a2ce6306c2f0"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "model-00001-of-00002.safetensors",
+    "path": "qwen2.5-3b/model-00001-of-00002.safetensors",
+    "size": 3968658944,
+    "sha256": "f9558df91d3b89b4826e4db37439edb52f1d62a4fd602685013e7ca6b9f60f8f",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "model-00002-of-00002.safetensors",
+    "path": "qwen2.5-3b/model-00002-of-00002.safetensors",
+    "size": 2203268048,
+    "sha256": "51410930d5cf19a998fdb17ef0c46e4d9ace72c97a975a3331395a8a500f5edb",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "model.safetensors.index.json",
+    "path": "qwen2.5-3b/model.safetensors.index.json",
+    "size": 35581,
+    "sha256": null,
+    "git_blob_sha1": "38047c6284a25427043f0ab040f623a2a20dd093"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "tokenizer.json",
+    "path": "qwen2.5-3b/tokenizer.json",
+    "size": 7031645,
+    "sha256": null,
+    "git_blob_sha1": "443909a61d429dff23010e5bddd28ff530edda00"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "tokenizer_config.json",
+    "path": "qwen2.5-3b/tokenizer_config.json",
+    "size": 7228,
+    "sha256": null,
+    "git_blob_sha1": "ba7e4c5637b9732dadcd66286ce48334e8b31e9e"
+  },
+  {
+    "repo": "Qwen/Qwen2.5-3B",
+    "kind": "model",
+    "revision": "3aab1f1954e9cc14eb9509a215f9e5ca08227a9b",
+    "file": "vocab.json",
+    "path": "qwen2.5-3b/vocab.json",
+    "size": 2776833,
+    "sha256": null,
+    "git_blob_sha1": "4783fe10ac3adce15ac8f358ef5462739852c569"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "config.json",
+    "path": "e5-base-v2/config.json",
+    "size": 650,
+    "sha256": null,
+    "git_blob_sha1": "24b4776266ab6abf7a9d6672f42b77f06ef77b87"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "model.safetensors",
+    "path": "e5-base-v2/model.safetensors",
+    "size": 437955512,
+    "sha256": "d0d559c47d5f71b1d280b13b62a2657f3e3bc70c0786f9ab91a36545e6a8f693",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "modules.json",
+    "path": "e5-base-v2/modules.json",
+    "size": 387,
+    "sha256": null,
+    "git_blob_sha1": "ac2039abdf6ff023b27c919bb9675cfe378cb10f"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "sentence_bert_config.json",
+    "path": "e5-base-v2/sentence_bert_config.json",
+    "size": 57,
+    "sha256": null,
+    "git_blob_sha1": "4eca68d85ecd3034cf4174d8a4033a75344ea62d"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "special_tokens_map.json",
+    "path": "e5-base-v2/special_tokens_map.json",
+    "size": 125,
+    "sha256": null,
+    "git_blob_sha1": "a8b3208c2884c4efb86e49300fdd3dc877220cdf"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "tokenizer.json",
+    "path": "e5-base-v2/tokenizer.json",
+    "size": 711396,
+    "sha256": null,
+    "git_blob_sha1": "688882a79f44442ddc1f60d70334a7ff5df0fb47"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "tokenizer_config.json",
+    "path": "e5-base-v2/tokenizer_config.json",
+    "size": 314,
+    "sha256": null,
+    "git_blob_sha1": "8046d4d4aff4529a10e0ad47043bdabd6304fb58"
+  },
+  {
+    "repo": "intfloat/e5-base-v2",
+    "kind": "model",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "file": "vocab.txt",
+    "path": "e5-base-v2/vocab.txt",
+    "size": 231508,
+    "sha256": null,
+    "git_blob_sha1": "fb140275c155a9c7c5a3b3e0e77a9e839594a938"
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "nq/dev.jsonl",
+    "path": "nq/dev.jsonl",
+    "size": 1073443,
+    "sha256": "10d5ee25e813f3e2092247a5d2797793dd47ef5853959989cb34bf80a110d607",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "nq/test.jsonl",
+    "path": "nq/test.jsonl",
+    "size": 487676,
+    "sha256": null,
+    "git_blob_sha1": "13ed63dc6abea679fffc8a6af4c93738ee3b8ada"
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "nq/train.jsonl",
+    "path": "nq/train.jsonl",
+    "size": 9960189,
+    "sha256": "572685d3f384d9c37479b1fb14232984c85ff13b58923c0c9442232bd5d5647b",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "PeterJinGo/wiki-18-corpus",
+    "kind": "dataset",
+    "revision": "69c1c00ffe7c5554c68d8548355cb22e46aabc51",
+    "file": "wiki-18.jsonl.gz",
+    "path": "wiki/wiki-18.jsonl.gz",
+    "size": 5123307260,
+    "sha256": "7abd929223399cd63c52b499f289bf4f9039be1e9f8c43e1cb3938305b2317db",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "PeterJinGo/wiki-18-e5-index",
+    "kind": "dataset",
+    "revision": "a4d31160a035f30764604f4827cd8f1d0315eb86",
+    "file": "part_aa",
+    "path": "wiki/part_aa",
+    "size": 42949672960,
+    "sha256": "a8a6a246951da4bbc8771a223283ef61963882a32864d9044ec00abb90fc3023",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "PeterJinGo/wiki-18-e5-index",
+    "kind": "dataset",
+    "revision": "a4d31160a035f30764604f4827cd8f1d0315eb86",
+    "file": "part_ab",
+    "path": "wiki/part_ab",
+    "size": 21609402413,
+    "sha256": "b6d9bc943626fe7cb44de4c849e9379e7f272ab216c0552acbcf2390cc033c11",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "hotpotqa/dev.jsonl",
+    "path": "hotpotqa/dev.jsonl",
+    "size": 48191374,
+    "sha256": "434ec155867019396312f3d466ce3406c71fe8a2917f49f63bb646ec5ad2ff52",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "hotpotqa/train.jsonl",
+    "path": "hotpotqa/train.jsonl",
+    "size": 569520788,
+    "sha256": "a81274abafa899ec0ee073102edbe6bb694a8a1174201b4e43e2bc6c98964d1a",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "triviaqa/test.jsonl",
+    "path": "triviaqa/test.jsonl",
+    "size": 4797585,
+    "sha256": null,
+    "git_blob_sha1": "ac73792cbcaca1cbe1f7407c69b577095a7231f6"
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "popqa/test.jsonl",
+    "path": "popqa/test.jsonl",
+    "size": 8526089,
+    "sha256": "f976372fce3d7fe01b070357040391f10bd2710eeaa7c40d21c6574ffcad6cb8",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "2wikimultihopqa/dev.jsonl",
+    "path": "2wikimultihopqa/dev.jsonl",
+    "size": 54682944,
+    "sha256": "b4d74d73d1cb3c0632c665a85e1e5060e3411968b807721618cfd2464fc905e3",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "musique/dev.jsonl",
+    "path": "musique/dev.jsonl",
+    "size": 5620439,
+    "sha256": "d1cc08bcc91b060ba67c1e12881789e1315fb9f85d46f03a3413dd5e0f2ed02c",
+    "git_blob_sha1": null
+  },
+  {
+    "repo": "RUC-NLPIR/FlashRAG_datasets",
+    "kind": "dataset",
+    "revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+    "file": "bamboogle/test.jsonl",
+    "path": "bamboogle/test.jsonl",
+    "size": 17031,
+    "sha256": null,
+    "git_blob_sha1": "ccedb25ff30c61d913d7fb85be6cc3a246b0e2e7"
+  }
+]

@@ -1,0 +1,57 @@
+{
+  "epoch": 1791835244.2114904,
+  "status": "ALPHA1_FAILED_DURING_STAGE50_VALIDATION_NO_STEP50_RECOVERABLE_STATE",
+  "job": 712204,
+  "accepted_full_outers": 49,
+  "actual_four_rank_parameter_updates_through_outer": 50,
+  "rank_audit": [
+    {
+      "rank": 0,
+      "completed_parameter_updates_through_outer": 50,
+      "optimizer_steps": 1000,
+      "scheduler_last_epoch": 50,
+      "learning_rates": [
+        8.771929824561403e-07
+      ],
+      "all_update_inputs_and_steps_finite": true
+    },
+    {
+      "rank": 1,
+      "completed_parameter_updates_through_outer": 50,
+      "optimizer_steps": 1000,
+      "scheduler_last_epoch": 50,
+      "learning_rates": [
+        8.771929824561403e-07
+      ],
+      "all_update_inputs_and_steps_finite": true
+    },
+    {
+      "rank": 2,
+      "completed_parameter_updates_through_outer": 50,
+      "optimizer_steps": 1000,
+      "scheduler_last_epoch": 50,
+      "learning_rates": [
+        8.771929824561403e-07
+      ],
+      "all_update_inputs_and_steps_finite": true
+    },
+    {
+      "rank": 3,
+      "completed_parameter_updates_through_outer": 50,
+      "optimizer_steps": 1000,
+      "scheduler_last_epoch": 50,
+      "learning_rates": [
+        8.771929824561403e-07
+      ],
+      "all_update_inputs_and_steps_finite": true
+    }
+  ],
+  "actual_checkpoint_directories": [
+    "global_step_5"
+  ],
+  "primary_error": "CUDA illegal memory access during stage512 vllm greedy generation; asynchronous originating kernel not proved",
+  "save_order": "stage_validation ran before _save_checkpoint",
+  "automatic_rollback_or_reinitialization_performed": false,
+  "independent_final_job": 712266,
+  "final_job_untouched": true
+}
