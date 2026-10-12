@@ -29,7 +29,8 @@ def own_processes(run):
 def release_own(run):
  # Immutable run env + UID + fresh starttick + pidfd, never foreign processes.
  for pid,tick in own_processes(run):
-  fd=os.pidfd_open(pid)
+  try:fd=os.pidfd_open(pid)
+  except (FileNotFoundError,ProcessLookupError):continue
   try:
    raw=Path('/proc',str(pid),'stat').read_text().rsplit(') ',1)[1].split()
    assert int(raw[19])==tick

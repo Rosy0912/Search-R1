@@ -48,5 +48,5 @@ launch=folder/'launch.sh';launch.write_text(command);launch.chmod(0o700)
 session='rba-eight-search-'+run[:8];subprocess.run(['tmux','new-session','-d','-s',session,'bash '+shlex.quote(str(launch))],check=True)
 subprocess.run(['tmux','set-option','-t',session,'remain-on-exit','on'],check=True)
 proof=dict(time=time.time(),run_id=run,source_commit=commit,config=str(rp),source=str(source),log=str(log),session=session,
- output=r['output'],parent_completed_outer=4,parent_actual_adam=r['parent_actual_adam'],gate=str(gate),status='STARTED_NOT_ACCEPTED',previous_owner=a.previous_owner,previous_session=a.previous_session,previous_terminal=terminal,previous_receipt=str(previous),recovery_scope='CP4 complete Adam/RNG restored; failed round5 unpersisted updates recomputed; no exact vLLM replay claim')
+ output=r['output'],parent_completed_outer=4,parent_actual_adam=r['parent_actual_adam'],gate=str(gate),status='STARTED_NOT_ACCEPTED',contention_authorized=a.attempt_contention,initial_directfree_mib=free,initial_compute_pids=sorted(apps),previous_owner=a.previous_owner,previous_session=a.previous_session,previous_terminal=terminal,previous_receipt=str(previous),recovery_scope='CP4 complete Adam/RNG restored; failed round5 unpersisted updates recomputed; no exact vLLM replay claim')
 (folder/'launch.json').write_text(json.dumps(proof,indent=2));print(json.dumps(proof))
