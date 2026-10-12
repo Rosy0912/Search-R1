@@ -11,7 +11,7 @@ for index in range(2000):
         opened=subprocess.run([sys.executable,str(root/'open_task_transport.py'),str(binding),'20'])
         if opened.returncode==0:sock=json.loads(binding.read_text())['socket']
         time.sleep(5);continue
-    d=json.loads(path.read_text());assert d['entry']['run_id']==a.run_id and d['entry']['job']=='3387'
+    d=json.loads(path.read_text());assert d['entry']['run_id']==a.run_id and d['entry']['job']==a.job_id
     receipts=d['completed_outer_receipts'];complete=max((v['outer'] for v in receipts),default=0)
     print(json.dumps({'time':d['time'],'owner':d['entry']['pid'],'process':d['process'],'complete':complete,
         'actual_writes':sum(v['writes'] for v in receipts),'latest_stage':d['latest_stage'],'error':d['error']}),flush=True)
