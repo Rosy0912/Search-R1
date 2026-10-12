@@ -1,0 +1,25 @@
+{
+  "scope": "archive CPU loader code; new common169028 reference, no historical169103 equality",
+  "files": {
+    "verl/utils/dataset/rl_dataset.py": {
+      "snapshot": "rl_dataset.py",
+      "sha256": "e95b34a590956ed37e69631c87712c9dacbddc0fae632ca1e5403ed19e409815"
+    },
+    "verl/utils/torch_functional.py": {
+      "snapshot": "torch_functional.py",
+      "sha256": "e6f0578b0f52b530d52e9fc69968108d67badeb8374f18f39258e3550ac35454"
+    },
+    "verl/utils/model.py": {
+      "runtime_sha256_required": "6b6def87d02f60692f175d3a4f8e8c2a07e914b896881c1ab3bf5e83287e359a"
+    },
+    "verl/utils/fs.py": {
+      "runtime_sha256_required": "a922d349ce08eb4e23d878a33eba415e478ca467562b2082708fcc6f409ecb7e"
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "original_sha256": "c46280f4bc753187471c9f31b983291270f17990915de0afa87ebd3040646964",
+      "snapshot": "create_dataloader.py",
+      "snapshot_sha256": "ada6e4261c0dcde17734f660d30ca8b2024004bbfc3c5bd935bb4e9e2334842c",
+      "extraction": "exact AST source segment RayPPOTrainer._create_dataloader"
+    }
+  }
+}

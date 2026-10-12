@@ -1,0 +1,3 @@
+import json,subprocess
+from pathlib import Path
+r=Path('/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v3-20261009');b=json.loads((r/'scheduler-head/formal-submit-receipt.json').read_text());run=Path(b['run']);p=subprocess.run(['df','-B1',str(r),'/dataset','/tmp'],capture_output=True,text=True);print(json.dumps({'df':p.stdout,'run_directories':[(str(p.relative_to(run)),p.is_symlink())for p in run.iterdir()if p.is_dir()],'checkpoints_exists':(run/'checkpoints').exists(),'cleanup3352':Path(str(r).replace('v3','v2')+'/runs/formal-aligned-em200-09f93f1e773f4419928c0662e4537f32-3352/cleanup-exit-code.txt').read_text()}))

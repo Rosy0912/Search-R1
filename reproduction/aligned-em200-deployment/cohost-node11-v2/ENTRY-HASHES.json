@@ -1,0 +1,16 @@
+{
+  "source": "080ebbc46b89d61567cd33e1a5e2f1b40afd8b84",
+  "root": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v2-20261009",
+  "scope": "LOCAL_NODE11_COHOST_LAUNCH_CANDIDATE_NOT_DEPLOYED_OR_GPU_ACCEPTED",
+  "files": {
+    "formal.sbatch": "86c703fb3e35e9d85113440cb56aa17f17fd7f1e5cb24641964d8e09412a599d",
+    "formal_worker.sh": "a56c7e86239bfdcb1079892581ea67c4f3ac0241c12e219417ae750715f95285",
+    "formal_inner.sh": "e8c7f42c335e0458781596f596d60111ab040ed105e445254779efbdd88c3c2c",
+    "formal_driver.py": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a",
+    "formal_service_proof.py": "0893b194cb9949d3854bbfe3afded16af65ccd3b82bd19788008656432824813",
+    "bind_retrieval_proof.py": "cd008b1125d2bceb660a22803a6077f860da0bdcab8eed9c933493c7b1c6dd43",
+    "ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "formal_admission.py": "03650e3e47c0fd7fda30248fb46b0ced14726b41ac89eec9e03587bc1e8754c2",
+    "submit_formal.py": "cca8f3ca52438e35d7e60b5460e3c3224f1c36edc5f1df3dffd97f6e4b8d2898"
+  }
+}

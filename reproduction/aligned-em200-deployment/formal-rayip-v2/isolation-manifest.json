@@ -1,0 +1,86 @@
+{
+  "source": "080ebbc46b89d61567cd33e1a5e2f1b40afd8b84",
+  "root": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009",
+  "deployment": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal-rayip-v2",
+  "scheduler": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/formal-rayip-v2",
+  "shared_global_submission_lock": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/submission-global.lock",
+  "shared_global_execution_lock": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/execution-global.lock",
+  "changes": [
+    {
+      "file": "formal.sbatch",
+      "original_sha256": "1ac3e2a317488593d18f0fdecb130c068a30e8987540cbd67f8739980c9f81cd",
+      "retry_sha256": "234a5a625d795151c6718698ce9b6803f39685584c2ed6a55300b215d3ae7f39"
+    },
+    {
+      "file": "formal_worker.sh",
+      "original_sha256": "f65e3d8cde4aa935d0fe941da11840c003dc6d381e81901f59a4c622cd7efcb7",
+      "retry_sha256": "2e4b9a20c4accf647179706e282ffc1a26334e0db1dd4fdb4bd1b93ac4c0b35e"
+    },
+    {
+      "file": "formal_inner.sh",
+      "original_sha256": "671625f8b8671518144a09feba280a58dceb303a1eccc399a68810b00f263cbc",
+      "retry_sha256": "4c2c65cc4a8c54da78f3eaef90f2dd2f11bd9f584b48a9d786c427d0b98a426b"
+    },
+    {
+      "file": "formal_driver.py",
+      "original_sha256": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a",
+      "retry_sha256": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a"
+    },
+    {
+      "file": "ray_cli_compat.py",
+      "original_sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+      "retry_sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+    },
+    {
+      "file": "formal_service_proof.py",
+      "original_sha256": "704909275113fe079c287e8652c07ef000e4cfa06f7cf904781b93dc9bed6a96",
+      "retry_sha256": "8e38dcbb6a76c62fb14a6d1d3fccbbf47c0496b1182ab0867314e311f95a3ce1"
+    },
+    {
+      "file": "bind_retrieval_proof.py",
+      "original_sha256": "3ae4f0095b775716b0f2d3180b513906a7be51837d1f2786b3ec72447733704d",
+      "retry_sha256": "3ae4f0095b775716b0f2d3180b513906a7be51837d1f2786b3ec72447733704d"
+    },
+    {
+      "file": "submit_formal.py",
+      "original_sha256": "d2800301767a62ef41e65da5baeed38ad58a69505ce655cc81cb9d5b57a70562",
+      "retry_sha256": "9ccdb868b6bce69d04adff621ff695585d9bc327ad4ad5dd2564fecf3c8e64be"
+    }
+  ],
+  "original_failure_files": {
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/.aligned-startup-claim.json": "13fc6cc4e0587a284a4a96d0c6387a0fa9c5efc7067c8cb869308b732c792883",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/cleanup-exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/driver-time.log": "2740e463a56f6c6fd6a3d964c0cd1b02c2aa683b03aaab3adc28d80d962d1d7a",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/formal-supervisor.log": "122f72c337a2a40a2ba9bb4cff5ca70b04016f5133b23e0c223f5c42e570f1e9",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/gpu-exit.csv": "f51b1b0c524ca8b566c0b69d376543bb2fda7ce1b423712cd9000c2ae7274bca",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/gpu-exit.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/identity-ready.tmp": "253173353df45d18996e8ec798dbbc241f2629b05ec8c099b4d739840ccdd705",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/original-exit-code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/own-formal-ray-head.json": "f66ecf2d385d23728096ba0d622cc68cadac4fbb7e10ca93c558d3bba1baeede",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/own-formal-retriever-birth.json": "1b9d35141884193c33d6f38aba0a6e360e1a2e9102a125759199708745a34b62",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/own-process-cleanup.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/own-process-cleanup.json": "5ff7eedcd6f70bcdae48f3c8ecbe8a9a258d26dc317bf2cedea2c99a0fefddc9",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/ray-head.log": "76bf87314333d4e5085cab8023087c373d4500db5f2af0bbc557ae60617bd9b7",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/ray-runtime-path.json": "0555b1d82e775c2be7a5d064dc9c2d8026cb129697048eba327ad140dad45552",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/resolved-config.yaml": "b1bb537933ea699fd0a38c34896d1e93df51cdeb57ba64736e7cd503524d009a",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/resource-watch.jsonl": "01dbd30459f623f5bd7f78cbca4f96be970c191b5f1b267c5ee1fc96b2434af5",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/retriever.log": "2b879639c67ffbdbb6ac2819131dda8e58ca97efbfd64b413aab058318e49e66",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/source-commit.txt": "f72c857ebfd41b57149aab98c77aeb44d3523c0b49ce321819ce28166027adf9",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/formal-aligned-em200-66cb18840a404586ab3333f8c393b8b7-3348/train.log": "22f1533b55b9e20c659f3a6fab52db52eeeb52a3ce80ef439dd48909cbe2a077",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/formal-submit-intent.json": "139379bf32ebe6def7660944a8716e7d217bd757031b74d1db6d75ea958706d9",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/formal-submit-receipt.json": "b31b3cb3a45f8d457a6a8fdd0cd7ace66b9dac3752424143d5667287938a14c5",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/scheduler-head/formal-sbatch-response.json": "d6635539c701b3e8a85efcb50f156b1ad87d84edd67cc833f8fa2c28fdd324f1",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/logs/slurm-formal-3348.out": "418a2cf8a77e0fe6aa2d7c1e556b705f45f59d5a4688b6033d846a05409ff990",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/logs/slurm-formal-3348.err": "a5f7cfd51a8ebeccadffb55af2d9c1e3a95ca26ba33cc490bfb98bd9c01afc75",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal_admission.py": "c31f162d85b11de833d05dc70dd0dc71bc888144a2fefe47e3d6b4df4b751bf1",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal.sbatch": "1ac3e2a317488593d18f0fdecb130c068a30e8987540cbd67f8739980c9f81cd",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal_worker.sh": "f65e3d8cde4aa935d0fe941da11840c003dc6d381e81901f59a4c622cd7efcb7",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal_inner.sh": "671625f8b8671518144a09feba280a58dceb303a1eccc399a68810b00f263cbc",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal_driver.py": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/formal_service_proof.py": "704909275113fe079c287e8652c07ef000e4cfa06f7cf904781b93dc9bed6a96",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/bind_retrieval_proof.py": "3ae4f0095b775716b0f2d3180b513906a7be51837d1f2786b3ec72447733704d",
+    "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/tools/deployment/submit_formal.py": "d2800301767a62ef41e65da5baeed38ad58a69505ce655cc81cb9d5b57a70562"
+  },
+  "scope": "ISOLATED_ZERO_UPDATE_RETRY_CANDIDATE_NOT_EXECUTED_OR_ACCEPTED"
+}

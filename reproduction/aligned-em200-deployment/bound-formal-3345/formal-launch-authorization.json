@@ -1,0 +1,11 @@
+{
+  "authority": "Existing human-authorized baseline-aligned fresh200 execution goal; does not request new authorization or reuse old3315",
+  "configuration": "Full mini128/20writes, reference KL.001, ordinaryPPO, 57outerwarmup,4tool+finalnosearch,perouter initial/any5/retained EM; retain BAPO reward/stage mechanisms",
+  "hardware_review_sha256": "fea2f12a1bbc54008cdc4176d2156105e2988681c435738451dde44200b6d49f",
+  "prepared_utc": "2026-10-09T02:04:35.292309+00:00",
+  "root": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009",
+  "same_process_first5_gate": true,
+  "scope": "EXPLICIT_FORMAL_LAUNCH_AUTHORIZATION_NOT_COMPLETED_TRAINING",
+  "source": "080ebbc46b89d61567cd33e1a5e2f1b40afd8b84",
+  "status": "AUTHORIZED_SINGLE_FRESH200_ALIGNED_LAUNCH"
+}

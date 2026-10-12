@@ -1,0 +1,14 @@
+payload='H4sIAOj8yGoC/61W227jNhB911cQ7oNkwLJ1sSUrRR6CJAUWKJpFNuirQJEji12ZFEgqWWPRf+9QlzjubtqiWAO2LM54Zs6ZMyMvFosHCUQY1VILnHR91QpGrVCSdFoxMGZFXoRtSC9ZQ+UBeChk11vCxQGMJRp6A4QyrYwhlULHrqEGzHqxWHji2CltyXhpRTUf/GGUnL+bk/FqrY6ko7ZBn8mbfMTb0fAMWtQCeDmmLBllDcxuv0/Gu8F260ye9/jw8ESuhxCBv+HUYkV2YxqqTCOskoeNAapZE+o41O2mop0KaSsOEtEx1ShjQ6k4xHH4jO8kSrI4igp/6WGxa1fnWkgD2gbRihirA5dv41ulWrPh0LXqdARpN7XQxu7mUGm6K8LnxF8uZ+gD2aYpR79SQwvUkWlmC2hvBHv9PZzB0jtg09D46r42qtcMSneO5p/Ig2xPM4E6bBWjLTkq3reAnatBg8QWk7GzP7uO854Nza9FiwYqObGaCinkYdYDIqYnIqSlzK69Wmki6RH7IUngj7SWOl5XiKQVEoVQazBNEkVDUf5qeeURfE1FXJ/FsR6/laMlcEGXb1zXk+CuyUDJdPsf8k+NLTuqraAt0mz6IxZC/tGbqWPXgoXd7P+/64YvSFTp+Hyt/XzknVvHuv4djBoYiM4dj0KDZ8Fd42aBCYmiA/yQNtRohJdBa7NuwySJo80vHx4/Pe1GFT7e/3p/8+ker7f3Hz4+hbc3v919uLt5ul+7yfTnhCVODCb1622VA+yiLN3lGS/Ydp/V8T5NodrmFS94Xu1YUiQVZFue8biOU8iyOI2LKKXbOmUu4EDRFC9PCk7ZDiJg2baCoi5yXu/TglWUZtsti4tsn7A4y6pdnhZJyvIqqRKUaxJX0ZZhPORqDsYA9lAAZs7jmhfFnvJ4m29pXezrvI52VbpLeRXxfJ9hFihYzlIoMkhrnsRxsfc91Vu30N5jdxrLgbihLTw5rwRPaXEQEmVFrToKVk79vBjKS5PHocaJA/YZZXZpCizVB7ArounLpLdRCMMEn8rXHRyMCtNgey3JOzVcRPPeK8eJ7bvFeFafxhq6lsoLQB32k2oIJp1ghrNg3M3c7BWZGrUiI8kr4pbA8t+RdRoXTODUuOb9sTPBV394rvhX/pTcX/nVyYLB+aTcvxqjnU9W/nBS4r43s/V88udyReq2N831k+6nehzK0i13hDpWu/Gn3ofONs3GyLvpW3tJycT5a5TVxQyfz5d/Y+sHEDKmRkLGuvyr8fojCaqdvtpJD/OEvDsy85iM2HE/PeNqUvr0hsLhP8X8u7XC9RX4X/yle/jVYxb3esWLcJE1pTnWOhE13eMefwuTfIOTXAAl3yBFoPgUd4r9DCcz4f0Lv2IXoBgJAAA='
+import os,base64,gzip,json,subprocess
+from pathlib import Path
+r=Path('/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009');run=r/'runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359'
+assert os.uname().nodename=='h100-11';assert not(run/'logs/fresh200-step5-independent-release.json').exists()
+assert not Path('/proc/1690707').exists(),'Previous verifier still alive'
+logs=run/'logs';logs.mkdir(exist_ok=True);assert logs.resolve()==logs
+old=r/'tools/deployment/first5-cached3359';d=r/'tools/deployment/first5-cached3359-v2';d.mkdir();assert d.resolve()==d
+for n,raw in [('verified_digest_cache.py',(old/'verified_digest_cache.py').read_bytes()),('publish_first5_cached3359_v2.py',gzip.decompress(base64.b64decode(payload)))]:
+ with(d/n).open('xb')as f:f.write(raw);f.flush();os.fsync(f.fileno())
+env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONPATH=str(r/'repo'),HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',PYTHONDONTWRITEBYTECODE='1');env.pop('LD_LIBRARY_PATH',None)
+log=r/'evidence/first5-cached3359-v2-publication.log'
+with log.open('xb')as f:p=subprocess.Popen([str(r/'env/bin/python'),'-B',str(d/'publish_first5_cached3359_v2.py')],cwd=r/'repo',env=env,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+print(json.dumps({'pid':p.pid,'log':str(log),'gate_directory':str(logs),'scope':'PUBLICATION_ONLY_TRAINING_UNCHANGED'}))
