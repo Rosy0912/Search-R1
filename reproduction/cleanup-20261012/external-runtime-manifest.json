@@ -440,11 +440,6 @@
     "sha256": "a9d0572651208acbda47f4c7841338eda83fe6026f1e79de1221835b738ca356"
   },
   {
-    "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/python-dev/usr/lib/python3.10/config-3.10-x86_64-linux-gnu/python-config.py",
-    "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/python-dev/usr/lib/python3.10/config-3.10-x86_64-linux-gnu/python-config.py",
-    "sha256": "cc99a494ab1935668b0dace9666eca42c6c26fed0bfe661fd99c7216cc2dea04"
-  },
-  {
     "source": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_hooks_instruct300.py",
     "path": "reproduction/cleanup-20261012/external-runtime/tree-grpo-retained18-20261008/instruct300/candidates/current200-retained18-speed-v12-48a59da/validation_cost_hooks_instruct300.py",
     "sha256": "1164c03590e3ff0dfac261078b74f338d1c9af5ab0b38b829168f2bf3f81bcb3"
