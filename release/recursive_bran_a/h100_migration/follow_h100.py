@@ -1,6 +1,6 @@
 """Follow the running task without restarting jobs or acquiring GPU locks."""
 import argparse,json,pathlib,subprocess,sys,time
-p=argparse.ArgumentParser();p.add_argument('--socket',required=True);p.add_argument('--output',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--socket',required=True);p.add_argument('--output',required=True);p.add_argument('--run-id',default='48528afa6b6443cfbb35328fd8b0ff05');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parent;out=pathlib.Path(a.output);out.mkdir(parents=True,exist_ok=True);sock=a.socket
 for index in range(2000):
     path=out/f'progress-{index:05d}.json'
@@ -11,7 +11,7 @@ for index in range(2000):
         opened=subprocess.run([sys.executable,str(root/'open_task_transport.py'),str(binding),'20'])
         if opened.returncode==0:sock=json.loads(binding.read_text())['socket']
         time.sleep(5);continue
-    d=json.loads(path.read_text());assert d['entry']['run_id']=='48528afa6b6443cfbb35328fd8b0ff05' and d['entry']['job']=='3387'
+    d=json.loads(path.read_text());assert d['entry']['run_id']==a.run_id and d['entry']['job']=='3387'
     receipts=d['completed_outer_receipts'];complete=max((v['outer'] for v in receipts),default=0)
     print(json.dumps({'time':d['time'],'owner':d['entry']['pid'],'process':d['process'],'complete':complete,
         'actual_writes':sum(v['writes'] for v in receipts),'latest_stage':d['latest_stage'],'error':d['error']}),flush=True)
