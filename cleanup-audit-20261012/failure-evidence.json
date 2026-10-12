@@ -1,0 +1,68 @@
+[
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job2992-1791016340597739432/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-resume200to300-job3127-1791085822347750961/training.log",
+    "failure_line": [
+      "\u001b[36m(main_task pid=3335985)\u001b[0m Traceback (most recent call last):",
+      "\u001b[36m(main_task pid=3335985)\u001b[0m Traceback (most recent call last):",
+      "Traceback (most recent call last):",
+      "traceback: Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume80-job3227-1791158904736529606/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume75-job3221-1791145773457438211/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-quality10-resume25-job3248-1791203982877766396/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  },
+  {
+    "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume75-job3225-1791150281881004640/training.log",
+    "failure_line": [
+      "Traceback (most recent call last):"
+    ],
+    "epoch": 1791782559.986531
+  }
+]

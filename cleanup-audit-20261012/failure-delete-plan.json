@@ -1,0 +1,78 @@
+{
+  "delete": [
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job2992-1791016340597739432/checkpoints/actor/global_step_100",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job2992-1791016340597739432/checkpoints/actor/global_step_5",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job2992-1791016340597739432/checkpoints/actor/global_step_200",
+      "du_bytes": 13604429824
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_150",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_175",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_100",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_125",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_5",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_75",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_200",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_50",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo/runs/gigpo-formal500-job3026-1791052688649720648/checkpoints/actor/global_step_25",
+      "du_bytes": 13604425728
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_85",
+      "du_bytes": 62981656576
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_100",
+      "du_bytes": 62981656576
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-zero-adv-resume80-job3230-1791165139303212682/checkpoints/actor/global_step_125",
+      "du_bytes": 62981656576
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume75-job3225-1791150281881004640/checkpoints/actor/global_step_80",
+      "du_bytes": 62981656576
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_5",
+      "du_bytes": 62982684672
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3340-1791441919057393097/checkpoints/actor/global_step_50",
+      "du_bytes": 62982770688
+    }
+  ],
+  "preserve": "all current roots, resume5,CP10, shared bootstrap, best25",
+  "failure_evidence": "historical training.log Traceback; zero-adv GPU512 collapsed125 EM0%"
+}
