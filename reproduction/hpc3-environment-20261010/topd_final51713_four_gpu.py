@@ -62,7 +62,12 @@ def worker(rank):
    width=batch.batch['responses'].shape[1];m=batch.batch['attention_mask'][0,-width:].bool() & batch.batch['info_mask'][0,-width:].bool()
    atomic(OUT/('rank%d-first-response-audit.json'%rank),{'padding_side':tok.padding_side,'model_spans':decode_model_response_spans(tok,batch.batch['responses'][0],m)})
   scored=batch_answer_metrics(batch,tok)
-  for i,row in enumerate(scored): row['row_id']=indexes[batch_i*32+i]
+  for i,row in enumerate(scored):
+   row['row_id']=indexes[batch_i*32+i]
+   from search_r1.baselines.bapo import answer_from_spans
+   width=batch.batch['responses'].shape[1]
+   model_mask=batch.batch['attention_mask'][i,-width:].bool() & batch.batch['info_mask'][i,-width:].bool()
+   row['prediction']=answer_from_spans(decode_model_response_spans(tok,batch.batch['responses'][i],model_mask))
   atomic(OUT/('rank%d-batch-%04d.json'%(rank,batch_i)),{'rows':scored,'sha256':hashlib.sha256(json.dumps(scored,sort_keys=True).encode()).hexdigest()})
   rows.extend(scored);atomic(OUT/('rank%d-progress.json'%rank),{'rank':rank,'rows':len(rows),'epoch':time.time(),'seconds':time.time()-started,'metrics':aggregate_answer_metrics(rows)})
   print('RANK_PROGRESS',rank,len(rows),flush=True)
