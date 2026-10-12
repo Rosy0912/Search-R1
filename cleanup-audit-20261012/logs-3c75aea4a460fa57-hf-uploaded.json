@@ -1,0 +1,11 @@
+{
+  "status": "HF_UPLOAD_VERIFIED",
+  "group": "necessary-logs",
+  "archive_bytes": 5272709120,
+  "archive_sha256": "bbd8c37e095d9728b95a3c20503d4fde291db4772bb570f9f4372f46b05bc334",
+  "repo_path": "h100-cleanup-20261012/gigpo/necessary-logs.tar",
+  "commit": "c1e91ec0960fec918266fc715f1b3704a3ce5ee7",
+  "epoch": 1791789552.6931744,
+  "elapsed_seconds": 3768.744645357132,
+  "model_disk_staging": false
+}

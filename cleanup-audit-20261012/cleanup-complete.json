@@ -1,0 +1,11 @@
+{
+  "status": "BEST_HF_INFERENCE_SHA_VERIFIED_SOURCE_FRESH_CHECKED_OLD_OUTPUTS_CLEANED_TRAINING_ADVANCED",
+  "epoch": 1791789753.9187675,
+  "deleted_bytes": 726313934848,
+  "deleted_paths": 18,
+  "blocked": [],
+  "after_df": "Filesystem                 1B-blocks           Used     Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 13152687702016 1319905951744  91% /mnt/data",
+  "before_step": 42,
+  "after_step": 43,
+  "extra_state_upload_status": "separate uploader continues until upload-complete.json"
+}

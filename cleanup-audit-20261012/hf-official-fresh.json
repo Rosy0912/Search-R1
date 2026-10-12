@@ -1,0 +1,27 @@
+{
+  "epoch": 1791789475.865814,
+  "revision": "0b8d604da469d38352e713419da0537c6ff32fb6",
+  "verified": [
+    {
+      "path": "h100-cleanup-20261012/gigpo/gigpo-best512-step25/model-00001-of-00003.safetensors",
+      "bytes": 4982131536,
+      "sha256": "c3fb1b5901fbd1765ba4ae4832974f3a9520ae37e292132f55ed426b3cb5f9ff"
+    },
+    {
+      "path": "h100-cleanup-20261012/gigpo/gigpo-best512-step25/model-00002-of-00003.safetensors",
+      "bytes": 4932949336,
+      "sha256": "03ac7c24646369e7da4ad09f6a1ee9eefc2ef2e7f5bcb1768310dd9dec68fea1"
+    },
+    {
+      "path": "h100-cleanup-20261012/gigpo/gigpo-best512-step25/model-00003-of-00003.safetensors",
+      "bytes": 3673383040,
+      "sha256": "ff0b269447ae447defc6390743730b3b2a5d7f155739c4cb5f9cc4bea7d78c18"
+    },
+    {
+      "path": "h100-cleanup-20261012/gigpo/gigpo-best512-step25/tokenizer.json",
+      "bytes": 11421896,
+      "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+    }
+  ],
+  "verified_lfs_bytes": 13599885808
+}
