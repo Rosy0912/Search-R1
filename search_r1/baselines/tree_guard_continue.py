@@ -1,5 +1,6 @@
 """Fresh-rollout continuation accounting, distinct from completed-outer credit."""
 import copy
+import os
 from pathlib import Path
 
 PROTOCOL = 'tree_guard_continue_fresh_rollout_v1'
