@@ -216,6 +216,17 @@ def main():
         if receipt.exists():
             old=json.loads(receipt.read_text());assert old['archive_sha256']==record['archive_sha256'];assert old['archive_bytes']==record['archive_bytes'];verify_file(api,plan,record,token,old['commit']);mark(record,old);return
         for attempt in range(4):
+            from huggingface_hub.utils import get_session
+            from urllib.parse import urlsplit,parse_qs
+            part_acks={};session=get_session()
+            def part_response(response,*args,**kwargs):
+                try:
+                    if response.request.method=='PUT' and 200<=response.status_code<300:
+                        qs=parse_qs(urlsplit(response.url).query);num=int(qs.get('partNumber',['1'])[0]);n=int(response.request.headers.get('Content-Length',0));part_acks[num]=n
+                        write(ROOT/(rid+'-part-acks.json'),{'file':record['repo_path'],'epoch':time.time(),'attempt':attempt+1,'accepted_part_count':len(part_acks),'accepted_bytes_for_attempt':sum(part_acks.values()),'parts':part_acks})
+                except Exception:pass
+                return response
+            session.hooks['response'].append(part_response)
             stream=ParallelRemoteFile(record);started=time.time()
             try:
                 sample=stream.read(min(512,record['archive_bytes']));stream.seek(0)
@@ -233,7 +244,9 @@ def main():
                 write(ROOT/(rid+'-error.json'),{'file':record['repo_path'],'type':type(e).__name__,'count':attempt+1,'epoch':time.time(),'read_position':stream.position,'max_read_requested':stream.max_read_requested,'source_opens':stream.source_opens,'causes':chain})
                 if attempt==3:raise RuntimeError(type(e).__name__) from None
                 time.sleep(10*(attempt+1))
-            finally:stream.close()
+            finally:
+                stream.close()
+                if part_response in session.hooks['response']:session.hooks['response'].remove(part_response)
     phase1=[r for r in plan['records'] if r['group'] in ['gigpo-best512-algorithm25','gigpo-best512-step25'] and '/training_state/' not in r['repo_path']]
     phase2=[r for r in plan['records'] if r not in phase1]
     for phase,records in enumerate([phase1,phase2],1):
