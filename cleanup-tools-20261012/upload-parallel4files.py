@@ -225,7 +225,12 @@ def main():
                 result={'status':'HF_UPLOAD_VERIFIED','group':record['group'],'archive_bytes':record['archive_bytes'],'archive_sha256':record['archive_sha256'],'repo_path':record['repo_path'],'commit':commit.oid,'epoch':time.time(),'elapsed_seconds':time.time()-started,'model_disk_staging':False}
                 write(receipt,result);mark(record,result);print(json.dumps(result),flush=True);return
             except Exception as e:
-                write(ROOT/(rid+'-error.json'),{'file':record['repo_path'],'type':type(e).__name__,'count':attempt+1,'epoch':time.time()})
+                chain=[];err=e;seen=set()
+                import traceback,re
+                while err is not None and id(err) not in seen and len(chain)<8:
+                    seen.add(id(err));msg=re.sub(r'https?://\S+','[redacted-url]',str(err));msg=re.sub(r'hf_[A-Za-z0-9]+','[redacted-token]',msg);msg=re.sub(r'Bearer\s+\S+','Bearer [redacted]',msg)
+                    chain.append({'type':type(err).__name__,'message':msg[:4000],'frames':[{'file':pathlib.Path(t.filename).name,'line':t.lineno,'function':t.name} for t in traceback.extract_tb(err.__traceback__)]});err=err.__cause__ or err.__context__
+                write(ROOT/(rid+'-error.json'),{'file':record['repo_path'],'type':type(e).__name__,'count':attempt+1,'epoch':time.time(),'read_position':stream.position,'max_read_requested':stream.max_read_requested,'source_opens':stream.source_opens,'causes':chain})
                 if attempt==3:raise RuntimeError(type(e).__name__) from None
                 time.sleep(10*(attempt+1))
             finally:stream.close()
