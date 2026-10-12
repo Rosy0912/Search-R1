@@ -217,6 +217,23 @@ weights; actual remote preparation is not exercised.
 Child restored-Head endpoint/resource/guard-plan admission, production launcher,
 zero-progress fault branches and complete final chain acceptance remain pending.
 
+The separate restored-Head staging entry now requires the exact completed
+preparation marker/candidate SHA and saved origin, clean pinned child commit
+and complete runtime SHA map, original data hashes and actual parent recovery
+context. It validates the saved fitted binary classifiers on CPU, copies only
+the two immutable saved Head files and rebinds namespace paths/identity while
+preserving the version, fitting actor step, data and parameter hashes. Both
+Heads and their archived version manifest are durable before the live manifest
+is published atomically and exclusively. The final staging marker binds both
+manifests and the preparation/parent checkpoint hashes and grants no production
+admission. A partial copy cannot publish a live version or completed marker;
+an existing live version cannot be replaced. Four small scalar-file tests cover
+5/50/100/150, corruption/source symlinks, interrupted copy and exclusive live
+publication; these do not exercise actual fitted Heads, endpoint or A800 state.
+The existing scorer still uses the current actor's detached RPC features after
+the separately admitted full state restore; staging never calls a frozen
+teacher for reward predictions or fits any new classifier.
+
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
 full-state receipt hashes plus the child launch/restore proof, require four
