@@ -6,7 +6,9 @@ import subprocess
 import time
 
 b = Path('/dataset/shaoshitong/recursive-bran-a-h100-20261012')
-assert not subprocess.check_output(['squeue','-h','-j','3387','-o','%i'], text=True).strip()
+previous = subprocess.run(['squeue','-h','-j','3387','-o','%i'], capture_output=True, text=True)
+assert not previous.stdout.strip()
+assert previous.returncode == 0 or 'Invalid job id specified' in previous.stderr
 assert (b/'control/launch-ready.sh').exists()
 assert not (b/'receipts/train-start.json').exists()
 active = subprocess.check_output(['squeue','-h','-o','%j'], text=True).splitlines()
