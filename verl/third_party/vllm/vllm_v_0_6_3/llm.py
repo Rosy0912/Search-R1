@@ -172,7 +172,9 @@ class LLM(LLM):
         self._tree_emission_params = kwargs['sampling_params']
         self._tree_emission_before_settings = before_settings
         try:
-            return self.generate(**kwargs)
+            from search_r1.baselines.detokenizer_len_cache import native_generation_length_cache
+            with native_generation_length_cache(self.llm_engine.tokenizer):
+                return self.generate(**kwargs)
         finally:
             self._tree_emission_call = self._tree_emission_params = self._tree_emission_before_settings = None
 
