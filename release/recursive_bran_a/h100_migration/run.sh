@@ -26,8 +26,6 @@ retriever=$!
 "$python" -B release/recursive_bran_a/h100_migration/activate.py "$base/retriever" "$retriever"
 "$python" -B -u release/recursive_bran_a/h100_migration/gate.py --base "$base/retriever" > "$base/logs/retriever-gate.log" 2>&1
 fi
-"$python" -m ray.scripts.scripts start --head --node-ip-address=127.0.0.1 --port=16386 --num-gpus=8 --temp-dir="$RAY_TMPDIR" --disable-usage-stats > "$base/logs/ray-start.log" 2>&1
-export RAY_ADDRESS=127.0.0.1:16386
 "$python" -B -u -m search_r1.baselines.preflight -- "$python" -B -u release/recursive_bran_a/h100_migration/train.py > "$base/logs/training.log" 2>&1
 
 "$python" -B - <<'PYEND'
