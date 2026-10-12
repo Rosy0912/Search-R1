@@ -1,0 +1,89 @@
+{
+  "source_commit": "fcecbea5d939e41dcfb3b118a26ef049a9bda3d6",
+  "files": [
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-667c68e0f91b.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-667c68e0f91b.json",
+      "sha256": "a184d0ca793aea072d6ab8c7753ba9f944cabb150b2c0adcd526ee9ef9cb94a3",
+      "size": 59369
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-66ea4c909369.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-66ea4c909369.json",
+      "sha256": "024ef8e762d14753aeec706a8c201f0f03d838afebfe8ce7b06d12f997d57605",
+      "size": 59369
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-b611864d3f6a.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-b611864d3f6a.json",
+      "sha256": "ed7b1413a1dc38f77d4aa62999c9363139a6c92ef6c2358ed5455db169be398f",
+      "size": 59369
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-fcecbea5d939.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/native-source-inventory-fcecbea5d939.json",
+      "sha256": "e4fb0f6c4b2dcf62837e2276ba58e29f5e198a1a0252975b7578debb6209cc4c",
+      "size": 59369
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/approval-ready.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/approval-ready.json",
+      "sha256": "43f8ab8ac817e3cc7c5a635216d08d5ac6d84322c9aafea3ea9401e7ded9fca9",
+      "size": 1216
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/actual-faiss-runtime.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/actual-faiss-runtime.json",
+      "sha256": "2f9db4a3970f040d95bf0bb7e640338e5861abf7eaf260802423efeca4fae3bc",
+      "size": 2298
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/acceptance-5-receipt.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/acceptance-5-receipt.json",
+      "sha256": "d1db79938fd1a3b3520e4d1da673525dd260302d2402e063fd7734fcb11721fc",
+      "size": 42054
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/resolved-profile.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/resolved-profile.json",
+      "sha256": "c8f0f0cf9680e369a372ce767e387a7dcc3e323f2c55181cc278ad28b59ef2c9",
+      "size": 9894
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3303/approval-ready.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3303/approval-ready.json",
+      "sha256": "218e5fe4dcd3c49c047a0955719979228aa30d34e93cab3546b6e9f11f137127",
+      "size": 1216
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3303/actual-faiss-runtime.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3303/actual-faiss-runtime.json",
+      "sha256": "52a99b13c761ae3dc5170b78548494b855f14d40f6ba7c07e87c001b4e593b4c",
+      "size": 2298
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/approval-ready.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/approval-ready.json",
+      "sha256": "e93733bf75f0b01cc83eb4ed46176fd16fcc0927f2cfbe7da40da897210accac",
+      "size": 1216
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/actual-faiss-runtime.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3299/actual-faiss-runtime.json",
+      "sha256": "5df2cbd4cc637658bc1c9069eb20a135c1abc115fc00558637bb5ac723f182cb",
+      "size": 2298
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3302/approval-ready.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3302/approval-ready.json",
+      "sha256": "c8a0d7e30e2d9826bb69b643ea129c28af528e5a2e740654fc5c2679481c73a1",
+      "size": 1216
+    },
+    {
+      "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3302/actual-faiss-runtime.json",
+      "path": "reproduction/cleanup-20261012/runtime/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3302/actual-faiss-runtime.json",
+      "sha256": "ec40dc4930f462d5d798eef85980f8f83e9d86d31848e077193aaad0f3a7c1ae",
+      "size": 2298
+    }
+  ]
+}

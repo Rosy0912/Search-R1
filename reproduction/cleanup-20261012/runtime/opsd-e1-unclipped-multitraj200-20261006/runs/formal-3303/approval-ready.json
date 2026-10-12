@@ -1,0 +1,30 @@
+{
+  "binding_sha256": "da74df5c033c7383d5440e91b371b18111bd7bfcba5d42487023ac2b19207224",
+  "job_id": "3303",
+  "nonce": "1f0842fc979f110baf2a22e14f63f91eacf439091d16c7bc8eedd1397f420888",
+  "nvml_uuids": [
+    "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+    "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+    "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+    "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+    "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+    "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+    "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+    "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+  ],
+  "pid": 2504351,
+  "process": {
+    "cgroup": "1:freezer:/slurm_h100-10/uid_0/job_3303/step_0\n0::/system.slice/slurmd.service\n",
+    "pid": 2504351,
+    "start": "1834513033",
+    "state": "R",
+    "uid": 0
+  },
+  "process_start_ticks": "1834513033",
+  "public_key_sha256": "ff53cfde6dd4bf96142b23364ae72da1d9610e1a834663ba70e750f604cee41c",
+  "run_root": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3303",
+  "scope": "Await external pre-GPU review; not first5/200/effect approval",
+  "source_commit": "66ea4c9093697c80657d8c57a2058ebb7c9b078f",
+  "uid": 0,
+  "version": 1
+}
