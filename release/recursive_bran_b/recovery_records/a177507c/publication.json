@@ -1,0 +1,11 @@
+{
+  "files": {
+    "binding.json": "bf9a1e6bf5632af8824d0d8f60253bac039424a54697294c43902204006a9368",
+    "isolated-resume-dispatch-a177507c.json": "2e4a830f8ff39cdd08990185fad5780d67589f26304ba23fa7b66a9214f7e7a2",
+    "record.json": "38511e3e11de2129b86a02fe23e75421820cc922341e1d7a87ff83c3f38bafc2",
+    "resolved.yaml": "ab2a57d51ea3d0d864b5a02285599a267a3a471e3ecc7f95b830019b28e22e3b"
+  },
+  "run": "a177507c37c94e898616a194ed6b2a45",
+  "scope": "Isolated child artifact root; source bc666df; predecessor failed after actor writes on shared attempt receipt",
+  "source": "bc666df3a3fee9da7bb5d09f8da649cfa7165131"
+}
