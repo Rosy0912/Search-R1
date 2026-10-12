@@ -1,0 +1,12 @@
+{
+  "repo": "Sutoonq/TMP_MODEL",
+  "records": [
+    {
+      "group": "diagnostic-regular-vocab-cp5",
+      "archive": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/checkpoints/search-g1-common8/actor/global_step_5/vocab.json",
+      "archive_bytes": 2776833,
+      "archive_sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "repo_path": "h100-cleanup-20261012/gigpo/regular-read-probe/searchg1-vocab.json"
+    }
+  ]
+}

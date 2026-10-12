@@ -165,7 +165,7 @@ class ParallelRemoteFile(io.BufferedIOBase):
         self.max_read_requested=max(self.max_read_requested,size)
         if not remaining:return b''
         if size<0:
-            if remaining>self.BLOCK:raise ValueError('Unbounded source read forbidden')
+            if self.record['archive_bytes']>10*1024*1024:raise ValueError('Unbounded read allowed only for bounded small metadata')
             size=remaining
         if size>64*1024*1024:raise ValueError('Read exceeds 64MiB response bound')
         size=min(size,remaining);parts=[]
