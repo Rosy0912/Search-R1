@@ -542,8 +542,7 @@ def capture_native_sampling_settings(sampling_params):
     fields=('n','best_of','_real_n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
         'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
         'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors',
-        'truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids',
-        'detokenize','skip_special_tokens','spaces_between_special_tokens')
+        'truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids')
     for key in fields:
         require(hasattr(sampling_params,key), 'Explicit actual '+key+' metadata is required')
     settings={key:copy.deepcopy(getattr(sampling_params,key)) for key in fields}
@@ -594,6 +593,9 @@ def capture_native_stopping(sampling_params,primary_eos_token_id,generation_conf
 def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,native_stopping=None):
     """Called before facade padding, retaining real request IDs and scalar values."""
     settings=capture_native_sampling_settings(sampling_params)
+    decoder={key:copy.deepcopy(getattr(sampling_params,key)) for key in
+        ('detokenize','skip_special_tokens','spaces_between_special_tokens')}
+    require(all(type(value) is bool for value in decoder.values()),'Actual native decoder flags required')
     require(type(native_stopping) is dict,'Actual native effective EOS/stop capture required')
     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
         'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
@@ -616,7 +618,8 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
             sample_id=fingerprint(identity),prompt_token_ids=[int(x) for x in request.prompt_token_ids],
             raw_emitted_token_ids=ids,raw_selected_logprobs=logps,true_emitted_length=len(ids),
             finish_reason=out.finish_reason,stop_reason=out.stop_reason,finished=True,
-            sampling_params=copy.deepcopy(settings),native_stopping=copy.deepcopy(native_stopping))
+            sampling_params=copy.deepcopy(settings),native_stopping=copy.deepcopy(native_stopping),
+            native_decoder_settings=copy.deepcopy(decoder))
         if type(out.stop_reason) is str:
             require(settings['stop'] and out.stop_reason in settings['stop'] and
                 settings['include_stop_str_in_output'] is True and
@@ -634,9 +637,9 @@ def _replay_contextual_string_stop(tokenizer,emission):
         detokenize_incrementally)
     from vllm.engine.output_processor.stop_checker import StopChecker
     from .detokenizer_len_cache import LengthView
-    settings=emission['sampling_params']
-    require(settings.get('detokenize') is True and settings.get('skip_special_tokens') is True
-        and type(settings.get('spaces_between_special_tokens')) is bool,
+    settings=emission['sampling_params'];decoder=emission.get('native_decoder_settings',{})
+    require(decoder.get('detokenize') is True and decoder.get('skip_special_tokens') is True
+        and type(decoder.get('spaces_between_special_tokens')) is bool,
         'Actual native incremental decoder flags are required')
     view=LengthView(tokenizer)
     prompt=emission['prompt_token_ids'];ids=emission['raw_emitted_token_ids']
@@ -645,7 +648,7 @@ def _replay_contextual_string_stop(tokenizer,emission):
     params=SimpleNamespace(stop=settings['stop'],include_stop_str_in_output=True)
     for count in range(1,len(ids)+1):
         new,delta,prefix,read=detokenize_incrementally(view,prompt+ids[:count],tokens,
-            prefix,read,True,settings['spaces_between_special_tokens'])
+            prefix,read,True,decoder['spaces_between_special_tokens'])
         tokens.extend(new);seq.output_text+=delta
         reason=StopChecker._check_stop_strings(seq,len(delta),params)
         if reason is not None:
@@ -659,7 +662,7 @@ def _replay_contextual_string_stop(tokenizer,emission):
                 raw_emitted_token_ids_sha256=fingerprint(ids),
                 native_returned_text_sha256=fingerprint(seq.output_text),
                 stop_token_boundary=count,skip_special_tokens=True,
-                spaces_between_special_tokens=settings['spaces_between_special_tokens'])
+                spaces_between_special_tokens=decoder['spaces_between_special_tokens'])
     require(False,'Native string stop not reached by contextual incremental replay')
 
 

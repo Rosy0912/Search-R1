@@ -15,13 +15,16 @@ def main():
     # This historical record predates explicit decoder flag capture. Bind the
     # installed native defaults for this diagnostic only, never in production.
     defaults=SamplingParams()
+    e['native_decoder_settings']={}
     for key in ('detokenize','skip_special_tokens','spaces_between_special_tokens'):
         assert key not in e['sampling_params']
-        e['sampling_params'][key]=getattr(defaults,key)
+        e['native_decoder_settings'][key]=getattr(defaults,key)
     ids=e['raw_emitted_token_ids'];text=c['legacy_text'][194]
     action,ledger=raw.sampled_action(tok,e,ids+[tok.pad_token_id]*(500-len(ids)),
         tok.encode(text,add_special_tokens=False),text,f['tokenizer_identity'])
-    raw.validate_action_utf8_proof(ledger,tok)
+    raw.validate_action_utf8_proof(ledger,tok,_context=raw._TokenizerValidationContext(tok,f['tokenizer_identity']))
+    from search_r1.baselines.tree_behavior_mu import _emission
+    _emission(ledger,c['contexts'][194],e['sampling_identity']['runtime_provenance'])
     assert action==ids and ledger['selected_logprobs']==e['raw_selected_logprobs']
     assert ledger['canonical_text']==text and ledger['contextual_native_stop_proof']['stop_token_boundary']==141
     decoded=[tok.decode(ids[:n],skip_special_tokens=True) for n in range(1,len(ids)+1)]
@@ -35,7 +38,7 @@ def main():
         else:raise AssertionError(edit+' was accepted')
     assert not torch.cuda.is_initialized()
     print(json.dumps(dict(status='PASSED',actual_retained_tokens=len(action),
-        actual_logprobs_unchanged=True,legacy_text_unchanged=True,
+        actual_logprobs_unchanged=True,legacy_text_unchanged=True,behavior_mu_contract_passed=True,
         forged_text_rejected=True,post_stop_token_rejected=True,cuda_initialized=False,
         contextual_stop_proof=ledger['contextual_native_stop_proof'])))
 
