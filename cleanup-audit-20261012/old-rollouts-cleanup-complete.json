@@ -1,0 +1,11 @@
+{
+  "epoch": 1791791652.8657448,
+  "status": "OLD_ROLLOUT_TENSORS_CLEANED_TRAINING_ADVANCED",
+  "before_step": 44,
+  "after_step": 45,
+  "deleted_files": 455,
+  "deleted_allocated_bytes": 528669319168,
+  "total_all_groups_deleted_allocated_bytes": 1796128448512,
+  "final_df": "Filesystem                 1B-blocks           Used     Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 12631806042112 1840787611648  88% /mnt/data",
+  "blocked": []
+}
