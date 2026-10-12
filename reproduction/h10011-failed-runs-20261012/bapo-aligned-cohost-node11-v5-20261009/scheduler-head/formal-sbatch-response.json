@@ -1,0 +1,14 @@
+{
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--no-requeue",
+    "--comment=BAPO_ALIGNED_EM200:formal:7a501b38b7ed6b06bf39935b97fcb7bbd56ecc47:d30bb88d6fb64a5ba005a3fad7f03ca8",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal.sbatch",
+    "d30bb88d6fb64a5ba005a3fad7f03ca8"
+  ],
+  "exit": 0,
+  "scope": "RAW_SUBMISSION_RESPONSE_NOT_HARDWARE_ACCEPTANCE",
+  "stderr": "",
+  "stdout": "3355\n"
+}

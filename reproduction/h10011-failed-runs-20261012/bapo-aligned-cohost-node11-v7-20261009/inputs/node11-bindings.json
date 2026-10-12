@@ -1,0 +1,56 @@
+{
+  "common": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005/common-data",
+  "data": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009/inputs/baseline-aligned-data.json",
+    "sha256": "e5e47bdfbfdffcc9a5cf0feccc39e52f32aa093fa039f7464e9baa5422d21d15"
+  },
+  "host": "h100-11",
+  "model": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-fresh200-safety-20261006/assets/qwen2.5-3b-instruct-aa8e725",
+  "order": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009/inputs/baseline-aligned-order.json",
+    "sha256": "ff2d15592968ceaf7667489d61b9172c2c53f81d82cb7f4ff10fd7aeb5285bc8"
+  },
+  "parent_inputs": {
+    "data": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/inputs/baseline-aligned-data.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "e5e47bdfbfdffcc9a5cf0feccc39e52f32aa093fa039f7464e9baa5422d21d15"
+    },
+    "order": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/inputs/baseline-observed-order.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "ff2d15592968ceaf7667489d61b9172c2c53f81d82cb7f4ff10fd7aeb5285bc8"
+    },
+    "retrieval": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/hardware-aligned-em200-13e07285c97044fd97974d94f53fea1b-3345/retrieval-golden.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "0d3d2106eefad587ffbfd385d86563c4156278f2b4591a722cb1c7178b7bbf8b"
+    }
+  },
+  "partial_resume_template": {
+    "parent": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v6-20261009/evidence/partial-resume-bindings3356-v3.json",
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009/inputs/partial-resume-bindings3356.json",
+    "sha256": "84f182a004333efb8a6840016d84d2c18e350a0725717a613666ca8bf297c9f1"
+  },
+  "retrieval": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009/inputs/baseline-aligned-retrieval.json",
+    "sha256": "de19717bb8fb96329cc639714ab0745c598f2fad9e0c10401ee0e3a4c1e5813d"
+  },
+  "retrieval_assets": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo/assets-root/assets",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009",
+  "scope": "SHARED_ASSET_PATH_BINDINGS_NOT_GPU_ACCEPTANCE",
+  "source": "e82ef0231a23eedfd68ebba1644966a5759a7575",
+  "tools": {
+    "bind_retrieval_proof.py": "214a797d7917598892d7defd8cfb61b4a6d59b5c43de28bb9f92942a3dd1e48d",
+    "bootstrap.py": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e",
+    "formal.sbatch": "6eedc2c89d70bdb041265efb8c66178b37aabf0a2a5733a5fe9869669b4988e5",
+    "formal_admission.py": "ccdbce6cd3fc4f0f206483e66528d6009084dd13f99a1a80546fc3accfe0b649",
+    "formal_driver.py": "5d4b17771358c1a11739161982b8df94f57a610ccb4b1f45f07ac929307538a8",
+    "formal_inner.sh": "8a1c5b369e9f7b61fb52bccd663a6fe11e9ba7e7de704d1664a809d9a08c9271",
+    "formal_service_proof.py": "76e577072868e9e5632f513f3c3182b44534dd4b588b596dcf6194860bfef3dc",
+    "formal_worker.sh": "3b8765cadcec636a2928215a2067bc43de7ae27dd7da169974c1dfaceee9184d",
+    "ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "submit_formal.py": "e89218b86671cf6b9ba12fdbdd980db274d8900d13efef283d4d5804e2eef40e",
+    "tools/resource_watch.py": "fc08a2e7fd5eadb458b33364bb05a63a47f116eca5ab92db9ffe3dae84842117"
+  }
+}

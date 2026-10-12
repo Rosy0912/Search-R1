@@ -1,0 +1,51 @@
+{
+  "common": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-e1-instruct-300-stabilityfix-r2-20261005/common-data",
+  "data": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009/inputs/baseline-aligned-data.json",
+    "sha256": "e5e47bdfbfdffcc9a5cf0feccc39e52f32aa093fa039f7464e9baa5422d21d15"
+  },
+  "host": "h100-11",
+  "model": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo-fresh200-safety-20261006/assets/qwen2.5-3b-instruct-aa8e725",
+  "order": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009/inputs/baseline-aligned-order.json",
+    "sha256": "ff2d15592968ceaf7667489d61b9172c2c53f81d82cb7f4ff10fd7aeb5285bc8"
+  },
+  "parent_inputs": {
+    "data": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/inputs/baseline-aligned-data.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "e5e47bdfbfdffcc9a5cf0feccc39e52f32aa093fa039f7464e9baa5422d21d15"
+    },
+    "order": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/inputs/baseline-observed-order.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "ff2d15592968ceaf7667489d61b9172c2c53f81d82cb7f4ff10fd7aeb5285bc8"
+    },
+    "retrieval": {
+      "path": "/mnt/shared/workspace/shaoshitong/search-r1-rl/bapo-baseline-aligned-em200-20261009/runs/hardware-aligned-em200-13e07285c97044fd97974d94f53fea1b-3345/retrieval-golden.json",
+      "scope": "original accepted content; path relocation not node11 GPU acceptance",
+      "sha256": "0d3d2106eefad587ffbfd385d86563c4156278f2b4591a722cb1c7178b7bbf8b"
+    }
+  },
+  "retrieval": {
+    "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009/inputs/baseline-aligned-retrieval.json",
+    "sha256": "ea60d5e53985d66fe2547adf708ebaf928ec806e0380539da64630e2a203cbc7"
+  },
+  "retrieval_assets": "/mnt/shared/workspace/training_data_node_5/shaoshitong/search-r1-rl/bapo/assets-root/assets",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009",
+  "scope": "SHARED_ASSET_PATH_BINDINGS_NOT_GPU_ACCEPTANCE",
+  "source": "7a501b38b7ed6b06bf39935b97fcb7bbd56ecc47",
+  "tools": {
+    "bind_retrieval_proof.py": "a93dcaf2af15245a915a469e9d98a101657553d564115ed153e47ecee32a980a",
+    "bootstrap.py": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e",
+    "formal.sbatch": "e15bcb7cb65a9faa8b94b6d6fa2635f1d769aea4bb509ecd0abeeb2b413ef131",
+    "formal_admission.py": "f9540eb6be9e394a85a9c2c23fd8550732ce488c9f787e387fdf1e7bcf0d46fe",
+    "formal_driver.py": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a",
+    "formal_inner.sh": "e3bf67397b3c5022be8faebc99ef38a564bb1294bfb8388837967bd8a8b21b09",
+    "formal_service_proof.py": "4cc31b8ba861c2868e8ff9b5b9deec277cde4d8b47c48e3223d5828db777cab3",
+    "formal_worker.sh": "66cf7970330bfce6be1d2fc72e50ebb341dd80b3c9c22aa785e3a0f47695d78c",
+    "ray_cli_compat.py": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3",
+    "submit_formal.py": "4dcf4bb4f2d101531ccfb81a8c4c5036f383309d4ab38c1dadee8b9856d5495a",
+    "tools/resource_watch.py": "2980e73d95927780f9fcf8c9b9c6858b73ebe6bb920c2c1f0669026a96074f26"
+  }
+}

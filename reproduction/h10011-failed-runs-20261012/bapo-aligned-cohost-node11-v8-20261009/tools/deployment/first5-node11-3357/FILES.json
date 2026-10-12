@@ -1,0 +1,15 @@
+{
+  "source": "e82ef0231a23eedfd68ebba1644966a5759a7575",
+  "root": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v8-20261009",
+  "job": "3357",
+  "token": "ae20107aeead4a848b43e450d0c1ca11",
+  "scope": "FIRST5_PENDING20_CPU_AND_EXTERNAL_RELEASE_TOOLS_CODE_ONLY_NOT_EXECUTED",
+  "files": {
+    "aligned_first5_cpu_evidence.py": "8a5d6675c7f1b43b36f15264bbc963dde3ed68c21a0a781e89b1a7b42cd62030",
+    "aligned_first5_math.py": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815",
+    "aligned-first5-math-provenance.json": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13",
+    "publish_first5_release.py": "bf495906cb911acd23fa0571019d3097a10d95ec79d8a586d923f32dad923db6",
+    "test_node11_first5.py": "b2c12dba20746ba92c879f3820246c5dd53773774e4d727dd6f311fbeff01798",
+    "README.md": "aa6b1397f12181a150b85fae77d34ef44b0470d192e3e11bfb28fc0c5e983da8"
+  }
+}

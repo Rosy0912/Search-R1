@@ -1,0 +1,677 @@
+[
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "fc08a2e7fd5eadb458b33364bb05a63a47f116eca5ab92db9ffe3dae84842117"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "214a797d7917598892d7defd8cfb61b4a6d59b5c43de28bb9f92942a3dd1e48d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/formal_driver.py",
+    "size": 2550,
+    "sha256": "5d4b17771358c1a11739161982b8df94f57a610ccb4b1f45f07ac929307538a8"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "76e577072868e9e5632f513f3c3182b44534dd4b588b596dcf6194860bfef3dc"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/formal_inner.sh",
+    "size": 3727,
+    "sha256": "8a1c5b369e9f7b61fb52bccd663a6fe11e9ba7e7de704d1664a809d9a08c9271"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/submit_formal.py",
+    "size": 4758,
+    "sha256": "e89218b86671cf6b9ba12fdbdd980db274d8900d13efef283d4d5804e2eef40e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/formal_worker.sh",
+    "size": 2805,
+    "sha256": "3b8765cadcec636a2928215a2067bc43de7ae27dd7da169974c1dfaceee9184d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/formal_admission.py",
+    "size": 7343,
+    "sha256": "ccdbce6cd3fc4f0f206483e66528d6009084dd13f99a1a80546fc3accfe0b649"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/tools/deployment/cohost-node11-v7/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "de19717bb8fb96329cc639714ab0745c598f2fad9e0c10401ee0e3a4c1e5813d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/inputs/node11-bindings.json",
+    "size": 3793,
+    "sha256": "930f7ff2f0d49104083a9fc72c243a8fd6ccc0800d6b65af53937dcbbefd8755"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v7-20261009/inputs/partial-resume-bindings3356.json",
+    "size": 129298,
+    "sha256": "84f182a004333efb8a6840016d84d2c18e350a0725717a613666ca8bf297c9f1"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/resource_watch.py",
+    "size": 9293,
+    "sha256": "077a1050c652432f8c8b134e6afbb786779f85eb5fb33d1946562a6711e4dd26"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/README.md",
+    "size": 2445,
+    "sha256": "eda885ddfef5abb4f293bc2fb1403b0a61a67acc587153298a8f1cb1c48023cf"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/aligned-first5-math-provenance.json",
+    "size": 411,
+    "sha256": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/FILES.json",
+    "size": 923,
+    "sha256": "c68cd76ea1d3b8cf1958e60d03492ccc9601d5ac47941658c8002cd98925332f"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/test_node11_first5.py",
+    "size": 6719,
+    "sha256": "5720a1397f78c55403a70d19c84970930b67ec343e20fd3be25af19e07eec0e4"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/publish_first5_release.py",
+    "size": 17105,
+    "sha256": "ad193d78e3c0aa1fa07d6443d6fc8dd67bc28fa624a20aa5b10120857dd5e57e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/aligned_first5_math.py",
+    "size": 5339,
+    "sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/first5-node11-3358/aligned_first5_cpu_evidence.py",
+    "size": 30027,
+    "sha256": "72434a2bd454d539068e538e6af7708527b56b70cc40dcd1e6c2a17abbb6f377"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/bind_retrieval_proof.py",
+    "size": 3399,
+    "sha256": "17deef393e8aa7ab5455fcfbf0863aa5dbf5505a50d56ef40d70ac9d8ecff062"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/formal_driver.py",
+    "size": 2551,
+    "sha256": "fe56f31f8cf7052a856ad4210ded1bd082d7905bf0c90ad6959f03b210c2461d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/formal_service_proof.py",
+    "size": 8114,
+    "sha256": "ffef8723b572cd9ebe20969a73c6f2da36e401555c19858343f10b6467b4986a"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/formal_inner.sh",
+    "size": 3734,
+    "sha256": "c4c82082fc4a17296d733cfd432a3268a168f6f0a88c1b95de47e199cf492292"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/submit_formal.py",
+    "size": 4627,
+    "sha256": "1f98c52b7ae397c76b7a0a78793d4c2b27a4021c1e7248fac66116f0b8ab7628"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/formal_worker.sh",
+    "size": 2810,
+    "sha256": "2dab8be4ae02fc1f5885cf3e1033155a18e2206f322f975ad3aaba7f6ce90e52"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/formal_admission.py",
+    "size": 6850,
+    "sha256": "f774fdc2fcf5601c9bff13e027faedc575d7421cf6ae29e317e07f2ed076e47a"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/tools/deployment/cohost-node11-v10/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147536,
+    "sha256": "20e26eff03fda28fd1d901b2d8fd78adebb1675355b48ec149f64e754339ff78"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/inputs/node11-bindings.json",
+    "size": 3804,
+    "sha256": "aff99d47be1496199fdae497610b18f7bd87e23ac062cf8692d004a6ff9e82a5"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/inputs/complete5-resume-bindings3357.json",
+    "size": 326603,
+    "sha256": "75538c3078a38313ddf47d254bd1be84071ac12e62922c49db81c44f84bc397e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/scheduler-head/formal-submit-intent.json",
+    "size": 1754,
+    "sha256": "096a9c004fecc0c4634ccc3142c3569a961988232f0db6279d8f1c37e1c19e97"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/scheduler-head/formal-sbatch-response.json",
+    "size": 474,
+    "sha256": "828ccd215300bbd4b03de328c0133557bff2f5e0ffd91813616e79ea025ad116"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v10-20261009/scheduler-head/formal-submit-receipt.json",
+    "size": 1922,
+    "sha256": "19392aeb622efa12f60a34547c18d025f7fd0c9e812843058e4db9351327a541"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "a00a9a3df6fcbcb6381d7d96b87ca4418c597a85ebc031edc77ceceb3ae298f7"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "f925553b83b43398c56e257410bff20e2bc65f37a49b0cb5c6d67ef15e5af0ee"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/formal_driver.py",
+    "size": 2529,
+    "sha256": "f4e1f4f0145c4790312ba1274529ced59899bdda80f561a5365fc6d01c5cc716"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "fb47983a19de68ebe4208e1048dd44a60cf08b751879e9d613bf2c7fe07f2809"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/formal_inner.sh",
+    "size": 3727,
+    "sha256": "a9ade0b8729db5276928caa818ca7d5a07c0f238c22ab64a0442702d304bd237"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/submit_formal.py",
+    "size": 4041,
+    "sha256": "d5382df085d7eb1a8a237bd4f8264a256d55bf2499d5caa10bbbefccdaef39ee"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/formal_worker.sh",
+    "size": 2805,
+    "sha256": "8d3b01e4efa266a937a87aff4ed95bdd2ab08177df9b6b48e204c97130f1a4f3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/formal_admission.py",
+    "size": 6227,
+    "sha256": "9eeb5f08dbe35f5e1acdb8dfee5885afd3090b020ce7038c4dded3af16bd5a71"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/cohost-node11-v6/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/README.md",
+    "size": 3581,
+    "sha256": "aceb6de3870171b89e6373ae65cfcf5ae138d68b3a3a2838300a54b5d821f26e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/aligned-first5-math-provenance.json",
+    "size": 411,
+    "sha256": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/FILES.json",
+    "size": 822,
+    "sha256": "5adabe922120a77746baa9f8f38ad40abffa764037868f273006716d2d50d384"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/publish_first5_release.py",
+    "size": 16790,
+    "sha256": "a69c85b120f689df6389f3b9a2970d77be92a7017beed74cf67424cad2c4f2bc"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/aligned_first5_math.py",
+    "size": 5339,
+    "sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/tools/deployment/first5-node11-3356/aligned_first5_cpu_evidence.py",
+    "size": 27964,
+    "sha256": "122d951fd04871acad3324f7a3fcee1a53ae48f68af911927504d3802e87b0ad"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "c69802f8697901146a9465a017fb2a4d5c3cb6c28121897aac8e9849ee856984"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/inputs/node11-bindings.json",
+    "size": 3413,
+    "sha256": "009cb384a3eb4dad162bb428a4c5a031bf60c4e2cf4414846da061a1fc48bac9"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/scheduler-head/formal-submit-intent.json",
+    "size": 1751,
+    "sha256": "443e33d0629d1a385d29f67106c5f69dddb64449a02b99176c11d9955d8c1113"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/scheduler-head/formal-sbatch-response.json",
+    "size": 472,
+    "sha256": "adf02141569fe93b55e86c4bc43e1a9714c0ed2dc8f2b35366aed7cd23aa2b83"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v6-20261009/scheduler-head/formal-submit-receipt.json",
+    "size": 1918,
+    "sha256": "ea2aaf2a7486257796782a0b0fbd9475132507d6d8f99ca0dfbdac0b67936e15"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "2980e73d95927780f9fcf8c9b9c6858b73ebe6bb920c2c1f0669026a96074f26"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "a93dcaf2af15245a915a469e9d98a101657553d564115ed153e47ecee32a980a"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/formal_driver.py",
+    "size": 2495,
+    "sha256": "6c32119ec6e0267c869f9fb035ce584f6cc867bab88583b4e20fd3e2e14c943a"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "4cc31b8ba861c2868e8ff9b5b9deec277cde4d8b47c48e3223d5828db777cab3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/formal_inner.sh",
+    "size": 3727,
+    "sha256": "e3bf67397b3c5022be8faebc99ef38a564bb1294bfb8388837967bd8a8b21b09"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/submit_formal.py",
+    "size": 4041,
+    "sha256": "4dcf4bb4f2d101531ccfb81a8c4c5036f383309d4ab38c1dadee8b9856d5495a"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/formal_worker.sh",
+    "size": 2805,
+    "sha256": "66cf7970330bfce6be1d2fc72e50ebb341dd80b3c9c22aa785e3a0f47695d78c"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/formal_admission.py",
+    "size": 6118,
+    "sha256": "f9540eb6be9e394a85a9c2c23fd8550732ce488c9f787e387fdf1e7bcf0d46fe"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/cohost-node11-v4/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/README.md",
+    "size": 3581,
+    "sha256": "328d4291d83523dd120318f92f4f41a6f7db64dcd53ac161119473b7fb723ab3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/aligned-first5-math-provenance.json",
+    "size": 411,
+    "sha256": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/FILES.json",
+    "size": 823,
+    "sha256": "9e2f4d5e868ea87b98de4ac425dfc393dc7184f8d3533cae20a4fbdc0ce9a62b"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/publish_first5_release.py",
+    "size": 16790,
+    "sha256": "2294e05039658d9b392b6aa7cb93cede74fe8397aab7e45f193b79d59842de66"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/aligned_first5_math.py",
+    "size": 5339,
+    "sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/tools/deployment/first5-node11-3354/aligned_first5_cpu_evidence.py",
+    "size": 27964,
+    "sha256": "0436eec8ee846811a9d4336273e9a867c4b197bfd15f27739b94be0ff9a9bb68"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "ea60d5e53985d66fe2547adf708ebaf928ec806e0380539da64630e2a203cbc7"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/inputs/node11-bindings.json",
+    "size": 3413,
+    "sha256": "1c737a24e629aca051b44ecc82cc6dd777aa00da8e8d80715ec361608ce415d8"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/scheduler-head/formal-submit-intent.json",
+    "size": 1751,
+    "sha256": "f3e93287d29c3c71fd7b2e3e6bf60b9d58dd6b54f7d5837d2bcc4e2fe633a5d9"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/scheduler-head/formal-sbatch-response.json",
+    "size": 472,
+    "sha256": "93c6dc8a0afe17c4e3fb8f418395c89c12d3befad7d8758d977132b1d238c124"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v4-20261009/scheduler-head/formal-submit-receipt.json",
+    "size": 1918,
+    "sha256": "f16129e36922bbcdbc3e56298b976811e3d696eb014f857301de905adf5fa500"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "542cf6d703ac958fa4f5f47330b259a9018b14515137ac32fd8b30032e1c6c39"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "fc79745669ca1faea31a10452077da47275df8e24d200e583283ba4041f15e81"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/formal_driver.py",
+    "size": 2551,
+    "sha256": "fe56f31f8cf7052a856ad4210ded1bd082d7905bf0c90ad6959f03b210c2461d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "6f725bbc068cf36114153776f59dda447e06fcdd0ef4b3d9a6106b39af26c648"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/formal_inner.sh",
+    "size": 3727,
+    "sha256": "40e332992bcb4173b0f6ad04b1c918f727b1c3303162decbe870df0403596244"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/submit_formal.py",
+    "size": 4620,
+    "sha256": "0045d99b2503495446d3fde89695118b30b94c987438d8ac84e324858c5860f7"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/formal_worker.sh",
+    "size": 2805,
+    "sha256": "9e369a3da75cba8620bea9157d49d6decdaa952e0ac0d46a1ec82b6f10622f6f"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/formal_admission.py",
+    "size": 6847,
+    "sha256": "4191f33f6aaeef54ce5b4ff23e5b41a58577f148fbcb82954a67d62ac36a0b01"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/tools/deployment/cohost-node11-v9/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "07c994f4bd78d460729bd929e94654b7154a7746797d1d5fbe7d8d0d0c400220"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/inputs/node11-bindings.json",
+    "size": 3799,
+    "sha256": "20ca2c4eb45f3b52a3bee27473584b9ed7d2cd2d30b5b8eeb4fb63897a0271f3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v9-20261009/inputs/complete5-resume-bindings3357.json",
+    "size": 326603,
+    "sha256": "75538c3078a38313ddf47d254bd1be84071ac12e62922c49db81c44f84bc397e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "172c12ad59990e6c3ae9611c7a20d26ce70e0169e55510e2b242bbcff4661ab0"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "b3195acdb9a9c62c546c590e799642583f0d9c6ae88899cfbcb631b46c0457e4"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal_driver.py",
+    "size": 2529,
+    "sha256": "f4e1f4f0145c4790312ba1274529ced59899bdda80f561a5365fc6d01c5cc716"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "9e0edc57bf7d295da74ac33c25d5745afb2b1271341eaee8fe9060dd7bc4e46d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal_inner.sh",
+    "size": 3727,
+    "sha256": "f1e51e0f9d974c4f3ba56fab8c709bae77436929a43bc51a51737117d1b5f11b"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/submit_formal.py",
+    "size": 4041,
+    "sha256": "78b5eda3d652d9934c32b73b73ce5ec31c95b6699c22cda6e60fd679e58d9c20"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal_worker.sh",
+    "size": 2805,
+    "sha256": "e53e0c293b60d6d3ba31954ae8cc07215c988f72ac694ee0ecc0a79c99743388"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/formal_admission.py",
+    "size": 6152,
+    "sha256": "65d1b50b2c88f6a12b4475407f7ee2b6ceef5ab305cbdb10ddf9e59b9ffd8910"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/cohost-node11-v5/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/README.md",
+    "size": 3581,
+    "sha256": "f11393cc4737a846c350c749560ba8822e7947972c7f51d3531320071f19dc59"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/aligned-first5-math-provenance.json",
+    "size": 411,
+    "sha256": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/FILES.json",
+    "size": 822,
+    "sha256": "e24ac382bc92487ef15475386c895a07ca512edc170eb1a5ae1fe125f439f189"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/publish_first5_release.py",
+    "size": 16790,
+    "sha256": "db127c736d494b608daba6ee4f44934d4db91d1b2fe5fd128eeb3cfadda6ff9c"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/aligned_first5_math.py",
+    "size": 5339,
+    "sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/tools/deployment/first5-node11-3355/aligned_first5_cpu_evidence.py",
+    "size": 27964,
+    "sha256": "00bc67085e576bd8465ef6bd9ef8ff310e004de936d85e38f0331fa86a013ce3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "f5a285fbb63c72ab975375fab6b95777be55dca481f47cd5188bda067a6d8bbc"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/inputs/node11-bindings.json",
+    "size": 3413,
+    "sha256": "f155d9834636a7da7a7a5537bd82dcda6ff5d647d0faac7e3f6ba55f6d9bdebb"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/scheduler-head/formal-submit-intent.json",
+    "size": 1751,
+    "sha256": "6baea1291b2135fdafaa132e089a7d62fd759441b0e7d482b5c4aa31dff44b80"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/scheduler-head/formal-sbatch-response.json",
+    "size": 472,
+    "sha256": "d7ca368579d1617885a0ee3a906ce9246a3bf3a884b45bfb3fc0121c66b29e01"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v5-20261009/scheduler-head/formal-submit-receipt.json",
+    "size": 1918,
+    "sha256": "8ddbbd61fca60263c81bc8cbde25770762605cee718834c1e8406b25c73b3278"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/resource_watch.py",
+    "size": 9292,
+    "sha256": "cff6ad6f241626875575edf94676efbc594352db5cee3750ca75b20c9884ccb2"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/bind_retrieval_proof.py",
+    "size": 3398,
+    "sha256": "c92ece629adc00d37d4780eb0f8fae433b05a539ff904b7040ffb0fd114a7a15"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/ray_cli_compat.py",
+    "size": 1033,
+    "sha256": "a6ea15b2ac65ff347ca574ed3af9688c22777723d6a2ddbd7b88f33455f6ddc3"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/formal_driver.py",
+    "size": 2550,
+    "sha256": "5d4b17771358c1a11739161982b8df94f57a610ccb4b1f45f07ac929307538a8"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/formal_service_proof.py",
+    "size": 8112,
+    "sha256": "b8de3f8e6ea362e7844082264ed90a1bf0ca197eb82f428868843c2c53726289"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/formal_inner.sh",
+    "size": 3727,
+    "sha256": "cfc536f7e31e4faea80665498ced06776d93b5d4a92ccfc323720e8401b19b69"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/submit_formal.py",
+    "size": 4620,
+    "sha256": "6b4fb4383b5e90f8255a5e5cfe5b2d8ff296f984b36961dd09dbb5c1644fc98d"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/formal_worker.sh",
+    "size": 2805,
+    "sha256": "429c35f8c375f013d019ebe4d68e57347982e8e2e41a6ccb5821ab4e023fb732"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/formal_admission.py",
+    "size": 7343,
+    "sha256": "84d3a1a800223504e45edb04f4f6934d365d5ebecffb067688db79fa7ec53fe4"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/cohost-node11-v8/bootstrap.py",
+    "size": 2624,
+    "sha256": "40a414772ea4a534ba069bb7288628824149d3868633c0dfc7fffac71340436e"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/README.md",
+    "size": 2411,
+    "sha256": "aa6b1397f12181a150b85fae77d34ef44b0470d192e3e11bfb28fc0c5e983da8"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/aligned-first5-math-provenance.json",
+    "size": 411,
+    "sha256": "a59a0503e2cbb66448e9ddf3b1ef3bc0e7cf7e0d716b68f273f3cfd664435e13"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/FILES.json",
+    "size": 909,
+    "sha256": "4c037d03245109a29f2c5fe81cf77c90f46c93638d497d1d156d4d14c99104f2"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/test_node11_first5.py",
+    "size": 5072,
+    "sha256": "b2c12dba20746ba92c879f3820246c5dd53773774e4d727dd6f311fbeff01798"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/publish_first5_release.py",
+    "size": 17128,
+    "sha256": "bf495906cb911acd23fa0571019d3097a10d95ec79d8a586d923f32dad923db6"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/aligned_first5_math.py",
+    "size": 5339,
+    "sha256": "32c037c9e81bb9b0f3c30396f09623db57a3d763754a5d29b3c28e37964e3815"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/tools/deployment/first5-node11-3357/aligned_first5_cpu_evidence.py",
+    "size": 28821,
+    "sha256": "8a5d6675c7f1b43b36f15264bbc963dde3ed68c21a0a781e89b1a7b42cd62030"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/inputs/baseline-aligned-retrieval.json",
+    "size": 147532,
+    "sha256": "60690544a35bf1ad3302278b9f6a70439c5fda008798ae9b08bb8cc3e67e7158"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/inputs/node11-bindings.json",
+    "size": 3793,
+    "sha256": "5404b4378b538e5449c9d375a25584908c42cf15708ad7e811b4ed01d6c8b295"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/inputs/partial-resume-bindings3356.json",
+    "size": 129298,
+    "sha256": "84f182a004333efb8a6840016d84d2c18e350a0725717a613666ca8bf297c9f1"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/scheduler-head/formal-submit-intent.json",
+    "size": 1751,
+    "sha256": "fece8f67c22ceb4b1a7fa2ac873caf34bc0cfc98bfdd877287326c7e283bf554"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/scheduler-head/formal-sbatch-response.json",
+    "size": 472,
+    "sha256": "dbcf0c17a29ffcd0cd0d387a05c5533e8bd5a55751353ca918d928471fdef4da"
+  },
+  {
+    "path": "bapo-aligned-cohost-node11-v8-20261009/scheduler-head/formal-submit-receipt.json",
+    "size": 1918,
+    "sha256": "57fab0661ed30caff270486de9edbbe0266bb3fc9c13cd4af3a138c97b802705"
+  }
+]
