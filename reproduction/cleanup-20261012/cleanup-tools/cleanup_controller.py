@@ -16,7 +16,13 @@ while len(finished)<len(scopes):
   if not done.exists():continue
   complete=json.loads(done.read_text());assert complete['status']=='ALL_FILES_HF_OFFICIAL_SHA_VERIFIED'
   plan=json.loads((base/'plan.json').read_text());revision=api.model_info(plan['repo']).sha
-  records=plan['records'];verified=[]
+  records=list(plan['records'])
+  if scope=='opsd':
+   extra=ROOT.parent/'h100-cleanup-20261012-opsd-supplement'
+   if not (extra/'complete.json').exists():continue
+   assert json.loads((extra/'complete.json').read_text())['status']=='ALL_FILES_HF_OFFICIAL_SHA_VERIFIED'
+   records.extend(json.loads((extra/'plan.json').read_text())['records'])
+  verified=[]
   for rec in records:
    info=api.get_paths_info(plan['repo'],[rec['repo_path']],revision=revision)[0];assert info.size==rec['archive_bytes']
    if info.lfs:assert info.lfs.sha256==rec['archive_sha256']

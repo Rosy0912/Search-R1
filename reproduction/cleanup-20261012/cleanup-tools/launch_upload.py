@@ -1,6 +1,6 @@
 import subprocess,json,pathlib,sys
 W=pathlib.Path(__file__).resolve().parent;scope=sys.argv[1];remote='/home/lichen/h100-cleanup-20261012-'+scope
-plan=json.loads((W/('selected.json' if scope=='tree-grpo' else 'logs-selected.json' if scope=='logs' else 'opsd-selected.json')).read_text());plan={'repo':'Sutoonq/TMP_MODEL','records':plan['records']}
+plan=json.loads((W/('selected.json' if scope=='tree-grpo' else 'logs-selected.json' if scope=='logs' else 'supplement-selected.json' if scope=='opsd-supplement' else 'opsd-selected.json')).read_text());plan={'repo':'Sutoonq/TMP_MODEL','records':plan['records']}
 ssh=['ssh','-T','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','ConnectTimeout=15','-o','ProxyCommand=none','-o','ProxyJump=none','mgmt-host']
 subprocess.run(ssh+['mkdir -p '+remote],check=True)
 for name,data in [('uploader.py',(W/('uploader-parallel.py' if len(sys.argv)>2 and sys.argv[2]=='parallel' else 'uploader.py')).read_bytes()),('plan.json',json.dumps(plan).encode())]:subprocess.run(ssh+['cat > '+remote+'/'+name],input=data,check=True)
