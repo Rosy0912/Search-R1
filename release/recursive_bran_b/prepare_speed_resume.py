@@ -4,7 +4,7 @@ from pathlib import Path
 from omegaconf import OmegaConf
 
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-p=argparse.ArgumentParser();p.add_argument('--terminal',type=Path,required=True);p.add_argument('--retry-terminal',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--terminal',type=Path,required=True);p.add_argument('--retry-terminal',type=Path);p.add_argument('--driver-fault-terminal',type=Path);a=p.parse_args()
 root=Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011');repo=Path(__file__).parents[2].resolve();source=(repo/'SOURCE_COMMIT').read_text().strip()
 terminal=json.loads(a.terminal.read_text());assert terminal['status'] in ('TECHNICAL_SWITCH_ALL_OWNED_ABSENT','TECHNICAL_SWITCH_ALL_OWNED_KERNEL_EXITED') and terminal['all_original_owned_kernel_exited']
 parent=root/'checkpoints/training_state/global_step_3/manifest.json';m=json.loads(parent.read_text());assert m['identity']['completed_step']==3
@@ -28,4 +28,8 @@ if a.retry_terminal:
  from search_r1.baselines.recursive_b_retry import validate_retry_terminal
  validate_retry_terminal(a.retry_terminal,sha(a.retry_terminal))
  record.update(retry_terminal=str(a.retry_terminal),retry_terminal_sha256=sha(a.retry_terminal))
+if a.driver_fault_terminal:
+ from release.recursive_bran_b.capture_driver_stage_terminal import validate
+ validate(a.driver_fault_terminal,sha(a.driver_fault_terminal))
+ record.update(driver_fault_terminal=str(a.driver_fault_terminal),driver_fault_terminal_sha256=sha(a.driver_fault_terminal))
 rpath=target/'record.json';rpath.write_text(json.dumps(record,sort_keys=True));print(json.dumps(dict(record_path=str(rpath),record_sha256=sha(rpath),record=record)))
