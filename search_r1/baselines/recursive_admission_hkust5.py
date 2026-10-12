@@ -6,7 +6,7 @@ def exact_gpu_gate(selected,inventory):
  if socket.gethostname().split('.')[0]!='xie-lab-4' or os.getuid()!=1001 or list(selected)!=['0','1','2','3']:
   raise RuntimeError('HKUST5 hardware/UID boundary changed')
  if [inventory[x]['uuid'] for x in selected]!=UUIDS:raise RuntimeError('HKUST5 selected UUID changed')
- rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True)
+ rows=subprocess.check_output(['nvidia-smi','-i','0,1,2,3','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True,timeout=20)
  for line in rows.splitlines():
   gpu,pid,memory=[x.strip() for x in line.split(',')]
   if gpu in UUIDS:raise RuntimeError('Selected K5 GPU is occupied; no takeover or oracle exemption')

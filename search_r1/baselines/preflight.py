@@ -146,11 +146,14 @@ def validate_assets_and_retriever(config):
 
 
 def gpu_snapshot():
-    scope=['-i',os.environ['CUDA_VISIBLE_DEVICES']] if os.environ.get('RECURSIVE_BRAN_HARDWARE')=='hkust5' else []
+    scoped_hkust5=os.environ.get('RECURSIVE_BRAN_HARDWARE')=='hkust5'
+    if scoped_hkust5 and os.environ.get('CUDA_VISIBLE_DEVICES')!='0,1,2,3':
+        raise RuntimeError('HKUST5 authorizes only physical devices 0-3')
+    scope=['-i','0,1,2,3'] if scoped_hkust5 else []
     inventory = subprocess.check_output(['nvidia-smi'] + scope + ['--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu',
-                                          '--format=csv,noheader,nounits'], text=True)
-    apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
-                                    '--format=csv,noheader,nounits'], text=True)
+                                          '--format=csv,noheader,nounits'], text=True,timeout=20)
+    apps = subprocess.check_output(['nvidia-smi'] + scope + ['--query-compute-apps=gpu_uuid,pid',
+                                    '--format=csv,noheader,nounits'], text=True,timeout=20)
     processes = {line.split(',')[0].strip() for line in apps.splitlines() if ',' in line}
     print('BASELINE_GPU_OCCUPANCY_JSON=' + json.dumps(dict(inventory=parse_gpu_inventory(inventory),
           compute_processes=apps.splitlines()), sort_keys=True), flush=True)
