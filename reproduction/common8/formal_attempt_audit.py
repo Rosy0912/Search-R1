@@ -268,17 +268,18 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()))
 
 
-def verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256):
+def verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256, retained_prefix=None):
     """Verify the sealed attempt prefix ending at the requested COMPLETE outer."""
     try:
-        return _verify_attempt_history(base, run, complete_records, scheduler_receipts, last=last, plan_sha256=plan_sha256)
+        return _verify_attempt_history(base, run, complete_records, scheduler_receipts, last=last, plan_sha256=plan_sha256,
+                                       retained_prefix=retained_prefix)
     except EvidenceError:
         raise
     except (KeyError, TypeError, OverflowError, ValueError, OSError) as failure:
         raise EvidenceError('Malformed actual formal attempt history: ' + str(failure)) from failure
 
 
-def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256):
+def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256, retained_prefix=None):
     from reproduction.common8.behavior_runtime import read_gate_receipt
     base = Path(base).resolve(); _integer(last, 'last', minimum=1); _hash(plan_sha256, 'prospective plan')
     _require(last <= 200 and run['policy_safety_mode'] == 'inline_first_five', 'Invalid formal attempt scope')
@@ -287,7 +288,13 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
     _require([row['step'] for row in complete_records] == list(range(origin['completed_outer']+1, last + 1)), 'Incomplete actual completed selection')
     cutoff = _integer(complete_records[-1]['attempt_index'], 'cutoff attempt', minimum=1)
     _require(set(scheduler_receipts) == {str(rank) for rank in ranks(run)}, 'Need every actual scheduler receipt')
-    all_attempts = _owned_rows(base, 'logs/actual-attempts.jsonl')
+    if retained_prefix is None:
+        all_attempts = _owned_rows(base, 'logs/actual-attempts.jsonl')
+    else:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix, rank_prefix
+        verify_prefix(base,run,retained_prefix,last)
+        _require(complete_records==retained_prefix['selected_updates'], 'Completed records differ from actual retained prefix')
+        all_attempts=retained_prefix['selected_attempts']
     attempts = [row for row in all_attempts if _attempt_identity(row)[1] <= cutoff]
     _require(last < 200 or len(attempts) == len(all_attempts), 'Actual driver contains attempts after final COMPLETE200')
     _require([row['attempt_index'] for row in attempts] == list(range(origin['attempt_index']+1, cutoff + 1)),
@@ -295,7 +302,8 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
     _require(len({row['attempt_id'] for row in attempts}) == cutoff-origin['attempt_index'], 'Actual driver attempt UUID reused')
     rank_workers = {}; rank_schedulers = {}; selected_hashes = {}; scheduler_hashes = {}
     for rank in ranks(run):
-        all_scheduler = _owned_rows(base, f'logs/scheduler-rank-{rank}.jsonl')
+        all_scheduler = (_owned_rows(base, f'logs/scheduler-rank-{rank}.jsonl') if retained_prefix is None else
+                         rank_prefix(base,run,retained_prefix,rank,'scheduler')[0])
         if origin_evidence['restored'] is not None:
             anchor=check_scheduler_anchor(all_scheduler[0],run,origin_evidence,rank)
             _require(anchor==scheduler_receipts[str(rank)]['restore_anchor'], 'Restore anchor differs from independent scheduler audit')
@@ -304,7 +312,8 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         _require(last < 200 or len(scheduler) == len(all_scheduler), 'Actual scheduler continues after final COMPLETE200')
         _require(scheduler == scheduler_receipts[str(rank)]['selected_rows'],
                  'Owned scheduler prefix differs from independently checked receipts')
-        all_workers = _owned_rows(base, f'logs/optimizer-rank-{rank}.jsonl')
+        all_workers = (_owned_rows(base, f'logs/optimizer-rank-{rank}.jsonl') if retained_prefix is None else
+                       rank_prefix(base,run,retained_prefix,rank,'optimizer')[0])
         workers = [row for row in all_workers if _attempt_identity(row)[1] <= cutoff]
         _require(last < 200 or len(workers) == len(all_workers), 'Actual worker continues after final COMPLETE200')
         rank_workers[rank] = workers; rank_schedulers[rank] = scheduler

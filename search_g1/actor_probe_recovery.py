@@ -210,7 +210,10 @@ def read_recovery_context(child, rank):
         assert path.parent == directory and path.stat().st_size == saved['bytes']
         assert digest(path) == saved['sha256']
     from reproduction.common8.actor_probe_checkpoint import verify_full_state
-    assert verify_full_state(parent_base, parent, binding['completed_outer']) == receipt
+    from reproduction.common8.actor_probe_retained_prefix import load_prefix
+    retained_prefix=load_prefix(parent_base,parent,binding['completed_outer'])
+    assert verify_full_state(parent_base, parent, binding['completed_outer'],
+                             retained_prefix=retained_prefix) == receipt
     return dict(binding=binding, parent=parent, parent_base=parent_base, directory=directory,
                 receipt=receipt, row=row, probe_manifest=probe_manifest)
 

@@ -45,14 +45,19 @@ def _append_local(kind, payload):
     finally:os.close(fd)
 
 
-def read_console_form(base, run_id):
+def read_console_form(base, run_id, *, retained_prefix=None):
     run=json.loads((Path(base)/'logs/run-manifest.json').read_text())
+    if retained_prefix is not None:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix, rank_prefix
+        verify_prefix(base,run,retained_prefix,retained_prefix['last'])
     lines=[]
     for rank in ranks(run):
         path=Path(base)/'logs'/f'optimizer-rank-{rank}.jsonl'
         monitors=[];budgets=[];opportunities=[]
-        for line in path.read_text().splitlines():
-            row=json.loads(line)
+        rows=([json.loads(line) for line in path.read_text().splitlines()] if retained_prefix is None else
+              rank_prefix(base,run,retained_prefix,rank,'optimizer')[0])
+        for value in rows:
+            row=dict(value)
             assert row.pop('run_id')==run_id and row['rank']==rank
             kind=row.pop('kind')
             if kind=='POLICY_MONITOR':

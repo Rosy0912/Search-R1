@@ -145,7 +145,7 @@ def record_refresh_isolation(base, step, before, after, version):
                   f, sort_keys=True, allow_nan=False); f.flush(); os.fsync(f.fileno())
 
 
-def verify_full_state(base, run, step, *, load_optimizer=False):
+def verify_full_state(base, run, step, *, load_optimizer=False, retained_prefix=None):
     import torch
     from reproduction.common8.verify_data import digest
     from reproduction.common8.scheduler import expected_lr
@@ -155,7 +155,12 @@ def verify_full_state(base, run, step, *, load_optimizer=False):
     receipt = json.loads((directory/'full-state-complete.json').read_text())
     assert receipt['identity']['run_id'] == run['run_id'] and receipt['identity']['execution_id'] == run['execution_id']
     assert receipt['completed_outer'] == step and receipt['next_logical_update'] == step + 1
-    actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+    if retained_prefix is None:
+        actual = [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+    else:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix
+        verify_prefix(base,run,retained_prefix,step)
+        actual=retained_prefix['selected_updates']
     records = [row for row in actual if row['step'] == step]
     assert len(records) == 1 and records[0]['run_id'] == run['run_id']
     assert receipt['actual_optimizer_writes'] == records[0]['optimizer_writes_after']

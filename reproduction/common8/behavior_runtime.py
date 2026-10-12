@@ -347,13 +347,17 @@ def read_gate_receipt(base, run, step, *, update_record=None,attempt_id=None,att
     return result
 
 
-def verify_write_receipt_links(base, gates, first, last):
+def verify_write_receipt_links(base, gates, first, last, *, retained_prefix=None):
     """One scalar-ledger scan binds every pre/post monitor and Adam write."""
     base = Path(base)
     run=json.loads((base/'logs/run-manifest.json').read_text())
+    if retained_prefix is not None:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix, rank_prefix
+        verify_prefix(base,run,retained_prefix,last)
     attempt_gates={}
     for rank in ranks(run):
-        rows = [json.loads(line) for line in (base / 'logs' / ('optimizer-rank-' + str(rank) + '.jsonl')).read_text().splitlines()]
+        rows = ([json.loads(line) for line in (base / 'logs' / ('optimizer-rank-' + str(rank) + '.jsonl')).read_text().splitlines()]
+                if retained_prefix is None else rank_prefix(base,run,retained_prefix,rank,'optimizer')[0])
         for row in rows:
             if row['kind'] not in ('OPTIMIZER_WRITE', 'POLICY_MONITOR'):
                 continue

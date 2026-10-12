@@ -44,7 +44,28 @@ def _sealed_log(base, relative):
 
 def _context(row):
     # Fatal scheduler snapshots keep the pending/prepared identity separately.
-    return row.get('context') or row.get('retained_pending') or row.get('retained_prepared') or row
+    if row['kind'] in ('POST_COMMIT_FAILURE','PRE_COMMIT_EVIDENCE_FAILURE'):
+        assert 'context' not in row, 'Actual fatal scheduler schema cannot override its retained identity'
+        assert 'attempt_index' not in row and 'attempt_id' not in row
+        candidates=[]
+        for name in ('retained_pending','retained_prepared'):
+            value=row.get(name)
+            assert value is None or isinstance(value,dict)
+            if value is not None:candidates.append(value)
+        if not candidates:return row
+        selected=candidates[0]
+        fields=('attempt_id','attempt_index','logical_update')
+        assert type(row['logical_update']) is int
+        for candidate in candidates:
+            assert type(candidate['attempt_index']) is int and candidate['attempt_index']>0
+            assert type(candidate['logical_update']) is int and 1<=candidate['logical_update']<=200
+            assert isinstance(candidate['attempt_id'],str) and re.fullmatch('[0-9a-f]{32}',candidate['attempt_id'])
+        assert all(all(candidate[key]==selected[key] for key in fields) for candidate in candidates)
+        assert row['logical_update']==selected['logical_update'], 'Fatal top-level logical update differs from retained identity'
+        return selected
+    if row['kind']=='REJECTED':
+        assert 'context' not in row, 'Actual rejected scheduler schema uses its top-level attempt'
+    return row.get('context') or row
 
 
 def _gate(row):

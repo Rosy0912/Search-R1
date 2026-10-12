@@ -300,6 +300,20 @@ historical process inventory may now read up to256MiB; other JSON admissions
 retain their original32MiB bounds. Small-file stat fixtures test this limit
 without storing large local artifacts. Native A800 restoration is still pending.
 
+Historical segment readers now have an explicit sealed retained-prefix path.
+It rederives the saved attempt cutoff from actual completed driver rows, binds
+all selected rank rows to those attempt identities, and preserves later rows
+and newline fragments with hashes. A bound fatal console snapshot must be
+strictly after the cutoff and have the same original rank birth. Fatal identity
+parsing follows the real pending/prepared schema; an extra context cannot mask
+a retained failure, and returned/open tail identities cannot reuse retained
+UUIDs or counters. Console-only faults explicitly require fault review too.
+Scheduler, attempt/monitor, write-link, actor readout and full-state readers can
+consume that prefix. The normal full fresh200 reader keeps whole-file fatal
+and extra-row rejection. These scalar checks do not prove canonical/RNG bytes,
+process exit, resolved fault review or complete final recovery acceptance; the
+top-level chain verifier remains required and the recovery launcher stays gated.
+
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
 full-state receipt hashes plus the child launch/restore proof, require four

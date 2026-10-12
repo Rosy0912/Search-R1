@@ -111,7 +111,7 @@ def verify_no_fatal_scheduler_console(base, run):
                 scope='no fatal scheduler fallback in the current owned console snapshot')
 
 
-def verify_scheduler_receipts(base, run, first, last, behavior_gates):
+def verify_scheduler_receipts(base, run, first, last, behavior_gates, *, retained_prefix=None):
     """Bind each complete outer to actual durable rank counters and consumed LR."""
     assert_formal_run(run)
     assert 1 <= first <= last <= TARGET_UPDATES
@@ -119,7 +119,12 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     from reproduction.common8.actor_probe_restore_evidence import read_origin, check_scheduler_anchor
     origin_evidence=read_origin(base,run); origin=origin_evidence['origin']
     assert first>origin['completed_outer'], 'Only this namespace actual updates may be selected'
-    console_check=verify_no_fatal_scheduler_console(base,run)
+    if retained_prefix is None:
+        console_check=verify_no_fatal_scheduler_console(base,run)
+    else:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix, rank_prefix, console_evidence
+        verify_prefix(base,run,retained_prefix,last)
+        console_check=console_evidence(base,run,retained_prefix)
     claim = json.loads((base/'logs/training-launch-claim.json').read_text())
     assert claim['run_id'] == run['run_id']
     allocation = json.loads((base/'logs/native-allocation-admission.json').read_text())
@@ -143,16 +148,26 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
     for rank in ranks(run):
         path = base/'logs'/f'scheduler-rank-{rank}.jsonl'
         raw = path.read_bytes()
-        rows = [json.loads(line) for line in raw.splitlines()]
+        if retained_prefix is None:
+            rows = [json.loads(line) for line in raw.splitlines()]
+            prefix_files=None
+        else:
+            rows,scheduler_prefix=rank_prefix(base,run,retained_prefix,rank,'scheduler')
+            prefix_files={'scheduler':scheduler_prefix}
         anchor=None
         if origin_evidence['restored'] is not None:
             assert rows and rows[0]['kind']=='RESTORE', 'Missing actual scheduler restore anchor'
             anchor=check_scheduler_anchor(rows[0],run,origin_evidence,rank); rows=rows[1:]
         assert all(row['kind']!='RESTORE' for row in rows), 'Unexpected or repeated scheduler restore'
-        worker_rows=[json.loads(line) for line in (base/'logs'/f'optimizer-rank-{rank}.jsonl').read_text().splitlines()]
+        if retained_prefix is None:
+            worker_rows=[json.loads(line) for line in (base/'logs'/f'optimizer-rank-{rank}.jsonl').read_text().splitlines()]
+        else:
+            worker_rows,worker_prefix=rank_prefix(base,run,retained_prefix,rank,'optimizer')
+            prefix_files['optimizer']=worker_prefix
         selected = [r for r in rows if first <= r['logical_update'] <= last]
         history=[r for r in rows if r['logical_update']<=last]
-        actual=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+        actual=(retained_prefix['selected_updates'] if retained_prefix is not None else
+            [json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()])
         assert [row['step'] for row in actual if row['step']<=last]==list(range(origin['completed_outer']+1,last+1)), \
             'Actual completed records are duplicated, omitted or reordered'
         completed={row['step']:row for row in actual if row['step']<=last}
@@ -263,6 +278,10 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             assert all(type(lr) in (int,float) and lr==next_lr for lr in following)
         prefix = b'\n'.join(canonical_bytes(r) for r in selected)+b'\n'
         assert process not in rank_processes, 'Different scheduler ranks claim the same actual process birth'
+        if retained_prefix is not None:
+            for failure in console_check['discarded_fatal_records']:
+                if failure['rank']==rank:
+                    assert (failure['process_pid'],failure['process_start_ticks'])==process, 'Discarded console fault has a different rank birth'
         rank_processes.add(process)
         result[str(rank)] = dict(receipt_path=str(path), selected_rows=selected,
             fatal_console_check=console_check,
@@ -273,6 +292,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             complete_outer_optimizer_opportunities=complete_count*20,
             optimizer_completion_rule=FORMAL_COUNTING,
             namespace_origin=origin,restore_proof_sha256=origin_evidence['proof_sha256'],
+            retained_prefix_files=prefix_files,
             restore_anchor=anchor,namespace_new_complete_outers=complete_count-origin['completed_outer'],
             semantics='selected completed outer receipts bound to independently recorded trainer births; '
                       'observed files may subsequently append; historical birth binding is not a current liveness claim')
