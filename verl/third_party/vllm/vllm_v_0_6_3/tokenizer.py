@@ -15,7 +15,9 @@
 
 from typing import Optional
 
-from transformers import PreTrainedTokenizer
+from copy import deepcopy
+from transformers import PreTrainedTokenizer, PreTrainedTokenizerBase
+from vllm.transformers_utils.tokenizer import get_cached_tokenizer
 from vllm.transformers_utils.tokenizer_group import TokenizerGroup
 from vllm.utils import LRUCache
 
@@ -27,7 +29,12 @@ class TokenizerGroup(TokenizerGroup):
                  max_input_length: Optional[int]):
         self.enable_lora = enable_lora
         self.max_input_length = max_input_length
-        self.tokenizer = tokenizer
+        # vLLM incremental detokenization calls len(tokenizer) for every token.
+        # HF FastTokenizer recomputes its complete vocabulary size each time.
+        # Cache the engine-only copy: preserve the controller's native tokenizer
+        # object/type/identity and its training token/probability proof contract.
+        self.tokenizer = (get_cached_tokenizer(deepcopy(tokenizer))
+                          if isinstance(tokenizer, PreTrainedTokenizerBase) else tokenizer)
         self.lora_tokenizers = LRUCache[PreTrainedTokenizer](capacity=max_num_seqs) if enable_lora else None
 
     # FIXME(sgm): for simplicity, we assign the special token here
