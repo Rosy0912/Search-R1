@@ -112,7 +112,7 @@ class RemoteFile(io.BufferedIOBase):
 import concurrent.futures,threading,re
 SOURCE_OPEN_GATE=threading.Semaphore(2)
 class ParallelRemoteFile(io.BufferedIOBase):
-    BLOCK=8*1024*1024
+    BLOCK=256*1024
     LANES=4
     def __init__(self,record):
         self.record=record; self.position=0; self.processes=[]; self.futures={}; self.executor=None; self.last_progress=0;self.max_read_requested=0;self.source_opens=0;self.high_water=0;self.total_read_bytes=0
@@ -202,14 +202,29 @@ def verify(api,plan,record,token,revision):
         import requests
         assert record['archive_bytes']<=16*1048576
         resp=requests.get('https://huggingface.co/'+plan['repo']+'/resolve/'+revision+'/'+record['repo_path'],headers={'Authorization':'Bearer '+token},timeout=60);resp.raise_for_status();assert hashlib.sha256(resp.content).hexdigest()==record['archive_sha256']
+def install_part_observer():
+    import huggingface_hub.lfs as lfs
+    def tracked_parts(operation,sorted_parts_urls,chunk_size):
+        record=getattr(operation.path_or_fileobj,'record',None);headers=[];acked=0;parts=[]
+        with operation.as_file(with_tqdm=True) as fileobj:
+            for part_idx,url in enumerate(sorted_parts_urls):
+                with lfs.SliceFileObj(fileobj,seek_from=chunk_size*part_idx,read_limit=chunk_size) as sliced:
+                    response=lfs.http_backoff('PUT',url,data=sliced);lfs.hf_raise_for_status(response);headers.append(response.headers)
+                    if record:
+                        size=min(chunk_size,record['archive_bytes']-chunk_size*part_idx);acked+=size;parts.append(part_idx)
+                        write_json(ROOT/('parts-'+hashlib.sha256(record['repo_path'].encode()).hexdigest()[:16]+'.json'),{'epoch':time.time(),'file':record['repo_path'],'attempt':record.get('_attempt',0),'acknowledged_parts':parts,'acknowledged_bytes':acked,'part_chunk_size':chunk_size,'http_status':response.status_code})
+        return headers
+    lfs._upload_parts_iteratively=tracked_parts
+
 def main():
     from concurrent.futures import ThreadPoolExecutor,as_completed
     import threading
     lock=(ROOT/'uploader.lock').open('w');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     token=sys.stdin.readline().strip();assert token
+    install_part_observer()
     plan=json.loads(PLAN.read_text());api=HfApi(token=token);assert api.model_info(plan['repo']).private
     total=sum(r['archive_bytes'] for r in plan['records']);guard=threading.Lock();receipts={}
-    write_json(ROOT/'controller.json',{'pid':os.getpid(),'epoch':time.time(),'generation':'parallel4files4lanes-gated-lazyseek-v3','concurrency':4,'cache_bytes_per_large_file':32*1048576,'max_read_bytes':64*1048576,'total_bytes':total,'route':'H100 -> MGMT RAM -> HF'})
+    write_json(ROOT/'controller.json',{'pid':os.getpid(),'epoch':time.time(),'generation':'parallel4files4lanes-gated-lazyseek-smallblock-v4','concurrency':4,'cache_bytes_per_large_file':ParallelRemoteFile.BLOCK*ParallelRemoteFile.LANES,'max_read_bytes':64*1048576,'total_bytes':total,'route':'H100 -> MGMT RAM -> HF'})
     def mark(n,item):
         with guard:
             receipts[n]=item;write_json(ROOT/'verified-progress.json',{'epoch':time.time(),'verified_bytes':sum(r['archive_bytes'] for r in receipts.values()),'files':len(receipts),'total_bytes':total})
