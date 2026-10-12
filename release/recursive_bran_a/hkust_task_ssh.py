@@ -17,7 +17,9 @@ def connect(host):
   options=['-oProxyJump=none']
   if host=='hkust3':
    proxy=shlex.join(['ssh','-S',str(root/'hkust1'),'-oControlMaster=no','-oBatchMode=yes','-W','%h:%p','hkust1'])
-   options+=['-oProxyCommand='+proxy]
+   # ProxyCommand must be the first proxy option: earlier ProxyJump=none
+   # would suppress it in OpenSSH's first-value-wins parsing.
+   options=['-oProxyCommand='+proxy]
   else:options+=['-oProxyCommand=none','-oBindInterface=en0']
   start=run(['ssh','-fN','-M','-S',str(sock),'-oControlPersist=3600',*common,*options,host])
   if start['returncode']:return dict(host=host,accepted=False,start=start)
