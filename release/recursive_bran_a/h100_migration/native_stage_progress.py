@@ -10,8 +10,11 @@ state = None
 if proc.exists():
     stat = (proc / 'stat').read_text().rsplit(')', 1)[1].split()
     env = (proc / 'environ').read_bytes().split(b'\0')
-    assert ('E1_RUN_ID=' + entry['run_id']).encode() in env
-    state = dict(uid=proc.stat().st_uid, starttick=int(stat[19]), state=stat[0])
+    # /proc/environ describes startup environment, not Python's later updates.
+    assert entry['run_id'] == '1c806d15752d44a7ac99687f0737d7e3'
+    assert entry['pid'] == 3714909 and proc.stat().st_uid == 0 and int(stat[19]) == 658086351
+    state = dict(uid=proc.stat().st_uid, starttick=int(stat[19]), state=stat[0],
+        run_in_startup_environment=('E1_RUN_ID=' + entry['run_id']).encode() in env)
 stages = []
 for line in (base / 'logs/training.log').read_text(errors='replace').splitlines():
     if 'TREE_DRIVER_STAGE=' in line:
