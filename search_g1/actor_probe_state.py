@@ -94,11 +94,18 @@ def worker_payload(worker, run, completed_outer):
     evidence = worker._outer_scheduler_evidence
     assert evidence.completed_outer == completed_outer and evidence.pending is None and evidence.prepared is None
     assert not evidence.rejected and worker.actor_lr_scheduler.last_epoch == completed_outer
+    actor = worker.actor
+    assert actor._complete_outers == completed_outer
+    assert actor._last_attempt_index == evidence.last_attempt_index
+    assert actor._used_attempt_ids == evidence.used_attempt_ids
     return dict(schema_version=1, role='actor_probe_full_worker_state',
         identity={key: run[key] for key in ('run_id', 'execution_id', 'source_commit',
             'execution_backend', 'training_world_size', 'profile', 'slurm_job_id')},
         rank=worker.rank, completed_outer=completed_outer, torch_version=torch.__version__,
         optimizer_writes=worker.actor._optimizer_writes,
+        actor_accounting=dict(completed_outer=actor._complete_outers,
+            last_attempt_index=actor._last_attempt_index, used_attempt_ids=sorted(actor._used_attempt_ids),
+            policy_rejections=getattr(actor, '_policy_rejections', 0)),
         flat_parameter_layout=[dict(name=name, shape=list(p.shape), dtype=str(p.dtype))
                                for name, p in worker.actor_module_fsdp.named_parameters()],
         optimizer=worker.actor_optimizer.state_dict(), scheduler=worker.actor_lr_scheduler.state_dict(),
@@ -133,6 +140,10 @@ def restore_worker_payload(worker, run, payload):
     assert outer['actual_writes'] == payload['optimizer_writes'] > 0
     assert outer['last_attempt_index'] >= completed
     assert len(set(outer['used_attempt_ids'])) == outer['last_attempt_index']
+    actor = payload['actor_accounting']
+    assert actor['completed_outer'] == completed and actor['last_attempt_index'] == outer['last_attempt_index']
+    assert actor['used_attempt_ids'] == outer['used_attempt_ids']
+    assert type(actor['policy_rejections']) is int and actor['policy_rejections'] >= 0
     assert payload['scheduler']['last_epoch'] == completed
     assert payload['scheduler']['_step_count'] == completed + 1
     assert all(group['lr'] == expected_lr(completed) for group in payload['optimizer']['param_groups'])
@@ -149,6 +160,10 @@ def restore_worker_payload(worker, run, payload):
     worker.actor_optimizer.load_state_dict(payload['optimizer'])
     worker.actor_lr_scheduler.load_state_dict(payload['scheduler'])
     worker.actor._optimizer_writes = payload['optimizer_writes']
+    worker.actor._complete_outers = actor['completed_outer']
+    worker.actor._last_attempt_index = actor['last_attempt_index']
+    worker.actor._used_attempt_ids = set(actor['used_attempt_ids'])
+    worker.actor._policy_rejections = actor['policy_rejections']
     for key in ('actual_writes', 'last_attempt_index', 'completed_outer'):
         setattr(evidence, key, outer[key])
     evidence.used_attempt_ids = set(outer['used_attempt_ids'])

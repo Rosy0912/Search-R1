@@ -73,7 +73,9 @@ class ActorProbeStateTests(unittest.TestCase):
         evidence = SimpleNamespace(completed_outer=5, pending=None, prepared=None, rejected=False,
             actual_writes=5, last_attempt_index=5, used_attempt_ids={str(i) for i in range(5)})
         worker = SimpleNamespace(rank=0, actor_module_fsdp=model, actor_optimizer=optimizer,
-            actor_lr_scheduler=scheduler, actor=SimpleNamespace(_optimizer_writes=5),
+            actor_lr_scheduler=scheduler, actor=SimpleNamespace(_optimizer_writes=5,
+                _complete_outers=5, _last_attempt_index=5, _used_attempt_ids={str(i) for i in range(5)},
+                _policy_rejections=2),
             _outer_scheduler_evidence=evidence,
             rollout_sharding_manager=SimpleNamespace(torch_random_states=torch.get_rng_state(),
                                                      gen_random_states=torch.get_rng_state()))
@@ -87,6 +89,8 @@ class ActorProbeStateTests(unittest.TestCase):
         optimizer.state[model.weight]['exp_avg'].add_(2)
         scheduler.last_epoch = 99; evidence.actual_writes = 777; evidence.completed_outer = 99
         worker.actor._optimizer_writes = 777
+        worker.actor._complete_outers = 99; worker.actor._last_attempt_index = 99
+        worker.actor._used_attempt_ids = set(); worker.actor._policy_rejections = 99
         worker.rollout_sharding_manager.gen_random_states = torch.zeros_like(torch.get_rng_state())
         torch.rand(4); random.random(); np.random.rand(2)
         restore_worker_payload(worker, run, saved)

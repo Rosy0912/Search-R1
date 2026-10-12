@@ -170,6 +170,9 @@ def verify_full_state(base, run, step, *, load_optimizer=False):
             assert state['completed_outer'] == step and state['optimizer_writes'] == receipt['actual_optimizer_writes']
             assert state['scheduler']['last_epoch'] == step
             assert state['outer_accounting']['pending'] is None and state['outer_accounting']['prepared'] is None
+            assert state['actor_accounting']['completed_outer'] == step
+            assert state['actor_accounting']['last_attempt_index'] == state['outer_accounting']['last_attempt_index']
+            assert state['actor_accounting']['used_attempt_ids'] == state['outer_accounting']['used_attempt_ids']
             assert state['optimizer']['state'] and state['flat_parameter_layout']
             for values in state['optimizer']['state'].values():
                 for value in values.values():
