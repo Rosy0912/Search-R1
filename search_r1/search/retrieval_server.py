@@ -39,7 +39,7 @@ def load_model(model_path: str, use_fp16: bool = False, device: str = "cuda"):
     model_config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
     model = AutoModel.from_pretrained(model_path, trust_remote_code=True)
     model.eval()
-    model.to(device)
+    model.to(os.environ.get("E1_ENCODER_DEVICE", device))
     if use_fp16: 
         model = model.half()
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True, trust_remote_code=True)
@@ -95,7 +95,7 @@ class Encoder:
                                 truncation=True,
                                 return_tensors="pt"
                                 )
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
+        inputs = {k: v.to(next(self.model.parameters()).device) for k, v in inputs.items()}
 
         if "T5" in type(self.model).__name__:
             # T5-based retrieval model
