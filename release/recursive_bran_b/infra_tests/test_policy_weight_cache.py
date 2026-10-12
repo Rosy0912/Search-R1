@@ -1,6 +1,6 @@
 """Small CPU control-flow test of the actual manager methods; no GPU claim."""
 import ast,copy,json,pathlib,time,types,unittest
-source=pathlib.Path(__file__).resolve().parents[2]/'verl/workers/sharding_manager/fsdp_vllm.py'
+source=pathlib.Path(__file__).resolve().parents[3]/'verl/workers/sharding_manager/fsdp_vllm.py'
 node=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.ClassDef) and n.name=='FSDPVLLMShardingManager')
 methods=[n for n in node.body if isinstance(n,ast.FunctionDef) and n.name in ('prepare_policy_cache','release_model_weights','__enter__','__exit__')]
 class CUDA:
