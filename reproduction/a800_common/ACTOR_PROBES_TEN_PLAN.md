@@ -251,6 +251,18 @@ saved-Head staging. Joblib deserialization uses RAM fixtures on this Mac; native
 fitted Heads, current-actor RPCs, resource/guard admission and the separate
 production recovery launcher still require actual A800 verification. Independent
 static re-review found no new definite defect after the source/input gate fix.
+
+Restored namespaces now have a distinct prospective guard-plan role. It freezes
+the saved K origin and inherited Adam writes separately from zero new child
+writes, binds the immutable candidate, parent full-state receipt, both archived
+Heads, child endpoint/resource/retrieval/release evidence and actual recipe, and
+requires full restoration before rollout. The historical reader makes no live
+process or probability-health claim. Fresh0 guard artifacts cannot impersonate
+this role. The actual worker threshold consumer admits this schema only for the
+explicit recovery binding and role. Independent review found and prompted fixes
+for the worker schema dispatch, retrieval/release content checks and exact GPU6
+probe placement. The separate production recovery launcher and full final chain
+verifier remain pending; this component itself does not launch a trainer.
 The existing scorer still uses the current actor's detached RPC features after
 the separately admitted full state restore; staging never calls a frozen
 teacher for reward predictions or fits any new classifier.

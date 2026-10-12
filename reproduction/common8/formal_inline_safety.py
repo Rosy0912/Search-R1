@@ -236,6 +236,9 @@ def archive_initial_probe(base, run):
 def verify_plan(base, artifact, run):
     """Historical reader: no liveness claims and no writes after training starts."""
     base = Path(base).resolve(); assert_formal_run(run)
+    if run.get('actor_probe_recovery') is not None:
+        from reproduction.common8.actor_probe_restore_guard import verify
+        return verify(base, artifact, run)
     assert run['policy_safety_mode'] == SAFETY_MODE
     assert artifact['schema_version'] == 4 and artifact['role'] == ROLE
     assert artifact['accepted_for_guarded_training'] is True

@@ -167,12 +167,15 @@ def bind_thresholds(config, *, group=None):
         if path != base/'logs/policy-safety-calibration.json':raise ValueError('Unbound calibration path')
         artifact=_strict_json(path.read_bytes())
         run=_strict_json((base/'logs/run-manifest.json').read_bytes())
-        if type(artifact['schema_version']) is not int or artifact['schema_version'] not in (2, 3, 4):
+        from reproduction.common8.actor_probe_restore_guard import ROLE as RESTORED_GUARD_ROLE
+        restored_guard = (type(artifact['schema_version']) is int and artifact['schema_version'] == 1
+            and run.get('actor_probe_recovery') is not None and artifact.get('role') == RESTORED_GUARD_ROLE)
+        if type(artifact['schema_version']) is not int or (artifact['schema_version'] not in (2, 3, 4) and not restored_guard):
             raise ValueError('Explicit production admission or typed guarded fresh200 bootstrap required')
         # This reader verifies the frozen parent probability proof and the real
         # confirmation child proof with their distinct run IDs. It has no writes,
         # fresh/no-claim checks or live GPU/HTTP actions after training is claimed.
-        if artifact['schema_version'] == 4:
+        if artifact['schema_version'] == 4 or restored_guard:
             from reproduction.common8.formal_inline_safety import verify_plan
             tail,verified_sha=verify_plan(base,artifact,run)
         elif artifact['schema_version'] == 3:
