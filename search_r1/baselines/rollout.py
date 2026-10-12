@@ -90,6 +90,7 @@ class SearchRollout:
         require(self.behavior_mu is None or token_preservation is not None,
                 'Behavior probabilities require raw-token dual representation')
         self.behavior_mu_provenance = runtime_provenance(os.environ) if self.behavior_mu else None
+        self.behavior_mu_proof_cache = getattr(manager, 'behavior_mu_proof_cache', None)
         self.tokenizer_identity = None
         self.seen_sampling_ids = set()
         self.failure_context = None
@@ -395,7 +396,10 @@ class SearchRollout:
         non_tensors['tree_branch_metadata'] = object_array([s.branch_metadata for s in states])
         if self.token_preservation is not None:
             from .tree_raw_tokens import FIELD, trajectory_projection, require
-            validation_contexts={}
+            validation_contexts = ({} if self.behavior_mu_proof_cache is None
+                                   else self.behavior_mu_proof_cache.contexts)
+            for context in validation_contexts.values():
+                context.check_runtime()
             non_tensors[FIELD]=object_array([trajectory_projection(s,self.config.max_prompt_length,validation_contexts) for s in states])
             occurrences={}
             total=0
@@ -410,7 +414,8 @@ class SearchRollout:
         if self.behavior_mu is not None:
             from .tree_behavior_mu import compose_behavior_mu_rows, TENSOR, FIELD as MU_FIELD
             sampled, bindings = compose_behavior_mu_rows(states, non_tensors[FIELD],
-                response_width=response.shape[1], expected_provenance=self.behavior_mu_provenance)
+                response_width=response.shape[1], expected_provenance=self.behavior_mu_provenance,
+                proof_cache=self.behavior_mu_proof_cache)
             tensors[TENSOR] = sampled
             non_tensors[MU_FIELD] = object_array(bindings)
         result = DataProto.from_dict(tensors=tensors, non_tensors=non_tensors)
@@ -424,7 +429,8 @@ class SearchRollout:
             result.meta_info[META] = MU_PROTOCOL
             result.meta_info[PROVENANCE_META] = copy.deepcopy(self.behavior_mu_provenance)
             result.meta_info['tree_behavior_mu_collection'] = validate_behavior_mu_batch(result,
-                expected_provenance=self.behavior_mu_provenance)
+                expected_provenance=self.behavior_mu_provenance,
+                proof_cache=self.behavior_mu_proof_cache)
         result.meta_info.update(dict(turns_stats=[s.turns + int(s.final_used) for s in states],
                                      active_mask=[not s.done for s in states],
                                      valid_action_stats=[s.valid_actions for s in states],

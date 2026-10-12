@@ -989,6 +989,10 @@ class RayPPOTrainer(object):
                 outer_mu_proofs = BehaviorMuProofCache()
 
                 batch: DataProto = DataProto.from_single_dict(batch_dict)
+                if os.environ.get('RECURSIVE_B_SHARED_DRIVER_MU_PROOF_CACHE') == '1':
+                    # Share only this outer's validated CPU proofs with compose.
+                    # Content hashes and actual tensor/mu/mask/row checks still run.
+                    generation_manager.behavior_mu_proof_cache = outer_mu_proofs
                 if fresh200:
                     from search_r1.baselines.tree_guard_continue import begin_attempt
                     attempt_metadata = begin_attempt(self)

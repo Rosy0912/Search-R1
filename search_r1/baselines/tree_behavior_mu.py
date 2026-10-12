@@ -189,16 +189,21 @@ def _row(projection, expected_provenance, validation_context=None, proof_cache=N
     return result
 
 
-def compose_behavior_mu_rows(states, projections, *, response_width, expected_provenance):
+def compose_behavior_mu_rows(states, projections, *, response_width, expected_provenance, proof_cache=None):
     """Pure CPU assembly from reviewed ledgers; no resampling or actor fallback."""
     expected = validate_provenance(expected_provenance)
     require(len(states) == len(projections) > 0 and type(response_width) is int and response_width > 0,
             'Nonempty complete row collection required')
     tensor = torch.zeros((len(states), response_width), dtype=torch.float32)
     bindings = []
-    validation_context = {}
+    require(proof_cache is None or type(proof_cache) is BehaviorMuProofCache,
+            'Invalid per-outer behavior proof cache')
+    validation_context = {} if proof_cache is None else proof_cache.contexts
+    for context in validation_context.values():
+        context.check_runtime()
     for row, (state, projection) in enumerate(zip(states, projections)):
-        values, actions, _ = _row(projection, expected, validation_context=validation_context)
+        values, actions, _ = _row(projection, expected, validation_context=validation_context,
+                                 proof_cache=proof_cache)
         require(projection['prompt_token_ids'] == state.prompt and
                 projection['policy_response_token_ids'] == state.response and
                 projection['policy_model_mask'] == state.model_mask and
