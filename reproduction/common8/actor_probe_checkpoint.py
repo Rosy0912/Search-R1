@@ -112,7 +112,7 @@ def verify_roundtrip(trainer, run, attempts, epoch, batch_index):
         full_state_receipt_sha256=digest(directory/'full-state-complete.json'),
         workers=workers, driver_before_sha256=current, driver_after_sha256=after,
         reference_unchanged=True, no_new_optimizer_updates=True,
-        scope='same-process persisted optimizer/scheduler/accounting/sampler and training/generation RNG load; canonical actor model separately verified'))
+        scope='same-process canonical actor model plus persisted optimizer/scheduler/accounting/sampler and training/generation RNG load; cross-namespace entry remains separate'))
 
 
 def verify_roundtrip_receipt(base, run, state):
@@ -130,6 +130,8 @@ def verify_roundtrip_receipt(base, run, state):
         assert row['before_sha256'] == row['after_sha256']
         assert row['state_file_sha256'] == states[row['rank']]['sha256']
         assert row['parameters_and_gradients_unchanged'] is True
+        assert row['canonical_model_loaded'] is True
+        assert row['canonical_model_receipt_sha256'] == state['canonical_model_receipt_sha256']
         assert row['optimizer_scheduler_rollout_and_rng_loaded'] is True
     return proof
 

@@ -104,6 +104,25 @@ and driver RNG. Cross-namespace canonical model loading and the complete
 production resume entry remain pending; a same-process roundtrip is not proof
 that this separate entry is available. Actual A800 execution remains untested.
 
+The first-five roundtrip now also reads the actual canonical actor checkpoint,
+checks the receipt and all bound file hashes, canonical key/shape/FP32 master
+finite state and tied-head equality, and loads it through the same FSDP full-state
+graph as export. Each rank agrees on read/device admission before entering the
+weight-loading collectives. The restored actor's parameter and gradient digests
+must match the actual pre-load actor, while reference parameters stay unchanged.
+A CPU mechanics test creates a new worker object, restores serialized model and
+Adam/scheduler/accounting/RNG state, and requires its next stochastic update to
+exactly match uninterrupted execution. This does not assert four-GPU FSDP or a
+cross-namespace production resume; those still require actual admission.
+
+The first-five reload has a four-rank preflight before canonical parameter
+loading, including the complete rank set and shared receipt hash. Parameter
+release/offload also reaches one collective disposition before the next state
+check. A real four-process CPU test injects a missing rank receipt and one
+rank's release error; no peer enters a later model/update collective. This
+does not promise recovery from a failed FSDP-internal CUDA/transport collective;
+such a failure remains fatal and requires preserved fault evidence.
+
 ## Required evidence before launch
 
 1. Focused tests:100/101 reward boundary,10-step refresh boundaries, strict

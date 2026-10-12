@@ -543,20 +543,61 @@ class ActorRolloutRefWorker(Worker):
         from search_g1.actor_probe_contract import actor_probes
         from search_g1.actor_probe_state import (worker_payload, restore_worker_payload,
                                                tree_digest, isolation_state)
-        base = Path(os.environ['SEARCH_G1_BASE']).resolve()
-        run = json.loads((base/'logs/run-manifest.json').read_text())
-        directory = Path(local_path).resolve()
-        assert self._is_actor and actor_probes(run) and completed_outer == 5
-        assert directory.is_relative_to(base)
-        receipt = json.loads((directory/'full-state-complete.json').read_text())
-        row = next(row for row in receipt['workers'] if row['rank'] == self.rank)
+        context = {}
+        def preflight():
+            import hashlib
+            from search_g1.actor_probe_model_state import validate_roundtrip_receipt
+            base = Path(os.environ['SEARCH_G1_BASE']).resolve()
+            run = json.loads((base/'logs/run-manifest.json').read_text())
+            directory = Path(local_path)
+            assert self._is_actor and actor_probes(run) and completed_outer == 5
+            assert directory == directory.resolve() and directory.is_relative_to(base)
+            assert directory == Path(run['checkpoint_dir'])/'actor'/f'global_step_{completed_outer}'
+            receipt_path = directory/'full-state-complete.json'
+            assert receipt_path == receipt_path.resolve() and receipt_path.stat().st_uid == os.getuid()
+            receipt_bytes = receipt_path.read_bytes()
+            receipt = json.loads(receipt_bytes)
+            row = validate_roundtrip_receipt(receipt, run, completed_outer, self.rank)
+            context.update(base=base, run=run, directory=directory, receipt=receipt, row=row)
+            return dict(identity=receipt['identity'], completed_outer=completed_outer,
+                        full_state_receipt_sha256=hashlib.sha256(receipt_bytes).hexdigest())
+        collective_call(preflight, stage='actor_probe_state_roundtrip_preflight')
+        run, directory, receipt, row = (context[key] for key in ('run', 'directory', 'receipt', 'row'))
         result = {}
+        canonical = {}; snapshot = {}
+        def read_parameters():
+            from search_g1.actor_probe_model_state import read_canonical_actor_state
+            snapshot['unchanged'] = isolation_state(self.actor_module_fsdp)
+            canonical.update(read_canonical_actor_state(directory, run, completed_outer,
+                receipt['canonical_model_receipt_sha256']))
+            return dict(completed_outer=completed_outer, tensors=len(canonical),
+                        canonical_model_receipt_sha256=receipt['canonical_model_receipt_sha256'])
+        collective_call(read_parameters, stage='actor_probe_canonical_model_read')
+        def load_parameters_to_device():
+            if self._is_offload_param:
+                load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(),
+                                         load_grad=self._is_offload_grad)
+            return dict(accepted=True)
+        collective_call(load_parameters_to_device, stage='actor_probe_canonical_model_device_admission')
+        try:
+            from search_g1.actor_probe_model_state import load_fsdp_canonical_state
+            collective_call(lambda: (load_fsdp_canonical_state(self.actor_module_fsdp, canonical),
+                                      {'accepted': True})[1], stage='actor_probe_canonical_model_load')
+        finally:
+            def release_parameters():
+                canonical.clear()
+                if self._is_offload_param:
+                    offload_fsdp_param_and_grad(self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+                if torch.cuda.is_initialized(): torch.cuda.synchronize()
+                return dict(accepted=True)
+            collective_call(release_parameters, stage='actor_probe_canonical_model_release')
         def roundtrip():
             path = directory/f'training-state-rank-{self.rank}.pt'
             assert str(path) == row['path'] and path.stat().st_size == row['bytes']
             assert digest(path) == row['sha256']
             current = tree_digest(worker_payload(self, run, completed_outer))
             unchanged = isolation_state(self.actor_module_fsdp)
+            assert unchanged == snapshot['unchanged'], 'Canonical model reload changed the actual actor weights or gradients'
             payload = torch.load(path, map_location='cpu', weights_only=False)
             assert tree_digest(payload) == current, 'Checkpoint differs from the actual live worker state'
             restore_worker_payload(self, run, payload)
@@ -567,6 +608,8 @@ class ActorRolloutRefWorker(Worker):
             self._outer_scheduler_evidence._check_state()
             result.update(rank=self.rank, before_sha256=current, after_sha256=restored,
                 state_file_sha256=row['sha256'], parameters_and_gradients_unchanged=True,
+                canonical_model_loaded=True,
+                canonical_model_receipt_sha256=receipt['canonical_model_receipt_sha256'],
                 optimizer_scheduler_rollout_and_rng_loaded=True)
             return dict(completed_outer=completed_outer, optimizer_writes=self.actor._optimizer_writes,
                         accepted=True)

@@ -34,6 +34,10 @@ def tree_digest(value):
 
 
 def isolation_state(module, optimizer=None, scheduler=None):
+    import torch
+    # The existing offload helper uses nonblocking GPU-to-CPU copies. Do not
+    # hash their CPU destinations before this worker's stream has finished.
+    if torch.cuda.is_initialized(): torch.cuda.synchronize()
     result = dict(parameters_sha256=tree_digest(dict(module.named_parameters())),
         gradients_sha256=tree_digest({name: p.grad for name, p in module.named_parameters()}),
         module_modes_sha256=tree_digest({name: m.training for name, m in module.named_modules()}))
@@ -91,6 +95,7 @@ def durable_torch_save(payload, target, base):
 
 def worker_payload(worker, run, completed_outer):
     import torch
+    if torch.cuda.is_initialized(): torch.cuda.synchronize()
     evidence = worker._outer_scheduler_evidence
     assert evidence.completed_outer == completed_outer and evidence.pending is None and evidence.prepared is None
     assert not evidence.rejected and worker.actor_lr_scheduler.last_epoch == completed_outer
