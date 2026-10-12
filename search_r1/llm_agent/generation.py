@@ -471,7 +471,13 @@ If I want to give the final answer, I should put the answer between <answer> and
         import time
         started=time.perf_counter()
         try:
-            return requests.post(self.config.search_url, json=payload).json()
+            # A dead HTTP connection must terminate this attempt rather than
+            # leave all inference ranks waiting indefinitely. Do not retry a
+            # request invisibly: the failed attempt retains its own evidence.
+            response = requests.post(self.config.search_url, json=payload,
+                                     timeout=(10, 300))
+            response.raise_for_status()
+            return response.json()
         finally:
             self.retrieval_http_json_wall_seconds=getattr(self,'retrieval_http_json_wall_seconds',0.)+time.perf_counter()-started
             self.retrieval_http_calls=getattr(self,'retrieval_http_calls',0)+1

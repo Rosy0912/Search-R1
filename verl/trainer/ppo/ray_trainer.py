@@ -805,7 +805,7 @@ class RayPPOTrainer(object):
         if self.config.trainer.get('training_state_enabled', False):
             self._save_complete_training_state()
 
-    def _save_complete_training_state(self):
+    def _save_complete_training_state(self, hf_checkpoint_saved=True):
         from search_r1.baselines.training_state import atomic_save, driver_snapshot, restore_driver, digest
         identity = dict(job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
@@ -834,7 +834,9 @@ class RayPPOTrainer(object):
             if digest(driver_snapshot(self, identity)) != logical: raise ValueError('Driver reloaded state differs')
         from search_r1.baselines.select_teacher import model_manifest
         hf_path = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
-        hf_identity = model_manifest(hf_path)
+        hf_identity = model_manifest(hf_path) if hf_checkpoint_saved else None
+        if not hf_checkpoint_saved:
+            hf_path = None
         manifest = dict(status='COMPLETE_SAME_WORLD_STATE_SAVED', identity=identity, worker_states=workers,
                         driver=dict(path=driver_path, sha256=driver_sha, logical_state_sha256=logical,
                                     next_step=self.global_steps+1, exact_reload_verified=verify),
@@ -1251,11 +1253,18 @@ class RayPPOTrainer(object):
                         # even when the last update is not a save-frequency boundary.
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
-                            if (self.config.actor_rollout_ref.actor.get('recursive_document_objective',False)
-                                    and explicit_save_steps is None):
-                                from search_r1.baselines.recursive_rolling import prune
-                                pruned=prune(self.config.trainer.default_local_dir,self.global_steps)
-                                metrics['recursive/rolling_snapshots_pruned']=len(pruned)
+                    rolling_state_due = (
+                        self.config.actor_rollout_ref.actor.get('recursive_document_objective', False)
+                        and self.config.trainer.get('training_state_enabled', False))
+                    if rolling_state_due:
+                        # Sparse HF exports must never suppress the native recovery
+                        # boundary: parameters, Adam, scheduler, sampler and both RNGs.
+                        if not save_due:
+                            with _timer('save_training_state', timing_raw):
+                                self._save_complete_training_state(hf_checkpoint_saved=False)
+                        from search_r1.baselines.recursive_rolling import prune
+                        pruned = prune(self.config.trainer.default_local_dir, self.global_steps)
+                        metrics['recursive/rolling_snapshots_pruned'] = len(pruned)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))

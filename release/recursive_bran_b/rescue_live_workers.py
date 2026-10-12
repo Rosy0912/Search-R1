@@ -10,7 +10,7 @@ import socket
 def capture(worker, run, source, output):
     import os,torch
     from pathlib import Path
-    from search_r1.baselines.training_state import snapshot_worker_to_file,atomic_save
+    from search_r1.baselines.training_state import atomic_save
     assert os.environ['SEARCH_R1_BASELINE_RUN_ID']==run and os.environ['SEARCH_R1_BASELINE_COMMIT']==source
     assert worker.world_size==4 and worker.actor_lr_scheduler.last_epoch==4
     assert worker.actor._fresh_total_committed_optimizer_calls==80
@@ -19,7 +19,7 @@ def capture(worker, run, source, output):
         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
         data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
         model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],completed_step=4,actual_update_limit=200)
-    receipt=snapshot_worker_to_file(worker,output,identity,verify=False)
+    receipt=worker.save_training_state(output,identity,verify=False)
     manager=worker.rollout_sharding_manager
     sampling=manager.gen_random_states.detach().clone()
     path=Path(output)/('sampling-after-incomplete5-rank%02d.pt'%worker.rank)
