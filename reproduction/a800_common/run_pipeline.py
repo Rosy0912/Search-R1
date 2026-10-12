@@ -82,8 +82,14 @@ class LocalPipeline(Pipeline):
                 retrieval_placement='original full Flat FP16 shards on physical GPUs5,6; separate four-GPU training; actual CPU/GPU and HTTP64 equality admitted')
             publish(self.base/'logs/run-manifest.json',self.run)
             self.initial_probe_calibration()
-            self.stage('STARTING_REAL_FROZEN_PROBE_ENDPOINT')
-            probe=self.start('probe-server',[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port','18012'],self.probe_gpus)
+            from search_g1.actor_probe_contract import actor_probes
+            if actor_probes(self.run):
+                self.stage('STARTING_CURRENT_ACTOR_BINARY_HEAD_SERVICE')
+                probe_command=[self.python,'-m','reproduction.common8.actor_probe_head_service','--base',str(self.base),'--port','18012']
+            else:
+                self.stage('STARTING_REAL_FROZEN_PROBE_ENDPOINT')
+                probe_command=[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port','18012']
+            probe=self.start('probe-server',probe_command,self.probe_gpus)
             health=self.endpoint('probe-server',probe,'18012/health');assert health['ok'] is True
             released=self.endpoint('probe-server',probe,'18012/suspend','post',{'version':health['version']})
             assert released['suspended'] is True and released['allocated_bytes_after_release']<256*1024*1024

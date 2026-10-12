@@ -148,6 +148,9 @@ def stage(base):
     assert prep['role'] == 'actor_probe_full_recovery_preparation' and prep['prepared'] is True
     assert prep['production_admission'] is False and prep['identity'] == identity(run)
     assert prep['candidate_manifest_sha256'] == digest(path)
+    assert prep['candidate_manifest'] == 'logs/actor-probe-recovery-candidate.json'
+    candidate = _owned(base/prep['candidate_manifest'], 32*1024**2)
+    assert digest(candidate) == prep['candidate_manifest_sha256'] and json.loads(candidate.read_bytes()) == run
     assert prep['origin'] == namespace_origin(run)
     assert prep['recovery_binding_sha256'] == binding_digest(run['actor_probe_recovery'])
     assert prep['parent_trainer_session_exit_verified'] is True and prep['canonical_finite_tensor_count'] == 435

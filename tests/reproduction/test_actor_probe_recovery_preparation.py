@@ -132,7 +132,13 @@ class RecoveryPreparationTests(unittest.TestCase):
                 order.append(Path(path).name); actual_write(path,document)
             with patch('reproduction.common8.calibration_runtime.write_once',traced_write):
                 proof=_publish_candidate(base,child,evidence)
-            self.assertEqual(order,['run-manifest.json','actor-probe-recovery-preparation.json'])
+            self.assertEqual(order,['actor-probe-recovery-candidate.json','run-manifest.json','actor-probe-recovery-preparation.json'])
+            candidate=base/proof['candidate_manifest']
+            self.assertEqual(candidate.read_bytes(),(base/'logs/run-manifest.json').read_bytes())
+            # The later pipeline may record placements/births in its mutable run
+            # manifest without destroying the original prepared candidate bytes.
+            (base/'logs/run-manifest.json').write_text(json.dumps(dict(child,pipeline_identity={'fixture':True})))
+            self.assertEqual(hashlib.sha256(candidate.read_bytes()).hexdigest(),proof['candidate_manifest_sha256'])
             self.assertEqual(json.loads((base/'logs/actor-probe-recovery-preparation.json').read_text()),proof)
             self.assertNotIn('candidate_manifest_sha256',evidence)
 
@@ -148,7 +154,7 @@ class RecoveryPreparationTests(unittest.TestCase):
             self.assertFalse((base/'logs/actor-probe-recovery-preparation.json').exists())
 
     def test_old_driver_ledgers_and_dangling_links_rejected_before_preparation(self):
-        for name in ('actual-attempts.jsonl','actual-updates.jsonl','run-manifest.json','optimizer-rank-0.jsonl'):
+        for name in ('actual-attempts.jsonl','actual-updates.jsonl','run-manifest.json','actor-probe-recovery-candidate.json','optimizer-rank-0.jsonl'):
             for symlink in (False,True):
                 with self.subTest(name=name,symlink=symlink), tempfile.TemporaryDirectory() as root:
                     base=Path(root).resolve(); (base/'logs').mkdir()

@@ -42,13 +42,21 @@ def check_common(base):
 
 
 def verify_training_gate(base):
-    check_common(base)
+    run=check_common(base)
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        from reproduction.common8.actor_probe_head_admission import verify_training_gate as verify_heads
+        return verify_heads(base)
     return generic.verify_training_gate(base)
 
 
 def admit(base):
-    check_common(base)
-    generic.admit(base)
+    run=check_common(base)
+    from search_g1.actor_probe_contract import actor_probes
+    if actor_probes(run):
+        from reproduction.common8.actor_probe_head_admission import admit as admit_heads
+        admit_heads(base)
+    else:generic.admit(base)
     verify_training_gate(base)
 
 

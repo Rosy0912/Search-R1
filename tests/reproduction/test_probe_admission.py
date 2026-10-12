@@ -1,5 +1,5 @@
 import unittest
-import ast,json,os,types
+import ast,json,os,types,tempfile
 from pathlib import Path
 from search_g1.signals import validate_probe_reply
 from unittest.mock import patch
@@ -38,7 +38,9 @@ class RewardVersionTests(unittest.TestCase):
         reply=dict(version='old',results=[dict(id='q',version='old',flip=.5,boundary=.5)])
         response=types.SimpleNamespace(raise_for_status=lambda:None,json=lambda:reply)
         client=types.SimpleNamespace(expected_probe_version='correct',probe_url='unused',probe_timeout=1,probe_backoff_cap=4,probe_max_wait=4,_probe_session=types.SimpleNamespace(post=lambda *a,**kw:response))
-        with patch.dict(os.environ,{'SEARCH_G1_BASE':'/unused'}),patch('time.sleep'):
+        with tempfile.TemporaryDirectory() as root,patch.dict(os.environ,{'SEARCH_G1_BASE':root}),patch('time.sleep'):
+            logs=Path(root)/'logs';logs.mkdir()
+            (logs/'run-manifest.json').write_text(json.dumps(dict(run_id='legacy-fixture',initial_probe_version='correct')))
             with self.assertRaisesRegex(ValueError,'Evaluator version mismatch'):ns['_probe_call'](client,items)
             self.assertFalse(hasattr(client,'last_probe_version'))
             reply['version']='correct';reply['results'][0]['version']='correct'

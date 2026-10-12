@@ -230,6 +230,27 @@ admission. A partial copy cannot publish a live version or completed marker;
 an existing live version cannot be replaced. Four small scalar-file tests cover
 5/50/100/150, corruption/source symlinks, interrupted copy and exclusive live
 publication; these do not exercise actual fitted Heads, endpoint or A800 state.
+
+The opt-in pipeline now starts a CPU-only binary Head service instead of the
+frozen encoder service. Its two fitted classifiers are hash-checked and loaded
+together; health, suspend/resume and synthetic readout smoke responses bind the
+actual producer identity and live version. It does not load a CUDA encoder or
+claim task accuracy from the synthetic vectors. Production reward features still
+come through the current actor's detached-representation RPC. Both admission
+and training verification recheck all input hashes, the complete runtime source
+map, Git HEAD and clean source before querying the actual endpoint. Fresh0 and
+saved K=5/50/100/150 classifier versions are handled explicitly; no new initial0
+calibration is claimed for a restored version.
+
+Recovery preparation also preserves exact candidate bytes in a separate,
+immutable manifest before the mutable pipeline run manifest and completion
+marker. Saved-Head staging binds that immutable SHA and the pre-launch run bytes.
+The latest 22 focused CPU tests cover service/HTTP identity, hash and version
+rejection, input/source rechecks, legacy admission, durable preparation order and
+saved-Head staging. Joblib deserialization uses RAM fixtures on this Mac; native
+fitted Heads, current-actor RPCs, resource/guard admission and the separate
+production recovery launcher still require actual A800 verification. Independent
+static re-review found no new definite defect after the source/input gate fix.
 The existing scorer still uses the current actor's detached RPC features after
 the separately admitted full state restore; staging never calls a frozen
 teacher for reward predictions or fits any new classifier.

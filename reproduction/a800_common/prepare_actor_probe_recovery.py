@@ -91,11 +91,15 @@ def _publish_candidate(base, child, preparation):
     assert preparation['prepared'] is True and preparation['production_admission'] is False
     assert preparation['identity'] == identity(child)
     manifest = Path(base)/'logs/run-manifest.json'
+    candidate = Path(base)/'logs/actor-probe-recovery-candidate.json'
     completion = Path(base)/'logs/actor-probe-recovery-preparation.json'
-    assert not manifest.exists() and not completion.exists()
+    assert all(not p.exists() and not p.is_symlink() for p in (manifest,candidate,completion))
+    write_once(candidate, child)
     write_once(manifest, child)
     assert json.loads(_owned(manifest, 32*1024**2).read_bytes()) == child
-    record = dict(preparation, candidate_manifest_sha256=digest(manifest))
+    assert digest(_owned(candidate, 32*1024**2)) == digest(manifest)
+    record = dict(preparation, candidate_manifest='logs/actor-probe-recovery-candidate.json',
+                  candidate_manifest_sha256=digest(candidate))
     write_once(completion, record)
     return record
 
@@ -103,6 +107,7 @@ def _publish_candidate(base, child, preparation):
 def _assert_clean_candidate(base):
     for name in ('run-manifest.json', 'process-ledger.json', 'pipeline-launch-claim.json',
                  'training-launch-claim.json', 'actor-probe-recovery-preparation.json',
+                 'actor-probe-recovery-candidate.json',
                  'actual-attempts.jsonl', 'actual-updates.jsonl'):
         path = Path(base)/'logs'/name
         assert not path.exists() and not path.is_symlink(), 'Existing recovery attempt; inspect, never overwrite/reprepare'
