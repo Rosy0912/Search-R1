@@ -45,6 +45,7 @@ def main():
   audit=result.stdout.strip().split(';')[0]
   if not audit.isdigit():raise RuntimeError('Unknown CPU audit submission outcome')
   (out/'job.id').write_text(audit+'\n');(out/'submission-claim.json').write_text(json.dumps(dict(dependency=int(job),audit_job=int(audit),publication=os.environ['COSEARCH_RECOVERY_PUBLICATION'],epoch=time.time()),indent=2)+'\n')
+  (out/'state.json').write_text(json.dumps(dict(status='QUEUED_WAITING_DEPENDENCY',dependency=int(job),audit_job=int(audit),epoch=time.time()),indent=2)+'\n')
   state('RECOVERY_AND_CPU_DEPENDENCY_SUBMITTED_NOT_RUNTIME_ACCEPTED',job=job,audit_job=audit,restored_step=100,recompute=[101,140])
  except BaseException as e:state('FAILED_REQUIRES_REVIEW',error_type=type(e).__name__,error=str(e));raise
 if __name__=='__main__':main()

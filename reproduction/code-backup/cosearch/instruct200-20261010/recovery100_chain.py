@@ -14,7 +14,7 @@ try:
   if d.get('status')=='TRANSFER_COMPLETE_PENDING_COMPUTE_SHA_AND_BOUNDARY_EVALUATION':break
   state('WAITING_FOR_SOURCE_SHA_AND_TRANSFER',stage=d);time.sleep(15)
  state('RUNNING_HPC_CPU_SHA_AND_SINGLE_SUBMISSION_GATE')
- command='COSEARCH_RECOVERY_PUBLICATION='+shlex.quote(os.environ['COSEARCH_RECOVERY_PUBLICATION'])+' PYTHONPATH='+shlex.quote(ROOT+'/tools')+' python3 '+shlex.quote(ROOT+'/tools/finalize_recovery100.py')
+ command='COSEARCH_RECOVERY_PUBLICATION='+shlex.quote(os.environ['COSEARCH_RECOVERY_PUBLICATION'])+' PYTHONPATH='+shlex.quote(ROOT+'/tools')+' '+shlex.quote('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/author-native/python/cpython-3.11.17-linux-x86_64-gnu/bin/python3.11')+' '+shlex.quote(ROOT+'/tools/finalize_recovery100.py')
  subprocess.run(SSH+[command],env=env,check=True)
  state('HPC_GATE_FINISHED_CHECK_RUNTIME_NOT_JUST_SUBMISSION')
 except BaseException as e:state('FAILED_REQUIRES_REVIEW',error=str(e));raise
