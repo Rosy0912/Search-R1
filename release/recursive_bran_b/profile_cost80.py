@@ -209,7 +209,7 @@ def run_driver(config):
         source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],diagnostic_only=True,
         limits='Four GPUs 0-3; one small batch; cold setup separate; not formal 512x5 throughput acceptance')
     (output/'result.json').write_text(json.dumps(result,default=lambda x:float(x),indent=2))
-    emit('iteration_complete',**result)
+    emit('iteration_complete',**{k:v for k,v in result.items() if k!='case'})
     return result
 
 def main():
