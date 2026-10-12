@@ -1,0 +1,18 @@
+{
+  "epoch": 1791794957.0440938,
+  "status": "BACKUP_AND_BAPO_SCOPE_CLEANUP_COMPLETE",
+  "selected_outer": 150,
+  "em512": 0.4609375,
+  "correct512": 236,
+  "hf_revision": "a463fa2cfd67ece0cdd6a851aff843558832a233",
+  "hf_files": 40,
+  "hf_bytes": 51934768626,
+  "failed_group_reclaimed_bytes": 340704337920,
+  "success_group_reclaimed_bytes": 250426535936,
+  "total_reclaimed_bytes": 591130873856,
+  "final_available_bytes": 1587544584192,
+  "latest200_complete_ranks": 8,
+  "latest200_model_shards": 3,
+  "preserved_other_scope": "TOPD/shared assets/new RBA training/source/env",
+  "rba_warning": "Separate job3387 is RUNNING but its actual entry logs contain repeated pre-cleanup activation failures; no normal iteration proven, notify parent and do not change this task."
+}

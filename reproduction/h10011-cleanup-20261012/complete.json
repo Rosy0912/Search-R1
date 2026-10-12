@@ -1,0 +1,8 @@
+{
+  "status": "ALL_SELECTED_HF_FILES_SHA_VERIFIED",
+  "epoch": 1791794637.22837,
+  "total_bytes": 51934768626,
+  "files": 40,
+  "revision": "a463fa2cfd67ece0cdd6a851aff843558832a233",
+  "generation": "parallel4x4-256k"
+}

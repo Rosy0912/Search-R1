@@ -1,0 +1,34 @@
+{
+  "epoch_start": 1791794693.1181095,
+  "github_sha": "2cfe160d1544af995bef031606cad5dd42fd802e",
+  "hf_receipt": {
+    "status": "ALL_SELECTED_HF_FILES_SHA_VERIFIED",
+    "epoch": 1791794637.22837,
+    "total_bytes": 51934768626,
+    "files": 40,
+    "revision": "a463fa2cfd67ece0cdd6a851aff843558832a233",
+    "generation": "parallel4x4-256k"
+  },
+  "before": "Filesystem                 1B-blocks           Used     Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 13135475601408 1337118052352  91% /dataset\n",
+  "deleted": [
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/cache",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/diagnostics/worker-events",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/training-em-audit",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_5",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_150",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_50",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_100",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_5",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_150",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_50",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_100",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_5_COMPLETE",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_150_COMPLETE",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_100_COMPLETE",
+    "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_50_COMPLETE"
+  ],
+  "preserved_latest_200": true,
+  "after": "Filesystem                 1B-blocks           Used     Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 12885049065472 1587544588288  90% /dataset\n",
+  "queue": "3245|search-g1-common8-attempt3|PENDING|\n3389|zhy072-fqg-pilot|PENDING|\n3349|lichen-h3-hold|RUNNING|h100-5\n3360|tree-branpo-fresh200|RUNNING|h100-10\n3381|search-g1-mixed200|RUNNING|h100-8\n3387|rba-a-h100-run200|RUNNING|h100-11\n",
+  "epoch_end": 1791794729.5489254
+}

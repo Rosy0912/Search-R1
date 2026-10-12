@@ -1,0 +1,55 @@
+{
+  "epoch": 1791794851.0671124,
+  "df": "Filesystem                 1B-blocks           Used     Available Use% Mounted on\n/dev/mapper/data-data 15240760295424 12885049069568 1587544584192  90% /dataset\n",
+  "queue": "3245|search-g1-common8-attempt3|PENDING|\n3389|zhy072-fqg-pilot|PENDING|\n3349|lichen-h3-hold|RUNNING|h100-5\n3360|tree-branpo-fresh200|RUNNING|h100-10\n3381|search-g1-mixed200|RUNNING|h100-8\n3387|rba-a-h100-run200|RUNNING|h100-11\n",
+  "latest200_ranks": [
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_0.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_1.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_2.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_3.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_4.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_5.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_6.pt",
+      "size": 4784849074
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_200_COMPLETE/ranks/rank_7.pt",
+      "size": 4784849074
+    }
+  ],
+  "latest200_models": [
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_200/model-00001-of-00003.safetensors",
+      "size": 4982131536
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_200/model-00002-of-00003.safetensors",
+      "size": 4932949336
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_200/model-00003-of-00003.safetensors",
+      "size": 3673383040
+    }
+  ],
+  "source_exists": true,
+  "deleted_missing": true
+}
