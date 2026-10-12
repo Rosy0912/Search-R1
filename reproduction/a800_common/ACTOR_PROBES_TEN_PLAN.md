@@ -188,6 +188,35 @@ the actual Ray serialization check requires target dependencies unavailable on
 the Mac. The separate production launcher, real rank/tail chain reader and
 complete final verifier integration still remain mandatory before recovery use.
 
+A separate remote-only recovery preparation entry now derives a candidate
+manifest from the actual saved driver and an explicitly selected experiment
+root. Source and original canonical data must already be staged in an independent
+A800 namespace; preparation rejects existing launch/log/checkpoint state and
+requires the executing module to be the pinned published child source. It checks
+the canonical shared products and original official-model manifest, preserved
+parent source/reference/full-state/Head hashes, prior restore-origin proof when
+applicable, and absence of parent trainer births/session survivors. It re-reads
+the real canonical actor tensors on CPU (435 FP32 finite tensors) and preserves
+post-checkpoint discarded driver/rank evidence. Only then may it create the
+child's private Ray root and durably publish the candidate manifest, followed
+by a final preparation marker bound to its actual bytes. A manifest-write
+failure cannot publish a prepared marker. Old driver ledgers and dangling
+links are rejected before preparation, in addition to rank and claim state.
+
+The child's physical Adam/attempt origin comes from the saved payload, never
+the parent's later observed counters. Recipe, BF16/journal mode, retrieval
+assets/physical placement and reserved calibration IDs remain bound. Initial
+constructor recipe fields still describe the original official-root recipe;
+`run_start_semantics` and `optimizer_semantics` explicitly state full-state resume.
+No new fresh0 or initial300 admission is claimed, no Head refit is performed,
+and preparation has `production_admission=False`. Twenty-two focused CPU
+manifest/restore/reader tests pass, including the real file-hash verifier on
+explicit tiny scalar fixtures, durable publication order and failure handling,
+and old driver-ledger/dangling-link rejection. These do not verify real model
+weights; actual remote preparation is not exercised.
+Child restored-Head endpoint/resource/guard-plan admission, production launcher,
+zero-progress fault branches and complete final chain acceptance remain pending.
+
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
 full-state receipt hashes plus the child launch/restore proof, require four

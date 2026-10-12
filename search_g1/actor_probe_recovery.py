@@ -17,7 +17,9 @@ CONTRACT_KEYS = ('input_sha256', 'initial_model_sha256', 'initial_model', 'refer
     'excluded_physical_indices', 'reward_schedule', 'reward_schedule_boundary',
     'probe_representation_source', 'probe_refresh_interval', 'probe_parameter_ownership',
     'policy_safety_mode', 'contract_kind', 'target_updates', 'predecessor_completion',
-    'vllm_gpu_memory_utilization')
+    'vllm_gpu_memory_utilization', 'precision_profile', 'behavior_probability_policy',
+    'retriever_physical_indices', 'probe_physical_index', 'retrieval_asset_paths', 'retrieval_encoder',
+    'calibration_question_ids', 'python_executable', 'python_headers')
 
 
 def identity(run):

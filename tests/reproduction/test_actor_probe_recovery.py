@@ -34,7 +34,13 @@ def documents():
         probe_refresh_interval=10, probe_parameter_ownership='independent_binary_heads_only',
         policy_safety_mode='inline_first_five', contract_kind='fresh200_warmup57',
         target_updates=200, predecessor_completion={'run_id': '9'*32},
-        vllm_gpu_memory_utilization=.25)
+        vllm_gpu_memory_utilization=.25,
+        precision_profile='bf16_policy_fp32_master',
+        behavior_probability_policy='sampling_journal_no_extra_hf_forward',
+        retriever_physical_indices=[5,6], probe_physical_index=6,
+        retrieval_asset_paths={'e5_Flat.index':'/data/unit/index','wiki-18.jsonl':'/data/unit/wiki'},
+        retrieval_encoder='/data/unit/e5', calibration_question_ids=['reserved-unit'],
+        python_executable='/data/unit/python', python_headers='/data/unit/headers')
     child = copy.deepcopy(parent); child.update(run_id='d'*32, execution_id='e'*32,
         source_commit='f'*40, actor_probe_experiment_root_run_id=parent['run_id'])
     binding = dict(role='actor_probe_same_experiment_full_state_recovery',
@@ -82,6 +88,10 @@ class ActorProbeRecoveryTests(unittest.TestCase):
                  (dict(child, initial_model='/data/unit/other', reference_model='/data/unit/other'), parent, receipt),
                  (dict(child, execution_host='another-host'), parent, receipt),
                  (dict(child, budget={'world_size':4, 'lr_warmup_steps':0}), parent, receipt),
+                 (dict(child, precision_profile=None), parent, receipt),
+                 (dict(child, behavior_probability_policy=None), parent, receipt),
+                 (dict(child, calibration_question_ids=['other']), parent, receipt),
+                 (dict(child, retriever_physical_indices=[4,7]), parent, receipt),
                  (dict(child, input_sha256={'manifest.json':'0'*64}), parent, receipt),
                  (child, dict(parent, reward_schedule='g1_through50_then_binary'), receipt),
                  (child, parent, dict(receipt, workers=receipt['workers'][:3]))]
