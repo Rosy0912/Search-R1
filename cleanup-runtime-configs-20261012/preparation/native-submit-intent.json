@@ -1,0 +1,31 @@
+{
+  "created_unix": 1791744068.9473746,
+  "base": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012",
+  "source_commit": "0553adec146537e07b84377ce31cba41a54f37cd",
+  "verified_files": 840,
+  "observed_unrelated_native_jobs": [
+    [
+      "3371",
+      "zhy072-fqg-vb-Di1500sf"
+    ]
+  ],
+  "command": [
+    "sbatch",
+    "--oversubscribe",
+    "--parsable",
+    "--job-name=search-g1-mixed200",
+    "--partition=gpu",
+    "--nodelist=h100-8",
+    "--nodes=1",
+    "--ntasks=1",
+    "--cpus-per-task=96",
+    "--mem=512G",
+    "--time=7-00:00:00",
+    "--signal=B:TERM@60",
+    "--output=/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/native-%j.log",
+    "--error=/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/native-%j.log",
+    "--export=NONE",
+    "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/preparation/launch-mixed-native.sh"
+  ],
+  "shared_gpu_policy": "preserve_bound_existing_processes"
+}

@@ -1,0 +1,8 @@
+{
+  "returncode": 0,
+  "stdout": "3381\n",
+  "stderr": "",
+  "checked_unix": 1791744068.9582868,
+  "source_commit": "0553adec146537e07b84377ce31cba41a54f37cd",
+  "slurm_job_id": "3381"
+}

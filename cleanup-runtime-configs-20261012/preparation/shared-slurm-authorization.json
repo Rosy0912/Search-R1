@@ -1,0 +1,41 @@
+{
+  "authorization": "\u5141\u8bb8\u6838\u5b9e\u5e76\u6539\u4e3aSlurm\u5171\u7528\uff0c\u4fdd\u7559\u89c6\u9891\u548c8\u5361\u8bad\u7ec3\u9884\u7b97",
+  "observed_utc": "2026-10-11T18:41:08.770622+00:00",
+  "base": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012",
+  "physical_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "physical_gpu_uuids": [
+    "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+    "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+    "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+    "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a",
+    "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+    "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+    "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+    "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+  ],
+  "training_world_size": 8,
+  "actor_micro_batch_per_rank": 2,
+  "vllm_gpu_memory_utilization": 0.1,
+  "cpu_request": 96,
+  "memory_request": "512G",
+  "preserve_foreign_jobs": true,
+  "source_completed_outer": 5,
+  "allowed_native_jobs": {
+    "3371": {
+      "JobId": "3371",
+      "NodeList": "h100-8",
+      "StartTime": "2026-10-12T01:15:37",
+      "Command": "/mnt/shared/workspace/fastquantgen_step2/aug_sf/slurm_vbench.sh"
+    }
+  },
+  "scope": "Explicit human shared scheduling and reduced extraneous startup checks; terminal3379 preserved, video3371 retained; actual new GPU restore pending"
+}
