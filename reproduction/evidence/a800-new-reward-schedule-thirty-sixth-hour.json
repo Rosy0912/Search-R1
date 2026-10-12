@@ -148,5 +148,22 @@
   },
   "cumulative_peak_scope": "carried previously verified overlapping sampled windows; current scan is bounded and not full history",
   "latest_scores_unchanged": true,
-  "probe_implementation_scope": "new isolated source branch; not deployed or launched"
+  "probe_implementation_scope": "new isolated source branch; not deployed or launched",
+  "gpu_counter_window": {
+    "start_unix": 1791815465.8213682,
+    "end_unix": 1791819178.826152,
+    "first_sample_unix": 1791815465.9989104,
+    "last_sample_unix": 1791819178.619145,
+    "sample_count": 1740,
+    "sampled_peak_mib": {
+      "0": 35291,
+      "1": 34857,
+      "2": 37113,
+      "3": 34761,
+      "5": 20261,
+      "6": 27770
+    },
+    "maximum_sampling_gap_seconds": 2.3160347938537598,
+    "scope": "GPU samples between delivered-hour counter snapshot116 and current bounded counter snapshot120; bounded32MiB read fully covers this window"
+  }
 }
