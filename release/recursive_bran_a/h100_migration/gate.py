@@ -32,7 +32,10 @@ assert sum(z['count'] for z in shapes)==1284
 proof['actual_scan_profile']=profile
 apps=[line.split(',') for line in subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True).splitlines()]
 owned=[row for row in apps if int(row[1])==worker];assert len({row[0].strip() for row in owned})==8
-assert {int(row[1]) for row in apps}<={worker}
+proof['cohost_compute_apps']=[row for row in apps if int(row[1])!=worker]
+free=[int(v) for v in subprocess.check_output(['nvidia-smi','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).split()]
+assert len(free)==8 and min(free)>=24576
+proof['actual_directfree_mib']=free
 proof['actual_gpu_apps']=owned
 wp=Path('/proc',str(worker));assert wp.stat().st_uid==os.getuid()
 proof['gpu_worker_pid']=worker;proof['gpu_worker_starttick']=int((wp/'stat').read_text().rsplit(') ',1)[1].split()[19])

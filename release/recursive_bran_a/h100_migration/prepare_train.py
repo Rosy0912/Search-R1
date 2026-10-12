@@ -15,6 +15,8 @@ replacements={'baselines.local_runtime_host':'h100-11','baselines.tree.roots':'1
 overrides=[k+'='+str(replacements.get(k,v)) for k,v in [x.split('=',1) for x in json.loads((repo/'release/bran_tree_grpo/production_overrides.json').read_text())]]
 with initialize_config_dir(config_dir=str(repo/'verl/trainer/config'),version_base=None):cfg=compose(config_name='ppo_recursive_bran_a',overrides=overrides)
 OmegaConf.set_struct(cfg,False)
+# Match or exceed the previous 24GiB-card pool while sharing the 80GiB H100.
+cfg.actor_rollout_ref.rollout.gpu_memory_utilization=0.30
 cfg.actor_rollout_ref.rollout.tree_action_tag_stop=True;cfg.actor_rollout_ref.rollout.tree_action_stop_mode='search_only'
 cfg.retriever.gpu_release_url='http://127.0.0.1:18086/release-gpu';cfg.retriever.control_token_file=str(base/'retriever/receipts/private-probe-token')
 validate_config(cfg);identity=prepare_common_holdout(cfg)

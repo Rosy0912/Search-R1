@@ -4,6 +4,7 @@ base=/dataset/shaoshitong/recursive-bran-a-h100-20261012
 source="$(cd "$(dirname "$0")/../../.." && pwd)"
 runtime=/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009
 python="$runtime/env/bin/python"
+export RBA_H100_SHARED_ALLOCATION=1
 export RECURSIVE_BRAN_BASE="$base" CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export PATH="$runtime/env/bin:/usr/local/bin:/usr/bin:/bin"
 export PYTHONPATH="$source:$runtime/retriever-gpu-lib:$source/release/recursive_bran_a/retriever_overlap_candidate:$source/release/recursive_bran_a/h100_migration/oracle_source"
