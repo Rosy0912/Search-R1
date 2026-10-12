@@ -101,7 +101,7 @@ def run_driver(config):
     from search_r1.llm_agent.generation import GenerationConfig, LLMGenerationManager
     from search_r1.baselines.rollout import select_rows
     case=os.environ['COST80_CASE']; output=Path(os.environ['COST80_OUTPUT'])
-    assert config.data.train_batch_size==16 and config.trainer.n_gpus_per_node==2
+    assert config.data.train_batch_size==16 and config.trainer.n_gpus_per_node==4
     assert config.max_turns==4 and config.actor_rollout_ref.rollout.temperature==1.
     assert config.actor_rollout_ref.actor.optim.lr==1e-6
     # Production's fixed 512/world4/20-opportunity admission is inapplicable to
@@ -115,7 +115,7 @@ def run_driver(config):
         assert config.actor_rollout_ref.actor.policy_safety.enabled
         controller.validate_config=lambda cfg: None
     worker=worker_type()
-    pool=ResourcePoolManager({'profile':[2]}, {Role.ActorRollout:'profile'})
+    pool=ResourcePoolManager({'profile':[4]}, {Role.ActorRollout:'profile'})
     try:
         with stage('driver_setup'):
             tokenizer=hf_tokenizer(config.actor_rollout_ref.model.path)
@@ -132,7 +132,7 @@ def run_driver(config):
         emit('question_identity',count=len(batch),sha256=hashlib.sha256(json.dumps(question_ids,sort_keys=True).encode()).hexdigest())
     manager=LLMGenerationManager(tokenizer,trainer.actor_rollout_wg,GenerationConfig(
         max_turns=4,max_start_length=2048,max_prompt_length=4096,max_response_length=500,
-        max_obs_length=500,num_gpus=2,no_think_rl=config.algorithm.no_think_rl,
+        max_obs_length=500,num_gpus=4,no_think_rl=config.algorithm.no_think_rl,
         search_url=config.retriever.url,topk=config.retriever.topk,force_final_answer=False))
     metrics={}; manager.timing_raw={}; started=time.perf_counter()
     batch=batch.repeat(repeat_times=config.actor_rollout_ref.rollout.n_agent,interleave=True)
@@ -177,7 +177,7 @@ def run_driver(config):
     result=dict(case=case,completed=True,questions=16,training_rows=len(batch),
         iteration_wall_seconds=time.perf_counter()-started,metrics=metrics,workers=reports,
         source_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],diagnostic_only=True,
-        limits='Two GPUs; one small batch; cold setup separate; not formal 512x5 throughput acceptance')
+        limits='Four GPUs 0-3; one small batch; cold setup separate; not formal 512x5 throughput acceptance')
     (output/'result.json').write_text(json.dumps(result,default=lambda x:float(x),indent=2))
     emit('iteration_complete',**result)
     return result
@@ -190,7 +190,7 @@ def main():
     import ray
     config=OmegaConf.load(a.config)
     config.data.train_batch_size=16;config.data.shuffle_train_dataloader=False
-    config.trainer.n_gpus_per_node=2;config.trainer.total_training_steps=1
+    config.trainer.n_gpus_per_node=4;config.trainer.total_training_steps=1
     config.trainer.training_state_enabled=False;config.trainer.val_before_train=False
     config.trainer.default_local_dir=str(output/'checkpoint')
     config.actor_rollout_ref.actor.training_state_enabled=False
@@ -198,9 +198,10 @@ def main():
     config.actor_rollout_ref.actor.guard_continue_protocol=None
     config.actor_rollout_ref.actor.optim.total_training_steps=1
     config.baselines.training_protocol='user_cost80_diagnostic_v1'
-    config.actor_rollout_ref.actor.ppo_micro_batch_size=8 if a.case=='repaired_b' else 2
-    config.actor_rollout_ref.rollout.log_prob_micro_batch_size=16
-    config.actor_rollout_ref.ref.log_prob_micro_batch_size=16
+    config.actor_rollout_ref.actor.ppo_micro_batch_size=16 if a.case=='repaired_b' else 4
+    config.actor_rollout_ref.rollout.log_prob_micro_batch_size=32
+    config.actor_rollout_ref.ref.log_prob_micro_batch_size=32
+    config.actor_rollout_ref.actor.policy_safety.monitor_rows_per_rank=16
     if a.case=='old_opsd':
         config.baselines.method='opsd';config.actor_rollout_ref.actor.baseline_method='opsd'
         config.actor_rollout_ref.actor.use_kl_loss=False;config.actor_rollout_ref.actor.policy_safety.enabled=False
@@ -212,13 +213,16 @@ def main():
         config.baselines.distillation.teacher_device='cuda'
         config.baselines.distillation.component_clip=None
         config.actor_rollout_ref.actor.distillation=config.baselines.distillation
-        config.baselines.opsd_e1.enabled=False
+        config.baselines.tree.behavior_mu.enabled=False
+        config.baselines.tree.token_preservation.enabled=False
+        config.actor_rollout_ref.actor.policy_safety.sampling_probability_correction.enabled=False
+        config.baselines.opsd_e1={'enabled':False}
     else:
         os.environ.update(RECURSIVE_B_CACHE_DETOKENIZER_LENGTH='1',RECURSIVE_B_OMIT_FULL_BETA='1',TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1')
     text=OmegaConf.to_yaml(config);(output/'resolved.yaml').write_text(text)
     os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256']=hashlib.sha256(text.encode()).hexdigest()
     env={k:v for k,v in os.environ.items() if k.startswith(('COST80_','SEARCH_R1_','RECURSIVE_B_','TREE_','SLURM_'))}
-    ray.init(num_gpus=2,runtime_env={'env_vars':env},include_dashboard=False)
+    ray.init(num_gpus=4,runtime_env={'env_vars':env},include_dashboard=False)
     try:
         ray.get(ray.remote(run_driver).remote(config))
     finally:
