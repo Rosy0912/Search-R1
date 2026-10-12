@@ -1,0 +1,402 @@
+[
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/inspect_first5_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/inspect_first5_cpu.py",
+    "sha256": "abd96cdfc2e86bce536faaf4be6f2c2bab993f1950da7bd6d19d03bed0522e14"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/receipt_payload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/receipt_payload.py",
+    "sha256": "ddad09022e7ae22da1e9ddbc887a247f1d4bf06f57ae52e9ac07b5f247673de6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/hf_cpu_reload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-d23a35893c43/hf_cpu_reload.py",
+    "sha256": "f7c30a6611273b8cbd89d98e93c347a3ae40f5c6550d1b560be9b8e6b3f31bd0"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/cpu_import_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/cpu_import_check.py",
+    "sha256": "1d54df10adee55524e31629ed4c83fba09ce929019474c8f12e232f35e6fb641"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/formal_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/formal_supervisor.py",
+    "sha256": "fca49b4c85070a48bda80e21ca6952d286f005eb2a10719e77235d6015d4a22d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/formal_job.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/formal_job.sh",
+    "sha256": "6cfdb12ce6e5cbdabce10a85855b966990d048e9133ff5087fc6f0c04f724678"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/ray_cpu_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/ray_cpu_check.py",
+    "sha256": "93da8834fce757a338e2907a55ca9820758f21ba1fb4b1323f1f3b3e194be233"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/resource_sample.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/resource_sample.py",
+    "sha256": "54f1a1a3fafcaf41deb9034f520021e703868e531a7b209b3776e7693182c7c3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/owned_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/owned_runtime.py",
+    "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/hardware_rank.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/hardware_rank.py",
+    "sha256": "00e21dd2f09bd357fccc7b90d01b189d81469b3b4df5b08242b75779272c5412"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/retriever_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-87eadc6ae96c/retriever_entry.py",
+    "sha256": "be0a6228de6affa84b6cb0f2106ea8309d159991c0c37aefe31941bbdf548d60"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/cpu_import_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/cpu_import_check.py",
+    "sha256": "f7ae8c6c116546680e2c933b79ff4c7ca97cd5b02efe7ebcb0dcff9419550e61"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/formal_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/formal_supervisor.py",
+    "sha256": "92bd4079f31a14435d1d1cc82e3c947c846dedc4b546ab62d8519b3e9d9cc1f1"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/formal_job.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/formal_job.sh",
+    "sha256": "6cfdb12ce6e5cbdabce10a85855b966990d048e9133ff5087fc6f0c04f724678"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/ray_cpu_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/ray_cpu_check.py",
+    "sha256": "93da8834fce757a338e2907a55ca9820758f21ba1fb4b1323f1f3b3e194be233"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/resource_sample.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/resource_sample.py",
+    "sha256": "54f1a1a3fafcaf41deb9034f520021e703868e531a7b209b3776e7693182c7c3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/owned_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/owned_runtime.py",
+    "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/hardware_rank.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/hardware_rank.py",
+    "sha256": "4a50acc4b016150adcc2346c4c61daf64396d403bbdbe4d8bcefb1a693e51a5e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/retriever_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-b88a54fc4a40/retriever_entry.py",
+    "sha256": "be0a6228de6affa84b6cb0f2106ea8309d159991c0c37aefe31941bbdf548d60"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/inspect_first5_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/inspect_first5_cpu.py",
+    "sha256": "9383afb1ee7fd6835ed2037b6834a9e92a3c39cca574b0b87c60e582abd31332"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/receipt_payload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/receipt_payload.py",
+    "sha256": "2ccb3c8153273995429da741a3aabc9cbd299d6a19542628e55dd9d2806df1a5"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/hf_cpu_reload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-e325468beb74/hf_cpu_reload.py",
+    "sha256": "e6287bcdb55e342869e321bf2af992bad7041ab50ce64ccea563a1eb59623a54"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/inspect_eval_native_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/inspect_eval_native_cpu.py",
+    "sha256": "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_eval_contract.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_eval_contract.py",
+    "sha256": "a12edf342425c4f0279142f9366f4aaa98219313a434de687acc8a3b4407c496"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_service_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_service_entry.py",
+    "sha256": "904de38e1fd701efd248ea5e73deff1387d847aba0da7e1dc59d849a22b39b48"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_cpu_prepare.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_cpu_prepare.py",
+    "sha256": "4a5d9837f29bc94646c31a6fe1179d0bbf39ea32abb42db0132b0d770f298422"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/paired_supervisor.py",
+    "sha256": "398bda1421709a89956a7e23ccb9aef2efc6aa30f002b12dec1887866588ef94"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/common.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-paired-supervisor-6d9fede30d82/common.py",
+    "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/inspect_first5_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/inspect_first5_cpu.py",
+    "sha256": "211fd0fa3f30ba2a85aa2460ab34a2b9a34750463caa83cfc97353f1d57e52c6"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/receipt_payload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/receipt_payload.py",
+    "sha256": "7042f5a93158541e9ff0044bf4c21849d8de16eed159c9787fdd7ae8406c564e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/hf_cpu_reload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-1b16c2227caf/hf_cpu_reload.py",
+    "sha256": "b2e02be33d04d925af04a6a8f4efea4ba93997146197d54729d0a9715754c419"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-raw-replay-045cf31cc2a1/replay_final200_raw.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-raw-replay-045cf31cc2a1/replay_final200_raw.py",
+    "sha256": "1f6fac7e829d5918a5d15d44ff144acd15a360b4361edbcfcf1a6091688501d2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-source-publication-v1/publisher-source.original.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-source-publication-v1/publisher-source.original.py",
+    "sha256": "ba20e906cb53da562288670a7477adeb6bb0050c630f9e2f14590c744a06553d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/test_cross_package_common.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/test_cross_package_common.py",
+    "sha256": "9a637a94106ce49fecbba5a1275c641e69d95ec36304a3ca4bcf8dae506afab7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/verify_actual200_prerequisites.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/verify_actual200_prerequisites.py",
+    "sha256": "7dff811b01b302f45c729ee12ae9ee22bb561b359f24fcd0d37352192db2d075"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/common.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/common.py",
+    "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/test_prerequisites.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-prerequisites-85f014e167c8/test_prerequisites.py",
+    "sha256": "5429562b2202936f308229f92eb5739d6c4a20c3c81ba7bd877d36725e0f8f8c"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/cpu_import_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/cpu_import_check.py",
+    "sha256": "02501d2ec759d14e2ab5d0a1427edad16b84d785f80e439191249dcb30173ebb"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/formal_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/formal_supervisor.py",
+    "sha256": "ffb3bdc64f91c4a60905cd15994132c63c6494952c4ca0818c0cf7eee119d017"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/formal_job.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/formal_job.sh",
+    "sha256": "6cfdb12ce6e5cbdabce10a85855b966990d048e9133ff5087fc6f0c04f724678"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/ray_cpu_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/ray_cpu_check.py",
+    "sha256": "93da8834fce757a338e2907a55ca9820758f21ba1fb4b1323f1f3b3e194be233"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/resource_sample.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/resource_sample.py",
+    "sha256": "54f1a1a3fafcaf41deb9034f520021e703868e531a7b209b3776e7693182c7c3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/owned_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/owned_runtime.py",
+    "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/hardware_rank.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/hardware_rank.py",
+    "sha256": "41757d3e57d236fd37be5fafff2c61b9ebd8fdd28ad565470b0b7e0474c441f2"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/retriever_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-71d2501d4512/retriever_entry.py",
+    "sha256": "be0a6228de6affa84b6cb0f2106ea8309d159991c0c37aefe31941bbdf548d60"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/inspect_eval_native_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/inspect_eval_native_cpu.py",
+    "sha256": "74ce068cbfcad64b9776a5e4c3941cf1d4ce008ad5e0ebc8e6d6af6c4edfb67f"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/test_eval_native_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/test_eval_native_cpu.py",
+    "sha256": "a5975e6663a732f75aa6560db168aaeb2b3d91d837cbca6e320685009841417d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/run_eval_native_cpu_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/run_eval_native_cpu_once.py",
+    "sha256": "176ade36207d1ddf13ffdcf1faf859d0f1604464909a5336e8ba751993ccd507"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/common.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-eval-native-cpu-ee31da655703/common.py",
+    "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-cpu-once-868f145430dc/first5_cpu_inspection_once_candidate.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-cpu-once-868f145430dc/first5_cpu_inspection_once_candidate.py",
+    "sha256": "868f145430dc152fb9d4788c07db1e3c83393c5e705f35196a837a9961d81c01"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/terminal3304-originals-59af58ff4e80/collect_actual3304_final_originals.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/terminal3304-originals-59af58ff4e80/collect_actual3304_final_originals.py",
+    "sha256": "00934aab798f1abac7bdf8529603023722c5e3e812b25197894fed9536b4b0b7"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-048de6e9779c/test_inspector.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-048de6e9779c/test_inspector.py",
+    "sha256": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-048de6e9779c/inspect_payloads.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-048de6e9779c/inspect_payloads.py",
+    "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-faea0570c713/test_inspector.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-faea0570c713/test_inspector.py",
+    "sha256": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-faea0570c713/inspect_payloads.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-faea0570c713/inspect_payloads.py",
+    "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/cpu_import_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/cpu_import_check.py",
+    "sha256": "121dbb15626dbbd265c964afd1f699456b1f3c2287ed618f97e077f9e79fa4ff"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/formal_supervisor.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/formal_supervisor.py",
+    "sha256": "c8545514901eb34c0d247b9ec30214ee565ef98365065202a1c83e1e5ba939d4"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/formal_job.sh",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/formal_job.sh",
+    "sha256": "6cfdb12ce6e5cbdabce10a85855b966990d048e9133ff5087fc6f0c04f724678"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/ray_cpu_check.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/ray_cpu_check.py",
+    "sha256": "93da8834fce757a338e2907a55ca9820758f21ba1fb4b1323f1f3b3e194be233"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/resource_sample.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/resource_sample.py",
+    "sha256": "54f1a1a3fafcaf41deb9034f520021e703868e531a7b209b3776e7693182c7c3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/owned_runtime.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/owned_runtime.py",
+    "sha256": "f69418c892f3d0a644e06003773bbfdfeafe9355a48dcc013f94c54af65ab1fd"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/hardware_rank.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/hardware_rank.py",
+    "sha256": "30656baa9372cf5aacb0db56a8efe33cef6038dd1c5a1e34b767014b8bcd5042"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/retriever_entry.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/formal-bbdb7feaf042/retriever_entry.py",
+    "sha256": "be0a6228de6affa84b6cb0f2106ea8309d159991c0c37aefe31941bbdf548d60"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/inspect_first5_cpu.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/inspect_first5_cpu.py",
+    "sha256": "c9058de84fecb72e21c85050ebc3223bfedb8ab5505d6dddeca8874bfbfe6ed3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/receipt_payload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/receipt_payload.py",
+    "sha256": "dc0f3a6eb1dfb755f3240650852767b32df61e5b802e4dc728368bbd6ec4f150"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/hf_cpu_reload.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-8f47570b969b/hf_cpu_reload.py",
+    "sha256": "d2fc49f62018e4eb0888b541ee7cab119be9ccba85428efcd07bd71686a51a39"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/resource-phase-ebd52ef36f64/snapshot_training_resources_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/resource-phase-ebd52ef36f64/snapshot_training_resources_once.py",
+    "sha256": "ebd52ef36f644ce3d49b4e966f88314c0ddf40dc93e31c1b02308e38e281433e"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/check_final200_archives.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/check_final200_archives.py",
+    "sha256": "7fc3e7b96465a681390aae1a59ca9d3aae381b95ef5ea80914425f13ada8f4ed"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/consume_final200_logs_terminal.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/consume_final200_logs_terminal.py",
+    "sha256": "509df9332effd1196c6cb07a6a9d67612d9efdd75498f39a2bdb36726dcd7306"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/load_final200_hf.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/load_final200_hf.py",
+    "sha256": "9fbe4ae0eaca5bcbbf75611ae47b2f0c8e94745c123138e6fee004558adb87cb"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/final200_cpu_once.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/final200_cpu_once.py",
+    "sha256": "cd0062891f64100e46f01f2d9e1e7ef1a402cb926f39a20c4cdddc7d8f8f6f1d"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/inspect_final200_native.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/inspect_final200_native.py",
+    "sha256": "03dcdc1e0cd84eb77780d1e52193c7b904e1e084467e8fb130e184ce008777d9"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/observe_final200.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/observe_final200.py",
+    "sha256": "9ac3015f60dc98012678203049985b0fb575cd44ca2e8a287e1b61cc54c6ee31"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/common.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/final200-f11580b6a7bc/common.py",
+    "sha256": "e00be844fde1b3a6a6102f4a8d4d1afafbc1b7141764942a24d2ee848ff32581"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-cpu-once-8807429a3538/first5_cpu_inspection_once_candidate.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-cpu-once-8807429a3538/first5_cpu_inspection_once_candidate.py",
+    "sha256": "8807429a3538165d38bc8ec8f5e3d09c5fa8cd91cdf8e7638631f7b2aa412944"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-3d8ff4a40c19/test_inspector.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-3d8ff4a40c19/test_inspector.py",
+    "sha256": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-3d8ff4a40c19/inspect_payloads.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-3d8ff4a40c19/inspect_payloads.py",
+    "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/postterminal-source-bindings-2f331c3d6a9b/collect_postterminal_source_bindings.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/postterminal-source-bindings-2f331c3d6a9b/collect_postterminal_source_bindings.py",
+    "sha256": "2cbcb83a4b54bafa0f042121850b09089bc80414b6a852c0fb72af15051df7fe"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-dc1905562f2f/test_inspector.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-dc1905562f2f/test_inspector.py",
+    "sha256": "d6d4df49114a79dfa7a5f07ddcaccd0c8f148276ac14d18fe0df1af822d59ce3"
+  },
+  {
+    "source": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-dc1905562f2f/inspect_payloads.py",
+    "path": "reproduction/cleanup-20261012/external-runtime/opsd-e1-unclipped-multitraj200-20261006/tools/first5-native-dc1905562f2f/inspect_payloads.py",
+    "sha256": "77afa00b2b3e0fdcf674f5022f8b6cc39e12818bc7e825f8e58128fecab0f68b"
+  }
+]
