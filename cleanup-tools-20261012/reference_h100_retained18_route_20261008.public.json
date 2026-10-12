@@ -1,0 +1,10 @@
+{
+  "user": "root",
+  "management_identity_file": "/home/lichen/.ssh/id_ed25519",
+  "targets": {
+    "h100-8": "10.33.0.8"
+  },
+  "trusted_target_host_keys": {
+    "h100-8": []
+  }
+}

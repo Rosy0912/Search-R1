@@ -1,0 +1,8 @@
+{
+  "epoch": 1791792426.4095798,
+  "packages": {
+    "huggingface_hub": "1.23.0",
+    "requests": "2.31.0"
+  },
+  "purpose": "Descriptors only; no environment or packages included"
+}
