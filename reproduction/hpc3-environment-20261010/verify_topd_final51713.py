@@ -41,9 +41,15 @@ def main():
  outer=json.loads((RUN/'actual-outer-updates.json').read_text());assert outer['actual_completed_outer_steps']==list(range(1,201)) and outer['export_step']==200
  rank_audits=[]
  for rank in range(4):
-  p=RUN/('actor-resource-audit/actor-updates-rank%d-outer200.json'%rank);record=json.loads(p.read_text());assert record['rank']==rank and record['actual_scheduler_last_epoch']==200 and len(record['updates'])==200
+  p=RUN/('actor-resource-audit/actor-updates-rank%d-outer200.json'%rank);record=json.loads(p.read_text());assert record['job']=='707690' and record['rank']==rank and record['actual_scheduler_last_epoch']==200 and len(record['updates'])==200
   assert all(all(u['input_finite'].values()) and len(u['optimizer_step_records'])==20 and len(u['micro_forward_records'])==160 and all(x['finite'] for x in u['optimizer_step_records']) for u in record['updates'])
-  rank_audits.append({'rank':rank,'actual_optimizer_steps':4000,'microforwards':32000,'source_sha256':sha(p)})
+  for completed_before_outer,u in enumerate(record['updates']):
+   assert u['actual_outer_update_ordinal']==completed_before_outer+1
+   expected_lr=1e-6*min(completed_before_outer/57.,1.)
+   for update in u['optimizer_step_records']:
+    actual_lrs=update['actual_learning_rates'];assert actual_lrs and all(math.isclose(lr,expected_lr,rel_tol=1e-12,abs_tol=1e-18) for lr in actual_lrs)
+  actual_lrs=record['actual_learning_rates_after_outer'];assert actual_lrs and all(math.isclose(lr,1e-6,rel_tol=1e-12,abs_tol=1e-18) for lr in actual_lrs)
+  rank_audits.append({'rank':rank,'actual_optimizer_steps':4000,'microforwards':32000,'all_actual_optimizer_LRs_match_warmup57_then_constant':True,'source_sha256':sha(p)})
  math_steps=[]
  with (RUN/'topd-math-audit/driver.jsonl').open() as f:
   for line in f:
