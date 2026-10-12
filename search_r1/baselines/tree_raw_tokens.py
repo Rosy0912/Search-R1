@@ -540,7 +540,7 @@ def canonical_text(text):
 def capture_native_sampling_settings(sampling_params):
     """Read original native attributes; usable before engine processor construction."""
     fields=('n','best_of','_real_n','temperature','top_p','top_k','min_p','presence_penalty','frequency_penalty',
-        'repetition_penalty','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
+        'repetition_penalty','skip_special_tokens','spaces_between_special_tokens','min_tokens','max_tokens','ignore_eos','stop','stop_token_ids',
         'include_stop_str_in_output','logprobs','prompt_logprobs','seed','logits_processors',
         'truncate_prompt_tokens','guided_decoding','logit_bias','allowed_token_ids')
     for key in fields:
@@ -626,14 +626,42 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
     return rows
 
 
-def validate_decoded_string_stop(emission,decoded):
+def validate_decoded_string_stop(emission,decoded,tokenizer=None):
     """Bind actual native returned text to original IDs, never fabricate mu."""
     reason=emission.get('stop_reason')
     if type(reason) is not str:return
     strings=emission['native_stopping']['sampling_stop_strings']
     returned=emission.get('native_returned_text');full=decoded[-1]
-    require(type(returned) is str and returned.endswith(reason) and full.startswith(returned),
-        'Native returned stopping text differs from original emitted token decode')
+    require(type(returned) is str and returned.endswith(reason),
+        'Native returned stopping text omitted stopping tag')
+    if not full.startswith(returned):
+        # vLLM decodes against the prompt's token suffix, unlike an isolated
+        # response decode. A leading byte fragment can consequently differ.
+        # Replay its actual incremental decoder; retain original policy IDs,
+        # probabilities and the legacy isolated-decode semantics unchanged.
+        require(tokenizer is not None,'Native incremental stop replay requires tokenizer')
+        from vllm.transformers_utils.detokenizer import convert_prompt_ids_to_tokens,detokenize_incrementally
+        settings=emission['sampling_params']
+        skip=settings.get('skip_special_tokens',True)
+        spaces=settings.get('spaces_between_special_tokens',True)
+        prompt=emission['prompt_token_ids'];ids=emission['raw_emitted_token_ids']
+        previous,prefix,read=convert_prompt_ids_to_tokens(tokenizer,prompt,skip_special_tokens=skip)
+        all_ids=prompt.copy();output='';stopped=False
+        for index,token in enumerate(ids):
+            all_ids.append(token)
+            new,fragment,prefix,read=detokenize_incrementally(tokenizer,all_ids,previous,prefix,read,
+                skip_special_tokens=skip,spaces_between_special_tokens=spaces)
+            previous.extend(new);output+=fragment
+            if fragment:
+                for marker in strings:
+                    position=output.find(marker,-len(fragment)-len(marker))
+                    if position>=0:
+                        require(index==len(ids)-1 and marker==reason,
+                            'Native incremental stop occurred before final emitted token')
+                        output=output[:position+len(marker)];stopped=True;break
+            if stopped:break
+        require(stopped and output==returned,
+            'Native incremental returned text differs from replay of original prompt/emitted IDs')
     require(all(not any(marker in prefix for marker in strings) for prefix in decoded[:-1]),
         'Native emission continued past a completed string stop token boundary')
     # Native string stopping may cut within the last whole sampled token; that
@@ -685,7 +713,7 @@ def sampled_action(tokenizer,emission,raw_padded,legacy_ids,legacy_text,identity
         check_native_prefixes=not linear,_context=context)
     utf8_cpu_seconds=time.process_time()-utf8_started
     full=decoded[-1];text=canonical_text(full)
-    validate_decoded_string_stop(emission,decoded)
+    validate_decoded_string_stop(emission,decoded,tokenizer)
     semantic_ids=tokenizer.encode(text,add_special_tokens=False)
     require(isinstance(semantic_ids,list) and all(type(token) is int for token in semantic_ids) and
             isinstance(legacy_ids,list) and all(type(token) is int for token in legacy_ids) and
@@ -732,7 +760,7 @@ def validate_action_utf8_proof(action,tokenizer,_context=None):
     emission=action['native_emission'];cut=action['cut']
     ids,_,_=validate_native_emission(emission,tokenizer.pad_token_id,tokenizer.eos_token_id)
     decoded,complete,proof=_scan_utf8_prefixes(tokenizer,ids,action['tokenizer_identity'],False,_context)
-    validate_decoded_string_stop(emission,decoded)
+    validate_decoded_string_stop(emission,decoded,tokenizer)
     stored=action.get('utf8_boundary_proof')
     validated_linear=isinstance(stored,dict) and stored.get('native_check_protocol')==LINEAR_PREFIX_PROTOCOL
     if validated_linear:
