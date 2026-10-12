@@ -3,7 +3,11 @@ import json,pathlib,subprocess,tempfile,time,sys
 root=pathlib.Path(tempfile.mkdtemp(prefix='rba-h100-management-'));root.chmod(0o700);socket=root/'control.sock';attempts=[]
 for index in range(20):
  args=['ssh','-M','-N','-f','-S',str(socket),'-oControlMaster=yes','-oControlPersist=3600','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oProxyCommand=none','-oProxyJump=none','-oBatchMode=yes','-oConnectTimeout=8','mgmt-host']
- r=subprocess.run(args,capture_output=True,text=True,timeout=15);attempts.append({'time':time.time(),'rc':r.returncode,'stderr':r.stderr});print(json.dumps(attempts[-1]),flush=True)
+ try:
+  r=subprocess.run(args,capture_output=True,text=True,timeout=15)
+ except subprocess.TimeoutExpired as exc:
+  r=subprocess.CompletedProcess(args,124,'','SSH handshake timeout')
+ attempts.append({'time':time.time(),'rc':r.returncode,'stderr':r.stderr});print(json.dumps(attempts[-1]),flush=True)
  if r.returncode==0:
   check=subprocess.run(['ssh','-S',str(socket),'-O','check','mgmt-host'],capture_output=True,text=True,timeout=5)
   live=subprocess.run(['ssh','-S',str(socket),'-oControlMaster=no','mgmt-host','hostname'],capture_output=True,text=True,timeout=15)
