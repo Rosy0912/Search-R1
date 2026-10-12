@@ -1,0 +1,212 @@
+{
+  "epoch": 1791782863.6802583,
+  "scope": "BAPO only",
+  "required_hf_status": "ALL_SELECTED_HF_FILES_SHA_VERIFIED",
+  "preserved": [
+    "outer200 complete recovery",
+    "all source checkouts",
+    "necessary logs and metrics",
+    "TOPD and all shared models/retrieval"
+  ],
+  "delete": [
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v7-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 4096
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 26001819358
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/training-em-audit",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 3072831544
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_5",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 13604383835
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_150",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 13604383835
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_50",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 13604383835
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/actor/global_step_100",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 13604383835
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_5",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 4520
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_150",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 4525
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_50",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 4524
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/algorithm/global_step_100",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 4527
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_5_COMPLETE",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 38304917953
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_150_COMPLETE",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 38279470229
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_100_COMPLETE",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 38279469609
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/formal-aligned-em200-16c570e111f947e2b0026983df2f7938-3359/checkpoints/fresh200_state/outer_50_COMPLETE",
+      "reason": "Old checkpoint; best150 remote backup required before cleanup",
+      "symlink": false,
+      "bytes": 38279470158
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v10-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v10-20261009/runs/formal-aligned-em200-ecbddc0404f041babd8fef3b3a9d7a1e-3358/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 25937213369
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v10-20261009/runs/formal-aligned-em200-ecbddc0404f041babd8fef3b3a9d7a1e-3358/checkpoints",
+      "reason": "Completed failed/superseded BAPO experiment checkpoint",
+      "symlink": false,
+      "bytes": 51909322692
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v6-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v6-20261009/runs/formal-aligned-em200-ef141268a5694dabace114936d380acc-3356/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 25937319658
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v6-20261009/runs/formal-aligned-em200-ef141268a5694dabace114936d380acc-3356/training-em-audit",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 9314492
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v6-20261009/runs/formal-aligned-em200-ef141268a5694dabace114936d380acc-3356/checkpoints",
+      "reason": "Completed failed/superseded BAPO experiment checkpoint",
+      "symlink": false,
+      "bytes": 38279206635
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v4-20261009/runs/formal-aligned-em200-671b1d8a4e004a89a35afb232272ed0c-3354/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 25937211601
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v9-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 4096
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v5-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v5-20261009/runs/formal-aligned-em200-d30bb88d6fb64a5ba005a3fad7f03ca8-3355/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 25937210275
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v5-20261009/runs/formal-aligned-em200-d30bb88d6fb64a5ba005a3fad7f03ca8-3355/training-em-audit",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 9314492
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v8-20261009/cache",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 28161833933
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v8-20261009/runs/formal-aligned-em200-ae20107aeead4a848b43e450d0c1ca11-3357/diagnostics/worker-events",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 25938759478
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v8-20261009/runs/formal-aligned-em200-ae20107aeead4a848b43e450d0c1ca11-3357/training-em-audit",
+      "reason": "Idle BAPO disposable cache or verbose diagnostics",
+      "symlink": false,
+      "bytes": 37513120
+    },
+    {
+      "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v8-20261009/runs/formal-aligned-em200-ae20107aeead4a848b43e450d0c1ca11-3357/checkpoints",
+      "reason": "Completed failed/superseded BAPO experiment checkpoint",
+      "symlink": false,
+      "bytes": 51910213510
+    }
+  ],
+  "total_bytes": 677449143399
+}
