@@ -11,7 +11,8 @@ def release_retriever_gpu(config,stage):
  binding=Path(settings['phase_binding_file']);raw=binding.read_bytes()
  if hashlib.sha256(raw).hexdigest()!=settings['phase_binding_sha256']:raise ValueError('Phase binding changed')
  b=json.loads(raw)
- if b['host']!='xie-lab-4' or b['accepted'] is not True or b['gpu_shards']!=8:raise ValueError('Eight-GPU phase candidate not admitted')
+ if b['host']!='xie-lab-4' or b['accepted'] is not True or b['gpu_shards'] not in (4,8):raise ValueError('Explicit four/eight-GPU phase candidate not admitted')
+ if b['gpu_shards']==4 and b.get('cuda_visible_devices')!='0,1,2,3':raise ValueError('Four-GPU phase candidate device boundary changed')
  import requests
  started=time.perf_counter();response=requests.post(url,headers={'x-e1-probe-token':path.read_text().strip()},timeout=(5,180));response.raise_for_status();proof=response.json()
  if proof.get('released') is not True or proof.get('gpu_worker_pid') is not None:raise RuntimeError('Private retrieval worker did not exit')
