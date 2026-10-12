@@ -10,12 +10,23 @@ def enabled(actor):
     return actor.get('guard_continue_protocol') == PROTOCOL
 
 
+def execution_profile_bound(environ=None):
+    """Recognize the authorized fresh H100 entry as well as HKUST resume."""
+    import os
+    environ = os.environ if environ is None else environ
+    return bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
+        environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_h100'
+        and environ.get('RECURSIVE_A_H100_FRESH_PROFILE') == '1'
+        and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
+        and len(environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256', '')) == 64)
+
+
 def round_progress_enabled(actor, environ=None):
     """Explicit new contract: consumed sampling rounds and Adam writes are separate."""
     import os
     environ = os.environ if environ is None else environ
     return (enabled(actor) and environ.get('RECURSIVE_A_GUARD_ROUND_PROGRESS') == '1'
-            and bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')))
+            and execution_profile_bound(environ))
 
 
 def normal_guard_summary(refusal, writes, ledger):

@@ -755,7 +755,8 @@ class ActorRolloutRefWorker(Worker):
             generation_preflight(self, prompts)
 
         assert self._is_rollout
-        cache_enabled = (bool(os.environ.get('RECURSIVE_A_CONTINUATION_BINDING'))
+        from search_r1.baselines.tree_guard_continue import execution_profile_bound
+        cache_enabled = (execution_profile_bound()
                          and self.config.rollout.get('tree_raw_emission', False)
                          and not recompute_log_prob and prompts.meta_info.get('do_sample', True))
         cache_version = (self.actor._fresh_total_committed_optimizer_calls,

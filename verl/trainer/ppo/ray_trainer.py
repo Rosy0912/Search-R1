@@ -1048,7 +1048,8 @@ class RayPPOTrainer(object):
                         if os.environ.get('RECURSIVE_A_OMIT_FULL_BETA') == '1':
                             actor_config = self.config.actor_rollout_ref.actor
                             from search_r1.baselines.policy_safety_runtime import behavior_mu_correction_enabled
-                            if (not os.environ.get('RECURSIVE_A_CONTINUATION_BINDING')
+                            from search_r1.baselines.tree_guard_continue import execution_profile_bound
+                            if (not execution_profile_bound()
                                     or not behavior_mu_correction_enabled(actor_config.policy_safety)
                                     or not actor_config.use_kl_loss or actor_config.kl_loss_coef != 0.
                                     or self.config.algorithm.kl_ctrl.kl_coef != 0.):
