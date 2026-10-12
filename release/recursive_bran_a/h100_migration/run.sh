@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 base=/dataset/shaoshitong/recursive-bran-a-h100-20261012
-source="$base/source"
+source="$(cd "$(dirname "$0")/../../.." && pwd)"
 runtime=/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009
 python="$runtime/env/bin/python"
 export RECURSIVE_BRAN_BASE="$base" CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7

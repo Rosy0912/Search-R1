@@ -9,8 +9,19 @@ b=pathlib.Path(__import__('sys').argv[1]);d=dict(time=time.time(),hostname=socke
 (b/'control/allocation-live.json').write_text(json.dumps(d,indent=2))
 PY
 deadline=$((SECONDS+7200))
-while [[ ! -f "$base/control/launch-ready.sh" ]]; do
+while true; do
+ while [[ ! -f "$base/control/launch-ready.sh" ]]; do
   if ((SECONDS>=deadline)); then echo 'Migration preparation deadline reached; no training launched'; exit 2; fi
   sleep 5
+ done
+ launch="$base/control/launch-$(date +%s).sh"
+ mv "$base/control/launch-ready.sh" "$launch"
+ set +e
+ bash "$launch"
+ rc=$?
+ set -e
+ echo "ACTUAL_TRAIN_ENTRY_EXIT=$rc LAUNCH=$launch"
+ if ((rc==0)); then exit 0; fi
+ # Preserve allocation; a new explicit entry is required, never blind restart.
+ deadline=$((SECONDS+7200))
 done
-exec bash "$base/control/launch-ready.sh"
