@@ -26,7 +26,10 @@ def join_owned_process(process, timeout):
     while process.is_alive():
         remaining=deadline-time.monotonic()
         if remaining<=0: return
-        process.join(timeout=min(.2,remaining))
+        # Do not call join() on a live process: a readable sentinel can
+        # precede the last native thread exit, making its waitpid(0) block
+        # despite a timeout. is_alive() uses nonblocking waitpid.
+        time.sleep(min(.05,remaining))
     process.join(timeout=0)
 
 

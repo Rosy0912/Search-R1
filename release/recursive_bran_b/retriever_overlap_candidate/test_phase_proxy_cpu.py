@@ -7,7 +7,7 @@ import tempfile
 import unittest
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from gpu_phase_proxy import SpawnedRuntime, process_identity
+from gpu_phase_proxy import SpawnedRuntime, process_identity, join_owned_process
 from flat_memmap import derive_flat_layout, validated_prefix_mmap, verify_unchanged
 
 
@@ -28,6 +28,19 @@ def serialize(d,count):
 
 
 class Lifecycle(unittest.TestCase):
+    def test_join_never_blocks_on_live_native_threads(self):
+        class NativeThreadPending:
+            def __init__(self): self.polls=0; self.joined=False
+            def is_alive(self):
+                self.polls+=1
+                return self.polls<3
+            def join(self, timeout):
+                if self.polls<3:raise AssertionError('Live join may block in native teardown')
+                self.joined=True
+        process=NativeThreadPending()
+        join_owned_process(process,1)
+        self.assertTrue(process.joined)
+
     def test_lazy_reuse_actual_join_then_new_pid(self):
         runtime=SpawnedRuntime(cpu_worker,{},timeout=5)
         self.assertIsNone(runtime.process)

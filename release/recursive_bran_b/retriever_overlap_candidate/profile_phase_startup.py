@@ -39,7 +39,10 @@ def main():
         receipt['error']=repr(error)
         raise
     finally:
-        if scanner.worker_pid is not None:receipt['final_release']=scanner.release_gpu()
+        try:
+            if scanner.worker_pid is not None:receipt['final_release']=scanner.release_gpu()
+        except BaseException as error:
+            receipt['release_error']=repr(error)
         receipt['finished_at']=time.time()
         Path(a.receipt).write_text(json.dumps(receipt,indent=2))
 
