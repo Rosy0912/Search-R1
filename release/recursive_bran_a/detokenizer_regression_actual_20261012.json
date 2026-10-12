@@ -1,0 +1,40 @@
+{
+  "scope": "Actual vLLM0.6.3 CPU incremental detokenization regression; not an end-to-end training speed claim",
+  "workload": {
+    "rows": 32,
+    "tokens_per_row": 192,
+    "synthetic_text": true
+  },
+  "old_seconds": 80.74232017807662,
+  "cached_engine_copy_seconds": 0.06757461279630661,
+  "texts_sha_equal": true,
+  "decoded_text_sha256": "8d1d29f2f1313591d55f89d9e5dc673731d4551707142eceb3e7955a32ef8115",
+  "root_cause": "Per-token len(HF FastTokenizer) calls native get_vocab_size; 6144 calls consumed78.458s of measured80.742s. Custom verl TokenizerGroup lacked vLLM cached metadata.",
+  "fix": "get_cached_tokenizer(deepcopy(original)) inside vLLM0.6.3 engine TokenizerGroup; caller native HF tokenizer/type unchanged",
+  "fix_commit": "d163d87",
+  "cpu_checked_deployment_commit": "f0de426",
+  "actual_cpu_group_checks": {
+    "package_version": "0.6.3",
+    "complete_vocab_equal": true,
+    "caller_tokenizer_type_unchanged": true,
+    "engine_copy": true,
+    "encode_decode_equal": true
+  },
+  "native_original_tokenizer_mutated": false,
+  "model_probabilities_or_rewards_changed": false,
+  "unchanged_scope": "Model/temperature/reward/IDs/mu contract remain unchanged; caching fixed vocabulary metadata only. No bitwise rollout or final-EM claim.",
+  "integration_before_fix": {
+    "old_action_batches": 34,
+    "old_generated_tokens": 1389358,
+    "old_generation_rpc_seconds": 438.74765262939036,
+    "old_retrieval_http_seconds": 383.071534762159,
+    "new_search_stop_batches": 32,
+    "new_generated_tokens": 804922,
+    "new_generation_rpc_seconds": 2827.0256927087903,
+    "new_eight_gpu_retrieval_http_seconds": 83.71230210736394,
+    "limits": "Different resulting draws; cannot treat as paired equal-token training throughput experiment."
+  },
+  "ready_not_train_accepted": true,
+  "new_full_iteration_latency": null,
+  "new_memory_peak": null
+}
