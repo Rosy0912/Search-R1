@@ -37,12 +37,13 @@ def validate_parameter_state(state, shapes, *, tied_alias=False):
     return len(state)
 
 
-def read_canonical_actor_state(directory, run, completed_outer, receipt_sha256):
+def read_canonical_actor_state(directory, run, completed_outer, receipt_sha256, *, base=None):
     """Read only the run's own remote checkpoint after checking every bound file."""
     from safetensors import safe_open
     from reproduction.common8.topology import validate_base
     from reproduction.common8.verify_data import digest
-    base = Path(os.environ['SEARCH_G1_BASE']).resolve(); validate_base(base, run)
+    base = Path(os.environ['SEARCH_G1_BASE'] if base is None else base).resolve()
+    validate_base(base, run)
     directory = Path(directory)
     assert directory == directory.resolve() and directory.is_relative_to(base)
     assert directory == Path(run['checkpoint_dir'])/'actor'/f'global_step_{completed_outer}'

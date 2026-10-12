@@ -123,6 +123,18 @@ rank's release error; no peer enters a later model/update collective. This
 does not promise recovery from a failed FSDP-internal CUDA/transport collective;
 such a failure remains fatal and requires preserved fault evidence.
 
+Cross-namespace restoration components admit only an explicit same-experiment
+root, exact data/model/recipe and a pinned full-state receipt. Before mutation,
+they verify the parent's preserved source files, canonical checkpoint and Head
+hashes, actual full-state counters, and absence of its trainer PID births or
+session survivors. Only namespace identity is rebound; moments, scheduler,
+RNG/sampler and two Head bytes are preserved. The actor-only RPC verifies the
+loaded worker state and records a RESTORE ledger anchor. Driver restoration
+preserves the unfinished data epoch and reward adaptation state. These are
+components, not a complete recovery launcher: deployment admission, durable
+chain/partial-loss accounting and final verifier integration remain pending.
+The ordinary fresh0 pipeline explicitly rejects a recovery manifest.
+
 ## Required evidence before launch
 
 1. Focused tests:100/101 reward boundary,10-step refresh boundaries, strict

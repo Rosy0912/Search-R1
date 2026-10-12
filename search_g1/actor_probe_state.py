@@ -56,6 +56,23 @@ def rng_state():
         torch_cuda=torch.cuda.get_rng_state_all() if torch.cuda.is_initialized() else [])
 
 
+def validate_rng(state):
+    import numpy as np
+    import torch
+    assert set(state) == {'python', 'numpy', 'torch_cpu', 'torch_cuda'}
+    random.Random(0).setstate(state['python'])
+    np.random.RandomState(0).set_state(state['numpy'])
+    torch.Generator(device='cpu').set_state(state['torch_cpu'])
+    assert isinstance(state['torch_cuda'], list)
+    assert bool(state['torch_cuda']) == torch.cuda.is_initialized(), 'Saved/current CUDA RNG topology differs'
+    if state['torch_cuda']:
+        assert torch.cuda.is_initialized(), 'Restore cannot create a different CUDA RNG topology'
+        actual = torch.cuda.get_rng_state_all()
+        assert len(actual) == len(state['torch_cuda'])
+        assert all(saved.dtype == torch.uint8 and saved.shape == current.shape
+                   for saved, current in zip(state['torch_cuda'], actual))
+
+
 def restore_rng(state):
     import numpy as np
     import torch
@@ -122,12 +139,8 @@ def worker_payload(worker, run, completed_outer):
         rng=rng_state())
 
 
-def restore_worker_payload(worker, run, payload):
-    """Restore a validated rank state; model weights must be bound separately.
-
-    This is also used by the first-five same-process load verification. A
-    cross-namespace resume needs an explicit parent binding before calling it.
-    """
+def validate_worker_payload(worker, run, payload):
+    """Validate actual parameter/Adam layout before any model or state mutation."""
     import torch
     from reproduction.common8.scheduler import expected_lr
     identity = {key: run[key] for key in ('run_id', 'execution_id', 'source_commit',
@@ -153,15 +166,39 @@ def restore_worker_payload(worker, run, payload):
     assert payload['scheduler']['_step_count'] == completed + 1
     assert all(group['lr'] == expected_lr(completed) for group in payload['optimizer']['param_groups'])
     assert payload['optimizer']['state']
+    groups = payload['optimizer']['param_groups']
+    current_groups = worker.actor_optimizer.state_dict()['param_groups']
+    assert len(groups) == len(current_groups) == len(worker.actor_optimizer.param_groups)
+    parameters = {}
+    for saved, current, actual in zip(groups, current_groups, worker.actor_optimizer.param_groups):
+        assert {k:v for k,v in saved.items() if k != 'lr'} == {k:v for k,v in current.items() if k != 'lr'}, \
+            'Adam parameter groups or hyperparameters changed'
+        assert len(saved['params']) == len(actual['params'])
+        parameters.update(zip(saved['params'], actual['params']))
+    assert set(payload['optimizer']['state']) == set(parameters), 'Incomplete saved Adam parameter state'
+    for index, values in payload['optimizer']['state'].items():
+        for key in ('exp_avg', 'exp_avg_sq'):
+            assert values[key].shape == parameters[index].shape and values[key].dtype == parameters[index].dtype, \
+                'Saved Adam moment shape or precision differs from the actual parameter'
     for values in payload['optimizer']['state'].values():
-        assert int(values['step']) == payload['optimizer_writes']
+        assert values['step'] == payload['optimizer_writes']
         for value in values.values():
             if isinstance(value, torch.Tensor): assert torch.isfinite(value).all()
-    assert payload['rng']['torch_cpu'].dtype == torch.uint8
+    validate_rng(payload['rng'])
     for key in ('training', 'generation'):
         assert payload['rollout_rng'][key].dtype == torch.uint8
+        actual = (worker.rollout_sharding_manager.torch_random_states if key == 'training'
+                  else worker.rollout_sharding_manager.gen_random_states)
+        assert payload['rollout_rng'][key].shape == actual.shape, 'Rollout RNG device geometry changed'
     evidence = worker._outer_scheduler_evidence
     assert evidence.pending is None and evidence.prepared is None and not evidence.rejected
+    return outer, actor
+
+
+def restore_worker_payload(worker, run, payload):
+    """Restore validated state; canonical weights and parent binding are separate."""
+    outer, actor = validate_worker_payload(worker, run, payload)
+    evidence = worker._outer_scheduler_evidence
     worker.actor_optimizer.load_state_dict(payload['optimizer'])
     worker.actor_lr_scheduler.load_state_dict(payload['scheduler'])
     worker.actor._optimizer_writes = payload['optimizer_writes']

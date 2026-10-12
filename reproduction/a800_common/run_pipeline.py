@@ -144,6 +144,8 @@ def launch(base,run):
     assert execution_job_id(run) is None and run['execution_host']==socket.gethostname()
     assert supported_execution_role(run,base)=='production'
     assert run['completed_updates']==0 and run['initial_probe_version'] is None
+    assert run.get('actor_probe_recovery') is None, \
+        'A bound full-state recovery requires its separate chain-aware launcher; fresh0 cannot impersonate resume'
     assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
     assert os.environ.get('CUDA_VISIBLE_DEVICES')=='0,1,2,3'
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):

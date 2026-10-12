@@ -616,6 +616,82 @@ class ActorRolloutRefWorker(Worker):
         collective_call(roundtrip, stage='actor_probe_worker_persisted_state_roundtrip')
         return result
 
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def restore_probe_training_checkpoint(self):
+        """Explicit parent binding only; the fixed reference never receives this RPC."""
+        import json
+        from pathlib import Path
+        from reproduction.common8.scheduler import collective_call
+        from search_g1.actor_probe_state import (restore_worker_payload, validate_worker_payload, worker_payload,
+                                               tree_digest, isolation_state)
+        from search_g1.actor_probe_recovery import (read_recovery_context, rebound_worker_payload,
+                                                   binding_digest)
+        from search_g1.actor_probe_model_state import read_canonical_actor_state, load_fsdp_canonical_state
+        context = {}; canonical = {}; saved = {}; result = {}
+        def preflight():
+            base = Path(os.environ['SEARCH_G1_BASE']).resolve()
+            run = json.loads((base/'logs/run-manifest.json').read_bytes())
+            assert self._is_actor and not getattr(self, '_probe_recovery_loaded', False)
+            assert self.actor._optimizer_writes == 0 and not self.actor_optimizer.state
+            assert self.actor_lr_scheduler.last_epoch == self._outer_scheduler_evidence.completed_outer == 0
+            parent = read_recovery_context(run, self.rank)
+            context.update(parent, child=run)
+            canonical.update(read_canonical_actor_state(parent['directory'], parent['parent'],
+                parent['receipt']['completed_outer'], parent['receipt']['canonical_model_receipt_sha256'],
+                base=parent['parent_base']))
+            payload = torch.load(parent['row']['path'], map_location='cpu', weights_only=False)
+            saved['original'] = payload
+            saved['rebound'] = rebound_worker_payload(payload, parent['binding'], run,
+                parent['parent'], parent['receipt'], self.rank)
+            validate_worker_payload(self, run, saved['rebound'])
+            return dict(child_run_id=run['run_id'], completed_outer=parent['receipt']['completed_outer'],
+                recovery_binding_sha256=binding_digest(parent['binding']))
+        collective_call(preflight, stage='actor_probe_cross_namespace_restore_preflight')
+        def load_device():
+            if self._is_offload_param:
+                load_fsdp_param_and_grad(self.actor_module_fsdp, torch.cuda.current_device(),
+                                         load_grad=self._is_offload_grad)
+            return dict(accepted=True)
+        collective_call(load_device, stage='actor_probe_restore_model_device_admission')
+        try:
+            collective_call(lambda: (load_fsdp_canonical_state(self.actor_module_fsdp, canonical),
+                                    {'accepted': True})[1], stage='actor_probe_restore_canonical_model')
+        finally:
+            def release():
+                canonical.clear()
+                if self._is_offload_param:
+                    offload_fsdp_param_and_grad(self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+                if torch.cuda.is_initialized(): torch.cuda.synchronize()
+                return dict(accepted=True)
+            collective_call(release, stage='actor_probe_restore_model_release')
+        def restore_state():
+            restore_worker_payload(self, context['child'], saved['rebound'])
+            if self._is_offload_optimizer: offload_fsdp_optimizer(self.actor_optimizer)
+            current = worker_payload(self, context['child'], context['receipt']['completed_outer'])
+            assert tree_digest(current) == tree_digest(saved['rebound']), 'Actual restored worker state differs'
+            self._outer_scheduler_evidence._check_state()
+            result.update(rank=self.rank, completed_outer=current['completed_outer'],
+                optimizer_writes=current['optimizer_writes'], canonical_model_loaded=True,
+                canonical_model_receipt_sha256=context['receipt']['canonical_model_receipt_sha256'],
+                original_worker_state_sha256=tree_digest(saved['original']),
+                rebound_worker_state_sha256=tree_digest(current),
+                local_actor_parameters_sha256=isolation_state(self.actor_module_fsdp)['parameters_sha256'],
+                recovery_binding_sha256=binding_digest(context['binding']))
+            return dict(completed_outer=current['completed_outer'], optimizer_writes=current['optimizer_writes'],
+                        recovery_binding_sha256=result['recovery_binding_sha256'])
+        collective_call(restore_state, stage='actor_probe_restore_optimizer_scheduler_rng')
+        def record():
+            self._outer_scheduler_evidence._append(dict(kind='RESTORE',
+                completed_outer=context['receipt']['completed_outer'], actual_writes=self.actor._optimizer_writes,
+                recovery_binding_sha256=result['recovery_binding_sha256'],
+                parent_run_id=context['parent']['run_id'], parent_execution_id=context['parent']['execution_id'],
+                full_state_receipt_sha256=context['binding']['full_state_receipt_sha256']))
+            self._probe_recovery_loaded = True
+            return dict(accepted=True)
+        collective_call(record, stage='actor_probe_restore_durable_ledger')
+        saved.clear()
+        return result
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_probe_features(self, data: DataProto) -> DataProto:
         """Synchronous detached readout of this actor, never of a teacher snapshot."""
