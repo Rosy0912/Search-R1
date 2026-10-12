@@ -3,6 +3,7 @@
 The parent never imports the GPU backend or calls CUDA. Releasing the child
 releases its CUDA contexts; CPU E5/index/corpus parent and original oracle live.
 """
+import json
 import hashlib
 import multiprocessing
 import os
@@ -10,6 +11,12 @@ from pathlib import Path
 import time
 from types import SimpleNamespace
 import numpy as np
+
+
+def timing(stage, started=None, **values):
+    record = dict(stage=stage, pid=os.getpid(), at=time.time(), **values)
+    if started is not None: record['seconds'] = time.perf_counter()-started
+    print('GPU_PHASE_TIMING='+json.dumps(record), flush=True)
 
 
 def source_manifest():
@@ -40,12 +47,15 @@ class SpawnedRuntime:
         parent, child = self.context.Pipe(duplex=True)
         process = self.context.Process(target=self.target, args=(child,self.configuration),
             name='eight-gpu-phase-worker', daemon=False)
+        started = time.perf_counter()
         process.start(); child.close()
+        timing('spawn_sent', started, worker_pid=process.pid)
         self.process, self.connection = process, parent
         try:
             ready = self.receive()
             if ready.get('status') != 'READY' or ready.get('identity',{}).get('pid') != process.pid:
                 raise RuntimeError('GPU child startup rejected: ' + repr(ready))
+            timing('spawn_ready', started, worker_pid=process.pid)
             self.identity = ready['identity']
             return self.identity
         except BaseException:
@@ -73,12 +83,15 @@ class SpawnedRuntime:
         process, connection = self.process, self.connection
         if process is None:
             return self.last_release or dict(status='NO_GPU_CHILD',exitcode=None)
+        started = time.perf_counter()
+        timing("release_requested", worker_pid=process.pid)
         identity, graceful, error = self.identity, False, None
         try:
             if process.is_alive() and connection is not None:
                 connection.send(dict(op='release'))
                 if connection.poll(self.timeout):
                     acknowledgement = connection.recv()
+                    timing("release_ack", started, worker_pid=process.pid)
                     graceful = acknowledgement.get('status') == 'RELEASED'
                 else:
                     error = 'Release acknowledgement timeout'
@@ -98,7 +111,8 @@ class SpawnedRuntime:
             if process.is_alive(): raise RuntimeError('Own GPU worker release failed')
         finally:
             if connection is not None: connection.close()
-        receipt = dict(status='GPU_CHILD_EXITED', identity=identity, pid=process.pid,
+        timing('release_joined', started, worker_pid=process.pid, exitcode=process.exitcode)
+        receipt = dict(release_seconds=time.perf_counter()-started, status='GPU_CHILD_EXITED', identity=identity, pid=process.pid,
             exitcode=process.exitcode, graceful=graceful and process.exitcode==0,
             release_error=error, released_at=time.time(),
             scope='Actual own process joined; external nvidia-smi context disappearance must also be checked')
@@ -109,6 +123,8 @@ class SpawnedRuntime:
 
 def gpu_worker(connection, configuration):
     scan = None
+    started = time.perf_counter()
+    timing("child_enter")
     try:
         if source_manifest() != configuration['source_manifest']:
             raise ValueError('Spawned GPU implementation source changed')
@@ -116,6 +132,7 @@ def gpu_worker(connection, configuration):
         import faiss
         from flat_memmap import runtime_layout, validated_prefix_mmap, verify_unchanged
         from eight_gpu_streaming import EightGpuStreamingFlatIP
+        timing("child_imported", started)
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
         layout = runtime_layout(faiss, configuration['dimension'])
@@ -127,7 +144,9 @@ def gpu_worker(connection, configuration):
         gpu_count=configuration.get('gpu_count',8)
         original = SimpleNamespace(host=host,d=host.shape[1],ntotal=len(host),
             vector_rows=32768,query_micro=64,device=torch.device('cuda:%d' % (gpu_count-1)))
+        timing("index_mapped", started)
         scan = EightGpuStreamingFlatIP(original,gpu_count=gpu_count)
+        timing("scanner_constructed", started)
         identity = dict(process_identity(), source_manifest=source_manifest(),
             index_identity=proof, cuda_initialized=torch.cuda.is_initialized(),
             role='phase_gpu_sampling_only', gpu_count=gpu_count,
@@ -136,7 +155,10 @@ def gpu_worker(connection, configuration):
         while True:
             request = connection.recv()
             if request['op'] == 'release':
+                stopped = time.perf_counter()
+                timing('scanner_close_begin')
                 scan.close(); scan = None
+                timing('scanner_close_end', stopped)
                 connection.send(dict(status='RELEASED',identity=identity))
                 return
             if request['op'] != 'scan': raise ValueError('Unknown private worker operation')
@@ -158,6 +180,7 @@ def gpu_worker(connection, configuration):
             try: scan.close()
             except BaseException: pass
         connection.close()
+        timing('child_python_return', started)
 
 
 class PhaseGpuScanner:

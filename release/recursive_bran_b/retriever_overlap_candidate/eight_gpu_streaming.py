@@ -110,11 +110,16 @@ class TileWorker(threading.Thread):
         if not job.tiles: return
         job.thread_native_id = threading.get_native_id()
         device = torch.device('cuda:%d' % self.gpu)
+        from gpu_phase_proxy import timing
+        import time
+        started=time.perf_counter()
         with torch.cuda.device(device):
+            timing("worker_cuda_ready", started, gpu=self.gpu)
             if self.buffers is None:
                 self.compute = torch.cuda.Stream(device=device)
                 with torch.cuda.stream(self.compute):
                     self.buffers = DoubleBufferTiles(TorchCopyBackend(self.host, device))
+            timing("worker_buffers_ready", started, gpu=self.gpu)
             with torch.cuda.stream(self.compute):
                 requests = [(request_id, q, k, torch.from_numpy(q).to(device))
                             for request_id, q, k in job.requests if len(q)]
@@ -178,7 +183,13 @@ class EightGpuStreamingFlatIP:
                 self.host.dtype != np.float32 or self.host.shape != (self.ntotal, self.d) or
                 not self.host.flags.c_contiguous):
             raise ValueError('Original contiguous FP32 32768/64 host contract required')
-        if torch.cuda.device_count() != gpu_count:
+        from gpu_phase_proxy import timing
+        import time
+        count_started=time.perf_counter()
+        timing("device_count_begin")
+        visible_count=torch.cuda.device_count()
+        timing("device_count_end", count_started)
+        if visible_count != gpu_count:
             raise ValueError('Visible devices differ from the explicitly authorized count')
         self.scan_lock = threading.Lock()
         self.groups = partition_tiles(self.ntotal, gpu_count)
@@ -211,12 +222,18 @@ class EightGpuStreamingFlatIP:
         requests = self._requests(list_queries, list_ks)
         if not any(len(q) for _, q, _ in requests):
             return [(np.empty((0,k),np.float32), np.empty((0,k),np.int64)) for _,q,k in requests]
+        from gpu_phase_proxy import timing
+        import time
+        started=time.perf_counter()
+        timing("cuda_scan_enter")
         with self.scan_lock, torch.cuda.device(self.device):
+            timing("cuda_context_ready", started)
             cancel = threading.Event()
             jobs = [ScanJob(requests, tiles, trace, cancel) for tiles in self.groups]
             best = [(torch.full((len(q), k), -float('inf'), dtype=torch.float32, device=self.device),
                      torch.full((len(q), k), -1, dtype=torch.int64, device=self.device))
                     if len(q) else (None, None) for _,q,k in requests]
+            timing("merge_buffers_ready", started)
             for worker, job in zip(self.workers, jobs): worker.inbox.put(job)
             tiles_consumed = 0
             try:
