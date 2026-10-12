@@ -1,6 +1,7 @@
 """python -m search_r1.baselines.main baselines.method=gigpo [Hydra overrides]."""
 import hydra
 import ray
+import os
 from .controller import validate_config
 
 
@@ -40,7 +41,8 @@ def main(config):
     from .preflight import validate_assets_and_retriever
     validate_assets_and_retriever(config)
     from verl.trainer.main_ppo import main_task
-    if not ray.is_initialized():
+    started_own_ray = not ray.is_initialized()
+    if started_own_ray:
         ray.init(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
     if config.baselines.local_runtime_only:
         check_local_runtime(config, ray.nodes())
@@ -50,7 +52,11 @@ def main(config):
     try:
         result = ray.get(task.remote(config))
     finally:
-        assert_prebuilt_unchanged(config, split_manifest)
+        try:
+            assert_prebuilt_unchanged(config, split_manifest)
+        finally:
+            if started_own_ray and os.environ.get('RBA_ATTEMPT_CONTENTION'):
+                ray.shutdown()
     if config.baselines.holdout_eval_only:
         import json
         import re

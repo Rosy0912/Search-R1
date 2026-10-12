@@ -11,6 +11,18 @@ import sys
 import time
 
 
+def contention_attempt():
+    # Explicit latest human instruction: try this single job on occupied cards.
+    # No process signals or device reset are authorized by this flag.
+    if os.environ.get('RBA_ATTEMPT_CONTENTION')!='hkust1-cp4-20261012':return False
+    import socket
+    if os.getuid()!=1005 or socket.gethostname().split('.')[0]!='xielab1':
+        raise ValueError('Contention attempt is scoped to this HKUST1 account')
+    if not os.environ.get('RECURSIVE_A_CONTINUATION_BINDING'):
+        raise ValueError('Contention attempt requires complete-checkpoint continuation')
+    return True
+
+
 def parse_gpu_inventory(text):
     result = {}
     for line in text.splitlines():
@@ -35,7 +47,7 @@ def check_selected_gpus(selected, inventory, processes):
                 or record['memory_total'] <= 0 or record['memory_used'] < 0
                 or not 0 <= record['utilization'] <= 100):
             raise RuntimeError(f'Allocated GPU {device} has unknown/invalid occupancy')
-        if record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15:
+        if not contention_attempt() and (record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15):
             raise RuntimeError(f'Allocated GPU {device} exceeds the 15% idle thresholds')
         # Existing processes are recorded, never stopped; eligibility uses both thresholds.
         records.append(record)
@@ -123,6 +135,16 @@ def validate_assets_and_retriever(config):
         if not Path(value).expanduser().is_file():
             raise ValueError(f'Missing dataset: {value}')
     count = config.baselines.ranker.candidates if method == 'cosearch' else config.retriever.topk
+    if contention_attempt():
+        # Do not poison the persistent scanner by opening eight CUDA contexts
+        # before the actor has even loaded. Its fixed numerical gate is bound
+        # by the launch receipt; real retrieval starts with actual sampling.
+        health=requests.get(config.retriever.url.rsplit('/',1)[0]+'/health',timeout=5)
+        health.raise_for_status();h=health.json()
+        if not h.get('ready') or h.get('gpu_worker_active'):
+            raise RuntimeError('Private retriever not ready or another phase still active')
+        print('BASELINE_RETRIEVER_READY_GPU_ALLOCATION_DEFERRED_TO_SAMPLING',flush=True)
+        return
     response = requests.post(config.retriever.url,
                              json={'queries': ['What is the capital of France?'], 'topk': count,
                                    'return_scores': True}, timeout=(5, 30))

@@ -2,7 +2,7 @@
 import argparse,hashlib,json,os,shlex,socket,subprocess,time,uuid
 from pathlib import Path
 from omegaconf import OmegaConf
-p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--source',required=True);p.add_argument('--gate',required=True);p.add_argument('--previous-owner',type=int,required=True);p.add_argument('--previous-session',required=True);p.add_argument('--previous-receipt',required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--source',required=True);p.add_argument('--gate',required=True);p.add_argument('--previous-owner',type=int,required=True);p.add_argument('--previous-session',required=True);p.add_argument('--previous-receipt',required=True);p.add_argument('--attempt-contention',action='store_true');a=p.parse_args()
 b=Path(a.base).resolve();source=Path(a.source).resolve();gate=Path(a.gate).resolve()
 assert os.getuid()==1005 and socket.gethostname().split('.')[0]=='xielab1'
 assert source.parent==b and source.name.startswith('source-eight-') and not Path('/proc',str(a.previous_owner)).exists()
@@ -16,9 +16,10 @@ g=json.loads(gate.read_text());assert g['accepted'] and g['scope']=='eight_gpu_f
 cp=Path('/proc',str(g['candidate_pid']));assert cp.stat().st_uid==1005
 assert int((cp/'stat').read_text().rsplit(') ',1)[1].split()[19])==g['candidate_starttick']
 apps={int(v) for v in subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).split()}
-assert apps<={2239529,g['candidate_pid']}
+if not a.attempt_contention:assert apps<={2239529,g['candidate_pid']}
 free=[int(v) for v in subprocess.check_output(['nvidia-smi','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).split()]
-assert len(free)==8 and min(free)>=20000
+assert len(free)==8
+if not a.attempt_contention:assert min(free)>=20000
 commit=subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip();run=uuid.uuid4().hex
 parent=b/'receipts/resolved.yaml';assert hashlib.sha256(parent.read_bytes()).hexdigest()==m['identity']['config_sha256']
 config=OmegaConf.load(parent);config.trainer.evaluation_steps=[5,50,100,150,200];config.trainer.checkpoint_save_steps=[5,50,100,150,200]
@@ -40,6 +41,7 @@ python='/data/shaoshitong/search-e1-opsd-from-archive100-8gpu-20261007/env/bin/p
 env=dict(RECURSIVE_BRAN_BASE=str(b),RECURSIVE_A_CHILD_CONFIG_RECEIPT=str(rp),RECURSIVE_A_CONTINUATION_BINDING=str(bp),
  RECURSIVE_A_CONTINUATION_SHA256=hashlib.sha256(bp.read_bytes()).hexdigest(),CUDA_VISIBLE_DEVICES='0,1,2,3,4,5,6,7',PYTHONPATH=str(source),
  PYTHONUNBUFFERED='1',OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',OPENBLAS_NUM_THREADS='4',TOKENIZERS_PARALLELISM='false',RAY_DEDUP_LOGS='0')
+if a.attempt_contention:env.update(RBA_ATTEMPT_CONTENTION='hkust1-cp4-20261012',E1_RUN_ID=run)
 command='cd '+shlex.quote(str(source))+'\n'+''.join('export '+k+'='+shlex.quote(v)+'\n' for k,v in env.items())
 command+='exec '+shlex.join([python,'-u','-m','search_r1.baselines.preflight','--',python,'-u',str(source/'release/recursive_bran_a/continue_search_only.py')])+' >'+shlex.quote(str(log))+' 2>&1\n'
 launch=folder/'launch.sh';launch.write_text(command);launch.chmod(0o700)
