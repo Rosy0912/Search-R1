@@ -13,6 +13,7 @@ import uuid
 def main():
     p=argparse.ArgumentParser();p.add_argument('--case',choices=['repaired_b','old_opsd'],required=True)
     p.add_argument('--native-source',required=True);p.add_argument('--tools-source',required=True)
+    p.add_argument('--phase-binding')
     a=p.parse_args()
     assert os.getuid()==1001 and socket.gethostname().split('.')[0]=='xie-lab-4'
     root=Path('/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011')
@@ -65,6 +66,10 @@ def main():
     print('COST80_LAUNCH='+json.dumps(record),flush=True)
     command=[sys.executable,'-B',str(entry),'--case',a.case,'--config',
              str(tools/'release/recursive_bran_b/recovery_records/afb2d350/resolved.yaml'),'--output',str(out)]
+    if a.phase_binding:
+        binding=Path(a.phase_binding);binding.relative_to(root)
+        assert a.case=='repaired_b'
+        command+=['--phase-binding',str(binding)]
     try:
         rc=subprocess.call(command,env=env,pass_fds=tuple(handles),cwd=native)
     finally:

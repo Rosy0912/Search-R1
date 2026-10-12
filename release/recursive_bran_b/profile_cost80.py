@@ -137,6 +137,10 @@ def run_driver(config):
                 RayWorkerGroup,RewardManager(tokenizer,0),None)
     finally:
         controller.validate_config=original_validator
+    if config.retriever.get('gpu_release_url'):
+        from search_r1.baselines.retriever_phase import release_retriever_gpu
+        with stage('release_retriever_before_worker_load'):
+            release_retriever_gpu(config,'cost80_before_model_load')
     with stage('initialize_workers'):
         trainer.init_workers()
     trainer.global_steps=1
@@ -169,6 +173,9 @@ def run_driver(config):
     gen=batch.pop(batch_keys=['input_ids','attention_mask','position_ids'])
     with stage('sampling_and_compose'):
         generated,sources=trainer.baseline_controller.generate(manager,gen,batch,metrics)
+    if config.retriever.get('gpu_release_url'):
+        with stage('release_retriever_after_sampling'):
+            release_retriever_gpu(config,'cost80_after_sampling_before_hf')
     with stage('prepare_old_probability'):
         if case=='repaired_b':
             trainer.actor_rollout_wg.release_rollout_policy_cache()
@@ -213,12 +220,22 @@ def run_driver(config):
     return result
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--case',choices=['old_opsd','repaired_b'],required=True);p.add_argument('--output',required=True);p.add_argument('--prepare-only',action='store_true')
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--case',choices=['old_opsd','repaired_b'],required=True);p.add_argument('--output',required=True);p.add_argument('--prepare-only',action='store_true');p.add_argument('--phase-binding')
     a=p.parse_args(); output=Path(a.output);output.mkdir(exist_ok=False)
     os.environ.update(COST80_CASE=a.case,COST80_OUTPUT=str(output))
     from omegaconf import OmegaConf
     import ray
     config=OmegaConf.load(a.config)
+    if a.phase_binding:
+        assert a.case=='repaired_b'
+        binding=Path(a.phase_binding);raw=binding.read_bytes();bound=json.loads(raw)
+        assert bound['accepted'] is True and bound['host']=='xie-lab-4' and bound['gpu_shards']==4
+        assert bound['cuda_visible_devices']=='0,1,2,3'
+        config.retriever.url='http://10.123.4.12:18006/retrieve'
+        config.retriever.gpu_release_url='http://10.123.4.12:18006/release-gpu'
+        config.retriever.control_token_file=str(binding.with_name('private-probe-token'))
+        config.retriever.phase_binding_file=str(binding)
+        config.retriever.phase_binding_sha256=hashlib.sha256(raw).hexdigest()
     config.data.train_batch_size=16;config.data.shuffle_train_dataloader=False
     config.trainer.n_gpus_per_node=4;config.trainer.total_training_steps=1
     config.trainer.actual_update_limit=None
@@ -263,5 +280,8 @@ def main():
         ray.get(ray.remote(run_driver).remote(config))
     finally:
         ray.shutdown()
+        if a.phase_binding:
+            from search_r1.baselines.retriever_phase import release_retriever_gpu
+            release_retriever_gpu(config,'cost80_driver_exit')
 
 if __name__=='__main__':main()
