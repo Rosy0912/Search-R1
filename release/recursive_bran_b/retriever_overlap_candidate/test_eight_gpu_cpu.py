@@ -14,6 +14,16 @@ from .test_lifecycle_cpu import FakeBackend
 
 
 class Checks(unittest.TestCase):
+    def test_user_selected_four_cards_keep_every_original_tile(self):
+        groups=partition_tiles(21015324,4)
+        self.assertEqual([len(g) for g in groups],[161,161,160,160])
+        self.assertEqual(sorted((t for g in groups for t in g),key=lambda t:t.number),tile_plan(21015324))
+        self.assertTrue(all(t.number%4==i for i,g in enumerate(groups) for t in g))
+        plan=eight_gpu_memory_plan(21015324,768,gpu_count=4)
+        self.assertEqual(plan['merge_gpu'],3)
+        self.assertEqual(sum(plan['per_gpu_vector_transfer_bytes']),64559075328)
+        self.assertEqual(plan['all_workers_pinned_cpu_buffers_bytes'],805306368)
+
     def test_global_original_tiles_exact_unique_and_evenly_distributed(self):
         groups = partition_tiles(21015324)
         flat = sorted([tile for group in groups for tile in group], key=lambda x:x.number)

@@ -124,12 +124,14 @@ def gpu_worker(connection, configuration):
         for key in ('path','metadata_before','original_index_rows','dimension','payload_offset','actual_prefix_sha256'):
             if proof[key] != configuration['index_identity'][key]:
                 raise ValueError('GPU worker readonly index identity changed: ' + key)
+        gpu_count=configuration.get('gpu_count',8)
         original = SimpleNamespace(host=host,d=host.shape[1],ntotal=len(host),
-            vector_rows=32768,query_micro=64,device=torch.device('cuda:7'))
-        scan = EightGpuStreamingFlatIP(original)
+            vector_rows=32768,query_micro=64,device=torch.device('cuda:%d' % (gpu_count-1)))
+        scan = EightGpuStreamingFlatIP(original,gpu_count=gpu_count)
         identity = dict(process_identity(), source_manifest=source_manifest(),
             index_identity=proof, cuda_initialized=torch.cuda.is_initialized(),
-            role='eight_gpu_sampling_phase_only', source_fixed=True, fp32=True, tf32=False)
+            role='phase_gpu_sampling_only', gpu_count=gpu_count,
+            cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),source_fixed=True, fp32=True, tf32=False)
         connection.send(dict(status='READY',identity=identity))
         while True:
             request = connection.recv()
@@ -159,7 +161,8 @@ def gpu_worker(connection, configuration):
 
 
 class PhaseGpuScanner:
-    def __init__(self, original, index_path, oracle_source=None, timeout=180):
+    def __init__(self, original, index_path, oracle_source=None, timeout=180, gpu_count=8):
+        if gpu_count not in (4,8):raise ValueError('Four/eight devices must be explicitly selected')
         dimension = original.d
         if original.vector_rows != 32768 or original.query_micro != 64:
             raise ValueError("Original scanner tile/query shape differs")
@@ -176,7 +179,7 @@ class PhaseGpuScanner:
         self.vector_rows, self.query_micro = 32768, 64
         self.scan_lock = threading.Lock()
         self.runtime = SpawnedRuntime(gpu_worker,dict(index_path=proof['path'],
-            dimension=dimension,index_identity=proof,source_manifest=source_manifest()),timeout)
+            dimension=dimension,index_identity=proof,source_manifest=source_manifest(),gpu_count=gpu_count),timeout)
         self.last_scan_profile = None
         self.last_worker_identity = None
 

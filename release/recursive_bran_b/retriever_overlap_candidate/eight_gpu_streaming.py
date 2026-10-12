@@ -19,28 +19,30 @@ GPU_COUNT = 8
 MERGE_GPU = 7
 
 
-def partition_tiles(ntotal):
+def partition_tiles(ntotal, gpu_count=GPU_COUNT):
     """Whole original tiles, round robin, to keep parallel workers in lockstep."""
-    groups = [[] for _ in range(GPU_COUNT)]
+    if gpu_count not in (4, 8):
+        raise ValueError('Explicit four- or eight-device whole-tile partition required')
+    groups = [[] for _ in range(gpu_count)]
     for tile in tile_plan(ntotal):
-        groups[tile.number % GPU_COUNT].append(tile)
+        groups[tile.number % gpu_count].append(tile)
     return groups
 
 
-def eight_gpu_memory_plan(ntotal, dimension, total_queries=0, k=3):
+def eight_gpu_memory_plan(ntotal, dimension, total_queries=0, k=3, gpu_count=GPU_COUNT):
     base = memory_plan(ntotal, dimension)
-    groups = partition_tiles(ntotal)
+    groups = partition_tiles(ntotal, gpu_count)
     return dict(index_scan_bytes=base['index_scan_bytes'],
         per_gpu_vector_transfer_bytes=[sum(t.stop-t.start for t in rows)*dimension*4 for rows in groups],
         per_gpu_tile_counts=[len(rows) for rows in groups],
         per_gpu_pinned_cpu_buffers_bytes=base['pinned_cpu_buffers_bytes'],
         per_gpu_device_buffers_bytes=base['device_buffers_bytes'],
-        all_workers_pinned_cpu_buffers_bytes=GPU_COUNT*base['pinned_cpu_buffers_bytes'],
+        all_workers_pinned_cpu_buffers_bytes=gpu_count*base['pinned_cpu_buffers_bytes'],
         per_gpu_query_copy_bytes=total_queries*dimension*4,
         per_gpu_distances_peak_bytes=base['max_one_query_micro_distances_bytes'],
-        cpu_two_ready_tiles_per_gpu_bytes_upper=GPU_COUNT*2*total_queries*k*12,
-        cpu_one_pending_producer_tile_per_gpu_bytes_upper=GPU_COUNT*total_queries*k*12,
-        merge_gpu=MERGE_GPU, resident_full_index=False,
+        cpu_two_ready_tiles_per_gpu_bytes_upper=gpu_count*2*total_queries*k*12,
+        cpu_one_pending_producer_tile_per_gpu_bytes_upper=gpu_count*total_queries*k*12,
+        merge_gpu=gpu_count-1, gpu_count=gpu_count, resident_full_index=False,
         limits='Not measured peaks: CUDA contexts, allocator reserve, FAISS heap/mmap pages, merge scratch and oracle coexistence excluded')
 
 
@@ -164,20 +166,23 @@ class TileWorker(threading.Thread):
 
 
 class EightGpuStreamingFlatIP:
-    def __init__(self, original):
+    def __init__(self, original, gpu_count=GPU_COUNT):
         self.original = original
         self.host, self.d, self.ntotal = original.host, original.d, original.ntotal
-        self.device = torch.device('cuda:7')
+        if gpu_count not in (4, 8):
+            raise ValueError('Only an explicit four/eight visible-device profile is supported')
+        self.gpu_count, self.merge_gpu = gpu_count, gpu_count-1
+        self.device = torch.device('cuda:%d' % self.merge_gpu)
         self.vector_rows, self.query_micro = VECTOR_ROWS, QUERY_MICRO
         if (original.vector_rows != VECTOR_ROWS or original.query_micro != QUERY_MICRO or
                 self.host.dtype != np.float32 or self.host.shape != (self.ntotal, self.d) or
                 not self.host.flags.c_contiguous):
             raise ValueError('Original contiguous FP32 32768/64 host contract required')
-        if torch.cuda.device_count() != GPU_COUNT:
-            raise ValueError('Expose exactly 8 authorized GPUs')
+        if torch.cuda.device_count() != gpu_count:
+            raise ValueError('Visible devices differ from the explicitly authorized count')
         self.scan_lock = threading.Lock()
-        self.groups = partition_tiles(self.ntotal)
-        self.workers = [TileWorker(gpu, self.host) for gpu in range(GPU_COUNT)]
+        self.groups = partition_tiles(self.ntotal, gpu_count)
+        self.workers = [TileWorker(gpu, self.host) for gpu in range(gpu_count)]
         self.last_scan_profile = None
 
     def search(self, queries, k):
@@ -216,7 +221,7 @@ class EightGpuStreamingFlatIP:
             tiles_consumed = 0
             try:
                 for tile in tile_plan(self.ntotal):
-                    job = jobs[tile.number % GPU_COUNT]
+                    job = jobs[tile.number % self.gpu_count]
                     while True:
                         if cancel.is_set():
                             raise RuntimeError('Eight-GPU tile worker fault: ' + repr(next(
@@ -236,7 +241,7 @@ class EightGpuStreamingFlatIP:
                 for job in jobs: job.done.wait()
                 if any(job.error is not None for job in jobs):
                     raise RuntimeError('Worker error after tile production')
-                self.last_scan_profile = dict(tiles_merged=tiles_consumed, merge_gpu=MERGE_GPU,
+                self.last_scan_profile = dict(tiles_merged=tiles_consumed, merge_gpu=self.merge_gpu,
                     actual_worker_shapes=[dict(gpu=gpu,thread_native_id=job.thread_native_id,
                         tile_starts=job.actual_tile_starts, gemm_shape_counts=[dict(
                             request=key[0],offset=key[1],left=[key[2],key[3]],right=[key[3],key[4]],
@@ -244,7 +249,11 @@ class EightGpuStreamingFlatIP:
                             for key,count in sorted(job.actual_gemm_shapes.items())])
                         for gpu,job in enumerate(jobs)],
                     partition='round_robin_whole_original_tiles',
-                    memory=eight_gpu_memory_plan(self.ntotal,self.d,sum(len(q) for _,q,_ in requests)))
+                    memory=eight_gpu_memory_plan(self.ntotal,self.d,sum(len(q) for _,q,_ in requests),gpu_count=self.gpu_count),
+                    actual_gpu_memory=[dict(gpu=i, allocated_bytes=torch.cuda.max_memory_allocated(i),
+                        reserved_bytes=torch.cuda.max_memory_reserved(i),
+                        device_name=torch.cuda.get_device_properties(i).name)
+                        for i in range(self.gpu_count)])
                 return [(np.empty((0,k),np.float32), np.empty((0,k),np.int64)) if not len(q)
                         else (scores.cpu().numpy(), ids.cpu().numpy())
                         for (_,q,k),(scores,ids) in zip(requests,best)]
