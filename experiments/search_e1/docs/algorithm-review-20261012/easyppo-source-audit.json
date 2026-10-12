@@ -1,0 +1,141 @@
+{
+  "checked_at_utc": "2026-10-12T05:35:21.170283+00:00",
+  "repo": "https://github.com/EasyPPO/EasyPPO",
+  "commit": "0a490a88ad7b84a8f7974fe168f0ba63600b1e31",
+  "paper": "https://arxiv.org/html/2609.36802v1",
+  "local_scope": "necessary source/code/docs only; no data/model/env assets",
+  "checked_file_count": 21,
+  "total_source_bytes": 505584,
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "README.md",
+      "bytes": 5840,
+      "sha256": "bce0784c2bf0580f674e7eb19c464b3fc01fd3faf570f7c66ac204b21ad6a2ca",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "configs/easyppo_aime.yaml",
+      "bytes": 3932,
+      "sha256": "436fba2c7a482879c8cdd795c6e14e22adb06fdba01faefb8ea9b5b3a7aefac4",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "scripts/check_easyppo_config.py",
+      "bytes": 1701,
+      "sha256": "21e2f41e31862b879d3a961d738e6cb5a5017edbfe7ab6ac9414c269e8251a5a",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "scripts/run_aime_ours.sh",
+      "bytes": 660,
+      "sha256": "2a1e3a6a67170d8a63120f82194d60091a476ace853996dc8a696e603ce0c240",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "tests/easyppo/test_overlong_response_filter_on_cpu.py",
+      "bytes": 8023,
+      "sha256": "4a260763adc74e60f152ce7dcc1c9c7db2e6eb3c21c358d6336858487fec625b",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "tests/easyppo/test_update_pipeline_on_cpu.py",
+      "bytes": 11081,
+      "sha256": "4fe1833ed2d05a8c4cbcb2377655d4b30702bf256d04e8984cf41dc167962800",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "tests/easyppo/test_value_loss_normalization_on_cpu.py",
+      "bytes": 11682,
+      "sha256": "0d7dc94c4108d3aa091b4b58f80a78135239037980eb57458275cad1b3128b4b",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "tests/easyppo/test_variance_weighted_critic_loss_on_cpu.py",
+      "bytes": 4058,
+      "sha256": "b39cb4f7e6641f2fd18c09bcba927af11b841e695c5b7a4773006f3e1f16e76d",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/config/critic/critic.yaml",
+      "bytes": 6650,
+      "sha256": "71036c5ab7cf1f12358e21046d4a7211bf6c56cb8cfc459146d5372e9b3edd47",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/config/critic/dp_critic.yaml",
+      "bytes": 1293,
+      "sha256": "bdd697565041c42604b1c9916b8a2ebb3831039a29acc8a2d74ad4711e5ec973",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/ppo/core_algos.py",
+      "bytes": 108844,
+      "sha256": "08b4da571e88796b2b02e451401da4f5498e22ca6c131bee327bae7eb708e779",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/ppo/ray_trainer.py",
+      "bytes": 95964,
+      "sha256": "fff1f83d86496afd52652e7af79ad2acddcf2edb738d74d4cb4a557ff121e07d",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/ppo/v1/trainer_base.py",
+      "bytes": 84701,
+      "sha256": "b5086ff9eae846f580122d1bc9d62080eedb97422dfb2d5dd26fdf652c3a05f5",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/ppo/v1/trainer_sync.py",
+      "bytes": 1524,
+      "sha256": "82080d57eff0530ba69cd14a0353ef4b6a6bcfa4eaf45540d6a091cbc679ef82",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/trainer/ppo/v1/utils.py",
+      "bytes": 9299,
+      "sha256": "7d00e8d8149b9c5171da18cd6db6afe6747e412c78846e674cfad0bf23b0fd48",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/workers/config/critic.py",
+      "bytes": 15097,
+      "sha256": "d9e3eb5a49d5293a0b5db43bf32147ecfb6a4a8b0df72d0a4280426e7db40fdf",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/workers/engine/base.py",
+      "bytes": 13956,
+      "sha256": "ed8612542e58e2c98306eb9cf0c066759ef1690e14b876b45a481bae1b5351e9",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/workers/engine/fsdp/transformer_impl.py",
+      "bytes": 65352,
+      "sha256": "c1b8c2a93f865bfc8774af467809f8ff70a76c34f477dc865aaf4dfbc411bcea",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/workers/engine_workers.py",
+      "bytes": 35987,
+      "sha256": "267fbd8cd727695b2c3a25f00b5a7e5040a44d27c6afc510003b3752ef3d2e5e",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "verl/workers/utils/losses.py",
+      "bytes": 8582,
+      "sha256": "d0cb8b67858c7c76920aafe45c0465d73c8db2eed57270f7782c6040515fd4f6",
+      "fixed_git_blob_equal": true
+    }
+  ],
+  "notes_sha256": "ab4bd59a6eec576e9b8dc90c2fcecc3e24026d4ecf8c372ccd72c8d061be928c",
+  "tests_run": false,
+  "gpu_or_training_run": false,
+  "nested_repo_not_intended_as_publication_gitlink": true
+}

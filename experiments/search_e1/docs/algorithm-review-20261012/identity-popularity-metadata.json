@@ -1,0 +1,81 @@
+{
+  "observed_utc": "2026-10-12T05:31:30.487937+00:00",
+  "not_a_global_popularity_ranking": true,
+  "repository_stars_are_not_paper_citations": true,
+  "results": {
+    "github_segment": {
+      "url": "https://api.github.com/repos/AIFrameResearch/SPO",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "github_simple": {
+      "url": "https://api.github.com/repos/MyRepositories-hub/Simple-Policy-Optimization",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "github_single_stream_parent": {
+      "url": "https://api.github.com/repos/verl-project/verl-recipe",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "github_drpo_decoupled": {
+      "url": "https://api.github.com/repos/Optimization-AI/DRPO",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "github_dppo_diffusion": {
+      "url": "https://api.github.com/repos/irom-princeton/dppo",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "github_dppo_preference": {
+      "url": "https://api.github.com/repos/snu-mllab/DPPO",
+      "status": "unavailable",
+      "error": "HTTP Error 403: rate limit exceeded"
+    },
+    "openalex_simple": {
+      "url": "https://api.openalex.org/works/https://doi.org/10.48550/arXiv.2401.16025",
+      "status": "ok",
+      "metadata": {
+        "id": "https://openalex.org/W4391376863",
+        "display_name": "Simple Policy Optimization",
+        "publication_date": "2024-01-29",
+        "cited_by_count": 0,
+        "doi": "https://doi.org/10.48550/arxiv.2401.16025"
+      }
+    },
+    "openalex_segment": {
+      "url": "https://api.openalex.org/works/https://doi.org/10.48550/arXiv.2505.23564",
+      "status": "ok",
+      "metadata": {
+        "id": "https://openalex.org/W4416611827",
+        "display_name": "Segment Policy Optimization: Effective Segment-Level Credit Assignment in RL for Large Language Models",
+        "publication_date": "2025-01-01",
+        "cited_by_count": 2,
+        "doi": "https://doi.org/10.52202/085713-3815"
+      }
+    },
+    "openalex_soft": {
+      "url": "https://api.openalex.org/works/https://doi.org/10.48550/arXiv.2503.05453",
+      "status": "ok",
+      "metadata": {
+        "id": "https://openalex.org/W6948157231",
+        "display_name": "Soft Policy Optimization: Online Off-Policy RL for Sequence Models",
+        "publication_date": "2025-03-07",
+        "cited_by_count": 0,
+        "doi": "https://doi.org/10.48550/arxiv.2503.05453"
+      }
+    },
+    "openalex_single_stream": {
+      "url": "https://api.openalex.org/works/https://doi.org/10.48550/arXiv.2509.13232",
+      "status": "ok",
+      "metadata": {
+        "id": "https://openalex.org/W4415317764",
+        "display_name": "Single-stream Policy Optimization",
+        "publication_date": "2025-09-16",
+        "cited_by_count": 0,
+        "doi": "https://doi.org/10.48550/arxiv.2509.13232"
+      }
+    }
+  }
+}

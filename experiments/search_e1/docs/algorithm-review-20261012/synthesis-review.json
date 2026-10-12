@@ -1,0 +1,17 @@
+{
+  "reviewed_utc": "2026-10-12T05:41:47.382393+00:00",
+  "reviewers": [
+    "probe_metric_semantics",
+    "search_g1_math"
+  ],
+  "verdict": "APPROVE_WITH_CLARIFICATIONS_APPLIED",
+  "applied": [
+    "SPO stationary-point probability feasibility",
+    "true behavior mu versus replay anchor nu",
+    "raw model NLL versus processed behavior NLL",
+    "DPPO detached capped IS scalar loss versus ideal surrogate",
+    "strict EM C versus original task score versus shaped R",
+    "no combination-gain or complete-return-gradient claim"
+  ],
+  "training_nodes_untouched": true
+}

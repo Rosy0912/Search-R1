@@ -1,0 +1,58 @@
+{
+  "checked_at_utc": "2026-10-12T05:38:42.062456+00:00",
+  "repo": "https://github.com/verl-project/verl-recipe",
+  "commit": "242c73fcadf331e7214c4b48f67423f45239cea8",
+  "required_verl_commit": "d7944c01e63e9eb639c8357648b7958550591158",
+  "paper": "https://arxiv.org/html/2509.13232v2",
+  "local_scope": "necessary source/code/docs only; no data/model/env assets",
+  "checked_file_count": 7,
+  "total_source_bytes": 80180,
+  "files": [
+    {
+      "path": "spo/README.md",
+      "bytes": 12634,
+      "sha256": "9195ec5b135099c22dca66674b7d4fc2cd2aa3ec943515665fa5f6e0a98ccaf7",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/REQUIRED_VERL.txt",
+      "bytes": 489,
+      "sha256": "119dfcb064e89e8f88efffdd135827a3e887827e6380d34f92528cc1249bb21d",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/config/spo_trainer.yaml",
+      "bytes": 309,
+      "sha256": "f9fe748719cf5313b66ad5215209f5776921666f3a300230e981e9c586813bb6",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/estimate_offline_values/merge_offline_values.py",
+      "bytes": 6600,
+      "sha256": "ee1a38a58d78ecd272251793f427216ffab29df62eb749fe54a80b4a54f3c4fe",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/spo_main_ppo.py",
+      "bytes": 15377,
+      "sha256": "dbfeca63d28f96cbd3d21423f38cc4990f0c042cbcc6009aae004d15fdfcaf4a",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/spo_ray_trainer.py",
+      "bytes": 39114,
+      "sha256": "bbb97192ef8944a31abe272995762fe98c4b8f5c62d82f8a3f13cc1ae79743ec",
+      "fixed_git_blob_equal": true
+    },
+    {
+      "path": "spo/train.sh",
+      "bytes": 5657,
+      "sha256": "8cb6b3428dc83d1af2ae035fa09cba5587dc0d0bd77c31eafce7cbb883f6c468",
+      "fixed_git_blob_equal": true
+    }
+  ],
+  "notes_sha256": "d30202f158515df64e7458958ffca310ce786881a14dd84aa2a130c60bdf787f",
+  "tests_run": false,
+  "gpu_or_training_run": false,
+  "nested_repo_not_intended_as_publication_gitlink": true
+}
