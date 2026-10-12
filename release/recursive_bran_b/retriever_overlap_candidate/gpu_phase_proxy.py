@@ -19,6 +19,17 @@ def timing(stage, started=None, **values):
     print('GPU_PHASE_TIMING='+json.dumps(record), flush=True)
 
 
+def join_owned_process(process, timeout):
+    # Reap via waitpid through is_alive() as well as the multiprocessing
+    # sentinel: native helpers may retain the sentinel writer after child exit.
+    deadline=time.monotonic()+timeout
+    while process.is_alive():
+        remaining=deadline-time.monotonic()
+        if remaining<=0: return
+        process.join(timeout=min(.2,remaining))
+    process.join(timeout=0)
+
+
 def source_manifest():
     base = Path(__file__).resolve().parent
     names = ('gpu_phase_proxy.py','eight_gpu_streaming.py','pinned_overlap.py','flat_memmap.py')
@@ -95,19 +106,19 @@ class SpawnedRuntime:
                     graceful = acknowledgement.get('status') == 'RELEASED'
                 else:
                     error = 'Release acknowledgement timeout'
-            process.join(timeout=self.timeout)
+            join_owned_process(process,self.timeout)
             if process.is_alive():
                 # Only the proven child Process handle, never an oracle/foreign PID.
-                process.terminate(); process.join(timeout=10)
-                if process.is_alive(): process.kill(); process.join(timeout=10)
+                process.terminate(); join_owned_process(process,10)
+                if process.is_alive(): process.kill(); join_owned_process(process,10)
                 graceful = False
             if process.is_alive():
                 raise RuntimeError('Own GPU worker has not exited; HF must remain blocked')
         except (BrokenPipeError, EOFError, OSError) as exc:
             error = repr(exc)
             if process.is_alive(): process.terminate()
-            process.join(timeout=10)
-            if process.is_alive(): process.kill(); process.join(timeout=10)
+            join_owned_process(process,10)
+            if process.is_alive(): process.kill(); join_owned_process(process,10)
             if process.is_alive(): raise RuntimeError('Own GPU worker release failed')
         finally:
             if connection is not None: connection.close()
