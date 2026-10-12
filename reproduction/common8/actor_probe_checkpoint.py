@@ -204,6 +204,8 @@ def verify_full_state(base, run, step, *, load_optimizer=False, retained_prefix=
     manifest = json.loads((probe/'version-manifest.json').read_text())
     validate_version(run, manifest, min(step + 1, 200))
     assert manifest['version'] == receipt['probe_version'] and manifest['actor_step'] == receipt['probe_actor_step']
+    assert receipt['probe_head_hashes'] == manifest['head_sha256']
+    assert set(receipt['probe_head_hashes']) == {'commit_probe.pkl','boundary_probe.pkl'}
     for name, sha in receipt['probe_head_hashes'].items(): assert digest(probe/name) == sha
     driver = torch.load(receipt['driver']['path'], map_location='cpu', weights_only=False)
     assert driver['identity'] == receipt['identity'] and driver['completed_outer'] == step

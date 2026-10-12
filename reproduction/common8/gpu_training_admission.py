@@ -203,3 +203,44 @@ def verify_training_gpu_samples(base, run, scheduler_receipts):
                   allocation_receipt_sha256=hashlib.sha256(allocation_raw).hexdigest(),
                   semantics=result['semantics'] + ' A newly acquired sample after gate entry and live sampler/trainer births are mandatory.')
     return result
+
+
+def verify_historical_training_gpu_samples(base, run, scheduler_receipts, saved):
+    """Rebuild the sealed first-five sample prefix without a liveness claim.
+
+    The original live gate authenticated the sampler and trainer births. After
+    training exits, the saved byte-prefix hash and all pure sample fields must
+    still match. Later samples cannot replace a missing sample at that gate.
+    """
+    from reproduction.common8.actor_probe_rank_tail import _sealed_bytes
+    base = Path(base)
+    relative = 'logs/gpu-samples-' + run['run_id'] + '.jsonl'
+    assert saved['receipt_path'] == str(base/relative)
+    raw, file = _sealed_bytes(base, relative, limit=512*1024**2)
+    target = saved['last_sample_unix']
+    assert _number(target)
+    rows = []; prefix = bytearray(); matches = 0
+    for line in raw.splitlines(keepends=True):
+        if not line.endswith(b'\n'): break
+        row = _strict_json(line)
+        rows.append(row); prefix.extend(line)
+        if row.get('unix') == target:
+            matches += 1
+            break
+    assert matches == 1, 'Original five-gate sample is missing'
+    assert hashlib.sha256(prefix).hexdigest() == saved['observed_complete_prefix_sha256'], \
+        'Original first-five GPU byte prefix changed'
+    claim_raw, claim_file = _sealed_bytes(base,'logs/training-launch-claim.json',limit=32*1024**2)
+    allocation_raw, allocation_file = _sealed_bytes(base,'logs/native-allocation-admission.json',limit=32*1024**2)
+    assert hashlib.sha256(allocation_raw).hexdigest() == saved['allocation_receipt_sha256']
+    derived = _coverage(rows, run, _strict_json(claim_raw), _strict_json(allocation_raw),
+        scheduler_receipts, entered=saved['acceptance_entered_unix'])
+    for key, value in derived.items():
+        if key != 'semantics':
+            assert saved[key] == value, 'Historical first-five GPU field changed: ' + key
+    assert saved['semantics'] == derived['semantics'] + \
+        ' A newly acquired sample after gate entry and live sampler/trainer births are mandatory.'
+    return dict(role='historical_actual_first_five_gpu_occupancy',
+        accepted=True, original_gate=derived,
+        observed_complete_prefix_sha256=saved['observed_complete_prefix_sha256'],
+        files=[file,claim_file,allocation_file], current_liveness_claimed=False)

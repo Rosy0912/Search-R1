@@ -345,6 +345,25 @@ checks still require implementation and actual A800 execution.
 
 ## Required evidence before launch
 
+The calibration-chain reader now resolves each ten-outer interval's exact used
+Head UUID to the retained actor owner at its fitting boundary. It rechecks the
+original owned encoder bytes, reserved calibration arrays/labels, report, both
+finite fitted classifiers and data/version fingerprints. A restored namespace
+uses its authenticated saved pair while the original fitting report and arrays
+remain in their original namespace. Every saved milestone binds the actual pair
+hashes to both its saved manifest and original fitted version, including saved
+milestones that never become a recovery origin.
+
+The root first-five reader selects the actual retained driver/rank prefix,
+rechecks probability/scheduler/monitor evidence, the real canonical parameter
+delta, saved-state roundtrip and paired-development report. It reconstructs the
+original first-five GPU byte prefix and sample fields after the trainer exits,
+without claiming historical births are currently live. Canonical JSON comparison
+preserves the original tuple/list birth serialization. These are read-only
+components: the top-level full recovery-chain entry, fault review/final/cleanup
+composition and actual A800 execution are still required. The recovery preflight
+continues to reject before any claim or trainer when that exact entry is absent.
+
 1. Focused tests:100/101 reward boundary,10-step refresh boundaries, strict
    manifest rejection, stale/mixed head versions and incomplete outer handling.
 2. Actual feature/gradient isolation: only classifier parameters change; actor

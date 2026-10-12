@@ -42,6 +42,51 @@ def pair(root):
 
 
 class SegmentAcceptanceTests(unittest.TestCase):
+    def test_saved_head_bytes_and_receipt_must_match_the_saved_version_manifest(self):
+        from reproduction.common8.actor_probe_checkpoint import verify_full_state
+        from reproduction.common8.verify_data import digest
+        from search_g1.actor_probe_recovery import identity
+        from search_g1.actor_probe_contract import MODE
+        import torch
+        with tempfile.TemporaryDirectory() as root:
+            base=Path(root).resolve();run=dict(manifest('a'*32),profile='common8',slurm_job_id=None,
+                checkpoint_dir=str(base/'checkpoints'),input_sha256={'calibration-300.parquet':'1'*64})
+            directory=Path(run['checkpoint_dir'])/'actor/global_step_200';directory.mkdir(parents=True)
+            complete=write(directory/'complete.json',{'fixture':'scalar canonical receipt stand-in'})
+            rows=[]
+            for rank in range(4):
+                p=directory/f'training-state-rank-{rank}.pt';p.write_text('{"fixture":"scalar state stand-in"}')
+                rows.append(dict(path=str(p),bytes=p.stat().st_size,sha256=digest(p),rank=rank,
+                    completed_outer=200,optimizer_writes=4000))
+            p=directory/'training-state-driver.pt';p.write_text('{"fixture":"scalar driver stand-in"}')
+            driver=dict(path=str(p),bytes=p.stat().st_size,sha256=digest(p))
+            probe=directory/'probe-state';probe.mkdir()
+            hashes={}
+            for name in ('commit_probe.pkl','boundary_probe.pkl'):
+                p=probe/name;p.write_text('{"fixture":"scalar fitted-head stand-in"}');hashes[name]=digest(p)
+            version=run['run_id']+':190:'+'7'*32
+            head=dict(run_id=run['run_id'],version=version,round=190,actor_step=190,representation_source=MODE,
+                calibration_data_sha256='1'*64,head_sha256=hashes)
+            sha=write(probe/'version-manifest.json',head)
+            receipt=dict(role='actor_probe_full_state_checkpoint',identity=identity(run),completed_outer=200,
+                next_logical_update=201,actual_optimizer_writes=4000,workers=rows,driver=driver,
+                completed_outer_reward_head_round=190,canonical_model_receipt_sha256=complete,
+                probe_manifest_sha256=sha,probe_head_hashes=dict(hashes),probe_version=version,probe_actor_step=190)
+            write(directory/'full-state-complete.json',receipt)
+            write(base/'logs/actual-updates.jsonl',dict(run_id=run['run_id'],step=200,attempt_index=200,optimizer_writes_after=4000))
+            payload=dict(identity=identity(run),completed_outer=200,probe_version=version,
+                attempt_progress=dict(completed_outer=200,pending=None,cumulative_writes=4000,attempt_index=200),
+                sampler=dict(dataset_size=1,permutation=[0],cursor=1),next_logical_update=201,
+                rng={'torch_cpu':torch.tensor([1],dtype=torch.uint8)})
+            with patch('torch.load',return_value=payload) as load:
+                self.assertEqual(verify_full_state(base,run,200),receipt)
+                load.reset_mock()
+                p=probe/'commit_probe.pkl';p.write_text('{"fixture":"different saved classifier"}')
+                receipt['probe_head_hashes']['commit_probe.pkl']=digest(p)
+                write(directory/'full-state-complete.json',receipt)
+                with self.assertRaises(AssertionError):verify_full_state(base,run,200)
+                load.assert_not_called()
+
     def test_full_state_wrong_source_identity_rejected_before_any_tensor_load(self):
         from reproduction.common8.actor_probe_checkpoint import verify_full_state
         from search_g1.actor_probe_recovery import identity

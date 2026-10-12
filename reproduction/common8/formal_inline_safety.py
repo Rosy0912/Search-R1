@@ -400,23 +400,29 @@ def publish_optimizer_state(module, optimizer, logical_update, writes, group=Non
         stage='formal_inline_optimizer_proof_fsync', process_group=group, positive=('durable_inline_optimizer_proof',))
 
 
-def verify_first_five(base, run, behavior_gates, scheduler_receipts):
+def verify_first_five(base, run, behavior_gates, scheduler_receipts, *, retained_prefix=None):
     from reproduction.common8.safety_calibration_evidence import verify_formal_segment
     from reproduction.common8.formal_attempt_audit import verify_attempt_history
     base = Path(base).resolve(); plan = read(base / PLAN); _, sha = verify_plan(base, plan, run)
-    actual = [json.loads(line) for line in (base / 'logs/actual-updates.jsonl').read_text().splitlines()]
+    if retained_prefix is None:
+        actual = [json.loads(line) for line in (base / 'logs/actual-updates.jsonl').read_text().splitlines()]
+    else:
+        from reproduction.common8.actor_probe_retained_prefix import verify_prefix, rank_prefix
+        verify_prefix(base,run,retained_prefix,5)
+        actual = retained_prefix['selected_updates']
     complete_attempts = [r for r in actual if r['step'] <= 5]
     assert [r['step'] for r in complete_attempts] == list(range(1, 6))
     assert all(r['run_id'] == run['run_id'] for r in complete_attempts)
     attempt_ids = {r['attempt_id'] for r in complete_attempts}
     assert len(attempt_ids) == 5
     all_attempts = verify_attempt_history(base, run, complete_attempts, scheduler_receipts,
-                                         last=5, plan_sha256=sha)
+                                         last=5, plan_sha256=sha, retained_prefix=retained_prefix)
     rows_by_rank = {}; files = {}; selections = {}; births = set()
     allocation = read(base / 'logs/native-allocation-admission.json')
     for rank in ranks(run):
         path = base / 'logs' / f'optimizer-rank-{rank}.jsonl'
-        rows = [json.loads(line) for line in path.read_text().splitlines()]
+        rows = ([json.loads(line) for line in path.read_text().splitlines()] if retained_prefix is None else
+                rank_prefix(base,run,retained_prefix,rank,'optimizer')[0])
         rows_by_rank[rank] = [r for r in rows if (r.get('context') or r).get('attempt_id') in attempt_ids]
         selections[str(rank)] = document_sha256(rows_by_rank[rank])
         process = scheduler_receipts[str(rank)]['selected_rows'][0]
