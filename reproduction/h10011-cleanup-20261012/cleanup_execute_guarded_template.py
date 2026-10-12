@@ -27,6 +27,11 @@ for proc in pathlib.Path('/proc').glob('[0-9]*'):
    try:dest=pathlib.Path(os.readlink(link))
    except OSError:continue
    if any(under(dest,d) for d in paths):refs.append(dict(pid=proc.name,kind='open_path',detail=str(dest)))
+  for line in (proc/'maps').read_text(errors='replace').splitlines():
+   fields=line.split(None,5)
+   if len(fields)==6 and fields[5].startswith('/'):
+    dest=pathlib.Path(fields[5].removesuffix(' (deleted)'))
+    if any(under(dest,d) for d in paths):refs.append(dict(pid=proc.name,kind='memory_mapping',detail=str(dest)))
  except (FileNotFoundError,PermissionError,ProcessLookupError):pass
 assert not refs, json.dumps(refs)
 # Confirm all selected immutable source checkpoint bytes still match the HF manifest.
