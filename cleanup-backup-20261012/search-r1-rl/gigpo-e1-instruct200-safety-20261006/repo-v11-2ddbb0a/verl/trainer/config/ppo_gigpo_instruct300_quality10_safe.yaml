@@ -1,0 +1,17 @@
+defaults:
+  - ppo_gigpo_instruct300_quality10
+  - _self_
+actor_rollout_ref:
+  actor:
+    policy_safety:
+      enabled: true
+      mode: production
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_first_global_rows: 256
+      target_old_policy_kl: null
+      negative_tail_limit: null
+      calibration_evidence_sha256: null
+      calibration_evidence_path: null
+trainer:
+  experiment_name: gigpo-e1-quality-resume10-dualclip

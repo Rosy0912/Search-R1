@@ -1,0 +1,13 @@
+defaults:
+  - ppo_gigpo_instruct300_quality10_safe
+  - _self_
+actor_token_identity: sampled_action_prefix_v1
+actor_rollout_ref:
+  actor:
+    actor_token_identity: ${actor_token_identity}
+  ref:
+    actor_token_identity: ${actor_token_identity}
+  rollout:
+    actor_token_identity: ${actor_token_identity}
+trainer:
+  experiment_name: gigpo-e1-quality-resume10-dualclip-sampled-actions

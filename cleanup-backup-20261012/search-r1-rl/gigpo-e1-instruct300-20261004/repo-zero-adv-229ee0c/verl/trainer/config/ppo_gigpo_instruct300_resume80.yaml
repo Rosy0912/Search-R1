@@ -1,0 +1,20 @@
+defaults:
+  - ppo_gigpo_instruct300
+  - _self_
+
+actor_rollout_ref:
+  actor:
+    joint_loss_scaling: true
+baselines:
+  holdout:
+    # Immutable prebuilt mode does not write this historical cache directory.
+    # Preserve the original resolved value rather than weakening migration.
+    output_dir: /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-job3185-1791112239036063948/common-data
+trainer:
+  acceptance_step: 85
+  val_before_train: false
+  experiment_name: gigpo-e1-instruct300-resume80
+  instruct300:
+    restore_checkpoint: /mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct300-20261004/runs/gigpo-e1-instruct300-resume75-job3225-1791150281881004640/checkpoints/actor/global_step_80
+    restore_manifest_sha256: 7e108f4d1de488e8484a25deb3d50d9f9a200f2b30e0c90ffc3f9bc68751ad03
+    approval_path: ${oc.env:GIGPO_E1_RUN}/resume85-approval.json

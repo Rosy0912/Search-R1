@@ -1,0 +1,152 @@
+"""Paper objective measures, computed on complete rollout before DP sharding.
+
+Weights survive row permutations. Mini batches estimate the complete rollout
+objective by uniformly sampling rows; no local-rank question re-normalization.
+"""
+from collections import defaultdict
+import torch
+from verl.utils import torch_functional as F
+
+
+@torch.no_grad()
+def attach_policy_weights(data, method, reduction="paper"):
+    if reduction not in ('paper', 'sequence_mean'):
+        raise ValueError('Unknown policy loss reduction: ' + str(reduction))
+    width = data.batch['responses'].shape[1]
+    mask = (data.batch['attention_mask'][:, -width:] * data.batch['info_mask'][:, -width:]).float()
+    weights = torch.zeros_like(mask)
+    if method == 'topd':
+        groups = defaultdict(list)
+        for i, uid in enumerate(data.non_tensor_batch['uid']):
+            groups[uid].append(i)
+        # Empty questions remain in the outer expectation with zero contribution.
+        scale = len(data) / max(1, len(groups))
+        for rows in groups.values():
+            count = mask[rows].sum()
+            if count > 0:
+                weights[rows] = mask[rows] * scale / count
+    elif method == 'gigpo' and reduction == 'sequence_mean':
+        # Common protocol: trajectory token mean; GiGPO group/action metadata
+        # and strict joint-action ratio are deliberately unchanged.
+        if (data.batch['step_ids'][mask.bool()] < 0).any():
+            raise ValueError('A supervised GiGPO token has no action ID')
+        weights = mask / mask.sum(-1, keepdim=True).clamp_min(1)
+    elif method == 'gigpo' and reduction == 'paper':
+        for i in range(len(data)):
+            steps = data.batch['step_ids'][i]
+            actions = torch.unique(steps[mask[i].bool()])
+            if (actions < 0).any():
+                raise ValueError('A supervised GiGPO token has no action ID')
+            for step in actions:
+                selected = (steps == step) & mask[i].bool()
+                weights[i, selected] = 1. / (len(actions) * selected.sum())
+    elif method in ('tree_grpo', 'cosearch'):
+        weights = mask / mask.sum(-1, keepdim=True).clamp_min(1)
+    else:
+        raise ValueError(f'No paper policy measure for {method}')
+    data.batch['policy_weights'] = weights
+    return data
+
+
+def reduce_paper_metrics(metrics, device):
+    """Make detached objective logs identical before DataProto keeps rank zero.
+
+    Each rank's contributions already use the global row/mass denominator
+    divided by world size, so averaging them recovers the full minibatch value.
+    This collective only touches logs and does not rescale loss or gradients.
+    """
+    if not torch.distributed.is_initialized():
+        return
+    keys = [key for key in ('actor/pg_loss', 'actor/entropy_loss', 'actor/kl_loss',
+                            'actor/pg_clipfrac', 'actor/ppo_kl') if key in metrics]
+    if not keys:
+        return
+    sizes = [len(metrics[key]) for key in keys]
+    values = torch.tensor([value for key in keys for value in metrics[key]],
+                          dtype=torch.float64, device=device)
+    torch.distributed.all_reduce(values, op=torch.distributed.ReduceOp.SUM)
+    values /= torch.distributed.get_world_size()
+    offset = 0
+    for key, size in zip(keys, sizes):
+        metrics[key] = values[offset:offset + size].tolist()
+        offset += size
+
+
+def row_denominator(rows, device):
+    count = torch.tensor(float(rows), device=device)
+    world = 1
+    if torch.distributed.is_initialized():
+        torch.distributed.all_reduce(count, op=torch.distributed.ReduceOp.SUM)
+        world = torch.distributed.get_world_size()
+    return count.clamp_min(1) / world
+
+
+def weighted_policy_loss(old, current, advantages, mask, weights, cliprange, denominator, step_ids=None, dual_clip=None):
+    """Token PPO, or GiGPO's joint textual-action ratio (Eq.9), with row measure."""
+    valid = mask.bool()
+    for name, value in [('old', old), ('current', current), ('advantage', advantages), ('weight', weights)]:
+        if not torch.isfinite(value[valid]).all():
+            raise ValueError(f'Nonfinite policy {name} on a supervised token')
+    old = torch.where(valid, old, 0.)
+    current = torch.where(valid, current, 0.)
+    advantages = torch.where(valid, advantages, 0.)
+    weights = torch.where(valid, weights, 0.)
+    delta = current - old
+    if dual_clip is not None:
+        from .policy_safety import dual_clip_terms, joint_log_ratios
+        # Safety branch is explicitly authorized; the legacy mathematical path stays frozen.
+        if step_ids is not None:
+            _, delta = joint_log_ratios(old, current, advantages, mask, step_ids)
+        else:
+            delta = current.double() - old.double()
+        terms = dual_clip_terms(delta, advantages, mask, cliprange, dual_clip)
+        loss = F.masked_sum(terms, weights) / denominator
+        mass = weights.sum().clamp_min(torch.finfo(weights.dtype).tiny)
+        saturated = ((advantages > 0) & (delta > __import__('math').log1p(cliprange))) | ((advantages < 0) & (delta < __import__('math').log1p(-cliprange)))
+        return loss, F.masked_sum(saturated.double(), weights) / mass, F.masked_sum(-delta, weights) / mass
+    zero_pg_actions = torch.zeros_like(valid)
+    if step_ids is not None:
+        action_deltas = []
+        for i in range(len(delta)):
+            row = delta[i] * 0
+            for step in torch.unique(step_ids[i][valid[i]]):
+                selected = (step_ids[i] == step) & valid[i]
+                if step < 0:
+                    raise ValueError('Missing GiGPO action metadata')
+                action_advantages = advantages[i][selected]
+                if not torch.allclose(action_advantages, action_advantages[:1].expand_as(action_advantages)):
+                    raise ValueError('GiGPO advantage must be constant within one textual action')
+                joint_delta = delta[i][selected].sum()
+                if not torch.isfinite(joint_delta):
+                    raise ValueError('Nonfinite GiGPO joint logratio')
+                # Require exact zeros throughout the action: allclose permits
+                # small nonzero advantages, whose signal must remain intact.
+                if bool((action_advantages == 0).all()):
+                    zero_pg_actions[i][selected] = True
+                row = row + selected * joint_delta
+            action_deltas.append(row)
+        delta = torch.stack(action_deltas)
+    # Keep the strict joint ratio and PPO surrogate, but evaluate their range in
+    # FP64. Weighted reduction happens before autograd casts back to model dtype.
+    # In particular, finite clipped/zero-advantage terms must not become 0*inf.
+    # A=0 makes both PPO branches and their PG derivatives exactly zero.
+    # Do not materialize an unused exp(L); retain original L for the KL
+    # diagnostic and leave the independent reference KL term unchanged.
+    ratio = torch.where(zero_pg_actions, torch.zeros_like(delta), delta).double().exp()
+    if not torch.isfinite(ratio[valid]).all():
+        bad = valid & ~torch.isfinite(ratio)
+        diagnostic = dict(count=int(bad.sum()), delta_min=float(delta.detach()[bad].min()),
+                          delta_max=float(delta.detach()[bad].max()),
+                          positive_advantage=int((bad & (advantages > 0)).sum()),
+                          negative_advantage=int((bad & (advantages < 0)).sum()),
+                          zero_advantage=int((bad & (advantages == 0)).sum()),
+                          delta_dtype=str(delta.dtype), ratio_dtype=str(ratio.dtype))
+        raise ValueError(f'Policy ratio overflow on a supervised action/token: {diagnostic}')
+    loss1 = -advantages * ratio
+    loss2 = -advantages * ratio.clamp(1 - cliprange, 1 + cliprange)
+    loss = F.masked_sum(torch.maximum(loss1, loss2), weights) / denominator
+    mass = weights.sum()
+    safe_mass = torch.where(mass > 0, mass, torch.ones_like(mass))
+    clipfrac = F.masked_sum((loss2 > loss1).float(), weights) / safe_mass
+    kl = F.masked_sum(-delta, weights) / safe_mass
+    return loss, clipfrac, kl
