@@ -15,7 +15,7 @@ from gpu_phase_proxy import PhaseGpuScanner
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--index',required=True);p.add_argument('--receipt',required=True)
-    p.add_argument('--fast-worker-exit',action='store_true');a=p.parse_args()
+    a=p.parse_args()
     assert os.environ.get('CUDA_VISIBLE_DEVICES')=='0,1,2,3'
     import torch
     torch.backends.cuda.matmul.allow_tf32=False
@@ -24,8 +24,8 @@ def main():
     q=rng.normal(size=(65,768)).astype(np.float32)
     q/=np.linalg.norm(q,axis=1,keepdims=True)
     original=SimpleNamespace(d=768,ntotal=21015324,vector_rows=32768,query_micro=64)
-    scanner=PhaseGpuScanner(original,a.index,gpu_count=4,fast_worker_exit=a.fast_worker_exit)
-    receipt=dict(scope='full_index_phase_cost_only',gpu_devices=[0,1,2,3],fast_worker_exit=a.fast_worker_exit,started_at=time.time(),scans=[])
+    scanner=PhaseGpuScanner(original,a.index,gpu_count=4)
+    receipt=dict(scope='full_index_phase_cost_only',gpu_devices=[0,1,2,3],started_at=time.time(),scans=[])
     try:
         for count in (1,65):
             t=time.perf_counter();scanner.search_many([q[:count]],[3])

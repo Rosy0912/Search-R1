@@ -171,24 +171,17 @@ def gpu_worker(connection, configuration):
                 scan.close(); scan = None
                 timing('scanner_close_end', stopped)
                 connection.send(dict(status='RELEASED',identity=identity))
-                if configuration.get('fast_worker_exit', False):
-                    # All queues joined and streams synchronized by scan.close().
-                    # Skip Python/CUDA object finalizers; actual OS process exit
-                    # still owns context release and is joined by the parent.
-                    connection.close()
-                    timing('child_immediate_exit')
-                    os._exit(0)
                 return
             if request['op'] != 'scan': raise ValueError('Unknown private worker operation')
             verify_unchanged(proof)
             events = [] if request.get('collect_trace') else None
-            started = time.perf_counter()
+            scan_started = time.perf_counter()
             result = scan.search_many(request['queries'],request['ks'],
                                       trace=events.append if events is not None else None)
             verify_unchanged(proof)
             connection.send(dict(status='OK',results=result,trace=events,
                 scan_profile=scan.last_scan_profile,worker_identity=identity,
-                worker_wall_seconds=time.perf_counter()-started))
+                worker_wall_seconds=time.perf_counter()-scan_started))
     except BaseException as error:
         try: connection.send(dict(status='FAULT',error=repr(error),identity=process_identity()))
         except (OSError,EOFError): pass
@@ -202,7 +195,7 @@ def gpu_worker(connection, configuration):
 
 
 class PhaseGpuScanner:
-    def __init__(self, original, index_path, oracle_source=None, timeout=180, gpu_count=8, fast_worker_exit=False):
+    def __init__(self, original, index_path, oracle_source=None, timeout=180, gpu_count=8):
         if gpu_count not in (4,8):raise ValueError('Four/eight devices must be explicitly selected')
         dimension = original.d
         if original.vector_rows != 32768 or original.query_micro != 64:
@@ -220,8 +213,7 @@ class PhaseGpuScanner:
         self.vector_rows, self.query_micro = 32768, 64
         self.scan_lock = threading.Lock()
         self.runtime = SpawnedRuntime(gpu_worker,dict(index_path=proof['path'],
-            dimension=dimension,index_identity=proof,source_manifest=source_manifest(),gpu_count=gpu_count,
-            fast_worker_exit=fast_worker_exit),timeout)
+            dimension=dimension,index_identity=proof,source_manifest=source_manifest(),gpu_count=gpu_count),timeout)
         self.last_scan_profile = None
         self.last_worker_identity = None
 
