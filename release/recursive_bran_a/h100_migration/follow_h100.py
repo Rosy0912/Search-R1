@@ -1,6 +1,6 @@
 """Follow the running task without restarting jobs or acquiring GPU locks."""
 import argparse,json,pathlib,subprocess,sys,time
-p=argparse.ArgumentParser();p.add_argument('--socket',required=True);p.add_argument('--output',required=True);p.add_argument('--run-id',default='48528afa6b6443cfbb35328fd8b0ff05');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--socket',required=True);p.add_argument('--output',required=True);p.add_argument('--run-id',default='48528afa6b6443cfbb35328fd8b0ff05');p.add_argument('--job-id',default='3387');a=p.parse_args()
 root=pathlib.Path(__file__).resolve().parent;out=pathlib.Path(a.output);out.mkdir(parents=True,exist_ok=True);sock=a.socket
 for index in range(2000):
     path=out/f'progress-{index:05d}.json'
