@@ -105,6 +105,11 @@ class vLLMRollout(BaseRollout):
 
         assert model_hf_config.max_position_embeddings >= config.prompt_length + config.response_length, \
             "model context length should be greater than total sequence length"
+        # Honor the configured scheduler capacities. These are inference
+        # limits; actor/ref training microbatches must not control this queue.
+        scheduler_options = {key: self.config[key] for key in
+                             ('max_num_seqs', 'max_num_batched_tokens')
+                             if key in self.config and self.config[key] is not None}
         self.inference_engine = LLM(actor_module,
                                     tokenizer=tokenizer,
                                     model_hf_config=model_hf_config,
@@ -114,7 +119,8 @@ class vLLMRollout(BaseRollout):
                                     gpu_memory_utilization=config.gpu_memory_utilization,
                                     skip_tokenizer_init=False,
                                     max_model_len=config.prompt_length + config.response_length,
-                                    load_format=config.load_format)
+                                    load_format=config.load_format,
+                                    **scheduler_options)
 
         # Offload vllm model to reduce peak memory usage
         self.inference_engine.offload_model_weights()
