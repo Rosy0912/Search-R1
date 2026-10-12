@@ -9,10 +9,14 @@ assert not (out/'fresh-initialization.json').exists(),'Never blindly restart a f
 os.environ.update(SEARCH_R1_BASELINE_RUN_ID=r['run_id'],E1_RUN_ID=r['run_id'],SEARCH_R1_EXECUTION_BACKEND='slurm_h100',SEARCH_R1_BASELINE_COMMIT=r['source_commit'],SEARCH_R1_BASELINE_CONFIG_SHA256=r['config_sha256'],SEARCH_R1_BASELINE_DATA_IDENTITY=r['data_identity'],SEARCH_R1_MODEL_IDENTITY='Qwen/Qwen2.5-3B-Instruct@aa8e72537993ba99e69dfaafa59ed015b17504d1',SEARCH_R1_BASELINE_OUTPUT=str(out),SEARCH_R1_BASELINE_AUDIT_DIR=str(out/'audit'),SEARCH_R1_TREE_RANK_AUDIT_DIR=str(out/'rank-audit'),SEARCH_R1_TRAJECTORY_DIR=str(out/'trajectories'),TREE_COMMON_DATA=r['data'],TREE_INSTRUCT_MODEL=r['model'],RECURSIVE_A_H100_FRESH_PROFILE='1',RECURSIVE_A_OMIT_FULL_BETA='1',RECURSIVE_A_GUARD_ROUND_PROGRESS='1',TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',RECURSIVE_A_SPARSE_DETAILS='1')
 (base/'receipts/train-start.json').write_text(json.dumps(dict(time=time.time(),pid=os.getpid(),run_id=r['run_id'],job=os.environ['SLURM_JOB_ID'],fresh=True)))
 # Reuse the successful BAPO node11 Click compatibility, without dependency changes.
+# Recovery launches are standalone scripts; bind compiler paths here too.
+os.environ['CPATH']='/root/miniconda3/pkgs/python-3.10.21-h17756b0_0/include/python3.10'
+os.environ['TRITON_LIBCUDA_PATH']='/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/lib/driver'
+os.environ['LIBRARY_PATH']=os.environ['TRITON_LIBCUDA_PATH']
 from ray_cli_compat import prepare_click
 prepare_click()
 import ray
-ray_context=ray.init(address='local',num_gpus=8,num_cpus=96,include_dashboard=False,object_store_memory=8589934592,_node_ip_address='127.0.0.1',_temp_dir='/tmp/rba-h100-'+os.environ['SLURM_JOB_ID'],runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'false','NCCL_DEBUG':'WARN'}})
+ray_context=ray.init(address='local',num_gpus=8,num_cpus=96,include_dashboard=False,object_store_memory=8589934592,_node_ip_address='127.0.0.1',_temp_dir='/tmp/rba-h100-'+os.environ['SLURM_JOB_ID'],runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'false','NCCL_DEBUG':'WARN','CPATH':os.environ['CPATH'],'TRITON_LIBCUDA_PATH':os.environ['TRITON_LIBCUDA_PATH'],'LIBRARY_PATH':os.environ['LIBRARY_PATH']}})
 os.environ['RAY_ADDRESS']=ray_context.address_info['gcs_address']
 from search_r1.baselines.main import main
 main.__wrapped__(OmegaConf.load(r['config']))
