@@ -1,0 +1,1 @@
+{"epoch": 1791784088.2077055, "old_pid": 4004962, "old_group_members": [4004962, 4017222, 4017224, 4017568, 4017569, 4017927, 4017928, 4018112, 4018113], "all_old_members_terminated": true, "old_lock_released": true, "uncommitted_retransmit_bytes": 1812971520, "prior_verified_receipts": 4, "generation": "parallel4x4", "new_pid": 4018619}
