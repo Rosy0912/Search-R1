@@ -276,6 +276,17 @@ runtime SHA map must match the actually pushed commit. A source-staging receipt
 is not a run manifest, training admission or proof of native algorithm behavior.
 The full child deployment and its independent review still precede any trainer.
 
+A separate trainer entry now dispatches explicitly to restored-origin guards and
+a pre-restore admission reconstructed from the actual frozen inputs. The receipt
+binds the complete guard/hash set, saved parent origin, source/configuration and
+actual pipeline birth. Training claim, configuration exec and driver restoration
+consume that same receipt; claim hashes, saved counters, owned trainer ledger and
+actual PID births must agree before loading actor state. It does not claim a new
+optimizer update, restored actor or final chain acceptance. The ordinary fresh
+entry rejects recovery binding. The separate owned recovery pipeline and full
+final chain acceptance remain required before production recovery is exercised.
+CPU mechanics and constructed scalar admissions are not native A800 evidence.
+
 The real scheduler and attempt readers now admit namespace-local intervals
 beginning at the actual saved origin. They read the bound parent manifest and
 full-state receipt hashes plus the child launch/restore proof, require four

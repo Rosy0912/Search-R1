@@ -48,11 +48,9 @@ def restore_driver_and_actor(trainer, run, attempts):
     admission_path = base/'logs/actor-probe-recovery-launch-admission.json'
     assert admission_path.is_file() and admission_path == admission_path.resolve()
     assert admission_path.stat().st_uid == os.getuid()
-    admission = json.loads(admission_path.read_bytes())
-    assert admission['role'] == 'actor_probe_full_recovery_launch_admission' and admission['accepted'] is True
-    assert admission['identity'] == identity(run)
-    assert admission['recovery_binding_sha256'] == binding_digest(run['actor_probe_recovery'])
-    assert admission['origin'] == origin
+    from reproduction.common8.actor_probe_launch_admission import verify_current
+    admission = verify_current(base, run,
+        training_claim=json.loads((base/'logs/training-launch-claim.json').read_bytes()))
     assert not (base/'logs/actor-probe-recovery-restored.json').exists(), 'Restore already recorded'
     context = read_recovery_context(run, 0)
     live_path = base/'artifacts/live/manifest.json'

@@ -1,4 +1,4 @@
-"""Exclusive fresh-run claim; a failed attempt must never silently reuse its run ID."""
+"""Exclusive namespace claim; a failed attempt must never reuse its run ID."""
 import json
 import os
 import socket
@@ -28,6 +28,15 @@ def claim(base):
         assert allocation['node']==run['execution_host']==socket.gethostname()
         payload.update(execution_backend='ssh_local',execution_id=run['execution_id'],
                        hostname=socket.gethostname())
+    if run.get('actor_probe_recovery') is not None:
+        from reproduction.common8.actor_probe_launch_admission import verify_current, ADMISSION
+        from reproduction.common8.verify_data import digest
+        admission=verify_current(base,run)
+        payload.update(recovery_launch_admission_sha256=digest(base/ADMISSION),
+            recovery_binding_sha256=admission['recovery_binding_sha256'],origin=admission['origin'],
+            state_semantics='full_state_restore_required_before_rollout')
+    else:
+        assert not (base/'logs/actor-probe-recovery-launch-admission.json').exists(), 'Fresh claim cannot reuse recovery admission'
     with (base/'logs/training-launch-claim.json').open('x') as f:
         json.dump(payload,f);f.flush();os.fsync(f.fileno())
     return payload

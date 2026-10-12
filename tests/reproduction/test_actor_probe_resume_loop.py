@@ -174,6 +174,7 @@ class ResumeLoopTests(unittest.TestCase):
                         'execution_backend','training_world_size','profile','slurm_job_id')},
                     origin=namespace_origin(run),recovery_binding_sha256=binding_digest(binding))
                 (base/'logs/actor-probe-recovery-launch-admission.json').write_text(json.dumps(admission))
+                (base/'logs/training-launch-claim.json').write_text(json.dumps({'scalar_fixture':'claim boundary'}))
                 torch.manual_seed(39);data=list(range(37))
                 old_loader=DataLoader(data,batch_size=4,drop_last=True,sampler=RecordedRandomSampler(data))
                 it=iter(old_loader)
@@ -198,6 +199,7 @@ class ResumeLoopTests(unittest.TestCase):
                 attempts=AttemptProgress(run)
                 with patch.dict(os.environ,SEARCH_G1_BASE=str(base)), \
                      patch('search_g1.actor_probe_recovery.read_recovery_context',return_value=context), \
+                     patch('reproduction.common8.actor_probe_launch_admission.verify_current',return_value=admission), \
                      patch('torch.load',return_value=saved):
                     if malformed:
                         with self.assertRaises(AssertionError):restore_driver_and_actor(fresh,run,attempts)

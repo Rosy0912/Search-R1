@@ -28,7 +28,9 @@ def arguments(base):
     assert_formal_run(run)
     assert run['model_revision'] == budget['model_revision']
     assert run['initial_model'] == run['reference_model']
-    assert run['completed_updates'] == 0, 'Admission is for a fresh run only'
+    # Constructor recipe stays at official0; an admitted full-state continuation
+    # restores its saved logical origin before any rollout or optimizer write.
+    assert run['completed_updates'] == 0, 'Original constructor recipe changed'
     for name in ('reproduction/common8/recipe.json', 'verl/trainer/config/ppo_trainer.yaml'):
         assert sha(REPO / name) == run['source_sha256'][name], 'Recipe changed after run binding'
     values = json.loads(RECIPE.read_text())
@@ -91,6 +93,9 @@ def launch(base):
     assert claim['shell_pid'] == os.getppid(), 'Only the claimed shell may launch'
     stat = Path(f'/proc/{claim["shell_pid"]}/stat').read_text().rsplit(')', 1)[1].split()
     assert int(stat[19]) == claim['shell_start_ticks']
+    if run.get('actor_probe_recovery') is not None:
+        from reproduction.common8.actor_probe_launch_admission import verify_current
+        verify_current(base,run,training_claim=claim)
     document = OmegaConf.to_container(config, resolve=True)
     canonical = json.dumps(document, sort_keys=True, separators=(',', ':')).encode()
     proof = dict(run_id=run['run_id'], slurm_job_id=claim['slurm_job_id'],

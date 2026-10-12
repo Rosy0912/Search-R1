@@ -76,7 +76,8 @@ def fixture(root,step=50):
         live_manifest_sha256=digest(archive),archived_manifest_sha256=digest(archive),
         actor_features_exercised=False,task_accuracy_claimed=False,
         actual_http_health=health,actual_http_readouts=smoke))
-    producer=dict(pid=11,start_ticks=12,sid=11,uid=os.getuid())
+    # Match the real native writer's six fields; the guard birth projects four.
+    producer=dict(pid=11,start_ticks=12,sid=11,uid=os.getuid(),state='S',command='scalar pipeline fixture')
     run.update(pipeline_identity=producer,probe_visible_device='6',probe_logical_ordinal=0,retrieval_placement='fixture placement')
     allocation=dict(accepted=True,run_id=run['run_id'],execution_id=run['execution_id'],execution_backend='ssh_local',
         slurm_job_id=None,training_world_size=4,pipeline_identity=producer,node=socket.gethostname(),
