@@ -132,7 +132,7 @@ def main():
         recovery_plan=json.loads((ROOT/'recovery-plan.json').read_text()) if (ROOT/'recovery-plan.json').exists() else None
         prior={}
         if recovery_plan:
-            if recovery_plan.get('step') not in (5,10):raise RuntimeError('Unsupported verified recovery step')
+            if recovery_plan.get('step') not in (5,10,50,100,150):raise RuntimeError('Unsupported verified recovery step')
             saved_path=ROOT/'checkpoints'/('global_step_'+str(recovery_plan['step']))/'full-sha-receipt.json'
             if hashlib.sha256(saved_path.read_bytes()).hexdigest()!=recovery_plan['receipt_sha256']:raise RuntimeError('Recovery source receipt changed')
             saved=json.loads(saved_path.read_text())

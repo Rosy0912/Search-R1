@@ -41,8 +41,9 @@ def configure(original):
           'actor.checkpoint.save_contents':'[model,optimizer,extra]',
           'actor.checkpoint.load_contents':'[model,optimizer,extra]',
         }.items():values[role+'.'+key]=value
-    # Native activation offload preserves micro4 and PPO math while reducing reranker backward peak.
+    # Micro1 lowers reranker logits/backward peaks; native accumulation retains mini-batch128.
     values['reranker_actor_rollout_ref.model.enable_activation_offload']='True'
+    values['reranker_actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu']='1'
     values['actor_rollout_ref.actor.mini_batch_counts_trajectories']='True'
     # Reranker preserves its original filtering and rollout count; no fixed update count.
     seen=set();result=[]
