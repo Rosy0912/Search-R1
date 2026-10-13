@@ -359,6 +359,7 @@ def main():
     need(not receipt_path.exists(), 'Existing immutable outer receipt retained; no rewrite', 'RECEIPT_EXISTS_NO_WRITE')
     receipt = dict(status=f'ACTUAL_FULL_OUTER{outer}_NATIVE{outer}_COMPLETE_' + (f'NEXT{next_outer}_ENTERED' if next_outer else 'FINAL_PHASE_OBSERVED'),
         observed_epoch=epoch,source_commit=SOURCE,config_sha256=CONFIG,unit=UNIT,run=RUN,restored_outer=RESTORE,
+        local_control_script_sha256=digest(Path(__file__).read_bytes()),
         completed_outer=outer,actual_next_outer_entered=next_outer,final_phase_evidence=final,
         per_rank_successful_adam=completed,per_rank_actual_total_adam=totals,partial_optimizer_calls_per_rank=guard.get('partial_optimizer_calls_per_rank'),
         actual_outer_successful_writes_per_rank={str(r['rank']):r['actual_successful_writes'] for r in ranks},
@@ -388,7 +389,10 @@ def main():
     updated.update(status='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         phase='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         observed_epoch=epoch,last_observed_epoch=epoch,current_outer=outer,new_completed_outer=outer-RESTORE,
-        actual_current_restore_outer=outer,successful_adam_per_rank=completed,
+        actual_current_restore_outer=outer,actual_current_restore_adam_per_rank=completed,
+        successful_adam_per_rank=completed,actual_total_adam_per_rank=totals,
+        effective_counters_known=True,actual_child_counters_known=True,
+        all_skipped_attempts=progress.get('all_skipped_attempts'),direct_rank_record_count=poll.get('direct_rank_records'),
         child_successful_adam_per_rank={str(r):completed[str(r)]-100 for r in range(8)},
         last_confirmed_chain_outer=outer,last_confirmed_chain_adam_per_rank=completed,
         effective_origin_segments=[*provenance.get('effective_ancestor_segments', []),
@@ -397,6 +401,8 @@ def main():
         last_durable_completed_outer=outer,current_full_outer_progress_receipt=receipt_name,last_progress_receipt=receipt_name,
         actual_next_outer_entered=next_outer,active_outer_in_progress=next_outer,active_outer=next_outer,
         last_actual_poll=str(args.poll),current_systemd=ps,actual_training_progress=progress,last_rank_summaries=ranks,
+        checkpoint=poll.get('native_manifests'),recent_iteration_metrics=poll.get('iteration_metrics'),
+        latest_sampling_completed_outer=outer,next_outer_sampling_complete=None,
         latest_guard=poll.get('latest_guard'),latest_dev512=latest_dev,dev_score_updated=score_updated,
         dev_score_updated_this_turn=score_updated,actual_dev512=actual_dev,normal_dev512_wall_seconds=dev_seconds,
         latest_full_outer_wall_seconds=total_seconds,latest_training_archive_wall_seconds_excluding_dev=training_seconds,
@@ -424,6 +430,7 @@ def main():
         source_commit=SOURCE,unit=UNIT,main_pid=int(rs.get('MainPID',0)),invocation_id=INVOCATION,
         last_confirmed_outer=outer,target_outer=TARGET,restored_outer=RESTORE,actual_next_outer_entered=next_outer,
         actual_optimizer_completed_outer=outer,observed_epoch=epoch,successful_adam_per_rank=completed,
+        all_skipped_attempts=progress.get('all_skipped_attempts'),actual_total_adam_per_rank=totals,
         latest_native_checkpoint_outer=outer,last_progress_receipt=receipt_name,evidence=str(args.poll),
         latest_full_outer_wall_seconds=total_seconds,normal_dev512_wall_seconds=dev_seconds,
         latest_ordinary_training_seconds_excluding_dev=training_seconds,latest_dev512_outer=receipt['latest_dev512_outer'],
@@ -431,6 +438,7 @@ def main():
         exact_executor_resume=False,full_iteration_log_pending=False,progress_input_bindings=input_pins)
     if outer % 5 == 0:
         followup[f'normal_dev512_outer{outer}_pending'] = actual_dev is None
+    followup['new_full_outers_after_this_restore'] = sorted(set([*followup.get('new_full_outers_after_this_restore', []),outer]))
     followup['full_outer_receipts'] = list(dict.fromkeys([*followup.get('full_outer_receipts', []),receipt_name]))
     if latest_dev:
         followup['latest_dev512_f1_percent'] = 100*latest_dev['metrics']['val/f1/all']
