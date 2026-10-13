@@ -13,6 +13,8 @@ def render(package,manifest_sha,release_path,release_sha,wall_hours):
     require(package.is_absolute() and '..' not in package.parts and package.is_relative_to(ROOT/'instruct300/candidates'),'Own same-node candidate path required')
     require(release_path.is_absolute() and '..' not in release_path.parts and release_path.is_relative_to(ROOT),'Own same-node external release path required')
     require(all(type(d) is str and re.fullmatch('[0-9a-f]{64}',d) for d in (manifest_sha,release_sha)),'Exact immutable SHA pins required')
+    manifest,_,_=read_bound(package/'manifest.json',manifest_sha)
+    require(manifest['dispatch'].get('kind','slurm')=='slurm','Shared packet requires separate systemd renderer; no exclusive queue')
     require(type(wall_hours) is int and wall_hours>0,'Explicit positive finite formal wall hours required; no default')
     return '\n'.join(('#!/usr/bin/env bash','#SBATCH --job-name=tree-nested-branch-fresh200',
         '#SBATCH --nodes=1','#SBATCH --nodelist=h100-10','#SBATCH --gres=gpu:8',

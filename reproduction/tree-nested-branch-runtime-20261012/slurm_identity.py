@@ -47,6 +47,9 @@ def cgroup_jobs(text):
 def verify_runtime_cgroup(environment=None,hostname=None,cgroup_text=None):
     """No scheduler or GPU call: establish exact actual process job first."""
     environment=dict(os.environ if environment is None else environment)
+    if environment.get('TREE_SHARED_TRAINING_MODE')=='1':
+        from shared_identity import verify_cgroup
+        return verify_cgroup(environment,hostname,cgroup_text)
     job=runtime_job(environment,socket.gethostname() if hostname is None else hostname)
     text=Path('/proc/self/cgroup').read_text() if cgroup_text is None else cgroup_text
     require(cgroup_jobs(text)=={'job_'+job}, 'Actual current cgroup differs from exact own allocation')
@@ -86,6 +89,9 @@ def guarded_preflight_main():
     Keep the original CLI flags and child exec semantics unchanged. The explicit
     wrapper refuses wrong actual job/cgroup before any scheduler or GPU query.
     """
+    if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1':
+        from shared_identity import guarded_preflight_main as shared_main
+        return shared_main()
     verify_runtime_cgroup()
     install_gpu_query_guard()
     from search_r1.baselines import preflight
@@ -128,6 +134,9 @@ def allocation_identity(text,job,cluster,wall_hours):
 
 def verify_runtime(environment=None,hostname=None,run=subprocess.run):
     environment=dict(os.environ if environment is None else environment)
+    if environment.get('TREE_SHARED_TRAINING_MODE')=='1':
+        from shared_identity import verify_runtime as shared_runtime
+        return shared_runtime(environment,hostname,run)
     job=runtime_job(environment,socket.gethostname() if hostname is None else hostname)
     cgroup_identity=verify_runtime_cgroup(environment,hostname)
     package=Path(environment['TREE_INSTRUCT_TOOLS'])
@@ -168,6 +177,9 @@ def timeout_output(value):
     return value
 
 def submitted_lineage(value,job,manifest_sha,review_sha,intent_path):
+    if value.get('dispatch_kind')=='shared_systemd':
+        from shared_identity import submitted_lineage as shared_lineage
+        return shared_lineage(value,job,manifest_sha,review_sha,intent_path)
     require(value['status']=='SUBMITTED' and value.get('cluster_name')==CLUSTER and value.get('cluster') in (None,CLUSTER),'Foreign/legacy/unknown submitted lineage')
     require(type(value.get('job_id')) is int and value['job_id']==int(job),'Same-number aliases/non-numeric IDs forbidden')
     require(value.get('manifest_sha256')==manifest_sha and value.get('review_sha256')==review_sha

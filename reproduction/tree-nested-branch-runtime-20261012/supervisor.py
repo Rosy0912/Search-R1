@@ -1,4 +1,4 @@
-"""Human-authorized direct200, retaining same-h100-10 owned resource wrappers."""
+"""Human-authorized direct200 with distinct Slurm/shared-systemd ownership."""
 import fcntl,json,os,re,signal,socket,subprocess,sys,time
 if sys.flags.optimize:
     raise RuntimeError('Fresh supervisor requires unoptimized Python before any runtime import')
@@ -18,6 +18,7 @@ CAND=TOOLS/'source'
 CONTENT='0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
 MODEL=ROOT/'instruct300/assets/qwen2.5-3b-instruct-aa8e725'
 PRODUCTION_THRESHOLDS=None
+OWNED_CONTEXT=None
 class CandidateOwnedProcesses(OwnedProcesses):
     def spawn(self,command,log,env=None,pass_fds=()):
         require(sys.flags.optimize==0,'Owned children require unoptimized parent Python')
@@ -61,6 +62,7 @@ def configuration(run,stage):
     require(sampling.enabled is False and sampling.enforce is True and sampling.max_abs_delta==.01,'Old probability gate must remain explicit/unaccepted')
     require(tree.branch_sampling=='random_nested_backtrack_v1' and tree.sampling_objective=='reward_selected_nested_tree_grpo_surrogate_v1' and tree.continuation_budget_per_question==3,'Nested selected surrogate protocol changed')
     require(tree.action_positions=='valid_action_start' and tree.exclude_initial_from_backtrack is True and tree.fallback=='initial_fresh_once_unconditional' and tree.remaining_budget=='inherit_parent' and tree.reward_comparison=='absolute_tolerance' and tree.reward_difference_tolerance==0.0,'Nested candidate/fallback budget contract changed')
+    require(rollout.gpu_memory_utilization==.40 and rollout.dtype=='bfloat16','Training rollout memory cache/dtype changed')
     require(value.trainer.val_before_train is False,'Initial baseline forbidden')
     require(value.trainer.experiment_name=='tree-nested-branch-officialfresh200','Run/checkpoint name changed')
     return value,200
@@ -85,8 +87,14 @@ def main():
     import search_r1
     require(Path(search_r1.__file__).resolve()==(CAND/'repo/search_r1/__init__.py').resolve(),'Supervisor imported other source')
     job=os.environ.get('SLURM_JOB_ID','')
-    require(job.isdigit() and socket.gethostname().split('.')[0]=='h100-10' and os.environ.get('SLURM_JOB_NODELIST')=='h100-10','Wrong allocation')
-    require(len(os.environ.get('CUDA_VISIBLE_DEVICES','').split(','))==8 and os.environ.get('SLURM_JOB_GPUS'),'Eight reserved GPUs required')
+    shared=os.environ.get('TREE_SHARED_TRAINING_MODE')=='1'
+    if shared:
+        from shared_identity import verify_cgroup,job_id
+        require(job==job_id(),'Exact opaque systemd application allocation ID required')
+        verify_cgroup()
+    else:
+        require(job.isdigit() and socket.gethostname().split('.')[0]=='h100-10' and os.environ.get('SLURM_JOB_NODELIST')=='h100-10','Wrong allocation')
+        require(len(os.environ.get('CUDA_VISIBLE_DEVICES','').split(','))==8 and os.environ.get('SLURM_JOB_GPUS'),'Eight reserved GPUs required')
     from search_r1.baselines.preflight import validate_inherited_gpu_leases
     validate_inherited_gpu_leases(8)
     from search_r1.baselines.select_teacher import model_manifest
@@ -94,10 +102,15 @@ def main():
     require(PACKAGE['official_model_path']==str(MODEL) and not any(k in PACKAGE for k in ('parent_manifest','healthy110_metadata')),'Fresh package must not include recovery state')
     lock=(ROOT/'shared-gpu-job.lock').open('w'); fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     verify_runtime_cgroup()
-    scope,relative=cgroup_scope(job); owned=CandidateOwnedProcesses(scope,relative)
+    if shared:
+        own_identity=verify_cgroup();scope=Path(own_identity['scope']);relative=own_identity['relative']
+    else:scope,relative=cgroup_scope(job)
+    owned=CandidateOwnedProcesses(scope,relative)
+    global OWNED_CONTEXT
+    OWNED_CONTEXT=owned
     for port in (18082,16382): available(port)
     for key in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'): os.environ.pop(key,None)
-    require(allocation_identity['job_id']==int(job),'Queried allocation numeric identity differs')
+    require(allocation_identity['job_id']==(job if shared else int(job)),'Queried exact allocation identity differs')
     allocation=allocation_identity['allocation_stdout']
     allocated_cpus=allocation_identity['allocated_cpus']
     from production_contract import submitted_intent
@@ -112,7 +125,7 @@ def main():
     identity_path=run/'allocation-identity.json'
     with identity_path.open('x') as stream:json.dump(dict(allocation_identity,manifest_sha256=os.environ['TREE_INSTRUCT_PACKAGE_SHA256'],
        review_sha256=os.environ['TREE_INSTRUCT_REVIEW_SHA256'],run_id=run.name,removed_scheduler_environment=removed_scheduler_environment),stream,indent=2)
-    alias=Path('/tmp')/f'sst-tree-nested-branch-fresh200-{job}'
+    alias=Path('/tmp')/(f'sst-tree-nested-shared-{COMMIT[:8]}' if shared else f'sst-tree-nested-branch-fresh200-{job}')
     require(not alias.exists() and not alias.is_symlink(),'Existing own runtime alias'); alias.symlink_to(run/'runtime',target_is_directory=True)
     os.environ['PATH']=str(ROOT/'env/bin')+':'+os.environ['PATH']
     os.environ.update(SEARCH_R1_REPO=str(CAND/'repo'),SEARCH_R1_ASSETS=str(ROOT/'assets-root'),SEARCH_R1_BASELINE_OUTPUT=str(run/'output'),SEARCH_R1_BASELINE_RUN_ROOT=str(alias),
@@ -125,18 +138,23 @@ def main():
     os.environ.pop('WANDB_API_KEY',None)
     os.environ.update(TREE_VALIDATION_TRAINER_SHA256=PACKAGE['files']['source/repo/verl/trainer/ppo/ray_trainer.py'],TREE_FRESH_MAIN_PPO_SHA256=PACKAGE['files']['source/repo/verl/trainer/main_ppo.py'],TREE_INSTRUCT_TOOLS=str(TOOLS),TREE_INSTRUCT_MODEL=str(MODEL),TREE_COMMON_DATA=str(ROOT/'instruct300/common-data'),SEARCH_R1_MODEL_IDENTITY=PACKAGE['model_identity']['sha256'],SEARCH_R1_BASELINE_CHECKPOINTS=str(run/'checkpoints'))
     require(not any(name in os.environ for name in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Calibration environment appeared before training')
-    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':0,'planned_new_completed_outer':200,'resumed_current_chain':False,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
+    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':0,'planned_new_completed_outer':200,'resumed_current_chain':False,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
+    if shared:
+        result.update(allocation_kind=allocation_identity['allocation_kind'],resource_protocol=allocation_identity['resource_protocol'],physical_gpus=8,slurm_reserved_gpus=0,slurm_reserved_cpus=0,allocated_gpus=0,systemd_unit=allocation_identity['unit'])
     try:
         value,steps=configuration(run,a.stage); config_hash=sha(run/'resolved.yaml')
         os.environ.update(SEARCH_R1_BASELINE_AUDIT_DIR=str(run/'output/entry-audit'),SEARCH_R1_BASELINE_RUN_ID=run.name,
           SEARCH_R1_BASELINE_COMMIT=COMMIT,SEARCH_R1_BASELINE_CONFIG_SHA256=config_hash,SEARCH_R1_BASELINE_DATA_IDENTITY=CONTENT)
         (run/'launch-manifest.json').write_text(json.dumps(dict(result,config_sha256=config_hash,split_content_identity=CONTENT,
           cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],gpu_leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES']),cgroup=str(scope),
-          runtime='same h100-10 allocation: GPU E5 and complete 8-GPU sharded FP16 index, trainer, Ray; loopback only; zero online remote RPC',
-          supervisor_source_sha256=sha(__file__),guard_source_sha256=sha(TOOLS/'resource_guard_retained18.py'),owned_runtime_source_sha256=sha(ROOT/'tools/tree_shared_owned_runtime_fixed.py'),initial_gpu=gpu_sample()),indent=2)+'\n')
-        guard=owned.spawn([sys.executable,str(TOOLS/'guard_entry.py'),'--source',str(TOOLS/'resource_guard_retained18.py'),
-          '--source-sha',PACKAGE['files']['resource_guard_retained18.py'],
-          '--identity',str(identity_path),'--identity-sha',sha(identity_path),'--output',str(run/'resource-samples.jsonl')],run/'guard.log')
+          runtime=('own shared-systemd physical8/reserved0' if shared else 'own exclusive Slurm8')+': GPU E5/sharded FP16 index, trainer, Ray; loopback only',
+          supervisor_source_sha256=sha(__file__),guard_source_sha256=sha(TOOLS/('shared_guard.py' if shared else 'resource_guard_retained18.py')),physical_gpus=8,slurm_reserved_gpus=0 if shared else 8,allocation_kind=allocation_identity.get('allocation_kind','exclusive_slurm'),resource_protocol=allocation_identity.get('resource_protocol','exclusive_slurm_dual15_v1'),owned_runtime_source_sha256=sha(ROOT/'tools/tree_shared_owned_runtime_fixed.py'),initial_gpu=gpu_sample()),indent=2)+'\n')
+        if shared:
+            guard=owned.spawn([sys.executable,str(TOOLS/'shared_guard.py'),'--output',str(run/'resource-samples.jsonl')],run/'guard.log')
+        else:
+            guard=owned.spawn([sys.executable,str(TOOLS/'guard_entry.py'),'--source',str(TOOLS/'resource_guard_retained18.py'),
+              '--source-sha',PACKAGE['files']['resource_guard_retained18.py'],
+              '--identity',str(identity_path),'--identity-sha',sha(identity_path),'--output',str(run/'resource-samples.jsonl')],run/'guard.log')
         deadline=time.monotonic()+30
         while not ((run/'resource-samples.jsonl').is_file() and (run/'resource-samples.ready').is_file()):
             require(guard.poll() is None and time.monotonic()<deadline,'Own GPU guard failed'); time.sleep(.2)
@@ -158,10 +176,8 @@ def main():
             except requests.RequestException: pass
             time.sleep(2)
         # Explicit direct-training authority omits the extra retrieval probe.
-        # Service readiness and the existing dual15% coexistence guard remain.
-        # Initial whole-card idle admission has already passed before own loads.
-        # From here, own memory/SM is expected; held identity and the original
-        # foreign15% guard determine continued eligibility.
+        # Shared mode uses continuous8GiB physical headroom, not foreign SM15%.
+        # Slurm mode preserves its original exclusive/dual15% admission guards.
         os.environ.update(TREE_DIRECT_OWNED_MODELS_LOADED='1',
             TREE_DIRECT_ALLOCATION_IDENTITY_PATH=str(identity_path),TREE_DIRECT_ALLOCATION_IDENTITY_SHA256=sha(identity_path))
         from owned_lease_identity import validate_owned_gpu_leases
@@ -169,7 +185,7 @@ def main():
         (run/'retriever-coexistence.json').write_text(json.dumps({'held_lease_identity':lease_identity,'snapshot':gpu_sample(),'retriever_pid':retriever.pid},indent=2)+'\n')
         ray=owned.spawn([str(ROOT/'env/bin/ray'),'start','--head','--node-ip-address=127.0.0.1','--port=16382','--num-cpus=24','--num-gpus=8',
           '--include-dashboard=false','--object-store-memory=8589934592','--temp-dir='+str(alias/'ray'),'--min-worker-port=22082','--max-worker-port=23081',
-          '--disable-usage-stats','--block'],run/'ray.log')
+          '--disable-usage-stats','--block'],run/'ray.log',pass_fds=fds)
         deadline=time.monotonic()+120
         while True:
             require(ray.poll() is None and guard.poll() is None and time.monotonic()<deadline,'Own Ray failed')
@@ -209,7 +225,7 @@ def main():
         signal.signal(signal.SIGTERM,signal.SIG_IGN); signal.signal(signal.SIGINT,signal.SIG_IGN)
         try:
             try:
-                (run/'termination-cost.json').write_text(json.dumps({'job_id':job,'stage':a.stage,'start_epoch':start,'termination_epoch':time.time(),'allocated_gpus':8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'scope':'own supervisor before cleanup'})+'\n')
+                (run/'termination-cost.json').write_text(json.dumps({'job_id':job,'stage':a.stage,'start_epoch':start,'termination_epoch':time.time(),'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'scope':'own supervisor before cleanup'})+'\n')
             except BaseException as err:
                 result.update(status='FAILED',termination_record_error=repr(err)); raise
             finally:
@@ -237,9 +253,60 @@ def main():
             result['failed_unrecorded_partial_optimizer_writes_unknown']=result['status']=='FAILED'
             (run/'run-result.json').write_text(json.dumps(result,indent=2)+'\n')
             code=0 if result['status']=='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE' else 1
-            (run/'cost.json').write_text(json.dumps({'job_id':job,'stage':a.stage,'execution_mode':DIRECT_MODE,'training_scope':CHAIN_SCOPE,'parent_costs_included':False,'start_epoch':start,'end_epoch':time.time(),'allocated_gpus':8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'exit_code':code,'scope':'entire own supervisor including identity checks, service loading, fresh official nested reward-selected surrogate training, periodic dev and final evaluation, JSON-only terminal accounting and cleanup; earlier calibration input costs remain separate; launcher/preflight and scheduler boundaries separately; CPU allocation is not consumed process CPU time'})+'\n')
+            (run/'cost.json').write_text(json.dumps({'job_id':job,'stage':a.stage,'execution_mode':DIRECT_MODE,'training_scope':CHAIN_SCOPE,'parent_costs_included':False,'start_epoch':start,'end_epoch':time.time(),'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'exit_code':code,'scope':'entire own supervisor including identity checks, service loading, fresh official nested reward-selected surrogate training, periodic dev and final evaluation, JSON-only terminal accounting and cleanup; earlier calibration input costs remain separate; launcher/preflight and scheduler boundaries separately; CPU allocation is not consumed process CPU time'})+'\n')
     print('TREE_FRESH200_TRAIN_RUN='+str(run),flush=True)
     print(json.dumps(result),flush=True)
 
+def shared_accounted_entry():
+    # main's normal body retains its existing own cleanup/finally. This outer
+    # envelope covers bootstrap failures before that body as well as a failed
+    # evidence publication, without fabricating empty own cleanup.
+    import resource
+    started=time.time();clock=time.perf_counter();cpu=time.process_time();usage=resource.getrusage(resource.RUSAGE_SELF)
+    try:main()
+    except BaseException as error:
+        from shared_launch import publish_once
+        from shared_identity import unit_name,job_id,verify_cgroup
+        cgroup=None;observation_error=None;live=None;cleanup=[]
+        try:
+            cgroup=verify_cgroup()
+            if OWNED_CONTEXT is not None:
+                live=sorted(cgroup_pids(OWNED_CONTEXT.scope)-OWNED_CONTEXT.baseline)
+            else:
+                # Observe rather than infer empty cleanup even before the
+                # owned-process helper exists. No signals are sent here.
+                live=sorted(cgroup_pids(Path(cgroup['scope']))-{os.getpid()})
+            for record in json.loads(os.environ.get('SEARCH_R1_GPU_LEASES','[]')):
+                row=dict(uuid=record['uuid'],fd=record['fd'],close_succeeded=False)
+                try:
+                    fd=int(record['fd']);held=os.fstat(fd)
+                    named=(Path('/tmp')/f'search-r1-gpu-leases-{os.getuid()}'/(record['uuid']+'.lock')).lstat()
+                    require((held.st_dev,held.st_ino)==(named.st_dev,named.st_ino),'Inherited own lease fd identity differs; do not close')
+                    os.close(fd);row['close_succeeded']=True
+                except BaseException as close_error:row['close_error']=repr(close_error)
+                cleanup.append(row)
+        except BaseException as observation_error_value:observation_error=repr(observation_error_value)
+        end_usage=resource.getrusage(resource.RUSAGE_SELF)
+        audit=ROOT/'instruct300/startup-audits';audit.mkdir(mode=0o700,exist_ok=True)
+        run=ROOT/'runs'/('tree-nested-branch-fresh200-'+job_id())
+        publish_once(audit/('nested-branch-fresh200-'+COMMIT+'.supervisor-failure.json'),dict(
+          schema_version='tree_shared_startup_v1',status='ACTUAL_OWN_SUPERVISOR_ENTRY_FAILED',
+          unit=unit_name(),job_id=job_id(),code_commit=COMMIT,pid=os.getpid(),
+          manifest_sha256=os.environ.get('TREE_INSTRUCT_PACKAGE_SHA256'),
+          release_path=os.environ.get('TREE_PRODUCTION_RELEASE_PATH'),release_sha256=os.environ.get('TREE_INSTRUCT_REVIEW_SHA256'),
+          start_epoch=started,end_epoch=time.time(),wall_seconds=time.perf_counter()-clock,
+          start_process_cpu_seconds=cpu,end_process_cpu_seconds=time.process_time(),process_cpu_seconds=time.process_time()-cpu,
+          user_cpu_seconds=end_usage.ru_utime-usage.ru_utime,system_cpu_seconds=end_usage.ru_stime-usage.ru_stime,
+          exception_type=type(error).__name__,exception=repr(error),own_cgroup=cgroup,cgroup_observation_error=observation_error,
+          own_children_started=bool(OWNED_CONTEXT is not None and OWNED_CONTEXT.children),
+          own_live_descendants_observed=live,own_opened_fd_cleanup=cleanup,
+          own_cleanup_complete=live==[] and observation_error is None,
+          existing_run_result=(str(run/'run-result.json') if (run/'run-result.json').is_file() else None),
+          physical_gpus=8,slurm_reserved_gpus=0,foreign_processes_signaled=False,automatic_retry=False,
+          scope='Actual supervisor entry CPU/wall; normal main finally retains its own cleanup; this envelope observes remaining own children and closes only verified inherited own UUID fds; unknown/live residual is preserved, not claimed empty'))
+        raise
+
 if __name__=='__main__':
-    signal.signal(signal.SIGTERM,interrupted); signal.signal(signal.SIGINT,interrupted); main()
+    signal.signal(signal.SIGTERM,interrupted); signal.signal(signal.SIGINT,interrupted)
+    if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1':shared_accounted_entry()
+    else:main()

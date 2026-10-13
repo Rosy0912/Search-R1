@@ -1,3 +1,4 @@
+from production_contract import run_job_id
 """JSON-only consumer of source-owner DRAFT opportunity/attempt interface.
 
 Requires actual source freeze/review before release. Never equates opportunities
@@ -27,7 +28,7 @@ def ledger_writes(ledger):
 
 
 def attempt_results(run,package,config_hash,last):
-    run=Path(run);expected=dict(job_id=run.name.rsplit('-',1)[1],run_id=run.name,code_commit=package['code_commit'],
+    run=Path(run);expected=dict(job_id=run_job_id(run),run_id=run.name,code_commit=package['code_commit'],
         config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
     complete=0;refused=0;totals={str(r):0 for r in range(8)};completed_totals=totals.copy();partial_totals=totals.copy()
     bindings={};credited=[];skipped=[];opportunities=0

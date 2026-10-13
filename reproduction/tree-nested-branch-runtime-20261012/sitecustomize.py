@@ -5,6 +5,9 @@ if os.environ.get('TREE_INSTRUCT_TOOLS'):
     try:
         from slurm_identity import install_gpu_query_guard
         install_gpu_query_guard()
+        if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1':
+            from shared_identity import install_preflight
+            install_preflight()
         # This explicit post-load mode is absent in the allocation's initial
         # preflight. The direct trainer then checks held identity + foreign15%.
         if os.environ.get('TREE_DIRECT_OWNED_MODELS_LOADED')=='1':

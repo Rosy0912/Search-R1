@@ -17,6 +17,9 @@ from slurm_identity import verify_runtime_cgroup
 MODE_ENV='TREE_DIRECT_OWNED_MODELS_LOADED'
 
 def validate_owned_gpu_leases(expected_count=None):
+    if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1':
+        from shared_identity import validate_leases
+        return validate_leases(expected_count)
     identity=verify_runtime_cgroup()
     require(os.environ.get(MODE_ENV)=='1','Identity-only lease validation requires explicit own-models-loaded wrapper mode')
     tools=Path(os.environ['TREE_INSTRUCT_TOOLS'])

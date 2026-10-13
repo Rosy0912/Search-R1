@@ -1,3 +1,4 @@
+from production_contract import run_job_id
 """Pure-standard-library bindings for actual, unmodified partial raw evidence.
 
 No Torch import, deserialization, model work, or resume occurs in this module.
@@ -103,7 +104,7 @@ def partial_directory(run, identity):
             0 <= completed < 200 and outer == completed + 1 and attempt >= outer,
             'Partial actual attempt/outer boundary invalid')
     require(identity['training_protocol'] == PROFILE and identity['run_id'] == run.name and
-            identity['job_id'] == run.name.rsplit('-', 1)[-1], 'Partial run/profile identity differs')
+            identity['job_id'] == run_job_id(run), 'Partial run/profile identity differs')
     return run / 'checkpoints/training_state' / f'partial_attempt_{attempt:06d}_outer_{outer:06d}'
 
 

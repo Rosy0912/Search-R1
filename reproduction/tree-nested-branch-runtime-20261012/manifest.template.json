@@ -139,12 +139,37 @@
     ],
     "gpus": 8,
     "cpus_per_task": 32,
-    "expected_allocated_cpus": 192,
+    "expected_allocated_cpus": 0,
     "memory_gib": 256,
-    "exclusive": true,
+    "exclusive": false,
     "no_requeue": true,
     "train_wall_hours": 168,
-    "partition_max_time_observation": "UNLIMITED observed by root before this packet"
+    "partition_max_time_observation": "UNLIMITED observed by root before this packet",
+    "kind": "shared_systemd",
+    "resource_protocol": "training_memory_headroom_shared_v1",
+    "physical_gpus": 8,
+    "slurm_reserved_gpus": 0,
+    "initial_required_free_gib": 68,
+    "runtime_required_headroom_gib": 8,
+    "own_memory_cap_gib": 72,
+    "measured_training_budget_gib": 60,
+    "expected_gpu_uuids": [
+      "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b",
+      "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5",
+      "GPU-db94211b-42d5-88d0-f626-60e777af3be6",
+      "GPU-308b13c1-44ea-47b7-7b33-01a928099618",
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8",
+      "GPU-d61d94cd-3d24-fa07-8761-33961a14d995",
+      "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b",
+      "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+    ],
+    "completed200_memory_peak_report": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-handoff-acceptance-inputs/final-sampled-memory-and-cost.json",
+      "sha256": "f39bcfa27ed30007931ce07be74248075154e3b465c9f750f4cd7bf2c8f3a2e3"
+    },
+    "gpu_sharing_authority": "2026-10-13 latest explicit human authorization: share available memory across four H100 nodes; do not wait for exclusive/empty cards; preserve current training configuration and all other jobs",
+    "initial_required_host_mem_available_gib": 320,
+    "minimum_host_cpu_capacity": 32
   },
   "production_thresholds_accepted": false,
   "independent_acceptance": false,
@@ -193,7 +218,19 @@
     "required_completed_outer": 200,
     "required_final_rows": 51713,
     "mutations_allowed": false,
-    "final_hf_receipt": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/final-hf-acceptance/identity-bound-final-hf.json",
-    "status": "WAIT_FOR_ACTUAL_EXISTING_SCHEMA_RECEIPTS"
+    "status": "WAIT_FOR_TRUTHFUL_HANDOFF_COMPOSITE_AND_INDEPENDENT_ACCEPTANCE",
+    "schema_version": "tree_train200_eval_handoff_composite_v1",
+    "evaluation_source_commit": "0e00998fdc645281986250cd8632bb70c6e2fa9b",
+    "composite_receipt": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-handoff-hf-acceptance/identity-bound-handoff-hf.json",
+    "independent_acceptance_receipt": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-handoff-hf-acceptance/independent-composite-acceptance.json",
+    "original_normal_exit_required": false,
+    "preserved_prefix_sha256": "cbc70dc4138eae5c79c0cf61e6b63793936802383fba42aae543e1ff54882435",
+    "required_preserved_rows": 30880,
+    "required_replacement_rows": 20833,
+    "evaluation_release_sha256": "fb7c69b764de008b2d597fc90840c3f6527ef431827b1be7fd32d6125a93b070",
+    "evaluation_asset_manifest_sha256": "6e1b088c100f36fb168e4a5bb33660f3af0143bb5ef7504d607df3dd34432dc1",
+    "evaluation_dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
+    "original_job_observation_sha256": "732e971af9260bff7afc3fabc18de6a7736a8d8e49f9fa3ba5892640cdf12221",
+    "original_scontrol_observation_sha256": "af0762ee0af4a94a03138480d03d9e7ec5c2eb8fe7a795a537e72cf8b7cdcef0"
   }
 }

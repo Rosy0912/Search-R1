@@ -44,6 +44,8 @@ def save_completed_boundary(trainer):
     logical = digest(saved)
     driver_sha = atomic_save(saved, driver_path)
     manifest = dict(status='COMPLETE_NATIVE_ROLLING_STATE_SAVED',
+        physical_gpus=8,slurm_reserved_gpus=0 if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1' else 8,
+        allocation_kind='user_authorized_shared_systemd' if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1' else 'exclusive_slurm',
         snapshot_kind='rolling_completed_outer', identity=identity, worker_states=workers,
         driver=dict(path=str(driver_path), sha256=driver_sha, logical_state_sha256=logical,
                     next_step=step+1, exact_reload_verified=False),

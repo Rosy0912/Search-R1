@@ -1,3 +1,4 @@
+from production_contract import run_job_id
 """Fresh200 wrapper contract aligned to the actual fresh source/RPC schema.
 
 No model forwards or optimizer calls. Missing actual evidence refuses; official
@@ -151,7 +152,7 @@ def forbid_recovery_environment(environ):
 def expected_runtime(run, package, config_hash):
     return dict(code_commit=package['code_commit'], config_sha256=config_hash,
                 data_identity=package['common_data_identity'], model_identity=package['model_identity']['sha256'],
-                job_id=Path(run).name.rsplit('-',1)[1], run_id=Path(run).name)
+                job_id=run_job_id(run), run_id=Path(run).name)
 
 
 def expected_mu_provenance(receipt):

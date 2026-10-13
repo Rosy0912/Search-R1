@@ -38,6 +38,7 @@ def submit(args, run=subprocess.run):
     require(package.is_absolute() and package.resolve().is_relative_to((ROOT/'instruct300/candidates').resolve()),
             'Own retained18 package required')
     manifest, _, _ = read_bound(package/'manifest.json', args.manifest_sha)
+    require(manifest['dispatch'].get('kind','slurm')=='slurm','Shared packet cannot submit an exclusive Slurm job')
     require(manifest['packet_revision'] == 1 and manifest['code_commit'] == SOURCE
             and manifest['dispatch']['nodes'] == [NODE] and manifest['dispatch']['gpus'] == 8,
             'Exact V14 speed packet identity required')

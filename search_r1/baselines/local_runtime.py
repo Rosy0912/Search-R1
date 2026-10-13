@@ -18,7 +18,12 @@ def check_local_runtime(config, ray_nodes=None):
     expected = config.baselines.local_runtime_host
     if not expected or socket.gethostname().split('.')[0] != expected:
         raise ValueError('Runtime is not on the expected local host')
-    if os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
+    if os.environ.get('TREE_SHARED_TRAINING_MODE') == '1':
+        # Explicit reviewed own systemd protocol verifies its actual unit cgroup;
+        # it never claims a Slurm node/device reservation.
+        from shared_identity import verify_cgroup
+        verify_cgroup()
+    elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
         raise ValueError('Local runtime requires the matching Slurm allocation')
     parsed = urlparse(config.retriever.url)
     if (parsed.scheme != 'http' or not loopback(parsed.hostname or '') or parsed.username

@@ -22,6 +22,11 @@ INPUT_NAMES = ('actual_calibration_ready','actual_calibration_acceptance','thres
                'source_context_free_review')
 
 
+def run_job_id(run):
+    name=Path(run).name
+    prefix='tree-nested-branch-fresh200-'
+    return name.removeprefix(prefix) if name.startswith(prefix) else name.rsplit('-',1)[-1]
+
 def require(condition, message):
     if not condition: raise ValueError(message)
 
@@ -166,7 +171,12 @@ def human_direct_inputs(package, *, manifest_sha256, release_descriptor, trusted
     require(release['scope']==CHAIN_SCOPE and release['manifest_sha256']==manifest_sha256 and release['code_commit']==SOURCE and release['human_training_authority_sha256']==authority_sha,'Release source/package/authority binding differs')
     require(release['cluster_name']=='wuhan-h100' and release['node_list']=='h100-10' and release['dispatch_intent_path']==package['dispatch']['once_intent'],'Release allocation/intent differs')
     require(release['independent_source_review_complete'] is True and release['independent_runtime_review_complete'] is True,'Independent source and runtime reviews required')
-    require(release['dispatch_renderer_sha256']==package['files']['render_dispatch.py'] and release['dispatch_submitter_sha256']==package['files']['submit_once.py'],'Dispatcher source differs')
+    renderer='render_shared_dispatch.py' if package['dispatch'].get('kind')=='shared_systemd' else 'render_dispatch.py'
+    submitter='submit_shared_once.py' if package['dispatch'].get('kind')=='shared_systemd' else 'submit_once.py'
+    require(release['dispatch_renderer_sha256']==package['files'][renderer] and release['dispatch_submitter_sha256']==package['files'][submitter],'Dispatcher source differs')
+    if package['dispatch'].get('kind')=='shared_systemd':
+        from shared_release_contract import verify_shared_release
+        verify_shared_release(package,release)
     return dict(DIRECT_THRESHOLDS),dict(human_training_authority=authority_sha,human_direct_release=release_sha)
 
 
@@ -186,7 +196,7 @@ def configuration_overrides(spec, thresholds):
 def direct_rank_records(run, package, config_hash, last):
     from attempt_accounting import attempt_results
     observed=attempt_results(run,package,config_hash,last)
-    expected=dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,
+    expected=dict(job_id=run_job_id(run),run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,
                   data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
     bindings=observed['record_sha256'].copy()
     for credited in observed['credited']:
@@ -268,7 +278,7 @@ def validation_reports(run, expected_outer, *, final=False, package=None,config_
             candidates.append((path,value,digest))
     require(len(candidates)==1, 'Exactly one actual validation report required at this phase/outer')
     path,value,digest=candidates[0]; count=51713 if final else 512
-    require(value['job_id']==Path(run).name.rsplit('-',1)[1] and Path(value['run']).resolve()==(Path(run)/'output').resolve()
+    require(value['job_id']==run_job_id(run) and Path(value['run']).resolve()==(Path(run)/'output').resolve()
             and value['training_protocol']==PROFILE and value['global_step']==(201 if final else expected_outer), 'Actual evaluation counter/run/protocol differs')
     require(package is not None and config_hash is not None and value['code_commit']==package['code_commit']
             and value['config_sha256']==config_hash and value['data_identity']==package['common_data_identity']
@@ -285,7 +295,7 @@ def validation_reports(run, expected_outer, *, final=False, package=None,config_
 def checkpoint_manifest(run, package, config_hash, outer):
     directory=Path(run)/'checkpoints/training_state'/f'global_step_{outer}'
     manifest,digest,_=read_bound(directory/'manifest.json')
-    expected=dict(job_id=Path(run).name.rsplit('-',1)[1],code_commit=package['code_commit'],config_sha256=config_hash,
+    expected=dict(job_id=run_job_id(run),code_commit=package['code_commit'],config_sha256=config_hash,
         data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'],completed_step=outer,actual_update_limit=200)
     from attempt_accounting import attempt_results,checkpoint_accounting
     actual=checkpoint_accounting(manifest['identity']['guard_continue_accounting'],attempt_results(run,package,config_hash,outer),outer,run)
@@ -340,7 +350,7 @@ def publish_external_approval(run, package, config_hash, proofs):
     review,review_sha,raw=descriptor(value['review'],Path(run))
     ready,ready_sha,_=read_bound(gate/'ready.json')
     require(review['status']=='PASS' and review['fork_turns']=='none' and review['ready_sha256']==ready_sha, 'No genuine context-free actual step5 review')
-    require_identity(review,dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256']))
+    require_identity(review,dict(job_id=run_job_id(run),run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256']))
     require(ready['completed_outer_updates']==5 and ready['next_outer_update']==6 and ready['actual_update_limit']==200, 'Live actual five gate boundary differs')
     require(all(review[k] is True for k in ('full_state_reload_accepted','full_hf_reload_accepted','rank_tree_numerics_accepted','fixed512_evaluation_accepted','behavior_mu_binding_accepted')), 'Independent five acceptance incomplete')
     require(review['full_state_manifest_sha256']==ready['full_state_manifest_sha256']==proofs['full_state_manifest_sha256']
@@ -405,7 +415,7 @@ def short_threshold_observations(run,proofs,thresholds):
                 opportunities_processed=proofs['rank_counts']['opportunities_processed'],thresholds=thresholds)
 
 def validate_short_threshold_assessment(run,package,config_hash,proofs,assessment,ready_sha):
-    expected=dict(job_id=Path(run).name.rsplit('-',1)[1],run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,
+    expected=dict(job_id=run_job_id(run),run_id=Path(run).name,code_commit=package['code_commit'],config_sha256=config_hash,
                   data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
     require_identity(assessment,expected)
     require(assessment['status']=='INDEPENDENT_SAME_INSTANCE_FIRST5_THRESHOLDS_ACCEPTED' and assessment['fork_turns']=='none'
