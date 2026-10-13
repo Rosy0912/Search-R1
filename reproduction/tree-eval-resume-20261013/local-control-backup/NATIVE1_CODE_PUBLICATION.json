@@ -1,0 +1,111 @@
+{
+  "status": "COMMITTED_PUSHED_AND_REMOTE_SOURCE_READBACK_VERIFIED",
+  "session": "tree-nested-branch-fresh200-native1-oom-continuation",
+  "source_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+  "parent_source_commit": "0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+  "backup_branch": "codex/tree-nested-native1-recovery-20261014",
+  "remote_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+  "verified_at": "2026-10-13T16:23:12.280365+00:00",
+  "files": {
+    "reproduction/tree-nested-branch-runtime-20261012/NATIVE1_RECOVERY_PLAN.md": {
+      "bytes": 3385,
+      "sha256": "0467db96aecc4115996a7075f95e78a8b9a3d3ee44fe2118eedd50e7358f6421",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/attempt_accounting.py": {
+      "bytes": 13376,
+      "sha256": "6469afd9aa4be5373ce33f683bea24fbfdab13d585c92ef4fa31e7fbbce1856e",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/build_package.py": {
+      "bytes": 3660,
+      "sha256": "272a8fee5b844b83f80148a72fd78ea79f468bd01e1d936653d2380a11a453bf",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/calibration_contract.py": {
+      "bytes": 25855,
+      "sha256": "3e82d1e77cd770fe0bbbfea59fb2565f43ab830221dbc5d828b2257f3109f62b",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/make_release.py": {
+      "bytes": 6305,
+      "sha256": "0ccd0ed6ff9b36de79cdd5ca3bf5885ccdb0f815ec7f669cccd72844f4880574",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/manifest.template.json": {
+      "bytes": 15390,
+      "sha256": "a8ee2d37df8a015385d4c89e47bb371a13086ad8ac68a731a9147939393a2d88",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/predecessor_gate.py": {
+      "bytes": 25569,
+      "sha256": "71a5622b05a1bdaad8f111f0255f75b468f941753eaed32d44c8e2ddcf3d5edb",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/production_contract.py": {
+      "bytes": 41177,
+      "sha256": "b22715a6c3b8a4e5a402398906b33033672e318b71cc936f12fb2bcddb0d0abd",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/render_shared_dispatch.py": {
+      "bytes": 3005,
+      "sha256": "897458430d1631ac39051c52d9d59f9614a2dd03c87c4b530c73ff513810f8b9",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/shared_identity.py": {
+      "bytes": 12880,
+      "sha256": "a9ca3529ad113a46fb3920abe38805d8318d85c3465fef452fde92ac79717037",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/shared_release_contract.py": {
+      "bytes": 3316,
+      "sha256": "05e8647133a6d2de620f4d729f52e09b0e92380eeb73052db850f8963d8b856a",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/supervisor.py": {
+      "bytes": 31288,
+      "sha256": "7b64735a6b1b310fca95b561e5cf1150559c5c5d60aacacd3c82a0befba18491",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/train_monitor.py": {
+      "bytes": 5050,
+      "sha256": "d19c4f215e6a60323e53a2987f6f110b4fae0571a087d0979e848484252ea68d",
+      "remote_readback_equal": true
+    },
+    "reproduction/tree-nested-branch-runtime-20261012/validation_cost_entry.py": {
+      "bytes": 4650,
+      "sha256": "774d33868995ade1ed4dbfc1ba49f7387bf3f6ac285c82ee2a8061c471973251",
+      "remote_readback_equal": true
+    },
+    "search_r1/baselines/runtime_audit.py": {
+      "bytes": 11516,
+      "sha256": "9d1e275031cfaac8edd4729d21086246b25312bdd339c8a615c254e3e152bf9b",
+      "remote_readback_equal": true
+    },
+    "search_r1/baselines/tree_fresh200.py": {
+      "bytes": 6958,
+      "sha256": "ad084ffce52543bfe3b3d5f746a497dedb058e575b79a73b03bb09f7b5b7ca06",
+      "remote_readback_equal": true
+    },
+    "search_r1/baselines/tree_nested_chain_resume.py": {
+      "bytes": 20822,
+      "sha256": "5d3d66363f4739c72d3195e03250e1ab124cce169325e12caaca9363c25e1309",
+      "remote_readback_equal": true
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "bytes": 67990,
+      "sha256": "7fe5dbec84fddf32f10a3ba7436f430d89c897b7c15aae3adb7de26be18e776f",
+      "remote_readback_equal": true
+    },
+    "verl/workers/fsdp_workers.py": {
+      "bytes": 75948,
+      "sha256": "e01357f22132bc89ecbcfa8611f9a7907cc03a7995e7c9cdfcf550e9f5ecd6c6",
+      "remote_readback_equal": true
+    }
+  },
+  "local_check": "minimal_ast_json_diff_whitespace_only",
+  "actual_remote_training_started_by_this_agent": false,
+  "gpu_tests_run": false,
+  "independent_operational_review_claimed": false,
+  "uncovered_code_files": []
+}
