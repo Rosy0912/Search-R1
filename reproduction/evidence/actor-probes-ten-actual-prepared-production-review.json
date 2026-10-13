@@ -1,0 +1,107 @@
+{
+  "role": "actual_prepared_actor_probe_deployment_and_independent_source_review",
+  "identity": {
+    "run_id": "ff6be623b39a41209167a116b591551b",
+    "execution_id": "61fa4331d2cc46a18463911e1a676852",
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "execution_backend": "ssh_local",
+    "training_world_size": 4,
+    "profile": "common8",
+    "slurm_job_id": null
+  },
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-e30d5e4c171d4b628ac03be5996857b6",
+  "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+  "source_files": 455,
+  "prepared_receipt_sha256": "ce8550ad23b9eb4799792915ce364445f2ac71205c1229c463f4a45c2c72218d",
+  "formal_contract": {
+    "contract_kind": "fresh200_warmup57",
+    "mathematical_config_sha256": "a12b90302ac403f7c9fa57969fb4d50b4bb92f8c0a640b1715f6438cccdc2f53",
+    "policy_safety_mode": "inline_first_five",
+    "resolved_config_sha256": "5e8f0221691db5a6b9b0cae8b5acd88bc0092361041b909f1705e129b34c4618",
+    "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+    "source_snapshot_semantics": "bound disk source hashes; not proof of loaded modules"
+  },
+  "official_model_sha256": {
+    "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+    "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+    "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+    "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "input_sha256": {
+    "audit.json": "699554d16b10b8d4166790776d4269f03be2d6242cc68f1ccb812564ed6aa275",
+    "calibration-300.parquet": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+    "exclusions-audit.json": "bf22b531d9aef49a3f66ee7f3f89b795821d104807ebf9bfd5f845bd1c7ba65e",
+    "final.parquet": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+    "manifest.json": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "stage.parquet": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "train.parquet": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+    "validation.parquet": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+  },
+  "remote_output_paths": {
+    "checkpoint_dir": "/data/shaoshitong/Search-G1-a800-fresh200-e30d5e4c171d4b628ac03be5996857b6/checkpoints/search-g1-common8",
+    "ray_tmp_dir": "/tmp/g-61fa4331d2cc46a18463911e1a676852",
+    "train_log": "/data/shaoshitong/Search-G1-a800-fresh200-e30d5e4c171d4b628ac03be5996857b6/logs/search-g1-common8-training.log"
+  },
+  "exact_inputs_and_source_verified": true,
+  "reward_schedule": "g1_through100_then_binary",
+  "probe_protocol": "two independent binary classifier Heads on detached current actor representations; fresh actorfit0 then every10complete outers through terminal200; atomic fixed-withinouter dualpair; no probe gradients into actor/generationHead/reference/GRPO states; binaryreward101..200 isolated",
+  "training_world_size": 4,
+  "training_physical_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "auxiliary_physical_indices": [
+    5,
+    6
+  ],
+  "excluded_physical_indices": [
+    4,
+    7
+  ],
+  "predecessor_completion": {
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab",
+    "cleanup_sha256": "c23703b0ca4635dd6997a628946d44f5da3f087d8e43b9fecce8c7f00c888e77",
+    "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+    "full_acceptance_sha256": "8b8d679665145fcdcbea7ee641835b7334b83ed1078e44c045b4a7170d075b67",
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc"
+  },
+  "parent_weights_or_optimizer_inherited": false,
+  "independent_actual_review": {
+    "role": "independent_actual_actor_probe_production_deployment_review",
+    "accepted": true,
+    "identity": {
+      "run_id": "ff6be623b39a41209167a116b591551b",
+      "execution_id": "61fa4331d2cc46a18463911e1a676852",
+      "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+      "execution_backend": "ssh_local",
+      "training_world_size": 4,
+      "profile": "common8",
+      "slurm_job_id": null
+    },
+    "prepared_receipt_sha256": "ce8550ad23b9eb4799792915ce364445f2ac71205c1229c463f4a45c2c72218d",
+    "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+    "independent_initialization_without_parent_context": true,
+    "actual_prepared_deployment_reviewed": true,
+    "actual_source_reviewed": true,
+    "reviewer_task": "/root/actor_probes_actual_production_review",
+    "review_summary": "Independent source and actual prepared production deployment review accepted with no blockers.455 source files match the published c4 source map. Independently repeated same-handle readonly inspect observations equal the original actual inspection. Publication/fsync,genuine actor-fit0,detached current actor RPC,two binary Heads,fixed outer versions,refresh10 through terminal200,binary reward isolation101..200,complete outer counting,first5 sameprocess full-state save/reload,recovery,official fresh data/model/config and exact predecessor34 cleanup binding align. No services/trainer/GPU/native claim and no tests/evaluation/model diagnostics/launch/stop performed by reviewer; native firstfive remains prospective.",
+    "independent_actual_inspect_receipt_sha256": "2faeb376114edadde3105a5d537a84c392efa2536cde1489537bc3685de52664",
+    "native_algorithm_accepted": false
+  },
+  "actual_remote_review_record_sha256": "eba9ffba99c693f631f810d9efdb32569d0c1d7747d7b370811efbc55a1bc76f",
+  "production_prepare_exit_code": 0,
+  "independent_inspection_equal": true,
+  "services_started": false,
+  "trainer_started": false,
+  "GPU_claimed": false,
+  "native_algorithm_accepted": false,
+  "checked_unix": 1791925877.3830678
+}
