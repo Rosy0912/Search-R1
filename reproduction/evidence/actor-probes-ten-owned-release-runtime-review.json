@@ -1,0 +1,11 @@
+{
+  "role": "independent_owned_release_runtime_adaptation_review",
+  "accepted": true,
+  "reviewer_task": "/root/owned_release_runtime_adaptation_review",
+  "independent_initialization_without_parent_context": true,
+  "source_sha256": "1f6de5ca1bd434db1c435a84c397146261cd389a4f0f4d934332ed455ba665f6",
+  "known_prior_no_signal": true,
+  "scope": "exact owned2340358/birth601041566 only; reviewed runtimeexec beforestdin; newexclusiveclaim; allassigned contexts mustactuallydrain beforeG1launch",
+  "checked_unix": 1791931898.978441,
+  "native_algorithm_accepted": false
+}

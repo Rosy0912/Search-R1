@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "role": "actor_probe_fresh_retry_prelaunch_scalar_publication_draft",
+  "publication_state": "LOCAL_DRAFT_ONLY",
+  "scope": "Saved preparation evidence only; no actual report delivery or anchor advance.",
+  "prelaunch_cutoff_unix": 1791931393.32603,
+  "later_runtime_state": "UNKNOWN_NOT_QUERIED",
+  "accepted_predecessor": {
+    "identity": {
+      "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+      "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+      "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc"
+    },
+    "status": "ACCEPTED_FULL200_FINAL51713_WITH_OWNED_CLEANUP",
+    "evidence_ref": "predecessor_terminal_audit",
+    "checked_unix": 1791925272.59349,
+    "structural_terminal_accepted": true,
+    "continuous_complete_outers": 200,
+    "processed_opportunities": 4000,
+    "successful_adam": 3993,
+    "skips": 7,
+    "final_count": 51713,
+    "final_em_numerator": 21845,
+    "final_em_denominator": 51713,
+    "final_em": 0.42242762941620093,
+    "final_f1": 0.48704778769330365,
+    "final_unique_normalized_ids": 50497,
+    "duplicates_preserved": true,
+    "binary_em_finite_f1_verified": true,
+    "ordered_ids_match_canonical": true,
+    "full_acceptance_sha256": "8b8d679665145fcdcbea7ee641835b7334b83ed1078e44c045b4a7170d075b67",
+    "final_identity_sha256": "f720b2944c9ab3c666171be359a8ba3154eda5336a32653f00035427bb806925",
+    "updates_ledger_sha256": "ffa872468ecde1a3f61a40dd355ce6f5dcb67e29b4b66cc42c9e2748c8f67194",
+    "final_ordered_ids_sha256": "fc85a32c0ab3a931badf19d3c70ae7bdd8379f3240c118caaf144080c4c91121",
+    "owned_cleanup": {
+      "cleanup_sha256": "c23703b0ca4635dd6997a628946d44f5da3f087d8e43b9fecce8c7f00c888e77",
+      "corpus_cleanup_sha256": "4445e772f677720ebd6be4965c0a81c27f71b08a3b8334b2f5448b2ae2e979b4",
+      "recorded_births_checked": 202,
+      "surviving_same_births": 0,
+      "surviving_owned_session_processes": 0,
+      "remaining_owned_cuda_contexts": 0,
+      "private_corpus_root_absent": true,
+      "original_assets_removed": false,
+      "corpus_removed_file_count": 33,
+      "corpus_removed_byte_sum": 28161772521
+    },
+    "training_state_or_weights_transferred_to_retry": false
+  },
+  "fresh_retry": {
+    "identity": {
+      "run_id": "a9be0ee91ff942349a26caf372e22a27",
+      "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+      "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c"
+    },
+    "deployment_id": "cb042832b1814fad86a9734bbdd4e94c",
+    "training_world_size": 4,
+    "genuine_official_fresh_retry": true,
+    "initial_actor": "official fresh",
+    "inherited_training_state": false,
+    "inherited_predecessor_weights": false,
+    "inherited_optimizer_state": false,
+    "lost_training_updates": 0,
+    "prepared": true,
+    "prepared_at_unix": 1791931260.4867828,
+    "source_verified": true,
+    "prepared_receipt_sha256": "ef6efa01f665fd8f660a893b43f26d486fe80972a86c97f75838a8b8d17c432e",
+    "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+    "resolved_config_sha256": "41554110c4264efe84ca20909ae5fe5376c130c9b4c515d8293feeda4425ddf3",
+    "mathematical_config_sha256": "a12b90302ac403f7c9fa57969fb4d50b4bb92f8c0a640b1715f6438cccdc2f53",
+    "deployment_intent_sha256": "62fcfd48051203d038fe352e111384509489d744ae863258fa455ad5d6f6737f",
+    "formal_method_sha256": "78895f9a3aed9148b0e8970303ec4d6df37d4d6cdf5951947082845ab9309304",
+    "saved_source_hash_count": 455,
+    "source_snapshot_semantics": "bound disk source hashes; not proof of loaded modules",
+    "production_launch_admission": false,
+    "services_started": false,
+    "trainer_started": false,
+    "GPU_claimed": false,
+    "actor_RPC_exercised": false,
+    "initial_probe_fitting_exercised": false,
+    "native_algorithm_accepted": false,
+    "training_counts_as_of_preparation": {
+      "complete_outers": 0,
+      "optimizer_opportunities": 0,
+      "successful_adam": 0,
+      "skips": 0,
+      "basis": "Trainer not started; prelaunch zero, not a parsed update ledger."
+    },
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "excluded_physical_indices": [
+      4,
+      7
+    ],
+    "disk_admission": {
+      "actual_free_bytes": 13382916886528,
+      "required_free_bytes": 457211199488,
+      "sha256": "754d2928d35bd3c6be560a107d95835c996f95bb530c70c4815bdb8b6d3b36d0"
+    },
+    "actual_launch_or_training_proof_included": false
+  },
+  "independent_prepared_consistency_review": {
+    "accepted": true,
+    "scope": "SOURCE_AND_PREPARED_DEPLOYMENT_CONSISTENCY_ONLY",
+    "reviewer_identity": "/root/fresh_retry_actual_prepared_review",
+    "reviewed_unix": 1791931393.32603,
+    "evidence_ref": "independent_fresh_retry_review",
+    "independent_inspect_evidence_ref": "prepared_independent",
+    "independent_initialization_without_parent_context": true,
+    "actual_source_reviewed": true,
+    "actual_prepared_deployment_reviewed": true,
+    "native_algorithm_accepted": false,
+    "prepared_observation_payloads_equal": true
+  },
+  "intended_actor_probe_contract": {
+    "scope": "Prepared contract; native execution and acceptance pending.",
+    "probe_representation_source": "actor_detached_binary_heads_v1",
+    "independent_binary_classifier_heads": 2,
+    "current_actor_representations_detached": true,
+    "probe_parameter_ownership": "independent_binary_heads_only",
+    "actor_or_reference_parameters_optimized_by_head_fit": false,
+    "reward_schedule": "g1_through100_then_binary",
+    "reward_outers_1_through_100": "Search-G1",
+    "reward_outers_101_through_200": "binary_correctness",
+    "probe_refresh_interval_complete_outers": 10,
+    "target_complete_outers": 200,
+    "same_process_after_five": true,
+    "fresh_fit0_status": "PENDING_REAL_300_QUESTION_CALIBRATION_AT_ACTOR_STEP_0",
+    "encoder_adoption_forbidden": true,
+    "terminal200_contract": "Outer200 uses Head190; after COMPLETE200 fit/isolate Head200 and save full-state200; no formal201.",
+    "pending_native_evidence": [
+      "fresh_fit0",
+      "detached_actor_RPC",
+      "gradient_and_RNG_isolation",
+      "first_complete_iteration",
+      "first_five_and_full_state_roundtrip",
+      "continuous_full200",
+      "final_identity_and_owned_cleanup"
+    ]
+  },
+  "owned_capacity_reservation": {
+    "scope": "Historical capacity only; current liveness, exclusive access, native training admission and training peak are unproven.",
+    "launch_evidence_ref": "capacity_launch",
+    "launched_at_unix": 1791930824.3485146,
+    "owned_process_identity": {
+      "pid": 2340358,
+      "start_ticks": 601041566,
+      "sid": 2340358,
+      "pgid": 2340358
+    },
+    "source_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+    "physical_indices": [
+      1,
+      2,
+      3
+    ],
+    "bytes_per_gpu": 64424509440,
+    "GiB_per_gpu": 60,
+    "capacity_exclusivity": "NONEXCLUSIVE",
+    "native_training_admission": false,
+    "reservation_ready_at_launch_receipt": false,
+    "training_started_at_launch_receipt": false,
+    "native_algorithm_accepted_at_launch_receipt": false,
+    "ready_at_utc": "2026-10-13T22:33:51Z",
+    "two_historical_readings": [
+      {
+        "evidence_ref": "capacity_first_read",
+        "checked_unix": 1791930883.265582,
+        "owned_process_alive_at_read": true,
+        "same_birth_verified": true,
+        "status_at_read": "READY",
+        "failure_at_read": null,
+        "release_at_read": null,
+        "record_sha256": "c2faa1d9e97a478e81255d715675cb5c61c546f7bb9cfbc2f8d4830344303a43",
+        "claim_sha256": "a7544f94e010864fb6b27b096a195a8333141f0b8018b1a76d7043a9d69eb4d9",
+        "source_backup_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+        "actual_owned_60GiB_each_verified": true,
+        "post_READY_retention_sample_verified": true,
+        "birth_revalidated_after_NVML": true,
+        "retention_at_utc": "2026-10-13T22:34:33Z",
+        "torch_allocated_bytes_by_gpu123": [
+          64424509440,
+          64424509440,
+          64424509440
+        ],
+        "torch_reserved_bytes_by_gpu123": [
+          64424509440,
+          64424509440,
+          64424509440
+        ],
+        "nvml_owned_used_bytes_by_gpu123": [
+          64860717056,
+          64860717056,
+          64860717056
+        ],
+        "owned_nvml_used_mib_by_gpu123": [
+          61856,
+          61856,
+          61856
+        ],
+        "foreign_compute_apps_on_selected_gpus_count": 0,
+        "foreign_training_cuda_applications_count": 0,
+        "foreign_auxiliary_cuda_applications_count": 1,
+        "capacity_exclusivity": "NONEXCLUSIVE",
+        "native_training_admission": false,
+        "trainer_started": false,
+        "native_algorithm_accepted": false,
+        "reservation_peak_is_training_peak": false
+      },
+      {
+        "evidence_ref": "capacity_second_read",
+        "checked_unix": 1791931062.587787,
+        "owned_process_alive_at_read": true,
+        "same_birth_verified": true,
+        "status_at_read": "READY",
+        "failure_at_read": null,
+        "release_at_read": null,
+        "record_sha256": "a39d2a350444ebed4c0f6251e3ebe50548cede628b6791b877f190d5f4d29e25",
+        "claim_sha256": "a7544f94e010864fb6b27b096a195a8333141f0b8018b1a76d7043a9d69eb4d9",
+        "source_backup_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+        "actual_owned_60GiB_each_verified": true,
+        "post_READY_retention_sample_verified": true,
+        "birth_revalidated_after_NVML": true,
+        "retention_at_utc": "2026-10-13T22:37:41Z",
+        "torch_allocated_bytes_by_gpu123": [
+          64424509440,
+          64424509440,
+          64424509440
+        ],
+        "torch_reserved_bytes_by_gpu123": [
+          64424509440,
+          64424509440,
+          64424509440
+        ],
+        "nvml_owned_used_bytes_by_gpu123": [
+          64860717056,
+          64860717056,
+          64860717056
+        ],
+        "owned_nvml_used_mib_by_gpu123": [
+          61856,
+          61856,
+          61856
+        ],
+        "foreign_compute_apps_on_selected_gpus_count": 0,
+        "foreign_training_cuda_applications_count": 0,
+        "foreign_auxiliary_cuda_applications_count": 0,
+        "capacity_exclusivity": "NONEXCLUSIVE",
+        "native_training_admission": false,
+        "trainer_started": false,
+        "native_algorithm_accepted": false,
+        "reservation_peak_is_training_peak": false
+      }
+    ],
+    "read_interval_seconds": 179.32220482826233,
+    "reservation_peak_is_training_peak": false,
+    "training_peak_bytes": null,
+    "later_state": "UNKNOWN_NOT_QUERIED"
+  },
+  "preserved_failed_first_launch": {
+    "identity": {
+      "run_id": "ff6be623b39a41209167a116b591551b",
+      "execution_id": "61fa4331d2cc46a18463911e1a676852",
+      "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c"
+    },
+    "evidence_ref": "failed_first_launch",
+    "observed_unix": 1791926031.537101,
+    "resource_read_unix": 1791926160.3246045,
+    "failure_stage": "PRETRAINER_RESOURCE_ADMISSION",
+    "reason": "Authorized GPU1 occupied by another project.",
+    "training_not_started_verified": true,
+    "native_allocation_claim_absent": true,
+    "trainer_claim_absent": true,
+    "process_ledger_absent": true,
+    "actual_updates_ledger_absent": true,
+    "complete_outers": 0,
+    "optimizer_opportunities": 0,
+    "successful_adam": 0,
+    "skips": 0,
+    "lost_training_updates": 0,
+    "probe_fit0_started": false,
+    "native_algorithm_accepted": false,
+    "prepared_receipt_sha256": "ce8550ad23b9eb4799792915ce364445f2ac71205c1229c463f4a45c2c72218d",
+    "failed_intent_prepare_launch_claims_and_source_preserved": true,
+    "scientific_recipe_changed": false,
+    "other_process_stopped": false,
+    "zero_count_basis": "Failure before GPU admission, services, trainer, fit0 or updates; observer outer count was null."
+  },
+  "source_evidence": {
+    "prepared_primary": {
+      "sha256": "a7d1b33ac9c25432159a578d100169e2abff5efb9e53c308b39cabf763f8549d",
+      "bytes": 75797,
+      "recorded_unix": 1791931348.596391
+    },
+    "prepared_independent": {
+      "sha256": "8fb706597957a2a1ec12ec7127c18adf809742cae9f7fd06b67efd9862faa12b",
+      "bytes": 75796,
+      "recorded_unix": 1791931393.32603
+    },
+    "capacity_launch": {
+      "sha256": "65dc7faff0cf5026e9ab998e89adde5401c0a0e55bf4fbfcfb3d5879e23e4451",
+      "bytes": 2129,
+      "recorded_unix": 1791930824.3485146
+    },
+    "capacity_first_read": {
+      "sha256": "21d1bb7327de9786132e72327501af9ad7068b3678d38053b19cc811b4e3af83",
+      "bytes": 10907,
+      "recorded_unix": 1791930883.265582
+    },
+    "capacity_second_read": {
+      "sha256": "f516f41c3d2b10d86a14861d052bded1a0add901907a1fb17d5cfec16f742b5a",
+      "bytes": 10586,
+      "recorded_unix": 1791931062.587787
+    },
+    "predecessor_terminal_audit": {
+      "sha256": "4bde413b3f6709501d88b2a8b8be8baaf7ec036826c649b0e6ff605457a12f2e",
+      "bytes": 15440,
+      "recorded_unix": 1791925272.59349
+    },
+    "failed_first_launch": {
+      "sha256": "0676c6aa4a7e5f5808eb2c726df59fd6ce3fc98ec2d063893fd7b38453ff64b6",
+      "bytes": 2934,
+      "recorded_unix": 1791926396.444812
+    },
+    "independent_fresh_retry_review": {
+      "sha256": "882f9907a8bfee0b6b11e2f4e763460be5f45f9c08c48d2a0d5f8bdd56016f35",
+      "bytes": 1719,
+      "recorded_unix": 1791931393.32603
+    },
+    "intended_native_contract": {
+      "sha256": "7b37eb1265f05daa06fde129c95c5891c1a44457b4059cecf680a032cd3aeedf",
+      "bytes": 3770,
+      "recorded_unix": 1791925937.72519
+    },
+    "fresh_retry_intent": {
+      "sha256": "853c1d7c92a79859e31b15a2135e462eb13807be49a74430a6f6495e0456d2c9",
+      "bytes": 56802,
+      "recorded_unix": 1791931155.8765812
+    }
+  },
+  "source_inconsistencies": [],
+  "draft_actions": {
+    "remote_query_performed": false,
+    "process_launch_or_signal_performed": false,
+    "source_edited": false,
+    "tests_run": false,
+    "commit_or_push_performed": false,
+    "goal_or_automation_changed": false,
+    "handoff_pointer_or_anchor_advanced": false,
+    "report_delivered": false
+  }
+}
