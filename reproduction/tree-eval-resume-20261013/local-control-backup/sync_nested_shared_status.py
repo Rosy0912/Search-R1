@@ -6,6 +6,18 @@ LEGACY_SOURCE = '0befbaf99fc44942105831b3fbec94e4bf1b8ccb'
 NATIVE1_SOURCE = 'ba9f6627ec9a4e9749830d7b6acca53f6feec6b4'
 
 
+def development_status(data, previous_status):
+    same_run = (previous_status.get('source_commit') == data['source_commit']
+        and previous_status.get('run_directory') == data['run'])
+    development = data.get('development') or []
+    observed_latest = development[-1] if development else None
+    previous_latest = previous_status.get('latest_dev512') if same_run else None
+    latest = observed_latest if observed_latest is not None else previous_latest
+    updated = bool(observed_latest is not None
+        and (not same_run or observed_latest != previous_latest))
+    return latest, updated
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('poll')
@@ -76,7 +88,9 @@ def main():
         publication_evidence = {key: publication.get(key) for key in ('status', 'source_commit', 'backup_branch', 'remote_commit', 'verified_at')}
         publication_evidence['receipt_path'] = str(publication_path)
         break
-    latest = data.get('development') or []
+    previous_status_path = Path('outputs/STATUS.json')
+    previous_status = json.loads(previous_status_path.read_text()) if previous_status_path.is_file() else {}
+    latest, dev_score_updated = development_status(data, previous_status)
     initialization = ('same original fresh nested chain; cold native1 restored mother outer1/20 Adam per rank, driver/RNG/sampler and eight workers; child recomputes outer2' if loaded is True else 'same original fresh nested chain; cold native1 continuation requested from mother outer1/20 Adam per rank; actual loading unconfirmed') if native_requested else 'official Qwen/Qwen2.5-3B-Instruct aa8e725; no predecessor native/Adam/scheduler inheritance'
     status = dict(status=phase, phase=phase, method='nested_tree_grpo', source_commit=data['source_commit'], source_checkout=str(Path(checkout).resolve()), source_branch=branch,
         source_remote_sha_verified=source_verified, source_publication_evidence=publication_evidence, node='h100-10 / 10.33.0.18',
@@ -84,7 +98,7 @@ def main():
         current_outer=completed, new_completed_outer=child_completed, effective_counters_known=counters_known, target_outer=200, training_target_outer=200,
         successful_adam_per_rank=totals, child_successful_adam_per_rank=child_adam, inherited_completed_outer=inherited_completed, inherited_adam_per_rank=loaded_adam,
         all_skipped_attempts=progress['all_skipped_attempts'], direct_rank_record_count=data['direct_rank_records'], last_rank_summaries=data['last_rank_summaries'], progress_errors=progress['errors'],
-        latest_dev512=latest[-1] if latest else None, dev_score_updated=bool(latest), checkpoint=data['native_manifests'], latest_guard=data['latest_guard'], current_systemd=state,
+        latest_dev512=latest, dev_score_updated=dev_score_updated, checkpoint=data['native_manifests'], latest_guard=data['latest_guard'], current_systemd=state,
         last_actual_poll=str(poll_path), actual_training_progress=progress, health='failed; save evidence and repair own task' if failed else 'native1 receipt pending; effective loaded counters unknown' if native_requested and loaded is not True else 'active; observe actual rollout/update progress',
         physical_gpus=8, slurm_reserved_gpus=0, resource_protocol='training_memory_headroom_shared_v1', new_training_submitted=True, initialization=initialization,
         experiment_origin='fresh', native1_continuation_requested=native_requested, native1_loaded=loaded if native_requested else False, native1_load_receipt=receipt,
