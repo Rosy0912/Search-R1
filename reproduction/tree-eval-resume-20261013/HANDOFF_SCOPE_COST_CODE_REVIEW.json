@@ -1,0 +1,33 @@
+{
+  "review_status": "ACCEPTED",
+  "scope": "Minimal independent repaired source review; no remote/GPU action or actualreceipt acceptance",
+  "source_path": "work/tree-speed-repair-20261008/collect_handoff_scope_cost.py",
+  "source_sha256": "20046b93af72c88b51ac8f7264a0931f6b7edaea4ab8d9f1061e29a961d31b58",
+  "reviewed_at_utc": "2026-10-13T15:01:34.417851+00:00",
+  "blocking_findings": [],
+  "resolved_findings": [
+    "COST-1: actual ownshared systemctl state/CPUUsageNSec observation is saved exclusively/fsynced/SHA-bound; numeric actual accounting is kept or unavailable value/reason remains null.",
+    "COST-2: each batch requires exact15 known native fields, finite nonnegative numeric values and trajectories==receiptcount; missing mismatch/token/CPU fields fail before aggregation.",
+    "COST-3: historicalCPU lowerbound is computed from actual numeric observations and is null/reason when absent."
+  ],
+  "checks": {
+    "producer_ast_parse": "PASS",
+    "rendered_remote_template_ast_parse": "PASS",
+    "shell_quote_roundtrip": "PASS"
+  },
+  "schema_compatible": true,
+  "scope_flags_complete": true,
+  "scopes_preserved": [
+    "training200 and dev40 pinned originalf39 +242actual underlying reports/resources",
+    "incomplete originalfinal41 JSONL and wasted/inflight compute independent from preserved30880 scores",
+    "committed successfulreplacement20833 native15costs with done+payload hashes",
+    "actual shared resources/ownterminal/dispatch, five failedown startup observations/available results",
+    "actual coldCPU fullverifier/report/service terminal/polls/dispatch/result"
+  ],
+  "actual_artifact_acceptance": false,
+  "notes": [
+    "No overlapping scope totals are added together. Native vs PAD-filtered count conventions remain distinct. Missing service accounting remains unknown rather than zero.",
+    "Producer deliberately uses exclusive output/evidence creation; partial/timeout outcome must be inspected, not blindly retried.",
+    "Independent actual receipt acceptance remains required before nested fresh200."
+  ]
+}
