@@ -128,6 +128,8 @@ def validate_metric(poll, outer):
     candidates = [m for m in poll.get('iteration_metrics', []) if m.get('step') == outer
                   and m.get('training/actual_outer_updates') == outer]
     if not candidates and outer == TARGET:
+        need(not any(m.get('step') == outer for m in poll.get('iteration_metrics', [])),
+             'A present metric200 has inconsistent actual credit fields', 'REJECTED_INPUT_NO_WRITE')
         # The real final validation may run before the complete step200 line is
         # printed. Native/credit/rank/final-phase checks below remain required.
         return None
@@ -487,7 +489,7 @@ def main():
         + f'Current successful writes: {receipt["actual_outer_successful_writes_per_rank"]}; per-rank missing opportunity fields remain unknown. '
         + f'Full metric processed/skipped opportunities: {receipt["full_metric_processed_opportunities"]}/{receipt["full_metric_skipped_opportunities"]}.\n\n'
         + ('Actual200 training updates and native state are complete; the complete step200 metric has not yet been produced. All unobserved metric/timing fields remain null.\n\n' if metric_pending else '')
-        + f'Current dev512: {"complete" if actual_dev else "none/not yet observed"}; latest actual dev outer {receipt["latest_dev512_outer"]}, F1 {latest_dev_scores["f1_percent"]}%, EM {latest_dev_scores["em_percent"]}%. '
+        + f'Current dev512: {"complete" if actual_dev else "none/not yet observed"}; latest actual dev outer {receipt["latest_dev512_outer"]}, F1_percent {json.dumps(latest_dev_scores["f1_percent"])}, EM_percent {json.dumps(latest_dev_scores["em_percent"])}. '
         + f'Current step seconds {total_seconds}; current dev seconds {dev_seconds}; training/archive excluding current dev {training_seconds}. '
         + 'Older dev time is never assigned to this outer.\n\n'
         + f'Current training variance scalars: {json.dumps(current_variances)}.\n\n'
