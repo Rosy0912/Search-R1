@@ -1,0 +1,23 @@
+{
+  "role": "independent_capacity123_controller_source_and_actual_source_staging_review",
+  "reviewer": "/root/capacity_hold123_independent_review",
+  "initialization_without_parent_context": true,
+  "accepted": true,
+  "helper_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+  "launcher_sha256": "9a4f794022744e89cfb80e663f4c658473437fcfa2f4c34fab5d355b2963a471",
+  "reader_sha256": "7284c1eaee74d06b245072fec114646d5d9649baba70d6282ec58a47fca0d4a4",
+  "source_staging_record": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free123-retention-repair-source-staging.json",
+  "intent": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free123-retention-repair-intent.json",
+  "scope": "Actualstagedsource mode0500/UID0/nlink1/hash bytes andfreshlocalintent match; strictprelaunch free>=61GiB/noforeign, optimize0 beforeclaims; readfullboot/node/identity/namespace/source/UUID/ownNVML+torch/twoREADY/latestpostREADY; noalloc/nativeclaim fromreview",
+  "required_actual_acceptance": [
+    "two distinct real observations same livebirth andphysicalUUIDs",
+    "actual_owned_60GiB_each_verified=true",
+    "post_READY_retention_sample_verified=true",
+    "failure=null; release=null; statusREADY",
+    "NONEXCLUSIVE/native_training_admission=false"
+  ],
+  "actual_GPU_availability_verified": false,
+  "actual_allocations_verified": false,
+  "native_algorithm_accepted": false,
+  "checked_unix": 1791930757.933608
+}
