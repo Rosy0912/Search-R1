@@ -2,7 +2,7 @@
 """Append one immutable completed outer to the local nested-tree v3 cost book.
 
 No SSH, subprocess, model/tensor imports, training controls, or STATUS/REPORT writes.
-Existing history through18 is preserved byte-for-byte. Missing current metrics
+Existing history through19 is preserved byte-for-byte. Missing current metrics
 remain pending/null, including final outer200 without a complete metric line.
 """
 import argparse
@@ -16,7 +16,9 @@ from pathlib import Path
 
 BOOK = "PER_OUTER_METRICS_COMPACT.json"
 BOOK_MD = "PER_OUTER_METRICS_COMPACT.md"
-PROTECTED_THROUGH = 18
+PROTECTED_THROUGH = 19
+BACKFILL_INDEX = "CANDIDATE_COST_BACKFILL_THROUGH19.json"
+BACKFILL_SHA256 = "d219a4f1af593d6dc304154e115aab218168113974109ce032d0b8402c568699"
 MAX_BYTES = 100000
 PREFIXES = {
     "variance_metrics": "tree_variance/",
@@ -334,8 +336,8 @@ def append_one(base, receipt, max_bytes):
         raise ValueError("Append requires exactly next effective outer; no missing/duplicate credit")
     previous_rows = materialized_rows(base, index)
     row = new_row(index, e)
-    # Existing1..18 blocks are never rewritten by this tool, including old active11..20.
-    active = next((v for v in reversed(index["scalar_blocks"]) if v.get("created_by") == "append_nested_local_costs_v1" and not v.get("sealed")), None)
+    # Preserve original1..19 blocks, including the already-published first tool block.
+    active = next((v for v in reversed(index["scalar_blocks"]) if v.get("created_by") == "append_nested_local_costs_v1" and v["first_outer"] > PROTECTED_THROUGH and not v.get("sealed")), None)
     if active:
         block = read_json(base / active["file"])
     else:
@@ -415,6 +417,9 @@ def append_one(base, receipt, max_bytes):
         history["native5_child_outer_steps"] = [r["outer"] for r in index["effective_rows"] if r["source_commit"] == row["source_commit"]]
     index.setdefault("local_append_tool", {"schema": "append_nested_local_costs_v1", "preserve_history_through_outer": PROTECTED_THROUGH,
         "initial_index_sha256": sha(mainraw), "initial_block_bytes_sha256": {v["file"]: v["sha256"] for v in index["scalar_blocks"] if max(v.get("actual_outers") or [0]) <= PROTECTED_THROUGH}})
+    history_binding = index["local_append_tool"]
+    history_binding["preserve_history_through_outer"] = max(history_binding.get("preserve_history_through_outer", 0), PROTECTED_THROUGH)
+    history_binding.setdefault("preserved_extension_block_sha256", {}).update({v["file"]: v["sha256"] for v in index["scalar_blocks"] if max(v.get("actual_outers") or [0]) <= PROTECTED_THROUGH})
     index["last_updated_utc"] = datetime.now(timezone.utc).isoformat()
     index["preceding_compact_summary_sha256"] = sha(mainraw)
     md = append_md((base / BOOK_MD).read_text(), row, active, previous)
@@ -468,6 +473,60 @@ def bounded_cumulative(result, through, max_bytes):
     return artifacts
 
 
+def join_candidate_backfill(args, index, rows):
+    """Join immutable candidate scalars into cumulative copies, never old blocks."""
+    base = args.base
+    selected = args.candidate_backfill_index
+    path = selected if selected.is_absolute() else base / selected
+    if path.resolve().parent != base:
+        raise ValueError("Backfill index must be a named file in the local audit dir")
+    if not path.exists():
+        return {"status": "NO_LOCAL_BACKFILL_INDEX", "applied_outers": []}
+    raw = path.read_bytes()
+    if len(raw) > MAX_BYTES or sha(raw) != args.candidate_backfill_sha256:
+        raise ValueError("Fixed candidate backfill index SHA/size differs")
+    data = json.loads(raw)
+    if data.get("summary_schema") != "tree_candidate_cost_backfill_index_v1":
+        raise ValueError("Unexpected candidate backfill schema")
+    by_outer = {r["outer"]: r for r in rows}
+    applied, seen = [], set()
+    for info in data["parts"]:
+        outer = info["outer"]
+        if outer in seen or outer not in range(3, 20):
+            raise ValueError("Backfill may only join unique3..19; original1/2 stay separate")
+        seen.add(outer)
+        if outer not in by_outer:
+            continue
+        partpath = (base / info["file"]).resolve()
+        if not partpath.is_relative_to(base) or partpath.parent != base / "candidate_cost_backfill":
+            raise ValueError("Backfill part is outside its local scalar directory")
+        part_raw = partpath.read_bytes()
+        if len(part_raw) != info["bytes"] or len(part_raw) > MAX_BYTES or sha(part_raw) != info["sha256"]:
+            raise ValueError("Backfill part immutable SHA/bytes differs")
+        part = json.loads(part_raw)
+        if part.get("status") != "ACTUAL_COMPLETED_CANDIDATE_SCALARS_AGGREGATED":
+            continue
+        row = by_outer[outer]
+        config = index["source_identity_by_commit"][row["source_commit"]]["identity"]["config_sha256"]
+        if info["source_commit"] != row["source_commit"] or part.get("source_commit") != row["source_commit"] or info["config_sha256"] != config or part.get("config_sha256") != config or part.get("requested_outer") != outer:
+            raise ValueError("Backfill outer/source/config join differs")
+        if len(part.get("rollouts", [])) != 1:
+            raise ValueError("Expected exactly one captured completed candidate rollout")
+        value = part["rollouts"][0]
+        if value.get("global_step") != outer or value.get("runtime_source_commit") != row["source_commit"] or value.get("config_sha256") != config:
+            raise ValueError("Original candidate rollout identity differs")
+        source = part["source_files"]
+        audit, controller = source["audit"], value["rollout_controller_cost"]
+        if not audit.get("stable_read") or audit["sha256"] != value["audit_file_sha256"] or audit["bytes"] != value["audit_file_bytes"] or source["resolved_config"]["sha256"] != config:
+            raise ValueError("Original candidate/config file identity differs")
+        if controller.get("code_commit") != row["source_commit"] or controller.get("config_sha256") != config or controller.get("candidate_outer") != outer:
+            raise ValueError("Original candidate controller identity differs")
+        for field in ("candidate_outcomes", "candidate_round_controller_ledger"):
+            row["candidate_cost_detail"][field] = {"source_file": info["file"], "source_sha256": info["sha256"], "json_selector": "rollouts[0]." + field}
+        applied.append({"outer": outer, "source_commit": row["source_commit"], "config_sha256": config, "file": info["file"], "sha256": info["sha256"], "audit_file_sha256": audit["sha256"], "audit_file_bytes": audit["bytes"]})
+    return {"status": "APPLIED_FIXED_LOCAL_BACKFILL", "index_file": path.name, "index_bytes": len(raw), "index_sha256": sha(raw), "applied_outers": [v["outer"] for v in applied], "inputs": applied, "original1_and2_refs_unchanged": True, "old_blocks_or_cumulative_files_modified": False, "scope": "Each original1/2 source and each joined3..19 row once. Candidate sums and native branch ledger keep original timing/padding boundaries; no inferred outcome padding or independent wall."}
+
+
 def cumulative(args):
     import json,hashlib,math,os,copy
     from pathlib import Path
@@ -492,7 +551,8 @@ def cumulative(args):
        if isinstance(a,dict) and 'field_set' in a:v['optimizer']['per_outer_direct_rank_summaries']=[dict(zip(sets[a['field_set']],x)) for x in a['values']]
        v['_block_file']=info['file'];rows.append(v)
     rows.sort(key=lambda r:r['outer'])
-    if [r['outer'] for r in rows]!=list(range(1,through+1)):raise RuntimeError('Effective1..15 are not uniquely present')
+    if [r['outer'] for r in rows]!=list(range(1,through+1)):raise RuntimeError('Effective1..N rows are not uniquely present')
+    candidate_backfill_join=join_candidate_backfill(args,index,rows)
     def resolve(ref):
      if not isinstance(ref,dict) or 'source_file' not in ref:return ref if isinstance(ref,dict) else {}
      name=ref['source_file'];raw=(base/name).read_bytes()
@@ -577,7 +637,7 @@ def cumulative(args):
       if isinstance(d.get(outcome),dict):data_by_outer[r['outer']]=d[outcome].get('field_sums',{})
      fields=sorted({field for d in data_by_outer.values() for field in d})
      outcomes[outcome]={'known_outers':sorted(data_by_outer),'missing_outers':[r['outer'] for r in rows if r['outer'] not in data_by_outer],
-     'field_sums':{field:{'total':None if len(data_by_outer)!=through else math.fsum(d.get(field,0) for d in data_by_outer.values()),'known_sum':math.fsum(d[field] for d in data_by_outer.values() if numeric(d.get(field)))} for field in fields},
+     'field_sums':{field:{'total':math.fsum(d[field] for d in data_by_outer.values()) if len(data_by_outer)==through and all(numeric(d.get(field)) for d in data_by_outer.values()) else None,'known_sum':math.fsum(d[field] for d in data_by_outer.values() if numeric(d.get(field))),'known_outers':[o for o,d in data_by_outer.items() if numeric(d.get(field))],'missing_outers':[r['outer'] for r in rows if not numeric(data_by_outer.get(r['outer'],{}).get(field))]} for field in fields},
      'scope':'Original exact candidate outcome scalar sums only. Amortized parallel wall shares and inherited-prefix event counts retain original scopes;fallback overlaps accepted.'}
     outerwall=timings['step']['total'];boundseconds=8*outerwall if numeric(outerwall) else None
     result={'summary_schema':'tree_nested_cumulative_cost_v1','created_utc':datetime.now(timezone.utc).isoformat(),'through_effective_outer':through,'target_outer':200,
@@ -603,6 +663,7 @@ def cumulative(args):
      if isinstance(v,list):return [clean(x) for x in v]
      return v
     result=clean(result)
+    result['candidate_cost_backfill_join']=candidate_backfill_join
     result['pending_full_metric_outers']=[r['outer'] for r in rows if r.get('full_metric_status','').startswith('PENDING')]
     result['completed_dev_testing_known_sum_seconds']=math.fsum(d['testing_phase_wall_seconds'] for d in dev if numeric(d['testing_phase_wall_seconds']))
     result['completed_dev_testing_missing_wall_outers']=[d['outer'] for d in dev if not numeric(d['testing_phase_wall_seconds'])]
@@ -647,6 +708,8 @@ def main():
     parser.add_argument("--base", required=True, type=Path, help="Existing local task audit directory")
     parser.add_argument("--receipt", required=True, type=Path, help="Actual immutable FULL_OUTERN_PROGRESS_RECEIPT.json")
     parser.add_argument("--max-block-bytes", type=int, default=MAX_BYTES)
+    parser.add_argument("--candidate-backfill-index", type=Path, default=Path(BACKFILL_INDEX))
+    parser.add_argument("--candidate-backfill-sha256", default=BACKFILL_SHA256)
     args = parser.parse_args()
     args.base = args.base.resolve(strict=True)
     if args.receipt.is_absolute() and args.receipt.resolve().parent != args.base:

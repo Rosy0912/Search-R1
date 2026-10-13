@@ -10,7 +10,7 @@
 
 后续只替换receipt轮次。缺少receipt时返回PENDING且不写账本。输入仅为base内明确命名的小型JSON；它核对FULL绑定的immutable poll、native readback和resource SHA/bytes，再从本轮step/candidate_outer读取事实。不会用latest metric替代本轮。
 
-已完成的1–18轮块文件保持原字节；首次追加从19开始新块。后续工具创建的active块可追加，接近100000字节则开新块，不丢标量。保留v3索引、原字段名、完整scalar、来源/config/data/model身份、真实有效ancestry和历史失败成本分栏。新块使用原字段名映射，旧vector仍按其原fieldsets解码。既有两个小型本地镜像沿用账本mirrors配置。
+已完成的1–19轮块文件保持原字节；后续追加从20开始新块。后续工具创建的active块可追加，接近100000字节则开新块，不丢标量。保留v3索引、原字段名、完整scalar、来源/config/data/model身份、真实有效ancestry和历史失败成本分栏。新块使用原字段名映射，旧vector仍按其原fieldsets解码。既有两个小型本地镜像沿用账本mirrors配置。
 
 输出为PER_OUTER_METRICS_COMPACT.json/md、新scalar块，以及CUMULATIVE_COST_THROUGHN.json/md（实际文件名例如CUMULATIVE_COST_THROUGH19.json）。历史累计文件不覆盖。累计若超过100000字节，会把完整证据字段存入cumulative_cost_blocks的小型分片，主JSON保留每片SHA、字节、字段名和顺序，字段不被删除。每个JSON块限100000字节，单条异常超限会报错，不静默截断。
 
@@ -22,5 +22,7 @@
 
 同一轮同一receipt SHA再次调用为幂等；不同receipt覆盖已计轮次会拒绝，需另行明确修正凭据。非终轮要求下一轮已进入；目标200不要求启动201，但native driver完整next_step仍按实际metadata绑定。所有新原始证据为固定receipt/poll/native/resource哈希，动态CURRENT/STATUS不是固定证据。
 
-本次发布仅AST语法检查，没有运行工具、没有成本账本重写、没有第19轮信用，也没有review/测试/训练节点调用。执行权限和实际训练验收仍由主线掌握。
+本次补账接入仅AST语法检查，没有执行FULL20调用、没有既有账本重写或新增训练信用，也没有review/测试/训练节点调用。执行权限和实际训练验收仍由主线掌握。
 
+
+固定补账接入：累计生成默认读取base/CANDIDATE_COST_BACKFILL_THROUGH19.json，固定SHA d219a4f1af593d6dc304154e115aab218168113974109ce032d0b8402c568699；可显式传--candidate-backfill-index及--candidate-backfill-sha256。逐份核对part SHA/bytes、outer、运行source/config、原audit稳定SHA与controller身份，仅向本次累计的内存副本加入原schema引用，不改旧块。原1/2来源与新3..19每轮只计一次。引用来源及匹配证明保存在candidate_cost_backfill_join与resolved_fixed_cost_inputs。缺少20的逐条补账时，20对应outcome/branch评分覆盖仍未知，保留known_sum/known_outers/missing_outers，不填0、不猜padding或独占wall；也不会读取远端补齐。
