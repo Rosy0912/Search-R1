@@ -90,7 +90,12 @@ def main():
             except requests.RequestException:pass
             time.sleep(1)
         common=['--config',str(OLD/'resolved.yaml'),'--prefix',a.prefix,'--manifest',a.manifest,'--model',str(OLD/'checkpoints/actor/global_step_200'),'--output',str(scores)]
-        worker=owned.spawn([sys.executable,'-m','torch.distributed.run','--standalone','--nnodes=1','--nproc-per-node=8',str(HERE/'eval_worker.py'),*common,'--local-batch-size','64'],run/'eval.log',env,pass_fds=tuple(locks))
+        # vLLM0.6.3 capability lookup accepts integer visible device indices, not UUID strings.
+        numeric_indices=[str(nv.nvmlDeviceGetIndex(nv.nvmlDeviceGetHandleByUUID(uid.encode()))) for uid in selected]
+        require(len(set(numeric_indices))==8,'Physical numeric mapping must be eight distinct leased GPUs')
+        worker_env=dict(env,CUDA_VISIBLE_DEVICES=','.join(numeric_indices),TREE_EVAL_LEASED_GPU_UUIDS=json.dumps(selected))
+        write(run/'worker-gpu-mapping.json',dict(leased_uuids=selected,visible_numeric_indices=numeric_indices))
+        worker=owned.spawn([sys.executable,'-m','torch.distributed.run','--standalone','--nnodes=1','--nproc-per-node=8',str(HERE/'eval_worker.py'),*common,'--local-batch-size','64'],run/'eval.log',worker_env,pass_fds=tuple(locks))
         while worker.poll() is None:
             require(guard.poll() is None and retriever.poll() is None,'Own shared service stopped')
             with (run/'resource-samples.jsonl').open('rb') as f:f.seek(0,2);f.seek(max(0,f.tell()-32768));latest=json.loads(f.read().decode().splitlines()[-1])

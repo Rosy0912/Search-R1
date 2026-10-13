@@ -1,7 +1,7 @@
 {
   "status": "ACCEPTED",
   "review_status": "ACCEPTED",
-  "reviewed_at_utc": "2026-10-13T13:48:33.458153+00:00",
+  "reviewed_at_utc": "2026-10-13T13:57:13.014930+00:00",
   "review_scope": "Independent local static review of shared runtime delta and prior accepted evaluation pipeline; no remote actions by reviewer.",
   "files": {
     "bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
@@ -13,9 +13,9 @@
     "launch.sbatch": "0e7eed08ec524859900f51546e77dbd5be25fdc280de203006798523122cc789",
     "resource_guard_retained18.py": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
     "salvage_cpython310_qa.py": "4345faaf6c24bd30d7599f68fd5e32ab30d37386cc925b6c877a766b686081b3",
-    "shared_dispatch_once.py": "3b98d7b71c7bfe986df41690e8a7c3d6d5dc109c341ba8370550e77dba5ec315",
+    "shared_dispatch_once.py": "0d21ae70cb400ffac08fd7700904236c4299886b9b572bb408656c0a8f18d2dd",
     "shared_guard.py": "b750ae444454106b002138b79e188769f46562bc95066e9dcfc488acb5740086",
-    "shared_supervisor.py": "66884281a9e7cde7c587e33b0eae25ad8c061be5e0f8a9c829266e19399318e6",
+    "shared_supervisor.py": "7c40dc60bdcf6659d54587ba32d04e05f86fc75d9674db8e2243606f777a45c4",
     "supervisor.py": "9ed4d2626a14d36a2a5213d52018aa03fcb099fb1674477df4b361b1b40665ea"
   },
   "blockers": [],
@@ -75,5 +75,23 @@
       "Temporary local symlink/canonical equality and different-path rejection PASS"
     ],
     "evidence_sha256": "ecdadee185279bbe37f5f9fb13946bbbd72d8f97abfe88b457b5b4c64f21517c"
+  },
+  "repair3_review": {
+    "status": "ACCEPTED",
+    "scope": "Narrow NVML numeric visibility compatibility and known cleaned failed predecessor restart. No remote execution.",
+    "checks": [
+      "Selected leased UUIDs are looked up via NVML handles to unique physical numeric indices in the same selected list order; numeric visibility is passed only to worker. Guard, retriever and parent leases retain UUID visibility.",
+      "Recorded four-node inventory confirms exact selected UUID set is all eight h100-10 GPU indices0-7, so numeric visibility selects the same entire leased nodeGPU set even if CUDA ordinal ordering differs. Every rank carries identical HF model and independent TP1 queue; no rank-specific checkpoint semantics depend on physical GPU order.",
+      "Worker-gpu-mapping.json durably records UUID and numeric-index lists before worker launch.",
+      "Only known failed own993109d unit added to repair allowlist; actual run-result must prove FAILED, workerexit1, empty cleanup residual and unchanged prefix before new unit. Prior original cancellation proof and oncejournal safeguards remain.",
+      "Actual failure evidence inspected: eight-rank UUID int conversion failure, failed known unit, workerexit1, cleanup{}, no committed results; foreign work untouched."
+    ],
+    "tests": [
+      "Both modified files AST syntax PASS",
+      "Saved actual node inventory selectedUUID\u2192numeric mapping bijection/all0-7 PASS",
+      "Failure result status/exit/cleanup evidence checks PASS"
+    ],
+    "caveat": "NVML index ordering is not a universal guarantee of CUDA runtime ordinal order; all8 selectedGPUset is established here. If a later change selects only a subset, pin/verify CUDA runtime UUID mapping before allocations.",
+    "evidence_sha256": "aafe436aade6a99b2ff25215e11f194082bf3bc4252d463a9ca00196a2c453c7"
   }
 }
