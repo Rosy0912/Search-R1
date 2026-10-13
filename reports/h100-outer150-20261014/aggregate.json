@@ -1,0 +1,34 @@
+{
+  "completed_outer": 150,
+  "adam_each_rank": 3000,
+  "dev512": {
+    "count": 512,
+    "hits": 246,
+    "em": 0.48046875,
+    "nq": {
+      "hits": 108,
+      "count": 256
+    },
+    "hotpot": {
+      "hits": 138,
+      "count": 256
+    }
+  },
+  "previous100": {
+    "hits": 236,
+    "count": 512
+  },
+  "delta_pp": 1.953125,
+  "timings_seconds": {
+    "timing_s/gen": 697.5979827838019,
+    "timing_s/update_actor": 253.14226273354143,
+    "timing_s/testing": 677.8579317135736,
+    "timing_s/step": 1733.4094061162323
+  },
+  "checkpoint_postevaluation_manifest_sha256": "eac297e697caf21fe8b08c78ce0851d1bd9dd2b3fd9c47604495772b1d0ed944",
+  "source_commit": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
+  "run_id": "d97047b5902642c883d24aa908945cda",
+  "goal_complete": false,
+  "final51713_complete": false,
+  "scope": "Native aggregates and eight-rank completion; no per-question paired analysis or independent Adam tensor reload"
+}
