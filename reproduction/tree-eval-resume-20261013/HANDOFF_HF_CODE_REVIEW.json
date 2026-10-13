@@ -1,0 +1,93 @@
+{
+  "schema_version": "tree_handoff_hf_context_free_code_review_v1",
+  "status": "ACCEPTED",
+  "review_status": "ACCEPTED",
+  "reviewed_at_utc": "2026-10-13T14:47:06.341766+00:00",
+  "fork_turns": "none",
+  "inherited_parent_conversation": false,
+  "scope": "Independent local strict source review only; no remote/GPU/model/PT execution, source mutation, commit/push, or training operations",
+  "wrapper_sha256": "8cc378a52009a8a41740831aa2259f380004da94760b3e7e98c4c8243a9c79ff",
+  "readme_sha256": "8f6750ec3e6cd86193efd85dc107e8dad3b3405bb52e145575bdf86cdf8a4b23",
+  "files": {
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/verify_handoff_hf.py": "8cc378a52009a8a41740831aa2259f380004da94760b3e7e98c4c8243a9c79ff",
+    "work/tree-branpo-final-hf-20261011/verify_final_hf_3360.py": "ad263ce31eb938542dd5f63d3f70b178605876576356b6fc9a3a21cb404e4ee7",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-branpo-final-hf-20261011/verify_final_hf_3360.py": "ad263ce31eb938542dd5f63d3f70b178605876576356b6fc9a3a21cb404e4ee7",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/baselines/tree-validation-20261002/evidence/runtime/check_real_checkpoint.py": "b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-branpo-runtime-20261011/production_contract.py": "df82d7641d66f3ac6d21ae8b4df6976d9fa8c204bd1909ad2648e3cee2e80b8f",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-branpo-runtime-20261011/attempt_accounting.py": "8426d39486e92773022dd0d40ef5e4cb0c742ee6317550d20244ed4696913c29",
+    "work/tree-speed-repair-20261008/branpo-source/search_r1/baselines/tree_rank_audit.py": "4ef35ac5e0ab0089a669fd459a342678cd9dd46f00e4cd51c917f191e56c183b",
+    "work/tree-speed-repair-20261008/branpo-source/search_r1/baselines/runtime_audit.py": "d4b2642ece02c8b6ccfde0abf13081c271e8b6abdfb25a7e9fbcc348a17584c6",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/eval_merge.py": "9159f0b2021a97cb4aa24bcfe8e67c08c6cafc44f7d567976aae8a851e1b205a",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/shared_supervisor.py": "7c40dc60bdcf6659d54587ba32d04e05f86fc75d9674db8e2243606f777a45c4",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/eval_worker.py": "906095da3e22b4f667fdb36cc635aa52bd8b0d968d116aeb3dcc59f4fda3fcea",
+    "outputs/tree-eval-resume-20261013/ORIGINAL_TERMINAL_BINDING.json": "22e7d9ed71015cf4b99802493205a0e8c1dfa7e97715df191005754499895bb0",
+    "outputs/tree-eval-resume-20261013/POLL-SECOND.json": "af0762ee0af4a94a03138480d03d9e7ec5c2eb8fe7a795a537e72cf8b7cdcef0",
+    "outputs/tree-eval-resume-20261013/STATUS.json": "60e3a72fb3d3017af3223a2f35b3759266a07c0bb3312eb4b7336ee1f5077a41",
+    "work/tree-speed-repair-20261008/branpo-source/reproduction/tree-eval-resume-20261013/README.md": "8f6750ec3e6cd86193efd85dc107e8dad3b3405bb52e145575bdf86cdf8a4b23"
+  },
+  "blocking_findings": [],
+  "resolved_findings": [
+    {
+      "id": "HFH-1",
+      "status": "RESOLVED",
+      "evidence": "check_rank_numerics consumes200x8 actual audits; enforces finite positive norm types/counters, finite sample count/cardinality/layout/coordinates/extrema/nonzero/SHA. Outer1 zero LR distinguishes unchanged sample; outers2..200 require sampled movement. Report states fixed-coordinate scope; no full-shard finiteness claim from samples."
+    },
+    {
+      "id": "HFH-2",
+      "status": "RESOLVED",
+      "evidence": "Supplied handoff equals the journal embedded in pinned preserved scheduler observation; exact own3360 RUNNING historical identity and finite request/stop/observation epoch ordering are enforced."
+    },
+    {
+      "id": "HFH-3",
+      "status": "RESOLVED",
+      "evidence": "exact_attempt_inventory requires full attempt directory to equal consumed sequence ending at200; additional201/fault/pending/nested artifacts are rejected and full filename/content hash inventory is rechecked after CPU verification."
+    }
+  ],
+  "checks": {
+    "positive_zero_lr_and_nonzero_lr_samples": true,
+    "reject_zero_gradient": true,
+    "reject_counter_mismatch": true,
+    "reject_bad_sample_sha": true,
+    "reject_nonfinite_sample": true,
+    "reject_nonzero_inconsistent_extrema": true,
+    "reject_outside_coordinates": true,
+    "reject_nonzero_lr_without_sample_movement": true,
+    "exact200_inventory_pass": true,
+    "extra201_rejected": true,
+    "pending_artifact_rejected": true,
+    "changed_attempt_inventory_detected": true,
+    "actual_local_pinned_historical_journal_identity_order_pass": true,
+    "ast_parse_pass": true
+  },
+  "positive_checks": [
+    "Exact preserved30880 prefix and original cancellation snapshot/source SHA pins; original state CANCELLED and exit0:15; absent original normal receipt must remain absent.",
+    "CPU wrapper rejects active own3360/3392 queue entries and requires actual owned systemd MainPID0/inactive/ExecMainStatus0, workerexit0 and empty own cleanup residual before model load.",
+    "Full final ledger independently reads all saved prefix/replacement rows, requires replacement20833 contiguous unique question indices and actual ordered parquet question hashes, exact seven source counts summing51713, and independently reproduces all final metrics.",
+    "Frozen full-HF verifier matches b3075d7b9346bb7682e0ea05962de0624c117b354590b728ed8a18b7e8ba3c97; full key/loading/shape/finiteness/finalbase delta and CPU forward checks are preserved.",
+    "Wrapper cold tokenizer checks include full backend JSON, AddedToken behavior, semantic config, full special roles/vocab/PAD/BOS/EOS/UNK/chat semantics and concrete encode/decode/chat comparisons.",
+    "Model/checkpoint/native assets remain on retained18 and are hashed, without local tensor copy or optimizer restore. Input files/base/HF and score inventory are checked before/after; final receipt does not invent independent acceptance.",
+    "Cost files are bound as available actual files; no absent CPU/GPU/token cost is defaulted to zero, and old wasted evaluation compute is not credited as preserved scores."
+  ],
+  "actual_artifact_acceptance": {
+    "status": "PENDING",
+    "accepted": false,
+    "actual_full_hf_report_inspected": false,
+    "actual_final51713_ledger_inspected": false,
+    "reason": "No replacement COMPLETE51713/workerexit0/owncleanup terminal or actual cold-HF/tokenizer composite receipt supplied to this reviewer. Source approval alone is not acceptance of those actual results.",
+    "new_nested_fresh200_permitted": false
+  },
+  "required_runtime_gates": [
+    "Replacement actual owned unit COMPLETE51713, workerexit0 and owncleanup{} plus actual systemd terminal before CPU wrapper execution.",
+    "All actual200x8 numerical JSON records and exact attempt inventory must pass source checks; local synthetic source checks do not attest those runtime values.",
+    "Actual complete final51713 score ledger/question hashes, exact seven source counts and independent metric recomputation must pass.",
+    "One actual full frozen CPU HF cold load and actual cold tokenizer checks; immutable before/after input/base/HF/attempt/score checks.",
+    "A later independent artifact review must bind the composite receipt and reports plus exact reviewed wrapper SHA before new nested fresh200."
+  ],
+  "previous_review": {
+    "status": "BLOCKED",
+    "wrapper_sha256": "e4538c453368304420a8c92b2f43d82511da081f58d50c619d14c3f347d8c505",
+    "record": "HANDOFF_HF_CODE_REVIEW_INITIAL_BLOCKED.json"
+  },
+  "cost_scope": "Cost files remain actual available evidence; missing cost fields are not assigned zeros and old unpreserved compute is not credited as preserved scores."
+}
