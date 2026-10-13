@@ -1,0 +1,123 @@
+{
+  "observed_remote_time": 1791898456.3183188,
+  "node": "h100-11",
+  "own_job_id": 3393,
+  "run_id": "d97047b5902642c883d24aa908945cda",
+  "source_commit": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
+  "configuration_sha256": "43e28cc7ecc0d38a93324bf480aafb23a0c1ecdb979e9ea587d0358ae095233d",
+  "parent_completed_outer": 100,
+  "parent_post_evaluation_manifest_sha256": "bb0599ced9db88eaa5dfec21ead76d214a8a1f5b4a64aa7baa4b85a41ceebce2",
+  "completed_restored_outers": [
+    101,
+    102,
+    103,
+    104,
+    105
+  ],
+  "native_committed_adam_each_rank_at105": 2100,
+  "current_outer": 106,
+  "current_native_committed_this_outer_each_rank": 13,
+  "first_five_operational_acceptance": true,
+  "worker_driver_restore_equality": true,
+  "mean_outer_seconds": 682.634714900516,
+  "mean_generation_seconds": 429.0015690287575,
+  "mean_update_seconds": 167.11160755082966,
+  "recorded_metrics_finite": true,
+  "latest_fixed_dev512": {
+    "outer": 100,
+    "correct": 236,
+    "total": 512,
+    "em": 0.4609375
+  },
+  "final51713_started": false,
+  "final_watcher_bound_and_live": true,
+  "total_goal_complete": false,
+  "limits": [
+    "Old101-118 and partial119 were not persisted; replayed from saved100",
+    "Actual full native restoration, not independent root tensor reread after2100",
+    "No bitwise restoration claim for independent vLLM sampler",
+    "Five healthy restored outers is operational acceptance only;200 and51713 pending"
+  ],
+  "rows": [
+    {
+      "outer": 101,
+      "metrics": {
+        "timing_s/step": 711.9360427195206,
+        "timing_s/gen": 438.50734381284565,
+        "timing_s/ref": 16.19824779499322,
+        "timing_s/update_actor": 179.5030289059505,
+        "actor/pg_loss": 0.000944392112432979,
+        "actor/grad_norm": 1.3872908707741771,
+        "actor/postclip_grad_norm": 0.9701935463804933,
+        "critic/score/mean": 0.4957031309604645,
+        "training/actual_adam_calls_per_rank": 2020.0,
+        "training/refused_attempts": 0.0,
+        "actor/optimizer_steps": 20.0
+      }
+    },
+    {
+      "outer": 102,
+      "metrics": {
+        "timing_s/step": 682.3562448527664,
+        "timing_s/gen": 430.7212460208684,
+        "timing_s/ref": 11.065540669485927,
+        "timing_s/update_actor": 164.43981880601496,
+        "actor/pg_loss": 0.00047076985938474534,
+        "actor/grad_norm": 1.238341913761095,
+        "actor/postclip_grad_norm": 0.9842343126330503,
+        "critic/score/mean": 0.4749999940395355,
+        "training/actual_adam_calls_per_rank": 2040.0,
+        "training/refused_attempts": 0.0,
+        "actor/optimizer_steps": 20.0
+      }
+    },
+    {
+      "outer": 103,
+      "metrics": {
+        "timing_s/step": 656.4195345714688,
+        "timing_s/gen": 413.0534451389685,
+        "timing_s/ref": 10.89718121662736,
+        "timing_s/update_actor": 161.95260835345834,
+        "actor/pg_loss": 0.0005898545234231279,
+        "actor/grad_norm": 1.3758530038450312,
+        "actor/postclip_grad_norm": 0.9851194498245152,
+        "critic/score/mean": 0.47929686307907104,
+        "training/actual_adam_calls_per_rank": 2060.0,
+        "training/refused_attempts": 0.0,
+        "actor/optimizer_steps": 20.0
+      }
+    },
+    {
+      "outer": 104,
+      "metrics": {
+        "timing_s/step": 689.9736177306622,
+        "timing_s/gen": 438.01890011224896,
+        "timing_s/ref": 11.587709669023752,
+        "timing_s/update_actor": 165.02138600312173,
+        "actor/pg_loss": 0.0007387119927443564,
+        "actor/grad_norm": 1.5075633539339268,
+        "actor/postclip_grad_norm": 0.9719549441417975,
+        "critic/score/mean": 0.49921876192092896,
+        "training/actual_adam_calls_per_rank": 2080.0,
+        "training/refused_attempts": 0.0,
+        "actor/optimizer_steps": 20.0
+      }
+    },
+    {
+      "outer": 105,
+      "metrics": {
+        "timing_s/step": 672.4881346281618,
+        "timing_s/gen": 424.706910058856,
+        "timing_s/ref": 11.464331075549126,
+        "timing_s/update_actor": 164.64119568560272,
+        "actor/pg_loss": 0.0009651122440118342,
+        "actor/grad_norm": 1.4122498522458087,
+        "actor/postclip_grad_norm": 0.9582162182955543,
+        "critic/score/mean": 0.505078136920929,
+        "training/actual_adam_calls_per_rank": 2100.0,
+        "training/refused_attempts": 0.0,
+        "actor/optimizer_steps": 20.0
+      }
+    }
+  ]
+}
