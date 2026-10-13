@@ -1,7 +1,7 @@
 {
   "status": "ACCEPTED",
   "review_status": "ACCEPTED",
-  "reviewed_at_utc": "2026-10-13T13:33:17.737119+00:00",
+  "reviewed_at_utc": "2026-10-13T13:43:44.285820+00:00",
   "review_scope": "Independent local static review of shared runtime delta and prior accepted evaluation pipeline; no remote actions by reviewer.",
   "files": {
     "bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
@@ -13,9 +13,9 @@
     "launch.sbatch": "0e7eed08ec524859900f51546e77dbd5be25fdc280de203006798523122cc789",
     "resource_guard_retained18.py": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
     "salvage_cpython310_qa.py": "4345faaf6c24bd30d7599f68fd5e32ab30d37386cc925b6c877a766b686081b3",
-    "shared_dispatch_once.py": "2291e162fd38b9456eb2f0b0d89cc6d85d80422b41ee7a870e4229a18020d8e9",
+    "shared_dispatch_once.py": "6ba8c214599bbf5e903758e0553a64c69b7135eca3c89c0b1d2623ec87f3fe5f",
     "shared_guard.py": "b750ae444454106b002138b79e188769f46562bc95066e9dcfc488acb5740086",
-    "shared_supervisor.py": "3b5d88f6bb43a85e6548b5eab02c1ed8f10d9aefb3478acd3eaa091f94729a51",
+    "shared_supervisor.py": "7240a46c7a2b7926e2df360d1498785024b68e6f0c05ae41de0f9264d9754fda",
     "supervisor.py": "9ed4d2626a14d36a2a5213d52018aa03fcb099fb1674477df4b361b1b40665ea"
   },
   "blockers": [],
@@ -46,5 +46,18 @@
     "Acceptance covers the exact software and explicit sharing scope; model/cache fit and shared throughput remain subject to actual startup and batches.",
     "Verify two actual committed batch increments plus guard/exit status; completion requires merged51713 metrics and SHA receipts.",
     "Memory guard is reactive at1second intervals; physical headroom checks stop only own unit and never kill or reconfigure foreign work."
-  ]
+  ],
+  "repair_review": {
+    "status": "ACCEPTED",
+    "scope": "Only isolated aged-out queue handling and identified terminal predecessor retry delta. No remote execution.",
+    "checks": [
+      "Whole local queue IDs replaces squeue -j aged-out IDs; check_output still fails closed on actual scheduler query errors.",
+      "Supervisor refuses active3360/3392 by exact queue-ID intersection; queue containing foreign3391 does not cause cancellation.",
+      "Repair is limited to exact known own predecessor sst-tree-eval-shared-1c15c49.service, requires durable prior successful3392 cancellation and unchanged prefix hash, current failed service/MainPID0/exit1, and no active3360/3392.",
+      "New unit identity must be absent and new once journal must not exist; repair branch sends no scancel and retains predecessor terminal/journal evidence in durable new journal before one systemd-run.",
+      "SHARED_POLL_1.json confirms identified predecessor failed before guard/retriever/eval logs, no batches or rank provenance, MainPID0/ExecMainStatus1; foreign3391 remains RUNNING."
+    ],
+    "test": "AST syntax parsing of both modified files PASS",
+    "evidence_sha256": "4ded54f6b3dda571baf0cdc34df4e0e5c72b83b43010f3d5a3eee4ba025b26ff"
+  }
 }
