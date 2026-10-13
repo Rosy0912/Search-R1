@@ -1,0 +1,15 @@
+{
+  "status": "PRE_MODEL_LOAD_SOURCE_CACHE_DRIFT_FIXED_EXACT_SOURCE_BINDING_PASS",
+  "failed_job": 713658,
+  "accounting": [
+    "713658|FAILED|1:0",
+    "713658.batch|FAILED|1:0",
+    "713658.extern|COMPLETED|0:0"
+  ],
+  "removed_generated_cache_directories": [
+    "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/runtime/__pycache__"
+  ],
+  "model_restore_started": false,
+  "actual_training_updates": 0,
+  "same_step5_recovery_authorized": true
+}

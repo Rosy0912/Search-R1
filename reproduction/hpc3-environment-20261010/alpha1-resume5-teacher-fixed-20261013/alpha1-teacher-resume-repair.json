@@ -1,0 +1,14 @@
+{
+  "status": "TEACHER_AUTHORIZED_RECOVERY_SEQUENCE_BOUND_AND_EXACT_GATE_TEST_PASS",
+  "epoch": 1791855874.3729315,
+  "failed_job": 713661,
+  "new_optimizer_updates": 0,
+  "teacher_start_outer": 6,
+  "original_backend_untouched": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-vllm-teacher-v3",
+  "backend": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-vllm-teacher-resume5-20261013",
+  "config": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/hpc3-topd200-alpha1-resume5-teacher-sequence-fixed-20261013.json",
+  "config_sha256": "a19b5011c66b4cb09de31eec47074e0b25bacbe9f6feb86bb4246942dcc33efc",
+  "gate_cases_passed": 12,
+  "weights_and_objective_changed": false,
+  "GPU_resumed_outer_not_yet_verified": true
+}

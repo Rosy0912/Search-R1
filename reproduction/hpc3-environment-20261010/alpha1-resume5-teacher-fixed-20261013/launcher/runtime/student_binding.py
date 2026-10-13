@@ -1,0 +1,31 @@
+"""Source identity and actual delivered teacher, without extra pretraining proofs."""
+import json,pathlib,hashlib
+from pipeline import verify_files
+from checkpoint_inventory import sha
+ROOT=pathlib.Path('/data/user/jxu957/experiments/topd-20261008/runtime')
+def check(c,read_native=False):
+ if c.get('mode')!='topd200' or c.get('expected_outer_steps')!=200:raise ValueError('Only actual student300')
+ for name in ('source_manifest','tools_manifest','launcher_manifest','teacher_backend_manifest'):
+  ref=c[name];p=pathlib.Path(ref['path']);base=p.parent
+  if ROOT not in p.resolve().parents or sha(p)!=ref['sha256']:raise ValueError('Owned source bytes differ '+name)
+  record=json.loads(p.read_text());files=dict(record['files']);files[p.name]={'size':p.stat().st_size,'sha256':ref['sha256']};verify_files(base,files)
+ if c['base_model']!=str(ROOT/'assets/qwen2.5-3b-instruct-aa8e725'):raise ValueError('Official Instruct student path differs')
+ if c['train_file']!=str(ROOT/'assets/common-instruct-0b002b/train.parquet') or c['val_file']!=str(ROOT/'assets/common-instruct-0b002b/validation.parquet'):raise ValueError('Shared common data path differs')
+ if not c.get('teacher_actual_result') or not c.get('teacher_path'):raise ValueError('Actual GRPO100 teacher is pending')
+ ref=c['teacher_actual_result']
+ if sha(ref['path'])!=ref['sha256']:raise ValueError('Actual teacher result identity differs')
+ result=json.loads(pathlib.Path(ref['path']).read_text())
+ if result.get('status')=='USER_APPROVED_TRAINED_CHECKPOINT':
+  if result.get('checkpoint_step')!=85 or result.get('original_teacher_job')!=3228:raise ValueError('Only user-approved trained teacher85')
+  outer=result['actual_outer_ref']
+  if sha(outer['path'])!=outer['sha256']:raise ValueError('Original teacher receipt drift')
+  actual=json.loads(pathlib.Path(outer['path']).read_text())
+  if actual['actual_completed_outer_steps']!=list(range(1,90)):raise ValueError('Original teacher89 provenance differs')
+ else:
+  if result['status']!='COMPLETE_UNREVIEWED' or not result['cleanup_passed']:raise ValueError('Teacher not delivered')
+  outer=result['actual_outer_evidence']
+  if sha(outer['path'])!=outer['sha256']:raise ValueError('Actual teacher outer receipt drift')
+  actual=json.loads(pathlib.Path(outer['path']).read_text())
+  if actual['actual_completed_outer_steps']!=list(range(1,101)) or actual['export_step']!=100:raise ValueError('Need actual100')
+ if pathlib.Path(result['export']['directory']).resolve()!=pathlib.Path(c['teacher_path']).resolve():raise ValueError('Teacher full HF export path differs')
+ return result

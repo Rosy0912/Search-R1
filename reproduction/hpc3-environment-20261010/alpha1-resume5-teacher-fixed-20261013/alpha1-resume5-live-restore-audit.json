@@ -1,0 +1,76 @@
+{
+  "epoch": 1791855616.0658164,
+  "status": "ALL_FOUR_ACTUAL_GPU_RANKS_AND_DRIVER_STEP5_RECOVERY_EQUALITY_PASS",
+  "job": 713661,
+  "rank_proofs": [
+    {
+      "actual_update_history_equal": true,
+      "adam_equal": true,
+      "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+      "checkpoint_sha256": "576084feede66872328026087bb8e6b65b561e0ef858554774617f72706078a6",
+      "model_local_equal": true,
+      "optimizer_steps": 100,
+      "outer_step": 5,
+      "rank": 0,
+      "rng_equal": true,
+      "scheduler_equal": true,
+      "scheduler_last_epoch": 5,
+      "status": "ACTUAL_GPU_WORKER_STEP5_FULL_RESTORE_EQUALITY_PASS"
+    },
+    {
+      "actual_update_history_equal": true,
+      "adam_equal": true,
+      "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+      "checkpoint_sha256": "17c094df2f713d82e5c5fcee8a8c8caa5bb600964cd4070ea416acc1333f1ae8",
+      "model_local_equal": true,
+      "optimizer_steps": 100,
+      "outer_step": 5,
+      "rank": 1,
+      "rng_equal": true,
+      "scheduler_equal": true,
+      "scheduler_last_epoch": 5,
+      "status": "ACTUAL_GPU_WORKER_STEP5_FULL_RESTORE_EQUALITY_PASS"
+    },
+    {
+      "actual_update_history_equal": true,
+      "adam_equal": true,
+      "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+      "checkpoint_sha256": "7f622a74a75f38d32a6626cb16063a3ab974ed191d637c70fcf7bbf6a76161c4",
+      "model_local_equal": true,
+      "optimizer_steps": 100,
+      "outer_step": 5,
+      "rank": 2,
+      "rng_equal": true,
+      "scheduler_equal": true,
+      "scheduler_last_epoch": 5,
+      "status": "ACTUAL_GPU_WORKER_STEP5_FULL_RESTORE_EQUALITY_PASS"
+    },
+    {
+      "actual_update_history_equal": true,
+      "adam_equal": true,
+      "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+      "checkpoint_sha256": "f20a357b0b435fabf2f579483adec26f11b4a2043e8c591b4b8e5ea82f07d977",
+      "model_local_equal": true,
+      "optimizer_steps": 100,
+      "outer_step": 5,
+      "rank": 3,
+      "rng_equal": true,
+      "scheduler_equal": true,
+      "scheduler_last_epoch": 5,
+      "status": "ACTUAL_GPU_WORKER_STEP5_FULL_RESTORE_EQUALITY_PASS"
+    }
+  ],
+  "driver": {
+    "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+    "next_batch": 5,
+    "next_outer_step": 6,
+    "order_sha256": "25465b1c68693a83e292251a9bac885e9a3325bd5c4d5d70c438d503e04d16fb",
+    "outer_step": 5,
+    "rng_equal": true,
+    "status": "ACTUAL_DRIVER_STEP5_RECOVERY_POSITION_RNG_PASS",
+    "train_rows": 169028
+  },
+  "next_outer": 6,
+  "first_resumed_full_outer_completed": false,
+  "no_new_official_reinitialization": true
+}

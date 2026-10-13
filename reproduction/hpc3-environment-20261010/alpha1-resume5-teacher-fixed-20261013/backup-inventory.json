@@ -1,0 +1,178 @@
+{
+  "hpc3-topd200-alpha1-resume5-teacher-sequence-fixed-20261013.json": {
+    "bytes": 22218,
+    "sha256": "a19b5011c66b4cb09de31eec47074e0b25bacbe9f6feb86bb4246942dcc33efc"
+  },
+  "alpha1-resume5-live-restore-audit.json": {
+    "bytes": 2991,
+    "sha256": "03a439bf580b3f772b9f487183866c09e3111cdf45f1dc7e7339dc8058d63791"
+  },
+  "prepare_alpha1_teacher_resume.py": {
+    "bytes": 4663,
+    "sha256": "e9b8da763742fd7f675c9e60382bdd963ec134c258829719e7357fbd807abe9a"
+  },
+  "alpha1-teacher-resume-repair.json": {
+    "bytes": 776,
+    "sha256": "c5571b4f01395f740bcf9326f347db8b026a9e07ef114c7fa2ecc897d7d648be"
+  },
+  "alpha1-resume5-first-submit-failure.json": {
+    "bytes": 496,
+    "sha256": "aa3506e56e53c991f2eb42a4d3492db15f17fea9ae834ce3228d0519b1a3d49b"
+  },
+  "launcher/recipe.json": {
+    "bytes": 3385,
+    "sha256": "eda27512173543f25f4bd3e53b19f0ce52f38179ffc37d0662740d5de122b3a1"
+  },
+  "launcher/build_command.py": {
+    "bytes": 996,
+    "sha256": "541ca044797388f0de21b0cdeda3c151b918a304344649aa9cbc0bb7974baf93"
+  },
+  "launcher/files.json": {
+    "bytes": 5821,
+    "sha256": "4e41278ee68b87f19289108cc6952188a6acf2ca9c6e8cd5292ec9b554244b5d"
+  },
+  "launcher/prepare.py": {
+    "bytes": 3845,
+    "sha256": "e7432eef039ecb2d594394e018e512ac61d5190f416ef22fe13a8e0f18b6ea95"
+  },
+  "launcher/launch.sbatch": {
+    "bytes": 1349,
+    "sha256": "b2f0de765ed744b9b0f027aee6d547ae83302faeb5f63fed51e12e8400366865"
+  },
+  "launcher/runtime/compiler_headers.py": {
+    "bytes": 1412,
+    "sha256": "329658d35573a6c5411cd87001d6d45e48b7ae0cddea2c87286711b9da9a0e69"
+  },
+  "launcher/runtime/train_entry.py": {
+    "bytes": 6769,
+    "sha256": "01dd31251cddd5a72707c8124104ae950dd88d91c23353a066c85989f2d4eaa1"
+  },
+  "launcher/runtime/process_observation.py": {
+    "bytes": 2051,
+    "sha256": "a9d56a290903412ee0caa2ab979eb40826e8f0c28d319476614f7e77002cc441"
+  },
+  "launcher/runtime/hpc3_owned_processes.py": {
+    "bytes": 10475,
+    "sha256": "5771f8e1e09582ed1fec305183a8bc873ed86570e1da61986bf3ab897ce2e4cd"
+  },
+  "launcher/runtime/checkpoint_inventory.py": {
+    "bytes": 5696,
+    "sha256": "ffc648031dcd368163f2103abcbc279776277c03dd7cb4fc42d35646e093af14"
+  },
+  "launcher/runtime/retrieval_gate.py": {
+    "bytes": 4000,
+    "sha256": "83f5bf7e7eb61124ae4b0a3450e15dd646fdc5e82ad54783b6110b070214e779"
+  },
+  "launcher/runtime/ipc.py": {
+    "bytes": 1488,
+    "sha256": "a4913c9e17c84e2cee1867b34b8f0132baa67cd4270945f538326ff234029b10"
+  },
+  "launcher/runtime/retrieval_server.py": {
+    "bytes": 15476,
+    "sha256": "972bbb955190b11c45b54640f5054a7fcb62fdca15c2f0a0f4d3c139b525cec2"
+  },
+  "launcher/runtime/topd_resume_state.py": {
+    "bytes": 10339,
+    "sha256": "34e8b592f92d75d79d22cad7463a009b443dd24bc6b5cc086525cd49b7703f7c"
+  },
+  "launcher/runtime/student_binding.py": {
+    "bytes": 2596,
+    "sha256": "6c99c46992839a57933c3de1f47d0a40740b012c26722d1cc7f95b71070b3626"
+  },
+  "launcher/runtime/window_guardian.py": {
+    "bytes": 9267,
+    "sha256": "8e2d62eef6d3e65f009eb1f02cbc91cd43a75dd0e64db9b5c0cfeab2716fd09a"
+  },
+  "launcher/runtime/student_phase.py": {
+    "bytes": 1770,
+    "sha256": "707302b54c56decb1bab487d24f35e10f6b4c2853516f86ea1333f67ec09d809"
+  },
+  "launcher/runtime/official_student.py": {
+    "bytes": 1838,
+    "sha256": "d7fd50ba651805b1fa77d4e0bd818af233bdd85c8eb69caad324886368debb93"
+  },
+  "launcher/runtime/bind_hpc3_run.py": {
+    "bytes": 1593,
+    "sha256": "7392aa8bbe3c97096a2b521ee2d135c9622a13732d9f59a7a65dd3b3415bcd87"
+  },
+  "launcher/runtime/final_cleanup.py": {
+    "bytes": 4027,
+    "sha256": "3b13974d28c10a23274dda529b377fc5f8b63f300dcb96b004ae794200c8a04d"
+  },
+  "launcher/runtime/files.json": {
+    "bytes": 4769,
+    "sha256": "f6133ee7f585fa5cf48708555d0327f239cb8cd2f2c0bb41e0fb8ab10a88e9c2"
+  },
+  "launcher/runtime/r1_observation.py": {
+    "bytes": 1361,
+    "sha256": "58038dbb5568fdf1f6e5025f5bdd4ddef9c1e8dc30c2bae2a22253fa442f45c7"
+  },
+  "launcher/runtime/pipeline.py": {
+    "bytes": 2455,
+    "sha256": "9943a30f6365a572c8d123dbf052398de20c76272d5a0986c527fa684fe7aff0"
+  },
+  "launcher/runtime/student_observation.py": {
+    "bytes": 1700,
+    "sha256": "53886189b1cc4de4ecdfb82646b9b0934eda749bcc25d282ece2bf6ce31409de"
+  },
+  "launcher/runtime/allocator_policy.py": {
+    "bytes": 2265,
+    "sha256": "0a04dd6ef798529418c1a923e1d139bb9d5dfc6484bf0f4df4c69fdbfc7accda"
+  },
+  "launcher/runtime/resource_audit.py": {
+    "bytes": 8073,
+    "sha256": "008a0bc0ec4c49a864977904ba5dd18ac4baa21bd8ba4b1e831f202a86e82f28"
+  },
+  "launcher/runtime/owner_support.py": {
+    "bytes": 61389,
+    "sha256": "8e2092e6fb3188c3bc25c257d46ecab230b7624279805670f92621721cadedfa"
+  },
+  "launcher/runtime/retrieval_startup.py": {
+    "bytes": 19258,
+    "sha256": "3bc1b2a9a5eb104cff57033b18988524b396bcd916bf43cc61314ee1acc107e6"
+  },
+  "launcher/runtime/supervise.py": {
+    "bytes": 17566,
+    "sha256": "ec02b7693d12e4cbaf012d9eee5a5562ae2d54531555e0a3dee7cdb021bec255"
+  },
+  "launcher/runtime/observed_worker.py": {
+    "bytes": 3459,
+    "sha256": "00ee9faebda572cb5277a0181b2bd93dfb5932c39e6c62656d8dfcad65966e58"
+  },
+  "launcher/runtime/original-native-server.py": {
+    "bytes": 15344,
+    "sha256": "b2eed2cbddbbe3c5bdc2d7f1e8b6f3738dc5629f3d42e0ba68690c82c9bcd052"
+  },
+  "teacher/files.json": {
+    "bytes": 1712,
+    "sha256": "0bb5c34564b4086dccae42e4736d9a3a9707412327c7d635ddc6c15b67847075"
+  },
+  "teacher/topd_vllm_teacher/worker.py": {
+    "bytes": 1603,
+    "sha256": "3eb8c3179416785a47f0d9abbdda8debc9666fca2621709220dfc7ec7f9d6b31"
+  },
+  "teacher/topd_vllm_teacher/alignment.py": {
+    "bytes": 1536,
+    "sha256": "45338dd00842cad06f64dfb8a2a3c0b37b7863dfeb938e4ed2523139c06066e0"
+  },
+  "teacher/topd_vllm_teacher/protocol.py": {
+    "bytes": 1514,
+    "sha256": "8a0f00ba7d0778c2566a9e94112728b97d5277d1d558e4934762c609a6b0dae2"
+  },
+  "teacher/topd_vllm_teacher/client.py": {
+    "bytes": 3119,
+    "sha256": "da9e2415c82a4c41f6b5fd750e60238743a3398a2f03b1cb6d5f921417139d37"
+  },
+  "teacher/topd_vllm_teacher/__init__.py": {
+    "bytes": 76,
+    "sha256": "b3968a0da2ff81e61e589f652ef8965079cca8579f6e3f096085dfb4370657e1"
+  },
+  "teacher/topd_vllm_teacher/daemon.py": {
+    "bytes": 8286,
+    "sha256": "6eeffdf7c60fc4f6606bb79bf0a16915fd00a565f6d58d899f794f56e4b00518"
+  },
+  "teacher/topd_vllm_teacher/executor.py": {
+    "bytes": 485,
+    "sha256": "d193dc1af2bf467edf3817da46d02f1b57f5aa52be3028e86ae60bd702a0aea6"
+  }
+}
