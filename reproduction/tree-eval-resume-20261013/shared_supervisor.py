@@ -23,8 +23,8 @@ def main():
             if (candidate/'cgroup.procs').is_file():relative=path;scope=candidate
     require(scope is not None and (scope/'cgroup.procs').is_file(),'Own systemd cgroup unavailable')
     require(not any('job_' in l.split(':',2)[-1] for l in lines),'Shared runtime must not impersonate foreign Slurm job')
-    for job in ('3360','3392'):
-        require(not subprocess.check_output(['squeue','--local','-h','-j',job,'-o','%T'],text=True).strip(),'Old/queued exclusive evaluator must be terminal before shared startup')
+    active_ids=set(subprocess.check_output(['squeue','--local','-h','-o','%i'],text=True).split())
+    require(not active_ids.intersection({'3360','3392'}),'Old/queued exclusive evaluator must be terminal before shared startup')
     release=json.loads(Path(a.release).read_text())
     require(release['review_status']=='ACCEPTED' and release['resource_protocol']=='memory_headroom_shared_v1','Reviewed sharing authorization missing')
     for n,h in release['files'].items():require(sha(HERE/n)==h,'Shared reviewed source changed: '+n)

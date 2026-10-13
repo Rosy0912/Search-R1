@@ -6,6 +6,8 @@ from eval_merge import atomic_immutable,digest
 def main():
     p=argparse.ArgumentParser()
     for n in ('unit','tools','prefix','manifest','release','score-output','journal','review'):p.add_argument('--'+n,required=True)
+    p.add_argument('--repair-predecessor-unit')
+    p.add_argument('--repair-predecessor-journal')
     a=p.parse_args();root=Path('/dataset/shaoshitong/search-r1-rl/tree-grpo')
     if os.uname().nodename.split('.')[0]!='h100-10' or not a.unit.startswith('sst-tree-eval-shared-') or not a.unit.endswith('.service'):
         raise RuntimeError('Own retained18 systemd identity required')
@@ -22,10 +24,23 @@ def main():
     if done['sha256']!=release['prefix_sha256'] or done['actual_trained_outer']!=200:
         raise RuntimeError('Actual completed200 and durable prefix proof missing')
     env={k:v for k,v in os.environ.items() if not k.startswith(('SLURM_','SBATCH_','SQUEUE_','SCANCEL_','SACCT_','SCONTROL_'))}
-    queued=subprocess.check_output(['scontrol','--local','show','job','3392','-o'],text=True,env=env)
-    if ('JobState=PENDING ' not in queued or 'JobName=tree-final-eval-resume ' not in queued
-         or 'ReqNodeList=h100-10 ' not in queued or 'eval-resume-7933ec6' not in queued):
-        raise RuntimeError('Only known queued own3392 can be superseded; inspect current state')
+    active_ids=set(subprocess.check_output(['squeue','--local','-h','-o','%i'],text=True,env=env).split())
+    if a.repair_predecessor_unit:
+        if a.repair_predecessor_unit != 'sst-tree-eval-shared-1c15c49.service' or not a.repair_predecessor_journal:
+            raise RuntimeError('Only identified failed own predecessor may be repaired')
+        prior=json.loads(Path(a.repair_predecessor_journal).read_text())
+        if prior['unit']!=a.repair_predecessor_unit or prior['cancel_own_queued_returncode']!=0 or prior['prefix_sha256']!=release['prefix_sha256']:
+            raise RuntimeError('Durable prior cancellation/score identity absent')
+        terminal=subprocess.check_output(['systemctl','show',a.repair_predecessor_unit,'--property=ActiveState,MainPID,ExecMainStatus'],text=True,env=env)
+        if 'ActiveState=failed' not in terminal or 'MainPID=0' not in terminal or 'ExecMainStatus=1' not in terminal:
+            raise RuntimeError('Previous own startup must be confirmed failed and terminal')
+        if active_ids.intersection({'3360','3392'}):raise RuntimeError('Old evaluator still active; no repair duplicate')
+        queued='Previously canceled own3392; identified failed shared startup: '+terminal
+    else:
+        queued=subprocess.check_output(['scontrol','--local','show','job','3392','-o'],text=True,env=env)
+        if ('JobState=PENDING ' not in queued or 'JobName=tree-final-eval-resume ' not in queued
+             or 'ReqNodeList=h100-10 ' not in queued or 'eval-resume-7933ec6' not in queued):
+            raise RuntimeError('Only known queued own3392 can be superseded; inspect current state')
     state=subprocess.run(['systemctl','show',a.unit,'--property=LoadState,ActiveState'],text=True,capture_output=True,env=env)
     if 'LoadState=not-found' not in state.stdout:raise RuntimeError('Own service identity already exists; never duplicate')
     selected=json.loads((Path(a.tools)/'expected-gpu-uuids-retained18.json').read_text())
@@ -40,13 +55,16 @@ def main():
         os.replace(temporary,journal);fd=os.open(journal.parent,os.O_RDONLY|os.O_DIRECTORY)
         try:os.fsync(fd)
         finally:os.close(fd)
-    r=subprocess.run(['scancel','3392'],text=True,capture_output=True,env=env,timeout=30)
-    value.update(cancel_own_queued_returncode=r.returncode,cancel_own_queued_stderr=r.stderr);update()
-    if r.returncode:raise RuntimeError('Queued cancellation uncertain; inspect, no shared launch')
-    for _ in range(20):
-        if not subprocess.check_output(['squeue','--local','-h','-j','3392','-o','%T'],text=True,env=env).strip():break
-        time.sleep(.5)
-    else:raise RuntimeError('Own exclusive queue still present; no concurrent evaluator')
+    if not a.repair_predecessor_unit:
+        r=subprocess.run(['scancel','3392'],text=True,capture_output=True,env=env,timeout=30)
+        value.update(cancel_own_queued_returncode=r.returncode,cancel_own_queued_stderr=r.stderr);update()
+        if r.returncode:raise RuntimeError('Queued cancellation uncertain; inspect, no shared launch')
+        for _ in range(20):
+            if '3392' not in subprocess.check_output(['squeue','--local','-h','-o','%i'],text=True,env=env).split():break
+            time.sleep(.5)
+        else:raise RuntimeError('Own exclusive queue still present; no concurrent evaluator')
+    else:
+        value.update(repaired_predecessor_unit=a.repair_predecessor_unit,predecessor_journal=a.repair_predecessor_journal,predecessor_terminal=terminal);update()
     argv=['systemd-run','--unit='+a.unit,'--property=CPUQuota=3200%','--property=MemoryMax=256G',
           '--property=TasksMax=4096','--property=KillMode=control-group','--property=TimeoutStopSec=60',
           '--property=Nice=5','--setenv=CUDA_VISIBLE_DEVICES='+','.join(selected),
