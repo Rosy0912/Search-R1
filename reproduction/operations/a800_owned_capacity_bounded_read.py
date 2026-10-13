@@ -30,7 +30,15 @@ for row in log.read_text(errors='replace').splitlines():
  if row.startswith('{'):
   try:last=json.loads(row)
   except ValueError:pass
-out={'role':'actual_owned_capacity_reservation_bounded_observation','checked_unix':time.time(),'process':current,'state':state,'owned_cuda_applications':owned,'foreign_training_cuda_applications':foreign_training,'last_operator_log_json':last,'log_bytes':log.stat().st_size,'signals_sent':False,'trainer_started':False,'native_algorithm_accepted':False,'reservation_peak_is_training_peak':False}
+def post_nvml_identity(expected):
+ q=Path('/proc')/str(expected['pid'])
+ try:
+  s=(q/'stat').read_text();z=s[s.rfind(')')+2:].split();v={'pid':expected['pid'],'start_ticks':int(z[19]),'sid':int(z[3]),'uid':q.stat().st_uid,'state':z[0]}
+ except (FileNotFoundError,ProcessLookupError):return None
+ v['birth_matches']=all(v[k]==expected[k] for k in ('pid','start_ticks','sid','uid'));v['alive']=v['birth_matches'] and v['state'] not in ('Z','X');return v
+current=post_nvml_identity(p['identity'])
+if state:assert all(state['identity'][k]==p['identity'][k] for k in ('pid','start_ticks','sid','uid'))
+out={'role':'actual_owned_capacity_reservation_bounded_observation','checked_unix':time.time(),'process':current,'state':state,'owned_cuda_applications':owned,'foreign_training_cuda_applications':foreign_training,'last_operator_log_json':last,'log_bytes':log.stat().st_size,'signals_sent':False,'trainer_started':False,'native_algorithm_accepted':False,'reservation_peak_is_training_peak':False,'birth_revalidated_after_NVML':True}
 if state and state['status']=='READY':
  assert current and current['alive'] and current['birth_matches'] and len(state['ready_samples'])==2 and state['physical_indices']==[1]
  assert sorted(x['gpu_index'] for x in owned)==[1] and all(x['used_mib']>=61440 for x in owned)
@@ -40,8 +48,8 @@ other=p['other_owned_reservation'];op=Path('/proc')/str(other['identity']['pid']
 if op.exists():
  s=(op/'stat').read_text();z=s[s.rfind(')')+2:].split();other_current={'pid':other['identity']['pid'],'start_ticks':int(z[19]),'sid':int(z[3]),'uid':op.stat().st_uid,'state':z[0]}
  other_current['birth_matches']=all(other_current[k]==other['identity'][k] for k in ('pid','start_ticks','sid','uid'));other_current['alive']=other_current['birth_matches'] and other_current['state'] not in ('Z','X')
-out['other_owned_process']=other_current
-oraw=(Path(other['namespace'])/'reservation.json').read_bytes();assert len(oraw)<65536;ost=json.loads(oraw);assert ost['source_sha256']==other['source_sha256'] and ost['identity']['pid']==other['identity']['pid'];assert hashlib.sha256((Path(other['namespace'])/'source.py').read_bytes()).hexdigest()==other['source_sha256']
+other_current=post_nvml_identity(other['identity']);out['other_owned_process']=other_current
+oraw=(Path(other['namespace'])/'reservation.json').read_bytes();assert len(oraw)<65536;ost=json.loads(oraw);assert ost['source_sha256']==other['source_sha256'] and all(ost['identity'][k]==other['identity'][k] for k in ('pid','start_ticks','sid','uid'));assert hashlib.sha256((Path(other['namespace'])/'source.py').read_bytes()).hexdigest()==other['source_sha256']
 out['other_owned_state']={k:ost[k] for k in ('status','source_sha256','physical_indices','bytes_per_gpu','ready_samples','allocated_devices','failure','release')};out['other_owned_state']['record_sha256']=hashlib.sha256(oraw).hexdigest()
 otherapps=[x for x in foreign_training if x['pid']==other['identity']['pid']]
 out['other_owned_cuda_applications']=otherapps
