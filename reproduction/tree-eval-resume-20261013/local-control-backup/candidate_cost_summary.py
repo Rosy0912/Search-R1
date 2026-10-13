@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Read-only H10018 tree-audit aggregation; only compact scalars return to Mac."""
+import argparse
+import hashlib
 import importlib.util
 import json
 import math
@@ -9,10 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
-RUN = '/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb'
-UNIT = 'sst-tree-nested-branch-fresh200-0befbaf9.service'
 REMOTE = r'''
-import collections,json,math,time
+import collections,json,math,time,re
 from pathlib import Path
 run=Path(RUN_PATH)
 fields=['new_generated_tokens','new_retained_model_tokens','new_prefill_tokens','retrieval_calls','scoring_calls','inherited_response_tokens','inherited_observation_tokens','inherited_raw_ledger_actions','generation_wall_seconds_amortized','scoring_wall_seconds_amortized']
@@ -68,6 +68,23 @@ for p in sorted((run/'output/tree-audit').glob('*.json')):
 rollouts.sort(key=lambda x:(x.get('global_step',0),x.get('rollout_sequence',0)))
 all_fields={k:sorted(set().union(*(set(x[k]) for x in seen_schema))) for k in ['candidate_fields','round_fields','round_cost_delta_fields']}
 result={'remote_observed_start_epoch':started,'remote_observed_end_epoch':time.time(),'run_directory':str(run),'completed_rollout_count':len(rollouts),'completed_rollout_steps':[x['global_step'] for x in rollouts],'skipped_audits':skipped,'schema_observed':all_fields,'completed_rollout_rollup':{'questions':sum(x['question_count'] for x in rollouts),'training_leaves':sum(x['training_leaf_count'] for x in rollouts),'candidate_attempts':sum(x['candidate_outcomes']['all']['candidate_count'] for x in rollouts),'accepted_candidates':sum(x['candidate_outcomes']['accepted']['candidate_count'] for x in rollouts),'discarded_candidates':sum(x['candidate_outcomes']['discarded']['candidate_count'] for x in rollouts),'fallback_candidates':sum(x['candidate_outcomes']['fallback']['candidate_count'] for x in rollouts)},'rollouts':rollouts[-3:],'earlier_rollout_detail_omitted_count':max(0,len(rollouts)-3)}
+stage_metrics=[]
+if (run/'stage.log').is_file():
+ with (run/'stage.log').open(errors='replace') as stream:
+  for line in stream:
+   if 'timing_s/step:' not in line:continue
+   values={k:float(v) for k,v in re.findall(r'([a-zA-Z0-9_./-]+):(-?[0-9]+(?:[.][0-9]+)?(?:[eE][+-]?[0-9]+)?)',line)}
+   if int(values.get('step',-1)) in result['completed_rollout_steps']:
+    stage_metrics.append({k:v for k,v in values.items() if k=='step' or k.startswith(('tree_variance/','timing_s/','rollout/'))})
+result['existing_remote_stage_metrics']=stage_metrics[-3:]
+parent_run=PARENT_FAILED_RUN
+result['historical_failed_parent_outer2_rollout_cost']=None
+if parent_run:
+ p=Path(parent_run)/'output/training-rollout-cost/attempt-000002.json'
+ if p.is_file():
+  cc=json.loads(p.read_text())
+  result['historical_failed_parent_outer2_rollout_cost']={'path':str(p),'included_in_current_rollout_rollup':False,'record':{k:cc.get(k) for k in ['status','attempt_id','candidate_outer','completed_outer_before','question_rows','costs','error','start_epoch','end_epoch','wall_seconds','trainer_process_cpu_seconds','code_commit','scope']}}
+result['remote_observed_end_epoch']=time.time()
 encoded=json.dumps(result,ensure_ascii=False,separators=(',',':'))
 if len(encoded.encode())>80000: raise RuntimeError('compact remote result exceeds 80KB')
 print(encoded)
@@ -75,29 +92,70 @@ print(encoded)
 
 
 def main():
-    poll_path = OUT / 'LIVE_POLL_15.json'
-    poll = json.loads(poll_path.read_text())
-    source = json.loads((ROOT / 'outputs/STATUS.json').read_text())
-    helper_path = ROOT / 'work/tree-speed-repair-20261008/ssh_retained18.py'
-    spec = importlib.util.spec_from_file_location('candidate_cost_ssh', helper_path)
-    route = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(route)
-    command = 'python3 -c ' + shlex.quote(REMOTE.replace('RUN_PATH', repr(RUN)))
-    response = route.run(command, target='h100-10', timeout=80)
-    if response.returncode:
-        raise RuntimeError('read-only aggregate failed: ' + response.stderr[-2000:])
-    result = json.loads(response.stdout)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--status', type=Path, default=ROOT / 'outputs/STATUS.json')
+    parser.add_argument('--source-commit')
+    parser.add_argument('--run-directory')
+    parser.add_argument('--unit')
+    parser.add_argument('--poll', type=Path)
+    parser.add_argument('--reuse-summary', type=Path, help='Reuse matching compact costs and update only local poll metadata/metrics; no remote query')
+    args = parser.parse_args()
+    source = json.loads(args.status.read_text())
+    source_commit = args.source_commit or source['source_commit']
+    run_directory = args.run_directory or source['run_directory']
+    if source_commit not in Path(run_directory).name:
+        parser.error('run directory and source commit differ; explicitly select matching source/run')
+    unit = args.unit or (source.get('active_unit') if source_commit == source['source_commit'] else None) or 'sst-tree-nested-branch-fresh200-' + source_commit[:8] + '.service'
+    matching_polls = []
+    for path in [args.poll] if args.poll else list(OUT.glob('*POLL_*.json')):
+        if path is None or not path.is_file():
+            continue
+        path = path.resolve()
+        data = json.loads(path.read_text())
+        if data.get('source_commit') == source_commit and data.get('run', data.get('run_directory')) == run_directory:
+            matching_polls.append((data.get('epoch', 0), path, data))
+    if not matching_polls:
+        parser.error('no local poll matches current source/run')
+    matching_polls.sort(key=lambda row: row[0])
+    _, poll_path, poll = matching_polls[-1]
+    native = bool(source.get('native1_continuation_requested')) and source_commit == source['source_commit']
+    parent_failed = source.get('historical_failed_parent_outer2') if native else None
+    parent_run = (parent_failed or {}).get('path', '').split('/checkpoints/')[0] or None
+    if args.reuse_summary:
+        result = json.loads(args.reuse_summary.read_text())
+        if result.get('source_commit_from_mainline_status') != source_commit or result.get('run_directory') != run_directory:
+            parser.error('reused cost summary differs from selected source/run')
+        result['cost_snapshot_mode'] = 'reused_existing_compact_remote_costs_without_new_remote_query'
+        result['cost_snapshot_reused_path'] = str(args.reuse_summary)
+    else:
+        helper_path = ROOT / 'work/tree-speed-repair-20261008/ssh_retained18.py'
+        spec = importlib.util.spec_from_file_location('candidate_cost_ssh', helper_path)
+        route = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(route)
+        command = 'python3 -c ' + shlex.quote(REMOTE.replace('RUN_PATH', repr(run_directory)).replace('PARENT_FAILED_RUN', repr(parent_run)))
+        response = route.run(command, target='h100-10', timeout=80)
+        if response.returncode:
+            raise RuntimeError('read-only aggregate failed: ' + response.stderr[-2000:])
+        result = json.loads(response.stdout)
+        result['cost_snapshot_mode'] = 'read_only_remote_scalar_aggregation'
+    observations = list(result.get('known_preceding_observations', []))
+    observations.extend({'epoch': epoch, 'poll_path': str(path.relative_to(ROOT)), 'source_commit': source_commit, 'actual_completed_outer': data.get('progress', {}).get('actual_completed_outer_from_attempt_results'), 'rollout_cost': [{k: row.get(k) for k in ('status', 'candidate_outer', 'wall_seconds', 'end_epoch')} for row in data.get('rollout_cost', [])]} for epoch, path, data in matching_polls[-2:])
+    observations = sorted({(row.get('epoch'), row.get('poll_path')): row for row in observations}.values(), key=lambda row: row.get('epoch', 0))[-3:]
     result.update({
-        'summary_schema': 'tree_candidate_cost_compact_v1',
+        'summary_schema': 'tree_candidate_cost_compact_v2',
         'summary_created_utc': datetime.now(timezone.utc).isoformat(),
-        'source_commit_from_mainline_status': source['source_commit'],
-        'unit': UNIT,
-        'known_preceding_observations': [
-            {'epoch': 1791907020.0105784, 'completed_rollout_count': 1, 'step_1_audit_bytes': 21640018, 'kind': 'read-only remote schema observation'},
-            {'epoch': 1791907071.8494556, 'completed_rollout_count': 1, 'candidate_attempts': 2529, 'kind': 'read-only remote scalar observation'},
-        ],
+        'source_commit_from_mainline_status': source_commit,
+        'source_status_path': str(args.status),
+        'unit': unit,
+        'chain_role': 'child_native1_continuation' if native else 'fresh_parent',
+        'known_preceding_observations': observations,
+        'mainline_progress_at_selected_poll': poll.get('progress'),
+        'inherited_native1': source.get('inherited_native1') if native else None,
+        'historical_failed_parent_outer2_provenance': parent_failed,
+        'failed_parent_outer2_in_effective_history': False,
+        'inherited_parent_outer1_summary_reference': {'path': str(OUT / 'PARENT0BEF_CANDIDATE_COST_COMPACT.json'), 'sha256': hashlib.sha256((OUT / 'PARENT0BEF_CANDIDATE_COST_COMPACT.json').read_bytes()).hexdigest(), 'included_in_current_rollout_rollup': False} if native else None,
         'mainline_stage_metrics_source': str(poll_path.relative_to(ROOT)),
-        'mainline_stage_metrics_reused_without_recalculation': [
+        'mainline_stage_metrics_reused_without_recalculation': result['existing_remote_stage_metrics'] or [
             {key: value for key, value in row.items()
              if key == 'step' or key.startswith(('tree_variance/', 'timing_s/'))}
             for row in poll.get('iteration_metrics', [])
@@ -121,6 +179,10 @@ def main():
             'New mathematical audit or recomputation of rewards/advantages/variance (existing mainline stage metrics copied unchanged).',
         ],
     })
+    if result['existing_remote_stage_metrics']:
+        result['mainline_stage_metrics_source'] = run_directory + '/stage.log (existing emitted scalar metrics)'
+    metric_steps = {int(row.get('step', -1)) for row in result['mainline_stage_metrics_reused_without_recalculation']}
+    result['variance_metrics_pending_steps'] = [step for step in result['completed_rollout_steps'] if step not in metric_steps]
     encoded = json.dumps(result, ensure_ascii=False, indent=2) + '\n'
     if len(encoded.encode()) > 100000:
         raise RuntimeError('summary exceeds 100KB')
@@ -130,6 +192,7 @@ def main():
         '# H10018 已完成 rollout 候选成本摘要', '',
         f"实测：{result['summary_created_utc']}；源码 `{result['source_commit_from_mainline_status']}`。",
         f"已完成 rollout：{result['completed_rollout_count']}；详细轮次：{', '.join(map(str, result['completed_rollout_steps']))}。", '',
+        f"来源角色：{result['chain_role']}；本文件仅汇总 `{run_directory}` 内完成的 rollout，不合并母链或失败历史成本。", '',
         '每轮 512 题、1024 原始根轨迹与 1536 accepted continuation，共 2560 训练叶。fallback 是 accepted 的子集；discarded 额外产生费用，不进入训练叶。', '',
         '| rollout / stage | 尝试 | accepted | discarded | fallback（accepted内） | 新生成token（候选记录） | 检索 | 评分 | 继承response / observation token |',
         '|---|---:|---:|---:|---:|---:|---:|---:|---:|',
@@ -154,7 +217,20 @@ def main():
         total = rollout.get('rollout_controller_cost', {})
         all_costs = outcomes['all']['field_sums']
         lines.extend(['', f"候选记录新生成 {all_costs['new_generated_tokens']} token；候选轮ledger {ledger['generated_tokens']} token、padding rows {ledger['padded_rows']}；差额 {rollout['recorded_round_minus_candidate_residual']['generated_tokens']} token未向accepted/discarded/fallback分摊。", f"候选并行轮生成elapsed共 {rollout['generation_candidate_round_elapsed_seconds']:.3f} 秒、评分elapsed {rollout['scoring_candidate_round_elapsed_seconds']:.3f} 秒，每轮只计一次。完整rollout wall {total.get('wall_seconds')} 秒（controller ledger原值）。"])
-    lines.extend(['', '完整的 A1/B1/B2 × accepted/discarded/fallback 交叉成本、9轮明细、字段覆盖数和原有 tree_variance/timing_s 指标见同名 JSON。未新增数学审核。', '', '字段限制：逐候选有生成、retained、prefill、检索、评分、继承前缀及分摊耗时；没有候选级实际独占wall、padding分摊、KV/FLOPs/缓存节省或货币费用。继承前缀是重复继承事件，不能计为新生成token。', '', '只在原 H10018 远端读取本任务JSON并返回小型标量摘要；未搬运raw rollout/tokens/PT/model/evalarrays，未更改训练源码、服务或主线STATUS/REPORT。', ''])
+    if native:
+        lines.extend(['', '母链 0bef 第1轮原文件已原样保留为 `PARENT0BEF_CANDIDATE_COST_COMPACT.json/md`；继承1轮/20 Adam不算作本文件新rollout。母链失败第2轮单列为历史成本，child第2轮是重算结果，两者不叠加为有效第2轮。'])
+        failed_cost = result.get('historical_failed_parent_outer2_rollout_cost')
+        if failed_cost:
+            record = failed_cost['record']
+            lines.append(f"失败母链第2轮：源码 `{record.get('code_commit')}`；rollout wall {record.get('wall_seconds')} 秒；emitted token {record.get('costs', {}).get('generated_tokens')}；这里只列历史费用，不纳入本文件rollup。")
+    lines.extend(['', '| 已有stage指标 | step | 原值 |', '|---|---:|---:|'])
+    for metric in result['mainline_stage_metrics_reused_without_recalculation']:
+        for key in ('timing_s/step', 'timing_s/update_actor', 'timing_s/stage_testing', 'tree_variance/group_raw_reward_population_variance', 'tree_variance/within_root_raw_reward_population_variance', 'tree_variance/intra_adv_population_variance', 'tree_variance/group_actual_adv_population_variance'):
+            if key in metric:
+                lines.append(f"| {key} | {metric.get('step')} | {metric[key]} |")
+    if result['variance_metrics_pending_steps']:
+        lines.append(f"step {result['variance_metrics_pending_steps']} 的原有stage方差指标尚未出现在已发出的指标中；保持未知，未重算。")
+    lines.extend(['', '完整的 A1/B1/B2 × accepted/discarded/fallback 交叉成本、轮次明细、字段覆盖数和已有 tree_variance/timing_s 指标见同名 JSON。未新增数学审核。', '', '字段限制：逐候选有生成、retained、prefill、检索、评分、继承前缀及分摊耗时；没有候选级实际独占wall、padding分摊、KV/FLOPs/缓存节省或货币费用。继承前缀是重复继承事件，不能计为新生成token。', '', '只在原 H10018 远端读取本任务JSON并返回小型标量摘要；未搬运raw rollout/tokens/PT/model/evalarrays，未更改训练源码、服务或主线STATUS/REPORT。', ''])
     markdown = OUT / 'CANDIDATE_COST_COMPACT.md'
     markdown.write_text('\n'.join(lines))
     print(json.dumps({'json': str(destination), 'json_bytes': destination.stat().st_size, 'markdown': str(markdown), 'markdown_bytes': markdown.stat().st_size, 'completed_rollouts': result['completed_rollout_count'], 'remote_observed_epoch': result['remote_observed_end_epoch'], 'rollup': result['completed_rollout_rollup']}, ensure_ascii=False))
