@@ -4,6 +4,7 @@ from pathlib import Path
 
 LEGACY_SOURCE = '0befbaf99fc44942105831b3fbec94e4bf1b8ccb'
 NATIVE1_SOURCE = 'ba9f6627ec9a4e9749830d7b6acca53f6feec6b4'
+NATIVE5_SOURCE = 'eb6a69e47163b179b20b66cf4992c0d5e152ea6c'
 
 
 def main():
@@ -16,18 +17,29 @@ def main():
     parser.add_argument('--source-checkout')
     parser.add_argument('--source-branch')
     parser.add_argument('--native1-continuation', action='store_true')
+    parser.add_argument('--native-continuation', action='store_true')
+    parser.add_argument('--native-restore-step', type=int, default=os.environ.get('NESTED_NATIVE_RESTORE_STEP'))
+    parser.add_argument('--native-receipt', help='Receipt path relative to this run')
     args = parser.parse_args()
     if not re.fullmatch(r'[0-9a-f]{40}', args.source):
         parser.error('source must be a full 40-character Git SHA')
-    native = args.native1_continuation or args.source == NATIVE1_SOURCE
+    native = args.native_continuation or args.native1_continuation or args.native_restore_step is not None or args.source in (NATIVE1_SOURCE, NATIVE5_SOURCE)
+    restore_step = args.native_restore_step if args.native_restore_step is not None else 5 if args.source == NATIVE5_SOURCE else 1 if args.native1_continuation or args.source == NATIVE1_SOURCE else None
+    if native and (restore_step is None or restore_step < 1):
+        parser.error('native continuation requires an explicit positive --native-restore-step')
+    receipt_path = Path(args.native_receipt or f'output/nested-native{restore_step}-loaded.json') if native else None
+    if receipt_path is not None and (receipt_path.is_absolute() or '..' in receipt_path.parts):
+        parser.error('native receipt must be inside this run')
+    continuation_name = 'native1' if restore_step == 1 else 'native5' if restore_step == 5 else 'native'
     root = '/dataset/shaoshitong/search-r1-rl/tree-grpo'
     job = 'not-slurm;systemd:' + args.source
     config = dict(source=args.source, unit=args.unit or 'sst-tree-nested-branch-fresh200-' + args.source[:8] + '.service', job=job,
         run=args.run_directory or root + '/runs/tree-nested-branch-fresh200-' + job,
         tools=args.tools_directory or root + '/instruct300/candidates/nested-branch-fresh200-' + args.source,
-        source_checkout=str(Path(args.source_checkout or ('work/tree-speed-repair-20261008/nested-native1-recovery-source' if native else 'work/tree-speed-repair-20261008/nested-branch-source')).resolve()),
-        source_branch=args.source_branch or ('codex/tree-nested-native1-recovery-20261014' if native else 'codex/tree-nested-branch-20261012'),
-        native1_continuation_requested=native, experiment_origin='fresh')
+        source_checkout=str(Path(args.source_checkout or ('work/tree-speed-repair-20261008/nested-'+continuation_name+'-recovery-source' if native else 'work/tree-speed-repair-20261008/nested-branch-source')).resolve()),
+        source_branch=args.source_branch or ('codex/tree-nested-'+continuation_name+'-recovery-20261014' if native else 'codex/tree-nested-branch-20261012'),
+        native_continuation_requested=native, native_restore_step=restore_step, native_receipt_path=str(receipt_path) if receipt_path else None,
+        native1_continuation_requested=native and restore_step == 1, experiment_origin='fresh')
     history_code = 'native_manifest_history_receipt=None'
     if native and args.source == NATIVE1_SOURCE:
         try:
@@ -36,6 +48,8 @@ def main():
             history_code = history_module.remote_code(config['run'])
         except Exception as error:
             history_code = 'native_manifest_history_receipt=' + repr(dict(status='NATIVE_MANIFEST_HISTORY_AUDIT_ERROR', audit_error=repr(error), training_signals_sent=False, frozen_source_modified=False))
+    elif native:
+        history_code = 'native_manifest_history_receipt=' + repr(dict(status='NATIVE_MANIFEST_HISTORY_SOURCE_BINDING_PENDING', audit_error='Existing collector is bound to ba9; configure this continuation source before claiming metadata coverage.', training_signals_sent=False, frozen_source_modified=False))
     spec = importlib.util.spec_from_file_location('ssh', Path(__file__).with_name('ssh_retained18.py'))
     ssh = importlib.util.module_from_spec(spec); spec.loader.exec_module(ssh)
     code = r'''import json,subprocess,time,sys,re
@@ -48,7 +62,7 @@ def tail(p,n=3500):
 def read(p):return json.loads(p.read_text()) if p.is_file() else None
 sys.path.insert(0,str(tools));from train_monitor import progress_evidence
 progress=progress_evidence(run)
-receipt=read(run/'output/nested-native1-loaded.json')
+receipt=read(run/config['native_receipt_path']) if config['native_receipt_path'] else None
 native_summary=None
 if receipt is not None:
  worker_fields=('status','protocol','rank','world_size','parent_identity','parent_manifest_sha256','state_path','state_file_sha256','state_file_bytes','actual_file_sha256_verified','serialized_logical_state_sha256','actual_loaded_logical_state_sha256','actual_cold_native_state_equal','adam_steps','scheduler_step','actual_total_optimizer_calls','child_code_commit','executor_equivalence','exact_executor_resume')
@@ -56,8 +70,8 @@ if receipt is not None:
  native_summary['workers']=[{k:v for k,v in worker.items() if k in worker_fields} for worker in receipt.get('workers',[])]
  native_summary['worker_count']=len(native_summary['workers'])
  native_summary['worker_ranks']=sorted(w.get('rank') for w in native_summary['workers'])
- native_summary['receipt_path']=str(run/'output/nested-native1-loaded.json')
- native_summary['receipt_sha256']=(progress.get('inherited_native1') or {}).get('receipt_sha256')
+ native_summary['receipt_path']=str(run/config['native_receipt_path'])
+ native_summary['receipt_sha256']=(progress.get('inherited_native_restore') or progress.get('inherited_native1') or {}).get('receipt_sha256')
 sample=tail(run/'resource-samples.jsonl',32768);lines=sample.splitlines() if sample else []
 guard=json.loads(lines[-1]) if lines and sample.endswith('\n') else json.loads(lines[-2]) if len(lines)>1 else None
 rankpaths=sorted((run/'output/tree-rank-audit').glob('step-*-attempt-*-rank-*.json'));last=[read(p) for p in rankpaths[-8:]]
@@ -65,9 +79,10 @@ rank_summary=[{k:v for k,v in row.items() if k in ('outer_step','attempt_id','ra
 dev=[]
 for p in (run/'output/validation-cost').glob('validation-*.json'):
  value=read(p)
- if value:dev.append(dict(path=p.name,outer=value.get('actual_completed_outer'),phase=value.get('phase'),status=value.get('status'),rows=value.get('evaluated_rows'),metrics=value.get('metrics')))
+ if value and value.get('status')=='VALIDATION_COST_COMPLETE' and value.get('evaluated_rows')==512 and (value.get('metrics') or {}).get('val/qa_count/all')==512:
+  dev.append(dict(path=p.name,outer=value.get('actual_completed_outer'),phase=value.get('phase'),status=value.get('status'),rows=value.get('evaluated_rows'),metrics=value.get('metrics'),ledger_sha256=value.get('ledger_sha256')))
 startup=[dict(path=str(p),value=read(p)) for p in (r/'instruct300/startup-audits').glob('*'+source+'*') if p.is_file()]
-d=dict(epoch=time.time(),node='h100-10',source_commit=source,source_checkout=config['source_checkout'],source_branch=config['source_branch'],experiment_origin=config['experiment_origin'],native1_continuation_requested=config['native1_continuation_requested'],native1_load_receipt=native_summary,unit=unit,job_id=job,run=str(run),systemd=subprocess.check_output(['systemctl','show',unit,'--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,MemoryCurrent,MemoryMax,CPUUsageNSec,Result'],text=True),progress=progress,direct_rank_records=len(rankpaths),last_rank_summaries=rank_summary,latest_guard=guard,logs={n:tail(run/n) for n in ('stage.log','retriever.log','guard.log','ray.log')},run_result=read(run/'run-result.json'),development=sorted(dev,key=lambda x:x['outer'] or 0)[-1:] if dev else [],startup=startup,journal=subprocess.check_output(['journalctl','-u',unit,'-n','12','--no-pager','-o','cat'],text=True),gpu=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,memory.free,utilization.gpu','--format=csv,noheader'],text=True),own_output_files={p.name:p.stat().st_size for p in run.glob('*') if p.is_file()})
+d=dict(epoch=time.time(),node='h100-10',source_commit=source,source_checkout=config['source_checkout'],source_branch=config['source_branch'],experiment_origin=config['experiment_origin'],native_continuation_requested=config['native_continuation_requested'],native_restore_step=config['native_restore_step'],native_load_receipt=native_summary,native1_continuation_requested=config['native1_continuation_requested'],native1_load_receipt=native_summary if config['native1_continuation_requested'] else None,unit=unit,job_id=job,run=str(run),systemd=subprocess.check_output(['systemctl','show',unit,'--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,MemoryCurrent,MemoryMax,CPUUsageNSec,Result'],text=True),progress=progress,direct_rank_records=len(rankpaths),last_rank_summaries=rank_summary,latest_guard=guard,logs={n:tail(run/n) for n in ('stage.log','retriever.log','guard.log','ray.log')},run_result=read(run/'run-result.json'),development=sorted(dev,key=lambda x:x['outer'] or 0)[-1:] if dev else [],startup=startup,journal=subprocess.check_output(['journalctl','-u',unit,'-n','12','--no-pager','-o','cat'],text=True),gpu=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,memory.free,utilization.gpu','--format=csv,noheader'],text=True),own_output_files={p.name:p.stat().st_size for p in run.glob('*') if p.is_file()})
 d['output_metadata']=[dict(path=str(p.relative_to(run)),bytes=p.stat().st_size,mtime=p.stat().st_mtime) for p in (run/'output').glob('*/*') if p.is_file()]
 d['rollout_cost']=[read(p) for p in sorted((run/'output/training-rollout-cost').glob('attempt-*.json'))[-1:]]
 d['first_rollout_entered']=False;iteration_metrics=[]
@@ -88,7 +103,7 @@ print(json.dumps(d))
         raise RuntimeError(response.stdout + response.stderr)
     data = json.loads(response.stdout)
     Path(args.output).write_text(json.dumps(data, indent=2) + '\n')
-    print(json.dumps(dict(epoch=data['epoch'], systemd=data['systemd'], progress=data['progress'], native1_load_receipt=data['native1_load_receipt'], native_manifest_history=data['native_manifest_history'], direct_rank_records=data['direct_rank_records'], run_result=data['run_result'], journal=data['journal'][-1600:], stage_log=data['logs']['stage.log'])))
+    print(json.dumps(dict(epoch=data['epoch'], systemd=data['systemd'], progress=data['progress'], native_load_receipt=data['native_load_receipt'], native1_load_receipt=data['native1_load_receipt'], native_manifest_history=data['native_manifest_history'], direct_rank_records=data['direct_rank_records'], run_result=data['run_result'], journal=data['journal'][-1600:], stage_log=data['logs']['stage.log'])))
 
 
 if __name__ == '__main__':

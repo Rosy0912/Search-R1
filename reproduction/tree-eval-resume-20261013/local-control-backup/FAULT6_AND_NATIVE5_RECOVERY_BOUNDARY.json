@@ -1,0 +1,434 @@
+{
+  "summary_schema": "nested_fault6_native5_recovery_boundary_v1",
+  "created_utc": "2026-10-13T18:09:06.739568+00:00",
+  "status": "TERMINAL_FAILED_AWAITING_SAME_GOAL_NATIVE5_CONTINUATION",
+  "goal_status": "active",
+  "target_outer": 200,
+  "goal_complete": false,
+  "source_inputs": {
+    "OUTER6_RAY_FAULT_RAW.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/OUTER6_RAY_FAULT_RAW.json",
+      "bytes": 680792,
+      "sha256": "63ac02f246efda0939b234c293a7e9b245e1dabb8de3cfb9e2a6f9c6412d06f5"
+    },
+    "OUTER6_RAY_FAULT_TERMINAL.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/OUTER6_RAY_FAULT_TERMINAL.json",
+      "bytes": 244915,
+      "sha256": "29a610eb54dc98775879ce26875263a56eefab4bca47d4333e8de1ed51d6df49"
+    },
+    "RECOVERY_POLL_58.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/RECOVERY_POLL_58.json",
+      "bytes": 111372,
+      "sha256": "c04dce550aa1ed4979e71353dcf05363eacc17ea331af26459794dbbcac9e31a"
+    }
+  },
+  "failed_source_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+  "failed_unit": "sst-tree-nested-branch-fresh200-ba9f6627.service",
+  "failed_run_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+  "terminal_systemd": {
+    "MainPID": "0",
+    "Result": "exit-code",
+    "ExecMainStatus": "1",
+    "ControlGroup": "",
+    "CPUUsageNSec": "29067275364000",
+    "TasksCurrent": "[not set]",
+    "MemoryMax": "412316860416",
+    "TasksMax": "4096",
+    "ActiveState": "failed",
+    "SubState": "failed",
+    "InvocationID": "61ae43043c244f1aa10d1ca3f53a8003"
+  },
+  "failure": {
+    "component": "Ray/Boost thread creation EAGAIN [system:11]",
+    "actual_stage_log_evidence": [
+      "\u001b[36m(pid=387580)\u001b[0m [2026-10-14 02:01:29,747 E 387580 388248] logging.cc:111: Unhandled exception: N5boost10wrapexceptINS_6system12system_errorEEE. what(): thread: Resource temporarily unavailable [system:11]",
+      "[2026-10-14 02:01:29,959 E 387040 387568] logging.cc:111: Unhandled exception: N5boost10wrapexceptINS_6system12system_errorEEE. what(): thread: Resource temporarily unavailable [system:11]"
+    ],
+    "gpu_oom_identified": false,
+    "scope": "Recorded fatal Ray thread creation error; not a GPU OOM diagnosis. The exact exhausted thread/pids limit is unknown because unit cgroup is gone.",
+    "run_result_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/run-result.json",
+    "run_result_sha256": "1c20f2d7eff01a56cb6f713556552184383b0855e31f427ac505258a54820a1f",
+    "run_result_status": "FAILED",
+    "run_result_error_type": "RuntimeError",
+    "run_result_error": "Actual Tree training failed",
+    "cleanup_error": "TimeoutExpired(['bash', '-c', 'cd \"$SEARCH_R1_REPO\" && exec \"$@\"', 'candidate-cwd', '/dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python', '/dataset/shaoshitong/search-r1-rl/tree-grpo/repo/reproduction/h20/retriever_local.py', '--index_path', '/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/e5_Flat.index', '--corpus_path', '/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/wiki/wiki-18.jsonl', '--retriever_model', '/dataset/shaoshitong/search-r1-rl/tree-grpo/assets-root/assets/e5-base-v2', '--retriever_name', 'e5', '--topk', '3', '--faiss_gpu', '--device', 'cuda', '--threads', '8', '--host', '127.0.0.1', '--port', '18082'], 10)",
+    "failed_unrecorded_partial_optimizer_writes_unknown": true,
+    "failed_outer": 6,
+    "effective_outer_credit": 0,
+    "unrecorded_partial_optimizer_calls_per_rank": "unknown"
+  },
+  "completed_recovery_boundary": {
+    "completed_outer": 5,
+    "actual_cumulative_optimizer_calls_per_rank": {
+      "0": 100,
+      "1": 100,
+      "2": 100,
+      "3": 100,
+      "4": 100,
+      "5": 100,
+      "6": 100,
+      "7": 100
+    },
+    "scheduler_last_epoch_per_rank": {
+      "0": 5,
+      "1": 5,
+      "2": 5,
+      "3": 5,
+      "4": 5,
+      "5": 5,
+      "6": 5,
+      "7": 5
+    },
+    "full_worker_state_finite_per_rank": {
+      "0": true,
+      "1": true,
+      "2": true,
+      "3": true,
+      "4": true,
+      "5": true,
+      "6": true,
+      "7": true
+    },
+    "manifest_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/manifest.json",
+    "manifest_sha256": "b112caffda6514c34a07f2f6b6ecc62096c0717eb09ebae46aac71c6b9dfe09a",
+    "manifest_bytes": 16415,
+    "recorded_manifest_status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+    "identity": {
+      "actual_update_limit": 200,
+      "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+      "completed_step": 5,
+      "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+      "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "guard_continue_accounting": {
+        "completed_optimizer_calls_per_rank": {
+          "0": 100,
+          "1": 100,
+          "2": 100,
+          "3": 100,
+          "4": 100,
+          "5": 100,
+          "6": 100,
+          "7": 100
+        },
+        "completed_outer_updates": 5,
+        "guard_refused_attempts": 0,
+        "partial_evidence": [],
+        "partial_optimizer_calls_per_rank": {},
+        "protocol": "tree_guard_continue_fresh_rollout_v1",
+        "refused_attempts": 0,
+        "total_optimizer_calls_per_rank": {
+          "0": 100,
+          "1": 100,
+          "2": 100,
+          "3": 100,
+          "4": 100,
+          "5": 100,
+          "6": 100,
+          "7": 100
+        },
+        "training_attempts": 5
+      },
+      "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+      "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+    },
+    "driver_metadata": {
+      "exact_reload_verified": true,
+      "logical_state_sha256": "71f633df9834131a4ec5b8730cc6f6725adf102a36be0fdb7f809d14c89b6404",
+      "next_step": 6,
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/driver.pt",
+      "sha256": "8b2a1fb3614cd309034a1775ad834de8bf95f9e48b3b45365e0c1437ee87f908"
+    },
+    "worker_scalar_metadata": [
+      {
+        "rank": 0,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-00.pt",
+        "sha256": "f8950106e06b66aebdc9a07d08770a8ba9b9dc39550958736d41080cff8162e2",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "2f4397a8cf1b841356b20dc4f28af10aae9b147ab12c9ceea2dd35f09be0c4aa"
+      },
+      {
+        "rank": 1,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-01.pt",
+        "sha256": "b6fb9470e2b34b0fb4d06c4693887e731c04568ed25c0b850e56f47314a9f405",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "d9ec98c9e9b95145fae966ac83af96a14a33c0337644b83a107e567374af1330"
+      },
+      {
+        "rank": 2,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-02.pt",
+        "sha256": "d69f9d5586cf2226289bc533d060b8ae2d29af2cfa0d75b1502f74f47768f266",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "e45a120a682c5225aead397e99bc892266beaa93a5050361a9c5aae77dfc2d39"
+      },
+      {
+        "rank": 3,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-03.pt",
+        "sha256": "2712f748b218b7956b602bff1ceaf5d36144d80913fd2a54800cff8d4a44b951",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "7a61601e7eaf3770b23e466366f549775e8bb22b387dc4b281da43746eea09d6"
+      },
+      {
+        "rank": 4,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-04.pt",
+        "sha256": "bac8973f6fc86854b08b90498b4ca5555f0890764d64a782cd5e435ea60062bb",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "35aab6c576678d32e91127ab8f1eb520efb05d3fc43e911593c6a401ebeda4fc"
+      },
+      {
+        "rank": 5,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-05.pt",
+        "sha256": "c7473fc73a4614237fd4c5e09234c14b37446366c4712af211dd823b156cb438",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "d20b31da62c53a9598037f3531f6433cf5f4acb130f08090e896ac2494362e6d"
+      },
+      {
+        "rank": 6,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-06.pt",
+        "sha256": "eb615b2b348ab451ffb7bc2a3dbca36cb4af93fb8861ce758595a7d2a8a00c0e",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "0a1c33491b53558e4bc99b66ae11bac74be518412cd7bf873970ae63056a5c6e"
+      },
+      {
+        "rank": 7,
+        "world_size": 8,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-07.pt",
+        "sha256": "9683ee8a12319d71c5479b2ef9659d508ef48444b048e349151a4dfe4e75510c",
+        "bytes": 6171974630,
+        "actual_total_optimizer_calls": 100,
+        "observed_adam_steps": [
+          100
+        ],
+        "scheduler_last_epoch": 5,
+        "full_worker_state_finite": true,
+        "logical_state_sha256": "c1a3490c7f29f510f8faa5e714ce6e36dfbabd481253f3bb10b2c1f763c10443"
+      }
+    ],
+    "source_PT_presence_now": "unknown",
+    "new_child_cold_restore_actual": "unknown",
+    "next_outer_requested": 6,
+    "effective_origin_segments": [
+      {
+        "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+        "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+        "code_commit": "0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+        "config_sha256": "2a317628c497bba932698bf6d7bf64ca3503233d32080a389a36e1f69b362243",
+        "first_outer": 1,
+        "last_outer": 1
+      },
+      {
+        "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+        "first_outer": 2,
+        "last_outer": 5
+      }
+    ],
+    "historical_failed_parent_outer2_in_effective_history": false
+  },
+  "latest_completed_dev512": {
+    "path": "validation-388927-1.json",
+    "outer": 5,
+    "phase": "acceptance",
+    "status": "VALIDATION_COST_COMPLETE",
+    "rows": 512,
+    "metrics": {
+      "val/test_score/nq": 0.21875,
+      "val/evaluated_count/nq": 256,
+      "val/test_score/hotpotqa": 0.1484375,
+      "val/evaluated_count/hotpotqa": 256,
+      "val/qa_count/nq": 256,
+      "val/f1/nq": 0.2904245447686293,
+      "val/em/nq": 0.21875,
+      "val/answer_format/nq": 0.73046875,
+      "val/format_rate/nq": 0.69921875,
+      "val/generated_tokens/nq": 133.55078125,
+      "val/search_calls/nq": 1.06640625,
+      "val/qa_count/hotpotqa": 256,
+      "val/f1/hotpotqa": 0.18127228746697086,
+      "val/em/hotpotqa": 0.1484375,
+      "val/answer_format/hotpotqa": 0.53125,
+      "val/format_rate/hotpotqa": 0.42578125,
+      "val/generated_tokens/hotpotqa": 206.2734375,
+      "val/search_calls/hotpotqa": 1.28125,
+      "val/qa_count/all": 512,
+      "val/f1/all": 0.23584841611780016,
+      "val/em/all": 0.18359375,
+      "val/answer_format/all": 0.630859375,
+      "val/format_rate/all": 0.5625,
+      "val/generated_tokens/all": 169.912109375,
+      "val/search_calls/all": 1.173828125
+    }
+  },
+  "costs": {
+    "failed_outer6_rollout": {
+      "evidence_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/training-rollout-cost/attempt-000006.json",
+      "evidence_sha256": "585fc84e46d3a05a75e33e7cf11d363cf276ae99e0060947abb167d1452a1c3f",
+      "evidence_bytes": 2008,
+      "record": {
+        "status": "TRAINING_ROLLOUT_COST_COMPLETE",
+        "attempt_id": 6,
+        "candidate_outer": 6,
+        "completed_outer_before": 5,
+        "question_rows": 1024,
+        "costs": {
+          "generated_tokens": 950630,
+          "prefill_tokens": 3715235,
+          "retrieval_calls": 2638,
+          "trajectories": 3534,
+          "padded_rows": 140,
+          "context_mismatches": 0,
+          "raw_slots": 3188000,
+          "raw_emitted_tokens": 950630,
+          "raw_retained_tokens": 480233,
+          "raw_discarded_tail_tokens": 470397,
+          "raw_inherited_leaf_tokens": 33090,
+          "semantic_prefix_scan_cpu_seconds": 49.49294664199488,
+          "semantic_prefix_scan_wall_seconds": 49.3065732344985
+        },
+        "error": null,
+        "start_epoch": 1791913793.288227,
+        "end_epoch": 1791914369.7560062,
+        "wall_seconds": 576.4677794203162,
+        "trainer_process_cpu_seconds": 220.49409470799992,
+        "actual_optimizer_writes": null,
+        "outer_credit_not_inferred": true,
+        "allocation_kind": "user_authorized_shared_systemd",
+        "physical_gpus": 8,
+        "slurm_reserved_gpus": 0,
+        "resource_protocol": "training_memory_headroom_shared_v1",
+        "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+        "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+        "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+        "observer_source_sha256": "0ad872051b71fd5ce21271e0c05d2412906c3fe4adf5b6413cbc58cf50b0de80",
+        "scope": "Actual original Controller.generate metric ledger only; question rows before five-leaf expansion; native emitted scalar counts include DP padding; prefill is submitted token events, not unique KV/FLOPs. Costs include inherited ledger conventions; cached savings and worker CPU are not inferred. Credit/write/skip decisions join separately by attempt_id."
+      },
+      "scope": "Actual completed rollout6 cost only; rollout completion does not imply completed actor update or effective outer credit."
+    },
+    "ba9_entire_terminal_segment": {
+      "actual_service_CPUUsageNSec": 29067275364000,
+      "actual_run_result_wall_seconds": 5552.515588521957,
+      "scope": "Entire ba9 service/run segment including startup, accepted2..5 and failed6. Not exclusive failed6 cost and not combined with parent chain costs."
+    }
+  },
+  "cgroup_evidence_limit": {
+    "raw_ControlGroup": "",
+    "raw_cgroup_root_statistics_valid_for_unit": false,
+    "raw_cgroup_fields_used_for_unit_diagnosis": false,
+    "actual_terminal_unit_cgroup_path": "/sys/fs/cgroup/system.slice/sst-tree-nested-branch-fresh200-ba9f6627.service",
+    "actual_terminal_unit_cgroup_exists": false,
+    "actual_terminal_cgroup": {
+      "pids.events": null,
+      "pids.max": null,
+      "pids.peak": null,
+      "pids.current": null,
+      "memory.events": null
+    },
+    "scope": "Empty systemd ControlGroup made raw collection fall back to cgroup root. Root memory/cpu/procs are invalid for this unit and excluded."
+  },
+  "claims": {
+    "experiment_origin": "fresh",
+    "exact_executor_resume": false,
+    "actual_cold_executor_equivalence": false,
+    "native5_new_child_cold_reload_verified": false,
+    "training_goal_paused": false,
+    "training_configuration_or_source_mutated": false,
+    "remote_queries_performed_by_this_summary": false,
+    "model_tensor_rollout_contents_read": false
+  },
+  "historical_failed_parent_outer2": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/checkpoints/training_state/attempt-results/attempt-000002.json",
+    "sha256": "6913b708245d63311b0e6931b057023e610f979fd7c0bd72ca45089797a673c4",
+    "actual_completed_outer_before_failure": 2,
+    "actual_optimizer_calls_per_rank_before_failure": {
+      "0": 40,
+      "1": 40,
+      "2": 40,
+      "3": 40,
+      "4": 40,
+      "5": 40,
+      "6": 40,
+      "7": 40
+    },
+    "failure_component": "CPU_cgroup_OOM_during_native2_save",
+    "recovered_completed_outer": 1,
+    "recovered_optimizer_calls_per_rank": {
+      "0": 20,
+      "1": 20,
+      "2": 20,
+      "3": 20,
+      "4": 20,
+      "5": 20,
+      "6": 20,
+      "7": 20
+    },
+    "lost_outer2_credit_in_child": 0,
+    "outer2_must_be_recomputed": true,
+    "failed_attempt_in_effective_history": false,
+    "original_evidence_retained": true,
+    "failed_terminal": {
+      "terminal_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/run-result.json",
+      "terminal_sha256": "1a9ebd2a3edebce70ed1717cced93ec30823205b4a7d7cbbcded695af05f8194",
+      "fault_snapshot_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/output/recovery-fault-20261014.json",
+      "fault_snapshot_sha256": "39594f1bdd8c9604663388eda03c310a7cb091f09774c8b04a2577dec9651ed1",
+      "original_main_pid": 0,
+      "original_systemd_result": "oom-kill",
+      "original_exit_status": 1,
+      "original_cpu_memory_max_bytes": 274877906944,
+      "original_native2_save_complete": false
+    },
+    "exact_executor_resume": false
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "ray240_thread_failure_diagnosis_v1",
+  "status": "DIRECT_FAILURE_PATH_IDENTIFIED_MINIMAL_RECOVERY_SETTING_SUPPORTED",
+  "observed_utc": "2026-10-13T18:08:35.703824+00:00",
+  "training_source": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+  "unit": "sst-tree-nested-branch-fresh200-ba9f6627.service",
+  "facts": {
+    "terminal_main_pid": 0,
+    "terminal_result": "exit-code",
+    "terminal_exit_status": 1,
+    "terminal_local_time": "2026-10-14 02:01:48 CST",
+    "complete_native_outer": 5,
+    "optimizer_calls_per_rank": 100,
+    "failed_inflight_outer": 6,
+    "failed_worker_pids": [
+      387580,
+      387040
+    ],
+    "first_fatal_local_time": "2026-10-14 02:01:29 CST",
+    "exception": "boost::system::system_error: thread: Resource temporarily unavailable [system:11]",
+    "fatal_code_path": [
+      "CoreWorker::HandleLocalGC",
+      "ServerCallImpl::HandleRequestImpl",
+      "ray::rpc::GetServerCallExecutor",
+      "_GetServerCallExecutor",
+      "boost::asio::thread_pool::thread_pool",
+      "boost::asio::detail::posix_thread::start_thread"
+    ],
+    "installed_ray_version_metadata": [
+      "Name: ray",
+      "Version: 2.40.0"
+    ],
+    "installed_binary": "/dataset/shaoshitong/search-r1-rl/tree-grpo/env/lib/python3.10/site-packages/ray/_raylet.so",
+    "installed_binary_bytes": 34979240,
+    "installed_binary_strings": [
+      "num_server_call_thread",
+      "RAY_num_server_call_thread"
+    ],
+    "native_fault_snapshot_sha256": "02e27e4eb8d429b1546046546afd911ebc3a23c891d697fa5afcb07faf03718e",
+    "installed_readback_path": "outputs/tree-nested-branch-handoff-20261013/RAY240_CONFIG_READBACK.txt",
+    "installed_readback_sha256": "cd37f72b5f5416c06d2580b99e1c2c189db0cc3713b1f48095fb2566ebbaa95b",
+    "ray_system_config_parameter_documented_in_installed_python": true,
+    "existing_source_ray_init": "ray.init(runtime_env={env_vars:TOKENIZERS_PARALLELISM/NCCL_DEBUG})",
+    "running_unit_tasks_max_reported_by_mainline": 4096
+  },
+  "source_support": {
+    "version_tag": "ray-2.40.0",
+    "upstream_default_expression": "max(1, std::thread::hardware_concurrency() / 4)",
+    "upstream_default_numeric_not_measured": true,
+    "config_definition_url": "https://raw.githubusercontent.com/ray-project/ray/ray-2.40.0/src/ray/common/ray_config_def.h",
+    "pool_creation_url": "https://raw.githubusercontent.com/ray-project/ray/ray-2.40.0/src/ray/rpc/server_call.cc",
+    "environment_reader_url": "https://raw.githubusercontent.com/ray-project/ray/ray-2.40.0/src/ray/common/ray_config.cc",
+    "mechanism": "The RPC executor is a process-local static lazy thread pool; its size comes from num_server_call_thread. RayConfig initializes the setting from RAY_num_server_call_thread, and an explicit system config can override it."
+  },
+  "inferences": {
+    "direct_cause": "OS refused a Ray RPC-executor thread creation with EAGAIN. Lazy executor creation on GC is the immediate failure path.",
+    "direct_cause_confidence": "high: actual fatal native stack names and error match upstream 2.40 code",
+    "large_per_process_default_rpc_pool_is_contributor": "strongly plausible given many idle workers and hardware-concurrency-based default; per-process actual default thread count was not directly measured",
+    "tasks_max_4096_exhaustion": "possible but not proven; no valid own cgroup pids.events/max/current at failure in the raw snapshot",
+    "alternative_eagain_sources": [
+      "RLIMIT_NPROC or ancestor/host PID limit",
+      "memory or address-space/stack resources needed for new threads"
+    ]
+  },
+  "invalid_or_missing_evidence": {
+    "raw_empty_controlgroup_was_mapped_to_root": true,
+    "raw_memory_stat_cpu_stat_cgroup_procs_are_host_root_not_owned_unit": true,
+    "raw_root_files_not_used_to_prove_own_oom_or_pids_limit": true,
+    "own_cgroup_pids_limit_hit_unknown": true,
+    "own_cgroup_memory_oom_unknown_from_raw": true,
+    "PT_or_model_tensors_not_read": true
+  },
+  "minimal_recovery_setting": {
+    "environment": {
+      "RAY_num_server_call_thread": "1"
+    },
+    "apply_before": "Create only the new owned recovery process/Ray head, before importing/initializing Ray, and inherit in all Ray workers.",
+    "explicit_ray_init_equivalent": {
+      "_system_config": {
+        "num_server_call_thread": 1
+      }
+    },
+    "explicit_overrides_must_not_contradict_environment": true,
+    "change_scope": "Ray infrastructure only; no loss, hyperparameter, model, split, GPU count or node changes.",
+    "tasks_max_adjustment": "Do not attribute failure to TasksMax or enlarge it solely from the invalid raw root cgroup. Raise the new recovery unit limit only if genuine owned/ancestor PID evidence supports needed headroom.",
+    "training_restart_or_recovery_performed_by_this_agent": false,
+    "verification_not_a_new_gate": "Mainline records actual new-unit configured setting/thread/PID measurements during the already authorized native5 recovery; this diagnosis adds no review or test loop."
+  },
+  "metadata_watcher": "Existing watcher exited after genuine training terminal; preserve its unit and archive history.",
+  "remote_inspection": {
+    "readonly_same_H10018": true,
+    "queries": [
+      "Ray wheel version metadata",
+      "Installed Python setting/parameter declarations",
+      "strings of installed _raylet.so"
+    ],
+    "ray_started": false,
+    "environment_installed": false,
+    "remote_mutation": false,
+    "training_signals_sent": false
+  },
+  "independent_cold_reload_performed": false,
+  "new_review_performed": false,
+  "tests_run": false
+}
