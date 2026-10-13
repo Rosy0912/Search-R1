@@ -2,6 +2,7 @@
 import hashlib, importlib.util, json, os, pathlib, random, sys, tempfile, types
 import numpy as np
 import torch
+sys.dont_write_bytecode = True
 
 MODULE='/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/runtime/topd_resume_state.py'
 sys.path.insert(0,str(pathlib.Path(MODULE).parent))

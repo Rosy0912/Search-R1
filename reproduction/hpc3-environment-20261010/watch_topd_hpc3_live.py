@@ -26,7 +26,7 @@ def snapshot():
  actual=json.loads((ACTOR/'actual-outer-updates.json').read_text()) if (ACTOR/'actual-outer-updates.json').exists() else {'actual_completed_outer_steps':[],'records':[]}
  queue=subprocess.check_output(['squeue','-j',JOB+',712266','-h','-o','%i|%T|%M|%R'],text=True).splitlines()
  errors={}
- for p in [ACTOR/'trainer.log',FINAL/'retriever.log',BASE/'runtime/logs/topd-final51713-712266.log']+list(FINAL.glob('rank*.log')):
+ for p in [ACTOR/'trainer.log',BASE/('runtime/logs/topd-instruct300-'+JOB+'.log'),FINAL/'retriever.log',BASE/'runtime/logs/topd-final51713-712266.log']+list(FINAL.glob('rank*.log')):
   if not p.exists():continue
   with p.open('rb') as h:
    h.seek(max(0,p.stat().st_size-8000));tail=h.read().decode(errors='replace')
@@ -81,7 +81,7 @@ if JOB!='712204':
  v['alpha1_phase']='authorized_step5_resume; awaiting_verified_new_outer6' if n<=5 else 'resumed_training_after_outer%d'%n
  v['alpha1_restore_choice_pending']=False
 if v['alpha1_state']=='FAILED':
- v['alpha1_phase']='failed_during_stage50_validation; restore_decision_required'
+ v['alpha1_phase']='failed_during_stage50_validation; restore_decision_required' if JOB=='712204' else 'failed; inspect current job first exception and startup log'
  v['alpha1_stage50_checkpoint_present']=(ACTOR/'checkpoints/actor/global_step_50/resume-complete.json').is_file()
 if proof:v.update(alpha1_rank_optimizer_steps=[20*n]*4,alpha1_phase='training_continues_after_outer%d'%n)
 metrics=actual['records'][-1]['metrics'] if actual['records'] else {}

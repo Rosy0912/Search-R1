@@ -16,8 +16,8 @@
     "sha256": "69930fb2b14bad697ce9acaf999222feaad4085a14f630780be832aef675f56f"
   },
   "test_alpha1_step5_resume_cpu.py": {
-    "bytes": 4324,
-    "sha256": "166111d6708271bc3d6e8372594fce683b07819dc0885f533458a98cf22615a4"
+    "bytes": 4355,
+    "sha256": "c54d11a89cac832d6b1f5509dea772eea53a4f22992a795b6fac7f92d07694c0"
   },
   "launcher/recipe.json": {
     "bytes": 3385,
