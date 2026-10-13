@@ -1,0 +1,24 @@
+{
+  "role": "independent_source_only_singleGPU2_capacity_clone_review",
+  "reviewer": "/root/current_resource_record_consistency",
+  "initialization_without_parent_context": true,
+  "accepted": true,
+  "source_sha256": "b0772dc89742b6708865c22480442e3d2dfd4b07ef3e54552f23565f023a574a",
+  "source_bytes": 23748,
+  "base_source_sha256": "94669f3ec8c9072e46a4f48a36e4dcf516239af564c006557a3170258214e072",
+  "scope": "Exactdelta docs/example/GPUS2/VISIBLE2 only; exclusiveprivate/sourcePIN/preCUDAforeignrefusal/physicalUUID/60GiB/twoREADYsamples/own-onlyboundedrelease unchanged",
+  "physical_indices": [
+    2
+  ],
+  "launch_permitted_now": false,
+  "future_actual_free_resource_read_required": true,
+  "latest_foreign_resource_snapshot_unix": 1791928054.6115062,
+  "latest_foreign_gpu2_pid": 2258716,
+  "latest_foreign_gpu2_start_ticks": 600586007,
+  "remote_staged": false,
+  "intent_created": false,
+  "reservation_started": false,
+  "native_algorithm_accepted": false,
+  "tests_or_remote_operations_performed": false,
+  "checked_unix": 1791928670.46589
+}
