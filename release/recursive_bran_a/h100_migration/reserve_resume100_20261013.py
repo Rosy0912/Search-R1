@@ -6,8 +6,8 @@ r=b/'recovery-from100-20261013';r.mkdir(exist_ok=True);(r/'logs').mkdir(exist_ok
 receipt=r/'allocation-submitted.json'
 if receipt.exists():
  print(receipt.read_text());raise SystemExit(0)
-old=subprocess.check_output(['scontrol','show','job','3389'],text=True)
-assert 'JobState=COMPLETED' in old
+old=subprocess.run(['scontrol','show','job','3389'],capture_output=True,text=True)
+assert (old.returncode==0 and 'JobState=COMPLETED' in old.stdout) or (old.returncode!=0 and 'Invalid job id specified' in old.stderr)
 assert all(not Path('/proc/'+str(pid)).exists() for pid in [3714909,3721269,3715225,3713677,3713706])
 cp=b/'checkpoints/training_state/global_step_100/manifest.json'
 m=json.loads(cp.read_text());assert m['identity']['completed_step']==100
