@@ -1,7 +1,7 @@
 import importlib.util,json,base64,hashlib,shlex
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('ssh',Path(__file__).with_name('ssh_retained18.py'));ssh=importlib.util.module_from_spec(spec);spec.loader.exec_module(ssh)
-commit='13a5388f8f4e7d4fbf47341489c58ec782b81377'
+commit='7d28b1bc1896145d00ad1f666b27b93c0baced02'
 root='/dataset/shaoshitong/search-r1-rl/tree-grpo';dest=root+'/instruct300/eval-shared-'+commit
 src=Path(__file__).parent/'branpo-source/reproduction/tree-eval-resume-20261013'
 old=json.loads(Path('outputs/tree-eval-resume-20261013/DEPLOYMENT.txt').read_text().split('\n\nexit')[0])['release']
@@ -17,7 +17,7 @@ print(call('from pathlib import Path\np=Path('+repr(dest)+')\np.mkdir()'))
 groups=[];group={};size=0
 for n,data in files.items():
  if n in review['files']:assert hashlib.sha256(data).hexdigest()==review['files'][n]
- if size+len(data)>20000 and group:groups.append(group);group={};size=0
+ if size+len(data)>30000 and group:groups.append(group);group={};size=0
  group[n]=base64.b64encode(data).decode();size+=len(data)
 if group:groups.append(group)
 for group in groups:
