@@ -26,7 +26,7 @@ def main():
     env={k:v for k,v in os.environ.items() if not k.startswith(('SLURM_','SBATCH_','SQUEUE_','SCANCEL_','SACCT_','SCONTROL_'))}
     active_ids=set(subprocess.check_output(['squeue','--local','-h','-o','%i'],text=True,env=env).split())
     if a.repair_predecessor_unit:
-        if a.repair_predecessor_unit not in ('sst-tree-eval-shared-1c15c49.service','sst-tree-eval-shared-b316a77.service','sst-tree-eval-shared-993109d.service') or not a.repair_predecessor_journal:
+        if a.repair_predecessor_unit not in ('sst-tree-eval-shared-1c15c49.service','sst-tree-eval-shared-b316a77.service','sst-tree-eval-shared-993109d.service','sst-tree-eval-shared-13a5388.service') or not a.repair_predecessor_journal:
             raise RuntimeError('Only identified failed own predecessor may be repaired')
         prior=json.loads(Path(a.repair_predecessor_journal).read_text())
         original=json.loads((root/'runs/tree-branpo-fresh200-3360/output/eval-resume/shared-dispatch-once.json').read_text())
@@ -35,10 +35,10 @@ def main():
         terminal=subprocess.check_output(['systemctl','show',a.repair_predecessor_unit,'--property=ActiveState,MainPID,ExecMainStatus'],text=True,env=env)
         if 'ActiveState=failed' not in terminal or 'MainPID=0' not in terminal or 'ExecMainStatus=1' not in terminal:
             raise RuntimeError('Previous own startup must be confirmed failed and terminal')
-        if a.repair_predecessor_unit=='sst-tree-eval-shared-993109d.service':
+        if a.repair_predecessor_unit in ('sst-tree-eval-shared-993109d.service','sst-tree-eval-shared-13a5388.service'):
             result=json.loads((root/'runs'/a.repair_predecessor_unit.removesuffix('.service')/'run-result.json').read_text())
             if result['status']!='FAILED' or result['worker_exit_code']!=1 or result['own_cleanup_residual'] or result['prefix_sha256']!=release['prefix_sha256']:
-                raise RuntimeError('Known UUID capability failure cleanup not proved')
+                raise RuntimeError('Known own evaluator failure cleanup not proved')
         if active_ids.intersection({'3360','3392'}):raise RuntimeError('Old evaluator still active; no repair duplicate')
         queued='Previously canceled own3392; identified failed shared startup: '+terminal
     else:

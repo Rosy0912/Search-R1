@@ -90,7 +90,23 @@ def main():
     if int(os.environ['WORLD_SIZE']) != 8 or len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) != 8:
         raise ValueError('Exactly all eight allocated GPUs required')
     torch.cuda.set_device(local_rank)
-    tokenizer=AutoTokenizer.from_pretrained(a.model,local_files_only=True)
+    exported_tokenizer=AutoTokenizer.from_pretrained(a.model,local_files_only=True)
+    tokenizer=AutoTokenizer.from_pretrained(config.actor_rollout_ref.model.path,local_files_only=True)
+    # HF export reserializes tokenizer.json; retain exact original file binding
+    # only after full tokenizer backend/vocab/special/chat/flags equivalence.
+    if (json.loads(tokenizer.backend_tokenizer.to_str())!=json.loads(exported_tokenizer.backend_tokenizer.to_str())
+        or tokenizer.get_vocab()!=exported_tokenizer.get_vocab()
+        or tokenizer.special_tokens_map!=exported_tokenizer.special_tokens_map
+        or tokenizer.chat_template!=exported_tokenizer.chat_template
+        or (tokenizer.pad_token_id,tokenizer.eos_token_id,tokenizer.clean_up_tokenization_spaces)!=(exported_tokenizer.pad_token_id,exported_tokenizer.eos_token_id,exported_tokenizer.clean_up_tokenization_spaces)):
+        raise ValueError('HF200 tokenizer semantics differ from frozen original protocol')
+    original_tokenizer_sha=digest(Path(config.actor_rollout_ref.model.path)/'tokenizer.json')
+    if original_tokenizer_sha!=config.baselines.tree.token_preservation.tokenizer_sha256:
+        raise ValueError('Original tokenizer file differs from frozen protocol')
+    atomic_immutable(Path(a.output)/'tokenizer-hf200-reload-proof.json',dict(
+        original_tokenizer_sha256=original_tokenizer_sha,exported_tokenizer_sha256=digest(Path(a.model)/'tokenizer.json'),
+        full_backend_vocab_special_chat_flags_equal=True,model_sha256=manifest['model_sha256']))
+    del exported_tokenizer
     dataset=RLHFDataset(parquet_files=files(config), tokenizer=tokenizer,
         prompt_key=config.data.prompt_key, max_prompt_length=config.data.max_prompt_length,
         filter_prompts=True, return_raw_chat=config.data.get('return_raw_chat',False),
