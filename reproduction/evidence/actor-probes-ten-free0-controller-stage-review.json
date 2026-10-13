@@ -1,0 +1,15 @@
+{
+  "accepted": true,
+  "checked_unix": 1791935749.2000551,
+  "independent_initialization_without_parent_context": true,
+  "launch_sha256": "ba8cfb839ad510d8102f5995b45d6647eab5166e7b614eedfa27d33349dda2b6",
+  "native_algorithm_accepted": false,
+  "production_training_started": false,
+  "reader_sha256": "743d055d4d6e868b34f0280e010d7bd67a516fed6f33779d986f7756f23a6e82",
+  "reviewer_task": "/root/free0_capacity_actual_controller_review",
+  "role": "independent_free0_controller_and_actual_source_stage_delta_review",
+  "scope": "Staticexactdelta andsavedactualsource-stage only; rootexistingphysicalA800route/nodebound. Strictfreshfree0preflight/uniqueclaim/backup/fullbirth/UUID/PCI/twoREADY/postREADY. Otherowned123onlywhenboot/node+PID2340358/birth601041566/SIDUIDmatch. Runtime2positivecapacityreadsrequired; noG1nativeacceptance",
+  "source_bytes": 25337,
+  "source_sha256": "e1d46b43e3b96bbb43268b9531a5d633934964ead29854570ccfba1df96772f9",
+  "source_staging_receipt_sha256": "53c0b34339d77ff3bf1e4334c7cbe0facd966c0c7dd0dcc9108870f12c586978"
+}
