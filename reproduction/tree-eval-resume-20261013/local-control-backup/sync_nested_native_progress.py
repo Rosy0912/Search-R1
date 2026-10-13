@@ -368,6 +368,7 @@ def main():
         current_outer_dev_complete=actual_dev is not None)
     variance_names = ('tree_variance/intra_adv_population_variance',
                       'tree_variance/group_actual_adv_population_variance',
+                      'tree_variance/within_root_raw_reward_population_variance',
                       'tree_variance/group_raw_reward_population_variance',
                       'tree_variance/mixed_reward_question_fraction')
     cost_names = ('rollout/candidate_attempts','rollout/candidate_accepted',
