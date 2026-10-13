@@ -1,12 +1,12 @@
 #!/data/search-g1/env/bin/python
-"""Hold 60 GiB on each of A800 GPUs 0, 2, 3 in one independently owned process.
+"""Hold 60 GiB on each of A800 GPUs 0, 3 in one independently owned process.
 
 This is a capacity reservation, never a trainer or retry launcher. Run only after
-reviewing/publishing this source and independently confirming all three GPUs are
+reviewing/publishing this source and independently confirming the selected GPUs are
 free. The fresh namespace and immutable claim/source copy are retained on exit.
 
 Example (SOURCE_SHA is the independently verified SHA-256 of this exact file):
-  CUDA_VISIBLE_DEVICES=0,2,3 /data/search-g1/env/bin/python -I \
+  CUDA_VISIBLE_DEVICES=0,3 /data/search-g1/env/bin/python -I \
     /data/search-g1/reservation-tools/a800_owned_gpu_reservation.py \
     --namespace /data/search-g1/reservations/hold-YYYYMMDD-HHMMSS \
     --expected-source-sha256 "$SOURCE_SHA"
@@ -38,8 +38,8 @@ import time
 
 
 ROLE = "only_capacity_reservation"
-GPUS = (0, 2, 3)
-VISIBLE = "0,2,3"
+GPUS = (0, 3)
+VISIBLE = "0,3"
 BYTES_PER_GPU = 60 * 1024**3
 HEADROOM_BYTES = 1024**3
 ENV_PREFIX = Path("/data/search-g1/env")
@@ -233,7 +233,7 @@ class Inventory:
                                "total_bytes": int(row[3]) * 1024**2,
                                "free_bytes": int(row[4]) * 1024**2}
         if set(selected) != set(GPUS) or len({gpu["uuid"] for gpu in selected.values()}) != len(GPUS):
-            raise ReservationError("the fixed three physical GPUs are not uniquely present")
+            raise ReservationError("the fixed selected physical GPUs are not uniquely present")
         identity = {i: (gpu["uuid"], gpu["pci_bus_id"]) for i, gpu in selected.items()}
         if self.expected is not None and identity != self.expected:
             raise ReservationError("physical GPU index/UUID mapping changed")
@@ -276,7 +276,7 @@ def cuda_uuid_mapping(expected):
     count = ctypes.c_int()
     checked(driver.cuDeviceGetCount(ctypes.byref(count)))
     if count.value != len(GPUS):
-        raise ReservationError("CUDA must expose exactly three devices")
+        raise ReservationError("CUDA must expose exactly the selected two devices")
     mapping = []
     for ordinal, physical in enumerate(GPUS):
         device = ctypes.c_int()
@@ -375,7 +375,7 @@ def main():
         record["torch_version"] = torch.__version__
         record["visible_mapping"] = cuda_uuid_mapping(inventory.expected)
         if torch.cuda.device_count() != len(GPUS):
-            raise ReservationError("torch must expose exactly three devices")
+            raise ReservationError("torch must expose exactly the selected two devices")
         for ordinal, physical in enumerate(GPUS):
             if stop_signal is not None:
                 raise ReservationError("stop requested during allocation")

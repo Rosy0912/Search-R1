@@ -1,0 +1,29 @@
+{
+  "role": "actual_capacity_reservation_refused_beforeCUDA_due_new_foreignGPU2",
+  "source_prior_sha256": "73f591ab14fe772c2069569dfb693badce3799799f2d62e26546860aaf7cbfc5",
+  "actual_read_receipt_sha256": "421685c58d7406c08945b6e0bb532ec3f2ee64229c37a36402981cb76acbb46d",
+  "holder_attempt_pid": 2269846,
+  "holder_attempt_start_ticks": 600661745,
+  "same_birth_missing": true,
+  "allocated_devices": [],
+  "own_CUDA_contexts": 0,
+  "namespace_preserved": true,
+  "foreign_training_apps": [
+    {
+      "gpu_index": 1,
+      "pid": 2237329,
+      "used_mib": "17802"
+    },
+    {
+      "gpu_index": 2,
+      "pid": 2258716,
+      "used_mib": "18730"
+    }
+  ],
+  "signals_sent": false,
+  "source_adjustment": "Onlyfixedfreecapacitysubset0,3; neverallocateforeignGPU1or2; scientificA800training0..3 unchanged",
+  "source_new_sha256": "f24ace2a9e07ad27d4d3d3694e808cc5e66505d1cd26c7dcdfe40fe1ee1bc34c",
+  "new_reservation_not_launched": true,
+  "native_algorithm_accepted": false,
+  "checked_unix": 1791927166.0282838
+}
