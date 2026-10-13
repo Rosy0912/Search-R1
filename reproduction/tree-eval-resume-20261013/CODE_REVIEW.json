@@ -1,0 +1,51 @@
+{
+  "status": "ACCEPTED",
+  "review_status": "ACCEPTED",
+  "reviewed_at_utc": "2026-10-13T07:52:48.874585+00:00",
+  "review_scope": "Independent local static review of final source; acceptance for evaluation-only dispatch with enforced release/prefix gates. No remote execution/submission/cancellation performed by reviewer.",
+  "files": {
+    "bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
+    "dispatch_once.py": "7f98759a94d95c2edf597f27cf4f1c9f3564eef7a5630342db8bdeb231f498fc",
+    "eval_merge.py": "ecf504ff81bce19e4fc0e0263843c98cf7e2c3ddb5c2fd1485646f1eba95f356",
+    "eval_worker.py": "3a97076add14d26c1ca38fc84f642bfbe6dc2a3f746b15d10bdbfbe23111c2e6",
+    "expected-gpu-uuids-retained18.json": "609e1a657db48b39d0548dd61dcbf3bcdfaf1b64d8a968a549f6d3cc71e361db",
+    "guard.py": "3880e5d002d99c9647fbeeeff271e819de97b93c0972daa616eb1af33f594d02",
+    "launch.sbatch": "0e7eed08ec524859900f51546e77dbd5be25fdc280de203006798523122cc789",
+    "resource_guard_retained18.py": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
+    "salvage_cpython310_qa.py": "4345faaf6c24bd30d7599f68fd5e32ab30d37386cc925b6c877a766b686081b3",
+    "supervisor.py": "9ed4d2626a14d36a2a5213d52018aa03fcb099fb1674477df4b361b1b40665ea"
+  },
+  "blockers": [],
+  "resolved_blockers": {
+    "B1": "bind_prefix.py exact provenance and ordered-dataset binding; actual successful bound-prefix evidence inspected",
+    "B2": "raw rows/receipt/directory fsync added; bound-prefix atomic durable publication",
+    "B3": "persistent --score-output and validated orphan/committed reuse",
+    "B4": "full frozen package plus external source SHA checks, actual200 direct-attempt proof and model/prefix manifest binding"
+  },
+  "positive_checks": [
+    "No optimizer/training worker construction in eval_worker; explicit actual200 path.",
+    "Protocol enforces four search rounds, 2048/4096/500/500, native token preservation, loopback retriever, XFORMERS and greedy do_sample=False.",
+    "Static library trace: train_tp=1 constructs singleton TP and PP groups; per-generation tensor collective is TP-local. World warmup collective happens during all-rank initialization.",
+    "Slurm allocation requests eight GPUs, exclusive h100-10, no requeue; inherited UUID lease check and dual15% guard fail closed.",
+    "Batch ledger publishes immutable linked files with file/directory fsync, SHA receipts, duplicate/range/contiguity checks; final merge refuses missing indices and validates source counts.",
+    "OwnedProcesses cleanup checks current own Slurm-step cgroup and pidfd identity before signals; no foreign process signaling found.",
+    "Binder validates frozen _validate origin, observer cursor, config SHA, final concatenated parquet order/source count, all200 credited attempts and 4000 actual optimizer calls for each of eight ranks; annotates every preserved index/question SHA.",
+    "Salvage fsyncs raw rows, receipt and directory; bound prefix and done receipt use immutable file/directory-fsynced publication.",
+    "Supervisor consumes stable reviewed score-output under original evaluation directory; validated orphan batch receipts recover without regeneration; committed question identities are verified before resuming.",
+    "Supervisor checks original package manifest e2503977c8746edbc83b722d8224548f060909df9fc25d91a9cb88a947a79a21 and its entire file manifest plus release external dependencies before imported runtime use.",
+    "dispatch_once requires ACCEPTED exact deployed source hashes, bound durable prefix, correct old3360 job/node/name/RUNNING state and no active replacement; journals UNKNOWN before one sbatch; verifies afterany old3360/eight GPU/node before scancel only3360. Unknown submissions are not automatically retried."
+  ],
+  "evidence": {
+    "prefix_binding_file": "outputs/tree-eval-resume-20261013/PREFIX_BINDING.txt",
+    "prefix_binding_file_sha256": "a26848f1a09973847e105ebcb28980cd77af21def74e4bb3beec6e488d82a2b5",
+    "preserved_count": 30880,
+    "remaining_count": 20833,
+    "bound_prefix_sha256": "cbc70dc4138eae5c79c0cf61e6b63793936802383fba42aae543e1ff54882435",
+    "minimal_tests": "Parent/implementation agent reports immutable ledger/done/collision/SHA tamper checks passed; reviewer did not rerun fixtures. Actual binder exit0 checked in PREFIX_BINDING.txt; CPython decoder two identical snapshots reported by parent."
+  },
+  "runtime_limits": [
+    "GPU runtime compatibility, memory capacity and measured acceleration remain subject to real execution; static acceptance is not a completed evaluation claim.",
+    "After launch verify actual committed batch progress twice, guard health and exit state; complete final51713 count/hash acceptance.",
+    "Greedy changed batching/kernel shape can change numerics; original weights, token/search protocol and saved30880 scores are preserved."
+  ]
+}

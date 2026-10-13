@@ -1,0 +1,11 @@
+# Evaluation-only continuation, 2026-10-13
+
+User authorizes preserving already scored questions, stopping slow final evaluation and evaluating remaining questions faster. This does not authorize restarting training. Old3360 has 200 credited outer updates, eight ranks each4000 Adam writes and zero skips.
+
+The old evaluator has no durable per-question score journal. A read-only external CPython3.10 snapshot preserves its ordered qa_rows twice without signals or injection. Bind and fsync the recovered metrics to exact original source/config, ordered final parquet and actualHF200 file hashes before stopping. Current accepted prefix30880; remaining20833 of51713. Prefix positions follow frozen unshuffled/no-filter evaluator, compared every source row and annotated with question hashes.
+
+Replacement: same frozen custom vLLM0.6.3/XFORMERS BF16 greedy native-token parser/search rules, eight persistent TP1 engines, localbatch64/global scheduling512. No actor optimizer/reference/training construction. Resident weights and cache remove per-call FSDP synchronization/offload; question queues independent. Four rounds and2048/4096/500/500 limits unchanged. Greedy output can differ numerically with changed batch/kernel shapes; do not claim bit-identical executor resume.
+
+All model/data/index/score tensors remain h100-10/10.33.0.18; full8GPU FP16 FAISS and GPU E5 use loopback. ExclusiveSlurm8GPU, inheritedUUID leases, exact original foreignMEM/SM15% guard and own-cgroup pidfd cleanup remain. Durable atomic batch scores and SHA receipts allow future job continuation through the same score directory. Final merge rejects gaps/duplicates/source/question/hash mismatch and requires seven datasets/all51713.
+
+Dispatch journal creates SUBMISSION_UNKNOWN before one sbatch; inspect uncertain outcomes, never repeat. Replacement queued afterany3360, then explicit old3360-only cancellation after source review, prefix durability and actual replacement allocation checks. Preserve original native/HF200, old cost/resource evidence and user-authorized handoff record. Old canceled evaluator is not a failed training or a completed final evaluation. Actual8GPU batch progression and full final acceptance remain runtime requirements.
