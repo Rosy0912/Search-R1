@@ -1,0 +1,61 @@
+{
+  "role": "actual_only_owned_training_capacity_reservation_not_GRPO_progress",
+  "source_sha256": "f24ace2a9e07ad27d4d3d3694e808cc5e66505d1cd26c7dcdfe40fe1ee1bc34c",
+  "identity": {
+    "pid": 2274790,
+    "start_ticks": 600696537,
+    "sid": 2274790,
+    "uid": 0,
+    "state": "S",
+    "cwd": "/data/search-g1/reservations/hold-f8a0c833b8084708b8619cb17fa5948a",
+    "birth_matches": true,
+    "alive": true
+  },
+  "physical_indices": [
+    0,
+    3
+  ],
+  "bytes_per_gpu": 64424509440,
+  "owned_cuda_applications": [
+    {
+      "gpu_index": 0,
+      "pid": 2274790,
+      "used_mib": 61856,
+      "gpu_uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83"
+    },
+    {
+      "gpu_index": 3,
+      "pid": 2274790,
+      "used_mib": 61856,
+      "gpu_uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+    }
+  ],
+  "first_checked_unix": 1791927402.5886674,
+  "second_checked_unix": 1791927535.4481893,
+  "first_read_sha256": "fc97fa91b14f879ccb05e42d426dceb3ce836f6ebb6efbde4368148229c00bff",
+  "second_read_sha256": "05b6a9aedea3832b223a0a7d25c208ddd2073cfb1fed1bf237cff2813b1ce6a8",
+  "two_real_readings_confirmed": true,
+  "status": "READY",
+  "source_backup_sha256": "f24ace2a9e07ad27d4d3d3694e808cc5e66505d1cd26c7dcdfe40fe1ee1bc34c",
+  "foreign_training_cuda_applications": [
+    {
+      "gpu_index": 2,
+      "pid": 2258716,
+      "used_mib": "18730",
+      "start_ticks": 600586007,
+      "sid": 2258716,
+      "uid": 0,
+      "state": "S",
+      "cwd_sha256": "225a353eeaf767d7b2fc350256d655857f1fc2ffd0b2e3dac3d4473271e79f51"
+    }
+  ],
+  "GPU1_naturally_released": true,
+  "new_training_started": false,
+  "new_completed_outers": 0,
+  "new_Adam_updates": 0,
+  "native_algorithm_accepted": false,
+  "capacity_memory_is_training_peak": false,
+  "scientific_fourcard_recipe_changed": false,
+  "other_processes_signaled": false,
+  "next_action": "Keep03ownedreservation,addseparate60GiBcapacityreservation onnewlyfreeGPU1,andwaitforeignGPU2; failedG1launch/source/claimsretained; eventualfreshretry requiresallresources and actualreview,neverreusefailedlaunchclaim"
+}
