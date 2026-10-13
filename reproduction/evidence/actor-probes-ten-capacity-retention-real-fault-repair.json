@@ -1,0 +1,61 @@
+{
+  "role": "actual_released_capacity_fault_and_prospective_free123_retention_repair",
+  "run_id": "ff6be623b39a41209167a116b591551b",
+  "execution_id": "61fa4331d2cc46a18463911e1a676852",
+  "training_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "actual_resource_observed_unix": 1791929857.8414207,
+  "fault_record_sha256": "240cef1e20e458ee0a2119f5ea692ed2e0a1c31e455c7985ff1bd623bdfc224b",
+  "previous_single1_status": "RELEASED",
+  "previous_subset03_status": "RELEASED",
+  "previous_single1_exact_process_birth_present": false,
+  "previous_subset03_exact_process_birth_present": false,
+  "previous_owned_CUDA_contexts": 0,
+  "previous_released_state_sha256": {
+    "single1": "6fc501c0ec9507842fdbbd74f0146602a27bef48e3fd953d3d8fa5ac3bf43ba3",
+    "subset03": "f683a578dc2ccf6b2adf0dc591c5963aeaa935781e5763995a26259abc81fa68"
+  },
+  "foreign_training_cuda_applications": [
+    {
+      "gpu_index": 0,
+      "pid": 2319032,
+      "used_mib": "762",
+      "start_ticks": 600933086,
+      "sid": 2319032,
+      "uid": 0,
+      "state": "R",
+      "cwd_sha256": "225a353eeaf767d7b2fc350256d655857f1fc2ffd0b2e3dac3d4473271e79f51"
+    }
+  ],
+  "no_foreign_signals_sent": true,
+  "fresh_retry_created": false,
+  "new_complete_outers": 0,
+  "new_Adam_updates": 0,
+  "new_skips": 0,
+  "new_training_never_started": true,
+  "new_fit0_never_started": true,
+  "native_algorithm_accepted": false,
+  "prospective_retention_repair": {
+    "role": "independent_free123_capacity_retention_repair_source_review",
+    "reviewer": "/root/capacity_hold123_independent_review",
+    "initialization_without_parent_context": true,
+    "accepted": true,
+    "source_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+    "source_bytes": 25363,
+    "base_source_sha256": "f24ace2a9e07ad27d4d3d3694e808cc5e66505d1cd26c7dcdfe40fe1ee1bc34c",
+    "fault_record_sha256": "240cef1e20e458ee0a2119f5ea692ed2e0a1c31e455c7985ff1bd623bdfc224b",
+    "fixed_physical_indices": [
+      1,
+      2,
+      3
+    ],
+    "scope": "StrictfreepreCUDA andtwoREADYadmission remains; retainalready-owned60GiBafterREADY andrecordNONEXCLUSIVEsharing, countonlyownPID/UUID/torch memory;noforeignsignals/newallocs duringhold;ownboundedcleanup unchanged",
+    "stop_timeout_qualification": "15s bound applies once finally cleanup starts; not unconditional from signalreceipt while earlier operations stall",
+    "source_only_review": true,
+    "actual_remote_deployment_accepted": false,
+    "actual_allocations_accepted": false,
+    "native_algorithm_accepted": false,
+    "checked_unix": 1791930259.9692311
+  },
+  "new123_GPU_or_namespace_operation_performed": false,
+  "same_fourcard_foreign_resource_blocker_goal_turn_count": 3
+}
