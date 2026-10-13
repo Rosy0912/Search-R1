@@ -206,3 +206,22 @@ Six phases show candidates → question encoding → K-distribution → random/t
 selection → five actual EM labels → separate actor and head updates. Controls
 switch E and K, pause/advance/replay, and respect reduced-motion preferences.
 All depicted predictions and outcomes are synthetic explanatory examples.
+
+### MP4 export
+
+The same six scenes can be exported as a 52-second, 1920×1080, 30 fps H.264
+video with Chinese explanatory captions and no audio. Export uses the existing
+standalone demonstration and never starts training or accesses model data.
+Frames stream through memory into FFmpeg; no full frame sequence is stored.
+
+```sh
+node docs/visualizations/export-question-diversity-video.mjs /your/output/question-diversity-probe.mp4
+```
+
+Requirements: Node.js, Playwright, Chrome/Chromium, FFmpeg and FFprobe. The shared
+visualization helper supports `PLAYWRIGHT_MODULE_PATH` and
+`PLAYWRIGHT_EXECUTABLE_PATH`; the exporter also accepts `FFMPEG` and `FFPROBE`.
+Appending `--preview` writes six scene previews instead of a video. A successful
+export writes a sidecar `*-video-verification.json` with source/output SHA256,
+scene checks, dimensions, duration and decoded frame count. Verify the exported
+video visually as well; this receipt is not evidence of training performance.

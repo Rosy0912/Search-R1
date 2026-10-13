@@ -1,0 +1,158 @@
+{
+  "created_at": "2026-10-13T10:25:40.948Z",
+  "source": "question-diversity-probe-demo.html",
+  "source_sha256": "109a4a987cb183b78bf53531f904035a264098f1ac8735984319bddfdf3242f7",
+  "output": "question-diversity-probe.mp4 (delivered separately; binary not committed)",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "frames": 1560,
+  "durations": [
+    6,
+    7,
+    9,
+    10,
+    10,
+    10
+  ],
+  "sceneProofs": [
+    {
+      "phase": 0,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        0
+      ],
+      "animations": 80,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 1,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        1
+      ],
+      "animations": 6,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 2,
+      "height": 649.484375,
+      "width": 1120,
+      "scenes": [
+        2
+      ],
+      "animations": 6,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 3,
+      "height": 619.484375,
+      "width": 1120,
+      "scenes": [
+        3
+      ],
+      "animations": 64,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 4,
+      "height": 651.484375,
+      "width": 1120,
+      "scenes": [
+        4
+      ],
+      "animations": 15,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 5,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        5
+      ],
+      "animations": 8,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    }
+  ],
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuvj420p",
+        "avg_frame_rate": "30/1",
+        "nb_read_frames": "1560",
+        "side_data_list": [
+          {}
+        ]
+      }
+    ],
+    "format": {
+      "duration": "52.000000",
+      "size": "1557618"
+    }
+  },
+  "sha256": "9ea1c80783f1ee7722628332f4775e155883065226ff477834ac8bf670b66ff3",
+  "synthetic": true,
+  "audio": false,
+  "page_errors": [],
+  "full_decode_check": {
+    "ffmpeg_exit_code": 0,
+    "errors": []
+  },
+  "visual_review": {
+    "decoded_frames_seconds": [
+      16,
+      46
+    ],
+    "passed": true
+  }
+}
