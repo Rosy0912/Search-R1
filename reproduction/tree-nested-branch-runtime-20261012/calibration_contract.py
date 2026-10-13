@@ -171,7 +171,7 @@ def validate_fresh_start(run, package, config_hash):
     value, digest = held_json(Path(run)/'output/fresh-initialization.json')
     expected = expected_runtime(run,package,config_hash)
     native = package.get('nested_native_continuation') is not None
-    expected_status = ('COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE1_CONTINUATION'
+    expected_status = ('COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE_CONTINUATION'
                        if native else 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED')
     require(value['status'] == expected_status, 'Missing actual official cold initialization evidence')
     require(value['training_protocol'] == PROFILE and value['calibration_profile'] == 'fresh_base_zero_v1'
@@ -339,42 +339,48 @@ def validate_calibration_ready(path, run, package, config_hash):
 
 def validate_native_start(run, package, config_hash):
     from search_r1.baselines.tree_nested_chain_resume import (PROTOCOL, PARENT_MANIFEST,
-        PARENT_MANIFEST_SHA256, parent_manifest, failed_save_evidence)
+        PARENT_MANIFEST_SHA256, parent_manifest, failed_save_evidence,
+        RECEIPT_NAME, STATE_STATUS, WORKER_STATUS, ancestry_provenance, ancestor_segments, parent_continuation_evidence)
     require(package.get('nested_native_continuation') is not None, 'Explicit native package credential required')
     cold = validate_fresh_start(run, package, config_hash)
-    value, receipt_sha, _ = read_bound(Path(run)/'output/nested-native1-loaded.json')
+    value, receipt_sha, _ = read_bound(Path(run)/'output'/RECEIPT_NAME)
     parent = parent_manifest(); provenance = value['provenance']; expected = expected_runtime(run, package, config_hash)
-    require(value['status'] == 'COLD_NESTED_NATIVE1_STATE_LOADED' and value['protocol'] == PROTOCOL
+    require(value['status'] == STATE_STATUS and value['protocol'] == PROTOCOL
             and provenance['protocol'] == PROTOCOL and provenance['same_fresh_nested_chain'] is True
             and provenance['parent_identity'] == parent['identity']
             and provenance['parent_manifest_path'] == str(PARENT_MANIFEST)
             and provenance['parent_manifest_sha256'] == PARENT_MANIFEST_SHA256
-            and provenance['parent_completed_step'] == 1 and provenance['parent_cursor'] == 512
+            and provenance['parent_completed_step'] == 5 and provenance['parent_cursor'] == 2560
             and provenance['parent_epoch'] == 0 and provenance['new_batch_size'] == 512
-            and provenance['failed_parent_outer2'] == failed_save_evidence(parent)
+            and provenance['failed_parent_outer6'] == failed_save_evidence(parent)
+            and provenance['ancestry_provenance'] == ancestry_provenance()
+            and provenance['failed_parent_outer2'] == ancestry_provenance()['failed_parent_outer2']
+            and provenance['effective_ancestor_segments'] == ancestor_segments()
+            and provenance['parent_fifth_continuation'] == parent_continuation_evidence()
             and all(provenance['child_'+key] == expected[key] for key in ('code_commit','config_sha256','job_id','run_id'))
             and provenance['exact_executor_resume'] is False and value['executor_equivalence'] is False,
             'Actual native continuation mother/child/failure binding differs')
     driver = value['driver']
     require(driver['state_path'] == parent['driver']['path'] and driver['state_file_sha256'] == parent['driver']['sha256']
             and driver['actual_file_sha256_verified'] is True and driver['actual_cold_driver_state_equal'] is True
-            and driver['completed_outer_updates'] == 1 and driver['next_outer_update'] == 2
-            and driver['sampler_cursor'] == 512 and driver['sampler_epoch'] == 0 and driver['training_attempts'] == 1
-            and driver['completed_optimizer_calls_per_rank'] == {str(r):20 for r in range(8)},
-            'Actual loaded driver effective native1 boundary differs')
+            and driver['completed_outer_updates'] == 5 and driver['next_outer_update'] == 6
+            and driver['sampler_cursor'] == 2560 and driver['sampler_epoch'] == 0 and driver['training_attempts'] == 5
+            and driver['completed_optimizer_calls_per_rank'] == {str(r):100 for r in range(8)},
+            'Actual loaded driver effective native5 boundary differs')
     workers = sorted(value['workers'], key=lambda r:r['rank'])
     require(len(workers) == 8 and [r['rank'] for r in workers] == list(range(8)), 'Loaded native rank coverage differs')
     for record in workers:
         mother = next(r for r in parent['worker_states'] if r['identity']['rank'] == record['rank'])
-        require(record['status'] == 'COLD_NESTED_NATIVE1_WORKER_LOADED' and record['protocol'] == PROTOCOL
+        require(record['status'] == WORKER_STATUS and record['protocol'] == PROTOCOL
                 and record['world_size'] == 8 and record['parent_identity'] == mother['identity']
                 and record['actual_cold_native_state_equal'] is True and record['actual_file_sha256_verified'] is True
                 and record['serialized_logical_state_sha256'] == record['actual_loaded_logical_state_sha256'] == mother['logical_state_sha256']
                 and record['state_file_sha256'] == mother['sha256'] and record['state_file_bytes'] == mother['bytes']
-                and record['scheduler_step'] == 1 and record['adam_steps'] == [20]
-                and record['actual_total_optimizer_calls'] == 20 and record['child_code_commit'] == expected['code_commit']
+                and record['scheduler_step'] == 5 and record['adam_steps'] == [100]
+                and record['actual_total_optimizer_calls'] == 100 and record['child_code_commit'] == expected['code_commit']
                 and record['exact_executor_resume'] is False, 'Actual cold-loaded native rank receipt differs')
-    return dict(status='ACTUAL_NESTED_NATIVE1_CONTINUATION_START_VALIDATED', receipt_sha256=receipt_sha,
-        cold_official_bootstrap=cold, loaded_completed_outer=1, loaded_adam_calls_per_rank=20,
-        loaded_scheduler_step=1, loaded_sampler_cursor=512, next_outer=2,
-        failed_parent_outer2=provenance['failed_parent_outer2'], exact_executor_resume=False)
+    return dict(status='ACTUAL_NESTED_NATIVE5_CONTINUATION_START_VALIDATED', receipt_sha256=receipt_sha,
+        cold_official_bootstrap=cold, loaded_completed_outer=5, loaded_adam_calls_per_rank=100,
+        loaded_scheduler_step=5, loaded_sampler_cursor=2560, next_outer=6,
+        failed_parent_outer2=provenance['failed_parent_outer2'], failed_parent_outer6=provenance['failed_parent_outer6'],
+        effective_ancestor_segments=provenance['effective_ancestor_segments'], exact_executor_resume=False)

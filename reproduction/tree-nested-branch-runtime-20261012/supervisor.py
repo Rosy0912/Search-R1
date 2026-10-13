@@ -3,6 +3,7 @@ import fcntl,json,os,re,signal,socket,subprocess,sys,time
 if sys.flags.optimize:
     raise RuntimeError('Fresh supervisor requires unoptimized Python before any runtime import')
 os.environ['PYTHONOPTIMIZE']='0'
+os.environ['RAY_num_server_call_thread']='1'
 from pathlib import Path
 from types import SimpleNamespace
 from calibration_contract import validate_fresh_start,validate_native_start,protected_processes,forbid_recovery_environment,final_gpu_process_observation
@@ -24,6 +25,7 @@ class CandidateOwnedProcesses(OwnedProcesses):
         require(sys.flags.optimize==0,'Owned children require unoptimized parent Python')
         child_environment=dict(os.environ if env is None else env)
         child_environment['PYTHONOPTIMIZE']='0'
+        child_environment['RAY_num_server_call_thread']='1'
         return super().spawn(['bash','-c','cd "$SEARCH_R1_REPO" && exec "$@"','candidate-cwd',*command],log,child_environment,pass_fds)
 
 def interrupted(sig,frame): raise RuntimeError('Own Instruct300 supervisor interrupted '+str(sig))
@@ -100,7 +102,13 @@ def main():
     from search_r1.baselines.preflight import validate_inherited_gpu_leases
     validate_inherited_gpu_leases(8)
     from search_r1.baselines.select_teacher import model_manifest
-    require(model_manifest(MODEL)==PACKAGE['model_identity'],'Official model changed')
+    if native_resume:
+        from search_r1.baselines.tree_nested_chain_resume import read_pinned,PARENT_MANIFEST,PARENT_MANIFEST_SHA256
+        prior_native=json.loads(read_pinned(PARENT_MANIFEST,PARENT_MANIFEST_SHA256))
+        require(prior_native['identity']['model_identity']==PACKAGE['model_identity']['sha256'],
+                'Pinned native5 official model identity differs')
+    else:
+        require(model_manifest(MODEL)==PACKAGE['model_identity'],'Official model changed')
     require(PACKAGE['official_model_path']==str(MODEL) and not any(k in PACKAGE for k in ('parent_manifest','healthy110_metadata')),'Official bootstrap forbids generic/historical recovery state')
     lock=(ROOT/'shared-gpu-job.lock').open('w'); fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     verify_runtime_cgroup()
@@ -140,7 +148,7 @@ def main():
     os.environ.pop('WANDB_API_KEY',None)
     os.environ.update(TREE_VALIDATION_TRAINER_SHA256=PACKAGE['files']['source/repo/verl/trainer/ppo/ray_trainer.py'],TREE_FRESH_MAIN_PPO_SHA256=PACKAGE['files']['source/repo/verl/trainer/main_ppo.py'],TREE_INSTRUCT_TOOLS=str(TOOLS),TREE_INSTRUCT_MODEL=str(MODEL),TREE_COMMON_DATA=str(ROOT/'instruct300/common-data'),SEARCH_R1_MODEL_IDENTITY=PACKAGE['model_identity']['sha256'],SEARCH_R1_BASELINE_CHECKPOINTS=str(run/'checkpoints'))
     require(not any(name in os.environ for name in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Calibration environment appeared before training')
-    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':1 if native_resume else 0,'planned_new_completed_outer':199 if native_resume else 200,'resumed_current_chain':native_resume,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
+    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':5 if native_resume else 0,'planned_new_completed_outer':195 if native_resume else 200,'resumed_current_chain':native_resume,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False,'ray_num_server_call_thread':1,'tasks_max':4096,'official_asset_bulk_hash_repeated':not native_resume}
     if shared:
         result.update(allocation_kind=allocation_identity['allocation_kind'],resource_protocol=allocation_identity['resource_protocol'],physical_gpus=8,slurm_reserved_gpus=0,slurm_reserved_cpus=0,allocated_gpus=0,systemd_unit=allocation_identity['unit'])
     try:
@@ -150,7 +158,7 @@ def main():
         if native_resume:
             from search_r1.baselines.tree_nested_chain_resume import validate_semantic_config,parent_manifest,failed_save_evidence
             result['native_continuation_semantic_config']=validate_semantic_config(value)
-            result['failed_parent_outer2']=failed_save_evidence(parent_manifest())
+            result['failed_parent_outer6']=failed_save_evidence(parent_manifest())
         (run/'launch-manifest.json').write_text(json.dumps(dict(result,config_sha256=config_hash,split_content_identity=CONTENT,
           cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],gpu_leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES']),cgroup=str(scope),
           runtime=('own shared-systemd physical8/reserved0' if shared else 'own exclusive Slurm8')+': GPU E5/sharded FP16 index, trainer, Ray; loopback only',
@@ -204,7 +212,7 @@ def main():
             while training.poll() is None:
                 if not fresh_start_checked and (run/'output/fresh-initialization.json').is_file():
                     result['fresh_official_initialization']=validate_fresh_start(run,PACKAGE,config_hash); fresh_start_checked=True
-                if native_resume and not native_start_checked and (run/'output/nested-native1-loaded.json').is_file():
+                if native_resume and not native_start_checked and (run/'output/nested-native5-loaded.json').is_file():
                     result['native_continuation_start']=validate_native_start(run,PACKAGE,config_hash); native_start_checked=True
                 from storage_guard import observe_storage
                 observe_storage(run, PACKAGE['storage_guard'])
@@ -223,7 +231,7 @@ def main():
         require(samples and all(not x.get('event') for x in samples) and time.time()-samples[-1]['epoch']<15,'Final guard missing/stale/STOP')
         result['final_guard_healthy']=True
         require(sha(run/'output/entry-audit/entry-config.yaml')==config_hash,'Actual entry config differs')
-        result.update(status='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE',training_body_exit_code=training.returncode,entry_config_verified=True,parent_completed_outer=1 if native_resume else 0,new_completed_outer=199 if native_resume else 200,actual_completed_outer=200,
+        result.update(status='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE',training_body_exit_code=training.returncode,entry_config_verified=True,parent_completed_outer=5 if native_resume else 0,new_completed_outer=195 if native_resume else 200,actual_completed_outer=200,
             actual_rank_optimizer_returns=terminal['actual_rank_optimizer_returns'],opportunities_processed=terminal['opportunities_processed'],
             actual_calls_per_rank=terminal['actual_calls_per_rank'],training_attempts=terminal['training_attempts'],scheduler_steps_each_rank=200,
             exact_executor_resume=False,

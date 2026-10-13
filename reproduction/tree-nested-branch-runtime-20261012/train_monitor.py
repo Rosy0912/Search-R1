@@ -13,16 +13,31 @@ def guard_health(run,job):
 def progress_evidence(run):
     """Direct persisted decisions only; unmatched/unrecorded writes stay unknown."""
     root=Path(run)/'checkpoints/training_state';completed=0;attempts=0;totals={str(r):0 for r in range(8)};partial=[];errors=[];refused=0
-    native_start=Path(run)/'output/nested-native1-loaded.json'
+    native_step=5 if (Path(run)/'output/nested-native5-loaded.json').is_file() else 1
+    native_start=Path(run)/'output'/f'nested-native{native_step}-loaded.json'
     inherited=None
     if native_start.is_file():
         value,receipt_sha,_=read_bound(native_start)
-        require(value['status']=='COLD_NESTED_NATIVE1_STATE_LOADED' and value['driver']['completed_outer_updates']==1
-                and value['driver']['training_attempts']==1 and value['driver']['sampler_cursor']==512
-                and value['driver']['completed_optimizer_calls_per_rank']=={str(r):20 for r in range(8)},
+        driver=value['driver'];workers=value.get('workers',[])
+        boundary_calls,boundary_cursor=(100,2560) if native_step==5 else (20,512)
+        require(value['status']==f'COLD_NESTED_NATIVE{native_step}_STATE_LOADED'
+                and driver['completed_outer_updates']==native_step and driver['training_attempts']==native_step
+                and driver['sampler_cursor']==boundary_cursor and driver['sampler_epoch']==0
+                and driver['completed_optimizer_calls_per_rank']=={str(r):boundary_calls for r in range(8)}
+                and driver['actual_cold_driver_state_equal'] is True and driver['actual_file_sha256_verified'] is True
+                and len(workers)==8 and sorted(w.get('rank') for w in workers)==list(range(8))
+                and all(w.get('status')==f'COLD_NESTED_NATIVE{native_step}_WORKER_LOADED'
+                    and w.get('actual_cold_native_state_equal') is True and w.get('actual_file_sha256_verified') is True
+                    and w.get('actual_total_optimizer_calls')==boundary_calls and w.get('scheduler_step')==native_step
+                    for w in workers),
                 'Progress mother boundary differs')
-        completed=attempts=1;totals={str(r):20 for r in range(8)}
-        inherited=dict(completed_outer=1,receipt_sha256=receipt_sha,failed_parent_outer2=value['provenance']['failed_parent_outer2'])
+        completed=driver['completed_outer_updates'];attempts=driver['training_attempts']
+        totals=dict(driver['completed_optimizer_calls_per_rank']);provenance=value['provenance']
+        inherited=dict(completed_outer=completed,receipt_sha256=receipt_sha,
+            failed_parent_outer2=provenance['failed_parent_outer2'],
+            failed_parent_outer6=provenance.get('failed_parent_outer6'),
+            effective_ancestor_segments=provenance.get('effective_ancestor_segments'),
+            parent_source_commit=provenance['parent_identity']['code_commit'])
     for path in sorted((root/'attempt-results').glob('attempt-*.json')):
         try:
             value,sha,_=read_bound(path);attempts+=1
@@ -41,7 +56,8 @@ def progress_evidence(run):
         except Exception as exc:errors.append(dict(path=str(path),error=repr(exc)))
     return dict(actual_completed_outer_from_attempt_results=completed,training_attempts_seen=attempts,all_skipped_attempts=refused,
         completed_actual_optimizer_calls_per_rank=totals,partial_attempt_evidence=partial,errors=errors,
-        inherited_native1=inherited,failed_parent_outer2_in_effective_history=False,
+        inherited_native_restore=inherited,inherited_native1=inherited if native_step==1 else None,
+        failed_parent_outer2_in_effective_history=False,failed_parent_outer6_in_effective_history=False,
         exact_resume_supported=False,automatic_rollback=False,unrecorded_partial_optimizer_calls=None,
         metadata_only_progress_not_independent_acceptance=True,partial_writes_not_credited_as_completed=True)
 
@@ -56,14 +72,29 @@ def verify_terminal(run,package,config_hash):
         native=validate_native_start(run,package,config_hash)
     ranks=direct_rank_records(run,package,config_hash,200)
     safety=tree_and_safety_records(run,200,package,config_hash)
-    development={str(step):validation_reports(run,step,package=package,config_hash=config_hash) for step in range(5,201,5)}
+    inherited_outer=native['loaded_completed_outer'] if native is not None else 0
+    parent_development=None;parent_milestone=None
+    if inherited_outer==5:
+        from search_r1.baselines.tree_nested_chain_resume import (PARENT_ROOT,PARENT_COMMIT,
+            PARENT_CONFIG_SHA256,PARENT_MANIFEST,PARENT_MANIFEST_SHA256,parent_manifest)
+        parent_package=dict(package,code_commit=PARENT_COMMIT)
+        parent_package.pop('nested_native_continuation',None)
+        parent_development=validation_reports(PARENT_ROOT,5,package=parent_package,config_hash=PARENT_CONFIG_SHA256)
+        preserved_parent=parent_manifest();bound_parent,parent_milestone,_=read_bound(PARENT_MANIFEST)
+        require(parent_milestone==PARENT_MANIFEST_SHA256 and bound_parent==preserved_parent,
+                'Inherited native5 permanent manifest binding differs')
+    development={str(step):(parent_development if step==5 and inherited_outer==5
+        else validation_reports(run,step,package=package,config_hash=config_hash)) for step in range(5,201,5)}
     final=validation_reports(run,200,final=True,package=package,config_hash=config_hash)
-    milestones={str(step):checkpoint_manifest(run,package,config_hash,step)[1] for step in (5,50,100,150,200)}
+    milestones={str(step):(parent_milestone if step==5 and inherited_outer==5
+        else checkpoint_manifest(run,package,config_hash,step)[1]) for step in (5,50,100,150,200)}
     require(ranks['completed_outer']==200 and final['evaluated_rows']==51713,'Terminal coverage missing')
     return dict(status='FRESH_NESTED_BRANCH200_JSON_ACCOUNTING_COMPLETE_PENDING_INDEPENDENT_ACCEPTANCE',
         actual_rank_optimizer_returns=ranks['actual_optimizer_returns'],opportunities_processed=ranks['opportunities_processed'],
         actual_calls_per_rank=ranks['actual_writes_per_rank'],training_attempts=ranks['training_attempts'],
         fresh_initialization=fresh,native_continuation=native,
-        inherited_completed_outers=1 if native is not None else 0,child_completed_outers=199 if native is not None else 200,
-        failed_parent_outer2_in_effective_history=False,rank_accounting=ranks,safety=safety,development=development,final=final,milestones=milestones,
+        inherited_completed_outers=inherited_outer,child_completed_outers=200-inherited_outer,
+        effective_ancestor_segments=(native or {}).get('effective_ancestor_segments'),
+        failed_parent_outer2_in_effective_history=False,failed_parent_outer6_in_effective_history=False,
+        rank_accounting=ranks,safety=safety,development=development,final=final,milestones=milestones,
         independent_acceptance=False,full_hf_reload_independently_verified=False)

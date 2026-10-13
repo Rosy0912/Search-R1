@@ -34,19 +34,24 @@ def attempt_results(run,package,config_hash,last):
     bindings={};credited=[];skipped=[];opportunities=0
     child_expected=expected.copy()
     files=sorted((run/'checkpoints/training_state/attempt-results').glob('attempt-*.json'))
-    parent_run=None;parent_expected=None
+    ancestor_count=0;inherited_files={}
     if package.get('nested_native_continuation') is not None:
         from calibration_contract import validate_native_start
-        from search_r1.baselines.tree_nested_chain_resume import PARENT_ROOT,parent_manifest
+        from search_r1.baselines.tree_nested_chain_resume import ancestor_segments
         validate_native_start(run,package,config_hash)
-        parent_run=PARENT_ROOT;mother=parent_manifest()['identity']
-        parent_expected={key:mother[key] for key in expected}
-        require(not (run/'checkpoints/training_state/attempt-results/attempt-000001.json').exists(),
-                'Continuation cannot silently fresh-train/rewrite credited native1')
-        files=[parent_run/'checkpoints/training_state/attempt-results/attempt-000001.json',*files]
+        for segment in ancestor_segments():
+            source=Path(segment['source_run'])
+            parent_expected=dict(child_expected,job_id=run_job_id(source),run_id=source.name,
+                                 code_commit=segment['code_commit'],config_sha256=segment['config_sha256'])
+            for number in range(segment['first_outer'],segment['last_outer']+1):
+                require(not (run/'checkpoints/training_state/attempt-results'/f'attempt-{number:06d}.json').exists(),
+                        'Continuation cannot silently rewrite a restored credited ancestor')
+                path=source/'checkpoints/training_state/attempt-results'/f'attempt-{number:06d}.json'
+                inherited_files[path]=(source,parent_expected)
+                ancestor_count+=1
+        files=[*inherited_files,*files]
     for attempt,path in enumerate(files,1):
-        source_run=parent_run if parent_run is not None and attempt==1 else run
-        expected=parent_expected if source_run==parent_run else child_expected
+        source_run,expected=inherited_files.get(path,(run,child_expected))
         value,sha,_=read_bound(path);require(path.name==f'attempt-{attempt:06d}.json','Attempt result sequence has a gap/duplicate')
         bindings[str(path)]=sha
         if value['status']=='COMPLETED_OPPORTUNITIES_OUTER_CREDITED':
@@ -80,7 +85,8 @@ def attempt_results(run,package,config_hash,last):
                 require(record['total_optimizer_calls']==totals[str(rank)],'Actual cumulative Adam count omits history')
             require(len(set(writes.values()))==1 and value['actual_completed_optimizer_calls_per_rank']==completed_totals,'Matched complete accounting differs across ranks')
             complete+=1;credited.append(dict(outer=complete,attempt=attempt,actual_writes_per_rank=writes,result_sha256=sha,
-                source_run=str(source_run),expected_identity=expected.copy(),inherited_native1=source_run==parent_run))
+                source_run=str(source_run),expected_identity=expected.copy(),inherited_native1=path in inherited_files and attempt==1,
+                inherited_native_restore=path in inherited_files))
         elif value['status']=='ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT':
             require(value['protocol']=='tree_partial_state_v1','Unknown no-credit protocol')
             ids=value['identity'];require_identity(ids,expected)
@@ -115,8 +121,9 @@ def attempt_results(run,package,config_hash,last):
         partial_optimizer_calls_per_rank=partial_totals,total_optimizer_calls_per_rank=totals,
         skipped_opportunities_per_rank={str(r):opportunities-totals[str(r)] for r in range(8)},credited=credited,all_skipped=skipped,
         record_sha256=bindings,uncredited_partial_writes_not_inferred=True,automatic_rollback=False,
-        inherited_completed_outers=1 if parent_run is not None else 0,
-        failed_parent_outer2_in_effective_history=False,failed_parent_outer2_recomputed=parent_run is not None and last>=2)
+        inherited_completed_outers=ancestor_count,
+        failed_parent_outer2_in_effective_history=False,failed_parent_outer2_recomputed=ancestor_count>0 and last>=2,
+        failed_parent_outer6_in_effective_history=False,failed_parent_outer6_recomputed=ancestor_count==5 and last>=6)
 
 
 def checkpoint_accounting(value,observed,outer,run=None):

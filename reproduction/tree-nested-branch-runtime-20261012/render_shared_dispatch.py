@@ -21,7 +21,7 @@ def render(package,manifest_sha,release_path,release_sha):
       'TREE_INSTRUCT_TOOLS':str(package),'TREE_INSTRUCT_PACKAGE_SHA256':manifest_sha,
       'TREE_PRODUCTION_RELEASE_PATH':str(release_path),'TREE_INSTRUCT_REVIEW_SHA256':release_sha,
       'PYTHONPATH':str(package)+':'+str(ROOT/'tools')+':'+str(package/'source/repo'),
-      'PYTHONOPTIMIZE':'0','CUDA_VISIBLE_DEVICES':','.join(value['dispatch']['expected_gpu_uuids'])}
+      'RAY_num_server_call_thread':'1','PYTHONOPTIMIZE':'0','CUDA_VISIBLE_DEVICES':','.join(value['dispatch']['expected_gpu_uuids'])}
     # Own .service has no scheduler reservation or foreign job cgroup/device policy.
     return ['systemd-run','--unit='+unit,'--property=CPUQuota=3200%','--property=MemoryMax=384G',
             '--property=TasksMax=4096','--property=KillMode=control-group','--property=TimeoutStopSec=60',

@@ -11,6 +11,16 @@ def pid_identity(pid):
     stat=(Path('/proc')/str(pid)/'stat').read_text();tail=stat[stat.rfind(')')+2:].split()
     return int(tail[19]),(Path('/proc')/str(pid)/'cgroup').read_text()
 
+def own_resource_counters(identity):
+    """Read only this service's small cgroup counters; absent peak stays unknown."""
+    scope=Path(identity['scope']);result={}
+    for name in ('pids.current','pids.max','pids.peak','pids.events','memory.current','memory.peak','memory.events'):
+        path=scope/name
+        if not path.is_file():result[name]=None;continue
+        text=path.read_text().strip()
+        result[name]=dict(line.split() for line in text.splitlines()) if name.endswith('.events') else text
+    return result
+
 def sample():
     identity=verify_cgroup();nv,mapping=selected_hardware();rows=[]
     for _,uid,handle in mapping:
@@ -30,7 +40,8 @@ def sample():
         rows.append(row)
         require(memory.free>=8*1024**3 and own<=72*1024**3,'Own shared training physical memory headroom/cap breached: '+json.dumps(row))
     return dict(epoch=time.time(),job_id=job_id(),unit=unit_name(),resource_protocol=PROTOCOL,
-                physical_gpus=8,slurm_reserved_gpus=0,gpus=rows)
+                physical_gpus=8,slurm_reserved_gpus=0,gpus=rows,own_cgroup_resources=own_resource_counters(identity),
+                ray_num_server_call_thread=os.environ.get('RAY_num_server_call_thread'))
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);a=p.parse_args()

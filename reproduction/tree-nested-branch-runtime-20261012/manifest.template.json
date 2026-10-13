@@ -249,26 +249,34 @@
     "original_scontrol_observation_sha256": "af0762ee0af4a94a03138480d03d9e7ec5c2eb8fe7a795a537e72cf8b7cdcef0"
   },
   "nested_native_continuation": {
-    "protocol": "tree_nested_fresh200_native1_oom_continuation_v1",
+    "protocol": "tree_nested_fresh200_native5_ray_thread_continuation_v1",
     "parent_manifest": {
-      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/checkpoints/training_state/rolling-completed/global_step_1/manifest.json",
-      "sha256": "90f0420ccdc30a3e15245861a73b405f3f760d333722314d08b96b95765f9a1f"
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/manifest.json",
+      "sha256": "b112caffda6514c34a07f2f6b6ecc62096c0717eb09ebae46aac71c6b9dfe09a"
     },
     "parent_config": {
-      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/resolved.yaml",
-      "sha256": "2a317628c497bba932698bf6d7bf64ca3503233d32080a389a36e1f69b362243"
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/resolved.yaml",
+      "sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59"
     },
-    "failed_attempt": {
-      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/checkpoints/training_state/attempt-results/attempt-000002.json",
-      "sha256": "6913b708245d63311b0e6931b057023e610f979fd7c0bd72ca45089797a673c4"
+    "failed_rollout": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/training-rollout-cost/attempt-000006.json",
+      "sha256": "585fc84e46d3a05a75e33e7cf11d363cf276ae99e0060947abb167d1452a1c3f"
     },
     "failed_terminal": {
-      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/run-result.json",
-      "sha256": "1a9ebd2a3edebce70ed1717cced93ec30823205b4a7d7cbbcded695af05f8194"
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/run-result.json",
+      "sha256": "1c20f2d7eff01a56cb6f713556552184383b0855e31f427ac505258a54820a1f"
     },
     "fault_snapshot": {
-      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/output/recovery-fault-20261014.json",
-      "sha256": "39594f1bdd8c9604663388eda03c310a7cb091f09774c8b04a2577dec9651ed1"
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/ray-fault-20261014-outer6-terminal.json",
+      "sha256": "55f013d537819d4c7b84eafa0790e8de205fe7d5256e6f79945aae60610e5718"
+    },
+    "ancestry_receipt": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/nested-native1-loaded.json",
+      "sha256": "dc6f1f065a21d048b21a9462b55f992f9762b07f9b00633cb7028af99443f096"
+    },
+    "parent_continuation": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/acceptance-step5/human-authorized-continuation.json",
+      "sha256": "7acc5fd519604c8977f2bc31afa9b223b22dfd25bfa8002f35375c35aea8d333"
     }
   }
 }

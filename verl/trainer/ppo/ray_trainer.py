@@ -863,7 +863,7 @@ class RayPPOTrainer(object):
                 raise RuntimeError('Fresh200 actual worker initialization proof incomplete')
             self.actual_outer_updates = 0
             self.fresh_initialization_provenance = dict(status=(
-                'COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE1_CONTINUATION'
+                'COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE_CONTINUATION'
                 if nested_chain_resume else ('COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_CURRENT_CHAIN_MIGRATION'
                 if current_chain_resume else 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED')),
                 calibration_profile='fresh_base_zero_v1', training_protocol='tree_fresh200_five_leaf_v1',
