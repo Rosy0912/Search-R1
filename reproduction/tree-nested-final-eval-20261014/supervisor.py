@@ -79,6 +79,7 @@ def main():
         result=dict(status='FAILED',unit=a.unit,evaluation_only=True,training_source_commit=TRAIN_SOURCE,
             evaluation_wrapper_source_commit=code['eval_wrapper_source_commit'],training_run=str(RUN),actual_completed_training_outer=200,
             handoff_sha256=a.handoff_sha,code_manifest_sha256=a.code_manifest_sha,score_output=str(OUTPUT/'scores'),
+            archive_proof=handoff['archive'],effective_training_segments=read_json(handoff['archive']['path'],handoff['archive']['sha256'])['effective_training_segments'],
             original_training_normal_exit_claimed=False,training_signals_sent=False,optimizer_constructed=False,
             physical_gpus=8,slurm_reserved_gpus=0,start_epoch=time.time(),worker_exit_code=None)
         atomic_immutable(run/'allocation-identity.json',dict(unit=a.unit,cgroup=relative,

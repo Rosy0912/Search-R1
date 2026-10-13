@@ -1,14 +1,14 @@
-# Fixed ba9 trained200 final-only evaluator
+# Fixed778 trained200 final-only evaluator
 
 This is a separately committed operational wrapper. It does not modify frozen
-ba9 training code, restore an optimizer, stop a training/evaluation process, or
+778 training code, restore an optimizer, stop a training/evaluation process, or
 claim independent review. It is not deployed or executed by its implementation.
 The original training instance must reach effective200 and publish its complete
 HF/native200 before any handoff. Current training continues unchanged.
 
 The copied `eval_worker.py`, `eval_merge.py` and `shared_guard.py` remain byte
 identical to the actually completed old evaluator source0e00998. The new
-wrapper binds only the nested ba9 run and its config SHA22beaec8...28b59.
+wrapper binds only the nested778 run and its config SHA355edf52...799b3.
 No old3360 model, scores, prefix, rank statistics or job cancellation is reused.
 
 ## Future remote preparation
@@ -19,8 +19,11 @@ pins the complete standalone wrapper and unchanged external runtime/retriever.
 Publication and remote byte verification must precede deployment or launch.
 
 After real effective200, invoke `prepare.py --mode archive` on retained H10018.
-It uses frozen ba9 JSON accounting: original mother outer1 plus new child2–200,
-with the lost original outer2 excluded. It verifies real optimizer totals,
+It uses frozen778 JSON accounting: original0bef outer1, ba9 outer2–5 and778 outer6–200.
+It pins actual778 native5 load receipt SHA cceb1cfe...c348d6 and requires all
+credited source/config segments. Lost original outer2, failed ba9 outer6 and
+never-loaded eb6 startup are excluded from effective credit; their bound terminal,
+rollout and startup cost evidence remains preserved and unaccepted. It verifies real optimizer totals,
 complete eight-rank native200/scheduler200, HF shard/tokenizer inventory, hashes
 and fsyncs every saved native/HF file on existing persistent remote storage.
 It does not deserialize native states or claim CPU/GPU cold-load acceptance.
@@ -30,7 +33,7 @@ model bytes stay remote. Native model identity refers to the official base;
 trained HF identity comes from its exported per-file inventory. The native and
 evaluator aggregate HF SHA encodings differ; their per-file inventories agree.
 
-Frozen ba9 automatically starts its old slow live FSDP/vLLM batch32 final
+Frozen778 automatically starts its old slow live FSDP/vLLM batch32 final
 validation after saving200. If a later explicit human instruction authorizes
 stopping only that final evaluation, the caller handles the exact own unit
 outside this wrapper, after archival completes. No stop action is supplied here.
@@ -39,7 +42,9 @@ experiment unchanged. Original normal exit must never be synthesized.
 
 After the original own training unit is truly terminal and its cgroup is empty,
 `prepare.py --mode capture-terminal` records actual systemd status plus the
-failed supervisor result proving trained200. It preserves partial-final costs.
+failed supervisor result proving trained200 and actual empty own cgroup. A missing
+cleanup-success field does not substitute for the independent live own-cgroup check.
+It retains the original cleanup error and partial-final/terminal cost inputs.
 If the original full final finishes normally, replacement is unnecessary and
 this interrupted-final handoff path refuses it.
 
@@ -89,3 +94,8 @@ unit's interrupted terminal and claims no independent final acceptance.
 Actual HF loading/tokenizer proof, scoring progress, final output, resource
 cost and cleanup must be observed before the goal can be accepted. None of
 those future outcomes is promised by this code artifact.
+
+Current readiness is pending real200. The actual778 run has loaded5 and is
+continuing training; this separate code package neither proves200 nor authorizes
+termination. No evaluation deployment, launch, GPU test or new review accompanies
+this adaptation.

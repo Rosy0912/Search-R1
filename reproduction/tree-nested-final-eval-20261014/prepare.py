@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 import time
 from contract import (ROOT,RUN,PACKAGE,TRAIN_SOURCE,TRAIN_UNIT,CONFIG,CONFIG_SHA,NATIVE,HF,OUTPUT,
-    HANDOFF_STATUS,require,read_json,sha,training_metadata,original_terminal,verify_archive)
+    HANDOFF_STATUS,require,read_json,sha,training_metadata,original_terminal,verify_archive,effective_segments,restore_and_fault_evidence)
 from eval_merge import asset_manifest,atomic_immutable,identities
 
 
@@ -40,6 +40,9 @@ def archive():
         native_manifest=pin(NATIVE),native_identity=native['identity'],
         actual_optimizer_calls_per_rank=ranks['actual_writes_per_rank'],training_attempts=ranks['training_attempts'],
         effective_parent_outer1_included=True,failed_parent_original_outer2_included=False,
+        failed_parent_ba9_outer6_included=False,failed_eb6_bootstrap_included=False,
+        inherited_completed_outers=5,current_child_completed_outers=195,
+        effective_training_segments=effective_segments(),restore_and_fault_evidence=restore_and_fault_evidence(),
         hf_checkpoint=str(HF),hf_identity=native['hf_identity'],files=inventory,
         native_state_deserialized=False,all_files_hash_verified=True,all_files_fsynced=True,
         persistent_storage_realpath=str(RUN.resolve()),independent_cold_reload_performed=False)
@@ -68,11 +71,19 @@ def capture_terminal():
     terminal=original_terminal();result=read_json(RUN/'run-result.json')
     require(result['status']=='FAILED' and result['code_commit']==TRAIN_SOURCE
             and result['actual_progress_evidence']['actual_completed_outer_from_attempt_results']==200
-            and result['own_cgroup_live_residual_empty'] is True,
+            and terminal['own_cgroup_live_descendants_empty'] is True
+            and result['actual_progress_evidence']['completed_actual_optimizer_calls_per_rank']
+                ==read_json(OUTPUT/'archive-proof.json')['actual_optimizer_calls_per_rank'],
             'only a genuinely interrupted final evaluation after trained200 can be handed off')
+    cost_paths=[RUN/'run-result.json',RUN/'termination-cost.json',RUN/'supervisor-entry-result.json',
+                *sorted((RUN/'output/validation-cost').glob('validation-*.json'))]
+    cost_pins=[pin(path) for path in cost_paths if path.is_file()]
     record=dict(unit=TRAIN_UNIT,systemd=terminal,original_run_result=pin(RUN/'run-result.json'),
         actual_completed_training_outer=200,normal_exit_claimed=False,original_final_evaluation_complete=False,
-        training_signals_sent_by_this_wrapper=False,observed_epoch=time.time())
+        training_signals_sent_by_this_wrapper=False,observed_epoch=time.time(),
+        original_cleanup_error_retained=result.get('cleanup_error'),
+        original_cleanup_reported_success=result.get('own_cgroup_live_residual_empty') is True,
+        partial_final_and_terminal_cost_inputs_retained=cost_pins,cost_independently_accepted=False)
     atomic_immutable(OUTPUT/'original-terminal.json',record)
     print(json.dumps(pin(OUTPUT/'original-terminal.json'),sort_keys=True))
 
