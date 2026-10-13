@@ -1,0 +1,270 @@
+{
+  "change_from_previous_window_mean": -0.007877613107363401,
+  "checked_unix": 1791897786.2753348,
+  "complete_outers": 193,
+  "complete_successful_adam": 3853,
+  "complete_update_chain_scalar": {
+    "ledger_sha256": "4dfefb6cd1e492d532eef189811ba0e66c3e7ab92c090f005655853763bf2196",
+    "opportunities": 3860,
+    "steps": 193,
+    "successful_adam": 3853
+  },
+  "cumulative_peak_scope": "carried verified same-run overlapping bounded history; not full-history reread",
+  "cumulative_sampled_peak_mib": {
+    "0": 61257,
+    "1": 60035,
+    "2": 60035,
+    "3": 60989,
+    "5": 35699,
+    "6": 38090
+  },
+  "dev512": {
+    "correct": 223.0,
+    "count": 512,
+    "counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "em": 0.435546875,
+    "f1": 0.515336681547619,
+    "receipt_sha256": "918de1bbf092d638283d5f6ceea2c679a198fa5f49ee0bcb66cbb7119ed73cd8",
+    "step": 150
+  },
+  "errors": [],
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "final_identity_exists": false,
+  "formal_delivery_not_before_unix": 1791881120.9491751,
+  "four_rank_copies_counted_once": true,
+  "gpu_counter_window": {
+    "bounded_read_covers_start": true,
+    "end_unix": 1791897786.2753348,
+    "first_sample_unix": 1791876943.2527473,
+    "identity_rejected_rows": 0,
+    "last_sample_unix": 1791897784.561962,
+    "maximum_sampling_gap_seconds": 2.938096523284912,
+    "sample_count": 9755,
+    "sampled_peak_mib": {
+      "0": 61257,
+      "1": 57881,
+      "2": 56563,
+      "3": 60615,
+      "5": 35699,
+      "6": 26319
+    },
+    "scope": "same-run actual counter timestamps; one bounded32MiB read; no extra generation/evaluation",
+    "start_unix": 1791876942.401045
+  },
+  "gpu_samples": {
+    "first_scanned_sample_unix": 1791848768.945162,
+    "latest_devices": [
+      {
+        "assignment": "training",
+        "physical_index": 0,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 34877,
+        "util_percent": 97
+      },
+      {
+        "assignment": "training",
+        "physical_index": 1,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 34973,
+        "util_percent": 97
+      },
+      {
+        "assignment": "training",
+        "physical_index": 2,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 34973,
+        "util_percent": 97
+      },
+      {
+        "assignment": "training",
+        "physical_index": 3,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 34877,
+        "util_percent": 96
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 5,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 6,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 25814,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_age_seconds": 0.9008312225341797,
+    "latest_sample_unix": 1791897786.6867635,
+    "matching_sample_count": 22951,
+    "maximum_scanned_sampling_gap_seconds": 2.938096523284912,
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only"
+  },
+  "latest_scores_unchanged": true,
+  "monitoring_gap": {
+    "continuous_root_monitoring_claimed": false,
+    "gap_seconds": 19039.672681093216,
+    "last_automatic_complete_outers": 176,
+    "last_automatic_observation_unix": 1791878746.6026537,
+    "missed_report_recovery": "one overdue aggregate report, not fabricated hourly deliveries",
+    "next_processed_observation_unix": 1791897786.2753348,
+    "reason": "local observer completed; tool exec cell subsequently unavailable and root follow-up was delayed",
+    "remote_gpu_sampler_continued": true
+  },
+  "new_algorithm_deployed": false,
+  "new_algorithm_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "new_complete_outers": 18,
+  "new_complete_reward_window": [
+    {
+      "reward": 0.5054687261581421,
+      "step": 176
+    },
+    {
+      "reward": 0.39453125,
+      "step": 177
+    },
+    {
+      "reward": 0.4175781309604645,
+      "step": 178
+    },
+    {
+      "reward": 0.4468750059604645,
+      "step": 179
+    },
+    {
+      "reward": 0.4378906190395355,
+      "step": 180
+    },
+    {
+      "reward": 0.44062501192092896,
+      "step": 181
+    },
+    {
+      "reward": 0.43437498807907104,
+      "step": 182
+    },
+    {
+      "reward": 0.453125,
+      "step": 183
+    },
+    {
+      "reward": 0.416015625,
+      "step": 184
+    },
+    {
+      "reward": 0.4007812440395355,
+      "step": 185
+    },
+    {
+      "reward": 0.44023436307907104,
+      "step": 186
+    },
+    {
+      "reward": 0.46953123807907104,
+      "step": 187
+    },
+    {
+      "reward": 0.4507812559604645,
+      "step": 188
+    },
+    {
+      "reward": 0.43046873807907104,
+      "step": 189
+    },
+    {
+      "reward": 0.4652343690395355,
+      "step": 190
+    },
+    {
+      "reward": 0.4410156309604645,
+      "step": 191
+    },
+    {
+      "reward": 0.42578125,
+      "step": 192
+    },
+    {
+      "reward": 0.466796875,
+      "step": 193
+    }
+  ],
+  "new_complete_window_mean": 0.4409505178531011,
+  "new_complete_window_range": [
+    0.39453125,
+    0.5054687261581421
+  ],
+  "new_complete_window_steps": [
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193
+  ],
+  "new_skips": 0,
+  "new_successful_adam": 360,
+  "new_trainer_started": false,
+  "old_report_counter_snapshot_unix": 1791876942.401045,
+  "old_report_delivered_unix": 1791877520.9491751,
+  "opportunities": 3864,
+  "partial_logical_update": 194,
+  "partial_processed_opportunities": 4,
+  "partial_successful_adam": 4,
+  "provable_inflight_opportunities": null,
+  "report_type": "formal_overdue_catch_up_scalar_ready_before_delivery",
+  "reward_latest": 0.466796875,
+  "reward_mode": "binary_em",
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "sanitized_scalar_hash_only": true,
+  "skips": 7,
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "stage64": {
+    "correct": 11.0,
+    "count": 64,
+    "counts": {
+      "hotpotqa": 32,
+      "nq": 32
+    },
+    "em": 0.171875,
+    "f1": 0.2429738082116004,
+    "receipt_sha256": "1487f5613ec8c65e47bfc527edc651774afb8dfd25280313d8f7f3d3ad40712a",
+    "step": 5
+  },
+  "successful_adam": 3857,
+  "trainer": {
+    "pid": 1358996,
+    "sid": 1358996,
+    "start_ticks": 575207394,
+    "state": "S",
+    "uid": 0
+  },
+  "trainer_birth_verified": true,
+  "trainer_identity_checked_unix": 1791898138.644925,
+  "trainer_recorded_birth_matched": true,
+  "training_log_bytes": 9490300,
+  "training_log_mtime": 1791897780.4421015
+}
