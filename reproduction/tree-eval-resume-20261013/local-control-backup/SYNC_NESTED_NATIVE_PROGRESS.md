@@ -66,3 +66,20 @@ write batch must be inspected and reconciled locally rather than blindly retried
 There is no training retry or remote repair path. Missing evidence/rejections
 print structured reasons and exit2; JSON/I/O errors exit1. No failure or pending
 observation writes a successful receipt, and no exception changes the goal.
+
+At actual200 only, a complete metric200 line is optional when it has not yet
+been printed during slow final validation. The same actual200 credit,8 rank
+write/finite/nonzero returns, native cumulative/scheduler200/real driver next201
+metadata and actual final-phase/terminal/handoff evidence remain mandatory.
+Such a receipt explicitly says training updates/native complete but full metric
+pending; current metric, timing, variances and unobserved opportunity scalars are
+null. It does not wait for slow final scoring, invent metrics or claim training201
+entered. If metric200 is available the full existing validation rules apply.
+Every N<200 still requires its complete metric and real next-outer stage marker.
+
+REPORT prints the latest actual dev outer/F1/EM even on a nondev outer, while
+current actual_dev and dev seconds remain null. Current metric variance and
+candidate/token/retrieval cost scalars are printed only from that outer's metric;
+unobserved values remain null. No previous dev time or variance is recycled.
+The immutable actual outer18 receipt remains tied to its original f720... helper
+SHA; this later implementation applies to subsequent explicit invocations only.

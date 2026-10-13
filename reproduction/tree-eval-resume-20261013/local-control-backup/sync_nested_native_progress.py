@@ -127,6 +127,10 @@ def validate_restore(poll):
 def validate_metric(poll, outer):
     candidates = [m for m in poll.get('iteration_metrics', []) if m.get('step') == outer
                   and m.get('training/actual_outer_updates') == outer]
+    if not candidates and outer == TARGET:
+        # The real final validation may run before the complete step200 line is
+        # printed. Native/credit/rank/final-phase checks below remain required.
+        return None
     need(candidates, 'Full iteration metric has not settled for outer ' + str(outer))
     metric = candidates[-1]
     need(all(number(value) for value in metric.values()), 'Nonfinite complete metric', 'REJECTED_INPUT_NO_WRITE')
@@ -148,7 +152,9 @@ def validate_ranks(poll, metric, outer):
     result = []
     for row in sorted(rows, key=lambda r:r['rank']):
         calls = row.get('successful_optimizer_calls')
-        need(integer(calls) and 1 <= calls <= 20 and row.get('attempt_id') == metric['training/attempt_id']
+        attempt_matches = (row.get('attempt_id') == metric['training/attempt_id'] if metric is not None
+                           else integer(row.get('attempt_id')) and row['attempt_id'] >= outer)
+        need(integer(calls) and 1 <= calls <= 20 and attempt_matches
              and row.get('finite_grad_norms') == calls and integer(row.get('nonzero_grad_norms'))
              and 1 <= row['nonzero_grad_norms'] <= calls, 'Actual rank write/finite/nonzero evidence incomplete')
         sample = row.get('local_shard_sample_delta') or {}
@@ -169,8 +175,12 @@ def validate_ranks(poll, metric, outer):
         result.append(dict(row, actual_successful_writes=int(calls), actual_opportunities_processed=explicit_processed,
                            actual_opportunities_skipped=explicit_skip,
                            missing_rank_opportunity_fields_remain_unknown=explicit_skip is None or explicit_processed is None))
-    need(sum(r['actual_successful_writes'] for r in result)/8 == metric['actor/optimizer_steps'],
-         'Full metric actual writes disagree with all-rank returns', 'REJECTED_INPUT_NO_WRITE')
+    if metric is not None:
+        need(sum(r['actual_successful_writes'] for r in result)/8 == metric['actor/optimizer_steps'],
+             'Full metric actual writes disagree with all-rank returns', 'REJECTED_INPUT_NO_WRITE')
+    else:
+        need(outer == TARGET and len({r['attempt_id'] for r in result}) == 1,
+             'All actual200 rank returns must identify the same credited attempt')
     return result
 
 
@@ -263,7 +273,7 @@ def dev_evidence(poll, previous, metric, outer):
     latest = max(candidates, key=lambda v:v['outer']) if candidates else None
     actual = next((v for v in candidates if v['outer'] == outer), None) if outer % 5 == 0 else None
     # A missing periodic report is unknown, never a recycled prior score/time.
-    elapsed = metric.get('timing_s/testing') if actual is not None else None
+    elapsed = metric.get('timing_s/testing') if actual is not None and metric is not None else None
     if elapsed is not None:
         need(number(elapsed) and elapsed >= 0, 'Invalid actual current dev timing', 'REJECTED_INPUT_NO_WRITE')
     updated = actual is not None and (prior is None or actual != prior)
@@ -336,6 +346,9 @@ def main():
          'Selected outer credit is pending or the snapshot already advanced')
     metric = validate_metric(poll, outer);ranks = validate_ranks(poll, metric, outer)
     native_record, guard, completed, totals = validate_native(native, progress, outer)
+    if metric is None:
+        need(outer == TARGET and all(r['attempt_id'] == guard['training_attempts'] for r in ranks),
+             'Actual200 rank returns and persisted native final attempt disagree')
     stage = (poll.get('logs') or {}).get('stage.log') or ''
     if outer < TARGET:
         need(active and re.search(r'epoch\s+\d+,\s*step\s+' + str(outer+1) + r'\b', stage),
@@ -344,8 +357,23 @@ def main():
     else:
         next_outer, final = None, final_phase(poll, resource, active)
     actual_dev, latest_dev, dev_seconds, score_updated = dev_evidence(poll, previous_status, metric, outer)
-    total_seconds = metric['timing_s/step']
+    metric_pending = metric is None
+    total_seconds = metric['timing_s/step'] if metric is not None else None
     training_seconds = total_seconds - dev_seconds if dev_seconds is not None else total_seconds if outer % 5 else None
+    latest_dev_scores = dict(outer=latest_dev.get('outer') if latest_dev else None,
+        f1_percent=100*latest_dev['metrics']['val/f1/all'] if latest_dev else None,
+        em_percent=100*latest_dev['metrics']['val/em/all'] if latest_dev else None,
+        current_outer_dev_complete=actual_dev is not None)
+    variance_names = ('tree_variance/intra_adv_population_variance',
+                      'tree_variance/group_actual_adv_population_variance',
+                      'tree_variance/group_raw_reward_population_variance',
+                      'tree_variance/mixed_reward_question_fraction')
+    cost_names = ('rollout/candidate_attempts','rollout/candidate_accepted',
+                  'rollout/candidate_fallbacks','rollout/candidate_discarded',
+                  'rollout/generated_tokens','rollout/prefill_tokens','rollout/retrieval_calls',
+                  'timing_s/gen','timing_s/update_actor')
+    current_variances = {name:metric.get(name) if metric is not None else None for name in variance_names}
+    current_candidate_costs = {name:metric.get(name) if metric is not None else None for name in cost_names}
     watcher = resource.get('state') or {}
     need(not watcher or (watcher.get('training_source_commit') == SOURCE and watcher.get('training_unit') == UNIT
          and watcher.get('run_directory') == RUN
@@ -357,7 +385,10 @@ def main():
     input_pins = dict(poll=poll_pin, native_readback=native_pin, resource=resource_pin)
     receipt_name = f'FULL_OUTER{outer}_PROGRESS_RECEIPT.json';receipt_path = base/receipt_name
     need(not receipt_path.exists(), 'Existing immutable outer receipt retained; no rewrite', 'RECEIPT_EXISTS_NO_WRITE')
-    receipt = dict(status=f'ACTUAL_FULL_OUTER{outer}_NATIVE{outer}_COMPLETE_' + (f'NEXT{next_outer}_ENTERED' if next_outer else 'FINAL_PHASE_OBSERVED'),
+    receipt_status = ('ACTUAL_TRAIN200_UPDATES_NATIVE_COMPLETE_FULL_METRIC_PENDING_FINAL_PHASE_OBSERVED'
+                      if metric_pending else f'ACTUAL_FULL_OUTER{outer}_NATIVE{outer}_COMPLETE_'
+                      + (f'NEXT{next_outer}_ENTERED' if next_outer else 'FINAL_PHASE_OBSERVED'))
+    receipt = dict(status=receipt_status,
         observed_epoch=epoch,source_commit=SOURCE,config_sha256=CONFIG,unit=UNIT,run=RUN,restored_outer=RESTORE,
         local_control_script_sha256=digest(Path(__file__).read_bytes()),
         completed_outer=outer,actual_next_outer_entered=next_outer,final_phase_evidence=final,
@@ -365,8 +396,8 @@ def main():
         actual_outer_successful_writes_per_rank={str(r['rank']):r['actual_successful_writes'] for r in ranks},
         actual_outer_skipped_opportunities_per_rank={str(r['rank']):r['actual_opportunities_skipped'] for r in ranks},
         actual_outer_processed_opportunities_per_rank={str(r['rank']):r['actual_opportunities_processed'] for r in ranks},
-        full_metric_processed_opportunities=metric['actor/optimizer_opportunities_processed'],
-        full_metric_skipped_opportunities=metric['actor/optimizer_opportunities_skipped'],
+        full_metric_processed_opportunities=metric['actor/optimizer_opportunities_processed'] if metric is not None else None,
+        full_metric_skipped_opportunities=metric['actor/optimizer_opportunities_skipped'] if metric is not None else None,
         no_all20_writes_or_zero_skip_assumption=True,all_skipped_attempts=progress.get('all_skipped_attempts'),
         direct_rank_record_count=poll.get('direct_rank_records'),last_rank_summaries=ranks,
         native_manifest_sha256=native['manifest_sha256'],native_history_receipt_sha256=native['receipt_sha256'],
@@ -374,7 +405,10 @@ def main():
         native_driver_next_step=native_record['driver']['next_step'],native_workers=native_record['workers'],
         native_evidence_scope='Actual writer finite/file/logical metadata; immutable original/archive JSON SHA readback. PT availability is capture-time only.',
         independent_cold_reload_performed=False,tensor_contents_read=False,PT_current_availability_unknown=True,
-        iteration_metrics=metric,actual_dev512=actual_dev,latest_actual_dev512=latest_dev,
+        iteration_metrics=metric,full_iteration_metric_pending=metric_pending,full_outer_wall_seconds=total_seconds,
+        latest_actual_dev512_scores=latest_dev_scores,current_training_variances=current_variances,
+        current_candidate_cost_scalars=current_candidate_costs,
+        unobserved_metric_fields_remain_null=metric_pending,actual_dev512=actual_dev,latest_actual_dev512=latest_dev,
         latest_dev512_outer=latest_dev.get('outer') if latest_dev else None,dev_score_updated_this_turn=score_updated,
         normal_dev512_wall_seconds=dev_seconds,training_archive_wall_seconds_excluding_current_dev=training_seconds,
         source_poll=str(args.poll),source_poll_sha256=poll_pin['sha256'],native_metadata_readback=str(args.native_readback),
@@ -407,9 +441,9 @@ def main():
         dev_score_updated_this_turn=score_updated,actual_dev512=actual_dev,normal_dev512_wall_seconds=dev_seconds,
         latest_full_outer_wall_seconds=total_seconds,latest_training_archive_wall_seconds_excluding_dev=training_seconds,
         latest_ordinary_training_seconds_excluding_dev=training_seconds,
-        latest_intra_adv_population_variance=metric.get('tree_variance/intra_adv_population_variance'),
-        latest_actual_total_adv_population_variance=metric.get('tree_variance/group_actual_adv_population_variance'),
-        latest_mixed_reward_question_fraction=metric.get('tree_variance/mixed_reward_question_fraction'),
+        latest_intra_adv_population_variance=metric.get('tree_variance/intra_adv_population_variance') if metric is not None else None,
+        latest_actual_total_adv_population_variance=metric.get('tree_variance/group_actual_adv_population_variance') if metric is not None else None,
+        latest_mixed_reward_question_fraction=metric.get('tree_variance/mixed_reward_question_fraction') if metric is not None else None,
         legacy_unbound_native_collector_observation=poll.get('native_manifest_history'),
         current_native_manifest_history=watcher or None,native_manifest_history=watcher or None,
         native_watcher_systemd=watcher_service,latest_rollout_cost=poll.get('rollout_cost', []),
@@ -418,7 +452,10 @@ def main():
         normal_dev512_pending=outer % 5 == 0 and actual_dev is None,
         progress_input_bindings=input_pins,submitted_this_turn=False,new_training_submitted=False,
         running_source_hot_modified=False,extra_prelaunch_review=False,exact_executor_resume=False,
-        goal_complete=False,formal_effect_complete=False,goal_status='active',full_iteration_log_pending=False)
+        goal_complete=False,formal_effect_complete=False,goal_status='active',full_iteration_log_pending=metric_pending,
+        current_iteration_metrics=metric,current_full_outer_metric_pending=metric_pending,
+        latest_actual_dev512_scores=latest_dev_scores,current_training_variances=current_variances,
+        current_candidate_cost_scalars=current_candidate_costs)
     if latest_dev is not None and latest_dev in poll.get('development', []):
         updated['latest_dev512_source_commit'] = SOURCE
     if outer % 5 == 0:
@@ -435,7 +472,7 @@ def main():
         latest_full_outer_wall_seconds=total_seconds,normal_dev512_wall_seconds=dev_seconds,
         latest_ordinary_training_seconds_excluding_dev=training_seconds,latest_dev512_outer=receipt['latest_dev512_outer'],
         score_updated=score_updated,normal_training_continues=outer<TARGET,goal_status='active',
-        exact_executor_resume=False,full_iteration_log_pending=False,progress_input_bindings=input_pins)
+        exact_executor_resume=False,full_iteration_log_pending=metric_pending,current_iteration_metrics=metric,progress_input_bindings=input_pins)
     if outer % 5 == 0:
         followup[f'normal_dev512_outer{outer}_pending'] = actual_dev is None
     followup['new_full_outers_after_this_restore'] = sorted(set([*followup.get('new_full_outers_after_this_restore', []),outer]))
@@ -448,10 +485,13 @@ def main():
         + f' Source {SOURCE}; unit {UNIT}; Invocation {INVOCATION}.\n\n'
         + f'Actual cumulative credited Adam per rank: {completed}; total including known partial writes: {totals}. '
         + f'Current successful writes: {receipt["actual_outer_successful_writes_per_rank"]}; per-rank missing opportunity fields remain unknown. '
-        + f'Full metric processed/skipped opportunities: {metric["actor/optimizer_opportunities_processed"]}/{metric["actor/optimizer_opportunities_skipped"]}.\n\n'
-        + f'Current dev512: {"complete" if actual_dev else "none/not yet observed"}; latest actual dev outer {receipt["latest_dev512_outer"]}. '
+        + f'Full metric processed/skipped opportunities: {receipt["full_metric_processed_opportunities"]}/{receipt["full_metric_skipped_opportunities"]}.\n\n'
+        + ('Actual200 training updates and native state are complete; the complete step200 metric has not yet been produced. All unobserved metric/timing fields remain null.\n\n' if metric_pending else '')
+        + f'Current dev512: {"complete" if actual_dev else "none/not yet observed"}; latest actual dev outer {receipt["latest_dev512_outer"]}, F1 {latest_dev_scores["f1_percent"]}%, EM {latest_dev_scores["em_percent"]}%. '
         + f'Current step seconds {total_seconds}; current dev seconds {dev_seconds}; training/archive excluding current dev {training_seconds}. '
         + 'Older dev time is never assigned to this outer.\n\n'
+        + f'Current training variance scalars: {json.dumps(current_variances)}.\n\n'
+        + f'Current candidate/rollout cost scalars: {json.dumps(current_candidate_costs)}.\n\n'
         + 'Native evidence is writer metadata and original/archive JSON SHA agreement, not independent PT cold reload; old PT availability is unknown. '
         + 'Legacy collector pending and the independent source-bound watcher are separately recorded. Normal metadata settling is pending, not a training fault.\n\n'
         + 'Origin0bef outer1, ba9 outer2–5 and current778 outer6 onward remain separate. Lost original2, failed Ray6 and unloaded eb6 startup stay cost evidence without extra credit. '
