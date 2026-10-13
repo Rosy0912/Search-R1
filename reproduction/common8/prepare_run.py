@@ -95,10 +95,11 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
     data_proof=verify(base/'data')
     model_hashes=verify_model(model,official_path)
+    restore_source=None
     if restore_receipt:
         import shutil
         from search_g1.full_state_restore import source
-        _,_,_,origin,_=source(restore_receipt)
+        _,restore_source,_,origin,restore_parent=source(restore_receipt)
         for name in ('calibration-300.parquet','audit.json'):
             assert not (base/'data'/name).exists()
             shutil.copy2(origin/'data'/name,base/'data'/name)
@@ -136,6 +137,16 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
         result['budget'].update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     if restore_receipt:
+        from search_g1.qprobe_checkpoint import PAIR_STATUS
+        if restore_source.get('status')==PAIR_STATUS:
+            # This CLI is the native eight-rank route. Four-rank local sources
+            # use the local preparation entry; changing shard layout is forbidden.
+            assert restore_source['world_size']==8, 'Use matching four-rank local preparation for this pair'
+            import copy
+            result['budget']=copy.deepcopy(restore_parent['budget'])
+            for key in ('training_world_size','actor_micro_batch_per_rank','precision_profile',
+                        'behavior_probability_policy'):
+                if key in restore_parent:result[key]=copy.deepcopy(restore_parent[key])
         from search_g1.full_state_restore import bind
         bind(result,restore_receipt)
     from reproduction.common8.shared_slurm import bind as bind_shared_slurm

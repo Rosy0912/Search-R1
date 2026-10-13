@@ -1,0 +1,12 @@
+{
+  "mean_loss_weight": 0.1,
+  "std_loss_weight": 0.1,
+  "head_learning_rate": 0.0003,
+  "head_batch_size": 256,
+  "head_epochs_per_outer": 2,
+  "replay_window_outer": 16,
+  "replay_half_life_outer": 4.0,
+  "bootstrap_max_groups_per_outer": 512,
+  "hidden_size": 64,
+  "seed": 20261013
+}

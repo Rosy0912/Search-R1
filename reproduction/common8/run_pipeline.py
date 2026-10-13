@@ -291,6 +291,12 @@ class Pipeline:
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
         if self.run.get('full_state_restore'):
+            if self.run['full_state_restore'].get('kind')=='question_probe_pair':
+                from search_g1.qprobe_checkpoint import install_restored_reward_probe
+                receipt=install_restored_reward_probe(self.base,self.run)
+                self.stage('RESTORING_PINNED_COMPLETED_PAIR_REWARD_PROBE_NO_NEW_CALIBRATION',
+                           version=receipt['version'],round=receipt['round'])
+                return
             from search_g1.full_state_restore import source
             _,_,_,origin,parent=source(self.run['full_state_restore']['source_receipt'])
             import shutil

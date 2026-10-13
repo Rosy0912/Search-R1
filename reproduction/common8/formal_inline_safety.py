@@ -196,7 +196,33 @@ def verify_method(method, run):
 
 
 def archive_initial_probe(base, run):
+    base=Path(base).resolve()
     live = read(base / 'artifacts/live/manifest.json')
+    binding=run.get('full_state_restore') or {}
+    if binding.get('kind')=='question_probe_pair':
+        from search_g1.qprobe_checkpoint import read_source
+        _,source,_,_,_=read_source(binding['source_receipt'])
+        pinned=read(source['reward_probe_manifest']['path'])
+        assert live['run_id']==run['run_id'] and live['round']==binding['reward_probe_round']
+        assert live['version']==run['initial_probe_version']==binding['reward_probe_version']
+        assert live['encoder']==pinned['encoder'] and live['encoder_sha256']==pinned['encoder_sha256']
+        archive=Path(live['commit']).parent/'version-manifest.json'
+        assert archive.resolve().is_relative_to(base.resolve()) and read(archive)==live
+        for key in ('calibration_report','label_proof','head_sha256'):
+            assert live[key]==pinned[key]
+        files={str(archive.relative_to(base)):digest(archive)}
+        for name,key in (('commit_probe.pkl','commit'),('boundary_probe.pkl','boundary')):
+            path=Path(live[key]);assert path.resolve().is_relative_to(base.resolve())
+            assert digest(path)==pinned['head_sha256'][name]
+            files[str(path.relative_to(base))]=digest(path)
+        receipt=dict(schema_version=1,role='fresh200_actual_initial_probe',run_id=run['run_id'],
+            source_map_sha256=document_sha256(run['source_sha256']),archive=str(archive.relative_to(base)),
+            archive_sha256=digest(archive),version=live['version'],model_revision=run['model_revision'],
+            initial_model_sha256=run['initial_model_sha256'],input_sha256=run['input_sha256'],
+            restored_probe_round=live['round'],source_pair_receipt_sha256=digest(Path(binding['source_receipt'])),
+            semantics='pinned completed-pair reward probe, not fresh0 calibration')
+        write_once(base/INITIAL,receipt);files[INITIAL]=digest(base/INITIAL)
+        return receipt,files
     assert live['run_id'] == run['run_id'] and type(live['round']) is int and live['round'] == 0
     assert live['version'] == run['initial_probe_version'] and live['version'].startswith(run['run_id'] + ':0:')
     assert live['encoder'] == run['initial_model']
@@ -246,7 +272,10 @@ def verify_plan(base, artifact, run):
     assert artifact['initial_probe_version'] == run['initial_probe_version']
     for key, value in FORMAL_SAFEGUARDS.items():
         assert type(artifact[key]) in (int, float) and artifact[key] == value
-    assert artifact['actual_optimizer_writes_at_freeze'] == (100 if run.get('full_state_restore') else 0)
+    binding=run.get('full_state_restore') or {}
+    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind')=='question_probe_pair' else
+                   100 if binding else 0)
+    assert artifact['actual_optimizer_writes_at_freeze'] == frozen_writes
     assert artifact['optimizer_counting'] == FORMAL_COUNTING
     receipts = artifact['receipts_sha256']
     for relative, sha in receipts.items():
@@ -262,14 +291,24 @@ def verify_plan(base, artifact, run):
     archive = owned_path(base, initial['archive'])
     assert digest(archive) == initial['archive_sha256']
     live = read(archive)
-    assert live['run_id'] == run['run_id'] and live['round'] == 0 and live['version'] == run['initial_probe_version']
-    assert live['encoder'] == run['initial_model']
+    assert live['run_id'] == run['run_id'] and live['version'] == run['initial_probe_version']
+    if binding.get('kind')=='question_probe_pair':
+        from search_g1.qprobe_checkpoint import read_source
+        _,source,_,_,_=read_source(binding['source_receipt'])
+        pinned=read(source['reward_probe_manifest']['path'])
+        assert live['round']==binding['reward_probe_round'] and live['encoder']==pinned['encoder']
+        assert initial['source_pair_receipt_sha256']==digest(Path(binding['source_receipt']))
+    else:
+        assert live['round']==0 and live['encoder']==run['initial_model']
     assert artifact['initial_probe_archive'] == initial['archive']
     allocation = read(owned_path(base, 'logs/native-allocation-admission.json'))
     assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
     assert artifact['native_birth'] == native_birth(allocation)
     assert artifact['slurm_job_id'] == allocation['slurm_job_id']
-    if run.get('execution_backend', 'slurm') == 'ssh_local':
+    if binding.get('kind')=='question_probe_pair':
+        from search_g1.full_state_restore import verify_guarded_restore
+        verify_guarded_restore(base,run,artifact['probability'])
+    elif run.get('execution_backend', 'slurm') == 'ssh_local':
         assert artifact['execution_backend'] == 'ssh_local' and artifact['execution_id'] == run['execution_id']
         assert artifact['training_world_size'] == world_size(run)
         assert artifact['monitoring_scope'] == monitor_scope(run)

@@ -342,7 +342,10 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                  'Actual driver skip/fatal/rollback semantics differ')
         aborted += int(not complete)
         _require(attempt['cumulative_aborted_attempts'] == aborted, 'Actual driver retry counter differs')
-        record = complete_records[completed] if complete else None
+        # A paired restore supplies only the current execution's suffix rows;
+        # `completed` includes the authenticated parent prefix. Index relative
+        # to that boundary rather than skipping real suffix receipts.
+        record = complete_records[completed - prefix['completed_outer']] if complete else None
         if record is not None:
             _require(record['run_id'] == run['run_id'] and record['attempt_id'] == attempt['attempt_id'] and
                      record['attempt_index'] == ordinal and record['optimizer_writes_before'] == writes and

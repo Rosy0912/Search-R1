@@ -72,11 +72,15 @@ def capture_worker(worker,directory,checkpoint=False):
     directory=Path(directory).resolve();assert directory.is_relative_to(base.resolve())
     state=dict(run_id=run['run_id'],source_commit=run['source_commit'],rank=worker.rank,
                world_size=torch.distributed.get_world_size(),process_identity=identity(os.getpid()),
-               rng=worker_rng(worker),actual_optimizer_writes=getattr(worker.actor,'_optimizer_writes',0))
+               rng=worker_rng(worker),actual_optimizer_writes=getattr(worker.actor,'_optimizer_writes',0),
+               completed_outer=getattr(worker.actor,'_complete_outers',0),
+               last_attempt_index=getattr(worker.actor,'_last_attempt_index',0),
+               used_attempt_ids=sorted(getattr(worker.actor,'_used_attempt_ids',set())),
+               policy_rejections=getattr(worker.actor,'_policy_rejections',0))
     if checkpoint:
         state.update(optimizer=cpu_tree(worker.actor_optimizer.state_dict()),
                      scheduler=cpu_tree(worker.actor_lr_scheduler.state_dict()),
-                     optimizer_layout='rank-local FSDP flat-parameter Adam; same eight-rank shard layout required')
+                     optimizer_layout='rank-local FSDP flat-parameter Adam; exact same rank/world-size shard layout required')
     proof=atomic_save(directory/('rank-'+str(worker.rank)+'.pt'),state)
     proof.update(rank=worker.rank,actual_optimizer_writes=state['actual_optimizer_writes'],run_id=run['run_id'])
     return proof

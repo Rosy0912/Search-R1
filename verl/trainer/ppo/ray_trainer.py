@@ -708,10 +708,14 @@ class RayPPOTrainer(object):
             from pathlib import Path
             from search_g1.full_state_restore import publish
             proofs = self.actor_rollout_wg.restore_mixed_full_state(self.config.trainer.full_state_restore_receipt)
-            assert len(proofs)==8 and sorted(p['rank'] for p in proofs)==list(range(8))
+            from reproduction.common8.topology import world_size
+            run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+            size = world_size(run)
+            assert len(proofs)==size and sorted(p['rank'] for p in proofs)==list(range(size))
             assert all(p['actual_adam_scheduler_readback_equal'] and p['actual_rng_readback_equal'] for p in proofs)
             publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-workers.json',
-                    dict(source_step=5,actual_optimizer_writes_per_rank=100,ranks=proofs))
+                    dict(source_step=run['full_state_restore']['completed_outer'],
+                         actual_optimizer_writes_per_rank=run['full_state_restore']['actual_optimizer_writes_per_rank'],ranks=proofs))
 
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
@@ -725,12 +729,26 @@ class RayPPOTrainer(object):
             from search_g1.training_state import atomic_save, driver_rng, compact_stream_state
             state_dir = Path(actor_local_path)/'training_state'
             proofs = self.actor_rollout_wg.capture_mixed_state(str(state_dir), checkpoint=True)
+            qprobe = getattr(self, 'qprobe_runtime', None)
+            qprobe_proof = None
+            if qprobe is not None:
+                run_id = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
+                                                  'logs/run-manifest.json').read_text())['run_id']
+                qprobe_proof = qprobe.save_checkpoint(state_dir, self.global_steps,
+                    compact_stream_state(stream.state()), self.reward_fn.expected_probe_version,
+                    actor_snapshot_id=run_id+':'+str(self.global_steps))
             driver = atomic_save(state_dir/'driver.pt', dict(completed_outer=self.global_steps,
                 candidate_stream=compact_stream_state(stream.state()), rng=driver_rng(),
-                probe_version=self.reward_fn.expected_probe_version))
+                probe_version=self.reward_fn.expected_probe_version, question_probe=qprobe_proof,
+                attempt_progress=(None if getattr(self,'inline_attempt_progress',None) is None else
+                    dict(completed_outer=self.inline_attempt_progress.completed_outer,
+                         cumulative_writes=self.inline_attempt_progress.cumulative_writes,
+                         attempt_index=self.inline_attempt_progress.attempt_index,
+                         aborted_attempts=self.inline_attempt_progress.aborted_attempts))))
             import json
             with (state_dir/'manifest.json').open('x') as f:
                 json.dump(dict(completed_outer=self.global_steps,worker_files=proofs,driver_file=driver,
+                    question_probe=qprobe_proof,
                     scope='actual optimizer/scheduler/RNG/candidate stream; model in sibling HF files; reload acceptance pending'),f,indent=2)
                 f.flush();os.fsync(f.fileno())
 
@@ -790,7 +808,10 @@ class RayPPOTrainer(object):
             from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
             if active_run() is not None:
                 restore_receipt=self.config.trainer.get('full_state_restore_receipt',None)
-                assert (continuation_k,self.global_steps)==((5,5) if restore_receipt else (0,0))
+                from pathlib import Path
+                run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
+                restored_outer = run.get('full_state_restore', {}).get('completed_outer', 0)
+                assert (continuation_k,self.global_steps)==((restored_outer,restored_outer) if restore_receipt else (0,0))
                 assert self.total_training_steps==201 and len(self.train_dataloader)>0
                 assert self.config.trainer.critic_warmup<=1 and not self.use_critic
                 from reproduction.common8.recoverable_attempt import AttemptProgress
@@ -800,12 +821,18 @@ class RayPPOTrainer(object):
                     restore_driver(self,restore_receipt)
                     from search_g1.full_state_restore import record_original_baseline
                     base,run=active_run();record_original_baseline(base,run)
-                    inline_attempts.completed_outer=5
-                    inline_attempts.cumulative_writes=100
-                    inline_attempts.attempt_index=5
+                    progress = getattr(self, '_restored_attempt_progress', None)
+                    if progress is None:
+                        progress = dict(completed_outer=5,cumulative_writes=100,attempt_index=5,aborted_attempts=0)
+                    for name in ('completed_outer','cumulative_writes','attempt_index','aborted_attempts'):
+                        setattr(inline_attempts,name,progress[name])
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    if run.get('followup_checkpoint_required'):
+                    if run['full_state_restore'].get('kind') == 'question_probe_pair':
+                        # The completed pair already has its historical evaluation.
+                        # Future validation runs at the normal common8 cadence.
+                        pass
+                    elif run.get('followup_checkpoint_required'):
                         from search_g1.full_state_restore import reuse_development_after5
                         reuse_development_after5(base,run)
                     else:
@@ -836,16 +863,43 @@ class RayPPOTrainer(object):
         )
 
         mixed_stream = None
-        if self.config.data.get("mixed_first_selection", False):
+        selection_mode = self.config.data.get("selection_mode", "legacy")
+        if selection_mode not in ("legacy", "uniform", "mixed_first", "question_probe"):
+            raise ValueError("Unknown training question selection mode: " + selection_mode)
+        if selection_mode == "question_probe" and self.config.data.get("mixed_first_selection", False):
+            raise ValueError("Question-probe and post-rollout mixed-first are mutually exclusive")
+        self.inline_attempt_progress = inline_attempts
+        self.qprobe_runtime = None
+        if selection_mode in ("mixed_first", "question_probe") or (
+                selection_mode == "legacy" and self.config.data.get("mixed_first_selection", False)):
             from search_g1.mixed_runtime import CandidateStream
-            mixed_stream = CandidateStream(self.train_dataloader,
+            if selection_mode == 'question_probe':
+                from search_g1.qprobe_runtime import QProbeCandidateStream
+                stream_cls = QProbeCandidateStream
+            else:
+                stream_cls = CandidateStream
+            mixed_stream = stream_cls(self.train_dataloader,
                 restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
+            if selection_mode == "question_probe":
+                from pathlib import Path
+                from search_g1.qprobe_runtime import QProbeRuntime
+                run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
+                                               'logs/run-manifest.json').read_text())
+                self.qprobe_runtime = QProbeRuntime(self.config.question_probe,
+                                                    os.environ['SEARCH_G1_BASE'], self.tokenizer)
+                restored = getattr(self, '_restored_qprobe_state', None)
+                snapshot = restored['path'] if restored else self.config.question_probe.get("snapshot_path")
+                if snapshot:
+                    self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
+                if self.qprobe_runtime.completed_outer != continuation_k:
+                    raise ValueError("Actor and question-probe successful outer counters differ")
 
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
             for batch_dict in (itertools.repeat(None) if mixed_stream is not None else self.train_dataloader):
+                checkpoint = None
                 print(f'epoch {epoch}, step {self.global_steps}')
                 metrics = {}
                 timing_raw = {}
@@ -853,7 +907,10 @@ class RayPPOTrainer(object):
                 attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
                 if mixed_stream is not None:
-                    from search_g1.mixed_runtime import collect
+                    if self.qprobe_runtime is not None:
+                        from search_g1.qprobe_runtime import collect
+                    else:
+                        from search_g1.mixed_runtime import collect
                     batch, mixed_output, behavior_identity, mixed_audit = collect(
                         self, generation_manager, mixed_stream, attempt_identity)
                     timing_raw["candidate_fill"] = mixed_audit["candidate_fill_seconds"]
@@ -861,6 +918,14 @@ class RayPPOTrainer(object):
                     metrics.update({"selection/"+k: mixed_audit[k] for k in
                         ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
+                    if self.qprobe_runtime is not None:
+                        for name in ('selected_all_wrong','selected_all_correct',
+                                     'selected_random_exploration','selected_predicted_diversity'):
+                            metrics['selection/'+name] = mixed_audit[name]
+                        for slice_name, values in mixed_audit['prequential'].items():
+                            for name, value in values.items():
+                                if isinstance(value, (int, float)) and not isinstance(value, bool):
+                                    metrics['question_probe/prequential/'+slice_name+'/'+name] = value
                 else:
                     batch: DataProto = DataProto.from_single_dict(batch_dict)
                     behavior_identity = None
@@ -1012,7 +1077,8 @@ class RayPPOTrainer(object):
                         response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
                             else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
-                        for source in ('mixed', 'all_correct_fallback'):
+                        selection_sources = ('random_exploration','predicted_diversity') if selection_mode == 'question_probe' else ('mixed','all_correct_fallback')
+                        for source in selection_sources:
                             rows = torch.as_tensor(sources == source, device=rewards.device)
                             metrics['selection/'+source+'/trajectories'] = int(rows.sum())
                             if bool(rows.any()):
@@ -1049,6 +1115,9 @@ class RayPPOTrainer(object):
                                 actor_output.non_tensor_batch['recoverable_outer_result'].tolist())
                             record_attempt(attempt_result)
                             if not attempt_result['complete_outer']:
+                                if self.qprobe_runtime is not None:
+                                    self.qprobe_runtime.abort_outer(self.global_steps, attempt_identity,
+                                        reason=attempt_result['status'])
                                 # The next dataloader batch is a fresh512/G5
                                 # rollout at the retained weights in this process.
                                 if inline_attempts.aborted_attempts<=3 or inline_attempts.aborted_attempts%10==0:
@@ -1056,6 +1125,16 @@ class RayPPOTrainer(object):
                                 continue
                         actor_output_metrics = reduce_metrics(actor_output.meta_info['metrics'])
                         metrics.update(actor_output_metrics)
+                        if self.qprobe_runtime is not None:
+                            with _timer('question_probe_update', timing_raw):
+                                from pathlib import Path
+                                run_id = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
+                                    'logs/run-manifest.json').read_text())['run_id']
+                                event = self.qprobe_runtime.complete_outer(self.global_steps,
+                                    run_id+':'+str(self.global_steps), attempt_identity)
+                                for name, value in event['head_update'].items():
+                                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                                        metrics['question_probe/'+name] = value
 
                     # validate
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
@@ -1068,7 +1147,7 @@ class RayPPOTrainer(object):
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                             self.global_steps == self.config.trainer.get('acceptance_step',0) or
-                            (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == continuation_k + 5) or
+                            (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
@@ -1094,18 +1173,24 @@ class RayPPOTrainer(object):
                 if continuation_k < self.global_steps <= continuation_k + 5:
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
-                if self.global_steps == self.config.trainer.get('acceptance_step', 0):
+                if (not self.config.trainer.get('full_state_restore_receipt',None) and
+                        self.global_steps == self.config.trainer.get('acceptance_step', 0)):
                     if os.environ.get('SEARCH_G1_PROFILE')=='common8':
                         from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
                         if active_run() is not None:evaluate_development(self)
                     from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
-                if self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps==continuation_k+5:
+                if (self.config.trainer.get('full_state_restore_receipt',None) and
+                        self.global_steps==min(continuation_k+5,self.total_training_steps-1)):
                     from search_g1.full_state_restore import accept_resumed_five
                     accept_resumed_five(five_update_records)
                 if self.global_steps in (50,100,150,200,250) and self.global_steps + 1 < self.total_training_steps:
                     from reproduction.profile import refresh_after_checkpoint
                     self.reward_fn.expected_probe_version = refresh_after_checkpoint(self.global_steps, checkpoint)
+
+                if checkpoint is not None and self.qprobe_runtime is not None:
+                    from search_g1.qprobe_checkpoint import publish_completed_pair
+                    publish_completed_pair(self, checkpoint)
 
                 self.global_steps += 1
 

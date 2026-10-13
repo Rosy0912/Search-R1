@@ -182,7 +182,8 @@ def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
     """
     from reproduction.common8.policy_calibration_plan import document_sha256
     templates, binding = guarded_opportunity_fixture()
-    run = dict(run_id=binding['run_id'], policy_safety_mode=SAFETY_MODE)
+    run = dict(profile='common8', training_world_size=8,
+               run_id=binding['run_id'], policy_safety_mode=SAFETY_MODE)
     plan = binding['calibration_sha256']; (base / 'logs').mkdir(exist_ok=True)
     attempts = []; records = []; physical = 0; skipped = 0
     for outer in range(1, last + 1):
@@ -288,13 +289,14 @@ class AllAttemptMonitorAuditTests(unittest.TestCase):
             optimizer_writes_before=0, optimizer_writes_after=1, optimizer_writes_this_attempt=1,
             complete_outer=True, behavior_probability_gate_sha256=actual['behavior_probability_gate_sha256'],
             opportunity_statuses=[row['status'] for row in rows[0] if row['kind'] == 'OPPORTUNITY'])
-        proof = _audit_monitor_rows(rows, binding, attempt, 0)
+        run = dict(profile='common8', training_world_size=8, run_id=binding['run_id'])
+        proof = _audit_monitor_rows(rows, binding, attempt, 0, run=run)
         self.assertEqual(proof['global_monitor_count'], 40)
         self.assertEqual(proof['guard_triggered_monitor_count'], 39)
         self.assertEqual(proof['rejection_count'], 39)
         rows[7][2]['rejection_count'] = 0
         from reproduction.common8.safety_calibration_evidence import EvidenceError
-        with self.assertRaises(EvidenceError): _audit_monitor_rows(rows, binding, attempt, 0)
+        with self.assertRaises(EvidenceError): _audit_monitor_rows(rows, binding, attempt, 0, run=run)
 
     def test_real_cpu_incomplete_monitor_diagnostics_keep_none_kl_and_unavailable_totals(self):
         from reproduction.common8.formal_attempt_audit import _monitor_statistics
@@ -344,6 +346,32 @@ class AllAttemptMonitorAuditTests(unittest.TestCase):
             self.assertEqual(proof['unique_global_monitor_count'], 280)
             self.assertEqual(proof['processed_opportunities_per_rank'], 140)
             self.assertEqual(proof['actual_optimizer_writes_per_rank'], 100)
+            self.assertFalse(proof['production_admission'])
+
+    def test_paired_restore_indexes_actual_suffix_relative_to_authenticated_parent(self):
+        # The pure reader receives only this execution's actual suffix. The
+        # restored prefix itself is supplied by the independent receipt reader,
+        # isolated here so fabricated CPU rows cannot claim CUDA acceptance.
+        with tempfile.TemporaryDirectory() as root:
+            base = Path(root)
+            run, plan, records, schedulers = attempt_history_fixture(base, last=6)
+            prefix = dict(completed_outer=3, writes=60, attempt_index=5, rejections=0, aborted=2)
+            run['full_state_restore'] = {'kind': 'question_probe_pair'}
+            for path in (base / 'logs').glob('*.jsonl'):
+                self.change_rows(path, lambda rows: rows.__setitem__(slice(None), [row for row in rows
+                    if (row.get('context') or row)['attempt_index'] > prefix['attempt_index']]))
+            suffix = records[3:]
+            suffix_schedulers = {rank: dict(selected_rows=[row for row in receipt['selected_rows']
+                if row['attempt_index'] > prefix['attempt_index']]) for rank, receipt in schedulers.items()}
+            with patch('search_g1.full_state_restore.verified_runtime_prefix', return_value=prefix):
+                proof = self.verify(base, run, plan, suffix, suffix_schedulers, last=6)
+            self.assertEqual(proof['source_completed_outer'], 3)
+            self.assertEqual(proof['source_actual_optimizer_writes_per_rank'], 60)
+            self.assertEqual(proof['completed_outer_count'], 6)
+            self.assertEqual(proof['actual_attempt_count'], 3)
+            self.assertEqual(proof['actual_optimizer_writes_per_rank'], 120)
+            self.assertEqual([row['logical_update'] for row in proof['attempts']], [4, 5, 6])
+            self.assertEqual(proof['completed_outer_global_monitor_count'], 120)
             self.assertFalse(proof['production_admission'])
 
     def test_delete_or_change_all_zero_monitor_guard_identity_or_rank_statistics_rejects(self):

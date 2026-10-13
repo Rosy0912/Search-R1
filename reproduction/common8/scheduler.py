@@ -183,8 +183,13 @@ class OuterSchedulerEvidence:
         if restore:
             from search_g1.full_state_restore import verified_runtime_prefix
             prefix=verified_runtime_prefix(self.base,run)
-            _need(prefix['completed_outer']==5 and prefix['writes']==100 and optimizer.state,
-                  'Actual restored optimizer/readback is required')
+            if restore.get('kind')=='question_probe_pair':
+                _need(prefix['completed_outer']==restore['completed_outer'] and
+                      prefix['writes']==restore['actual_optimizer_writes_per_rank'] and optimizer.state,
+                      'Actual paired optimizer/readback is required')
+            else:
+                _need(prefix['completed_outer']==5 and prefix['writes']==100 and optimizer.state,
+                      'Actual restored optimizer/readback is required')
         else:prefix=dict(completed_outer=0,writes=0,attempt_index=0)
         k=prefix['completed_outer']
         _need(getattr(scheduler, '_common8_schedule_kind', None)==CONTRACT_KIND and
@@ -198,9 +203,12 @@ class OuterSchedulerEvidence:
         self.recoverable=self.identity['policy_safety_mode']=='inline_first_five'
         self.actual_writes,self.last_attempt_index,self.used_attempt_ids=prefix['writes'],prefix['attempt_index'],set()
         if restore:
-            origin=Path(restore['source_base'])
-            attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
-            self.used_attempt_ids={v['attempt_id'] for v in attempts}
+            if restore.get('kind')=='question_probe_pair':
+                self.used_attempt_ids=set(prefix['used_attempt_ids'])
+            else:
+                origin=Path(restore['source_base'])
+                attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
+                self.used_attempt_ids={v['attempt_id'] for v in attempts}
         self.prepared = None
         self.process_pid, self.process_start_ticks = os.getpid(), _start_ticks()
         _need(self.process_start_ticks > 0, 'Missing actual process birth ticks')

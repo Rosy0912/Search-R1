@@ -45,6 +45,8 @@ def arguments(base):
             raw=str(run.get('vllm_gpu_memory_utilization',0.4))
         elif key=='+trainer.val_before_train' and run.get('pretraining_baseline_policy')=='reuse_historical':
             raw='false'
+        elif key=='+data.mixed_first_selection' and run.get('question_probe') is not None:
+            raw='false'
         assert key not in [x.split('=', 1)[0] for x in overrides], 'Duplicate recipe override'
         if '@BASE@' in raw or '@MODEL@' in raw:
             raw = raw.replace('@BASE@', str(base)).replace('@MODEL@', run['initial_model'])
@@ -53,6 +55,8 @@ def arguments(base):
         overrides.append(key + '=' + raw)
     overrides.append('actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank='+
                      str(monitor_trajectories_per_rank(run)))
+    from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
+    overrides.extend(qprobe_arguments(run, base))
     if run.get('full_state_restore'):
         restore=run['full_state_restore']
         overrides += ['+actor_rollout_ref.model.actor_checkpoint_path='+json.dumps(restore['source_checkpoint']),
@@ -78,6 +82,8 @@ def resolved(base):
     assert config.data.train_files == str(Path(base).resolve() / 'data/train.parquet')
     assert config.data.val_files == str(Path(base).resolve() / 'data/stage.parquet')
     verify_formal_config(OmegaConf.to_container(config, resolve=True), run, base)
+    from reproduction.common8.qprobe_configuration import validate as validate_qprobe
+    validate_qprobe(config, run, base)
     return run, config, overrides
 
 

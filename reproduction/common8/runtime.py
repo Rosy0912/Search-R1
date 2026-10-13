@@ -21,7 +21,7 @@ def checkpoint_complete(step, checkpoint):
     result = hf_checkpoint_complete(step, checkpoint)
     base = Path(os.environ['SEARCH_G1_BASE'])
     run = json.loads((base/'logs/run-manifest.json').read_text())
-    if not run.get('mixed_first_selection', False):
+    if not run.get('mixed_first_selection', False) and run.get('question_probe') is None:
         return result
     import torch
     checkpoint = Path(checkpoint)
@@ -51,6 +51,17 @@ def checkpoint_complete(step, checkpoint):
         del state
     assert len(set(writes)) == 1 and writes[0] > 0
     result['files_sha256']['training_state/manifest.json'] = digest(state_dir/'manifest.json')
+    qprobe = state_manifest.get('question_probe')
+    if qprobe is not None:
+        assert qprobe['completed_outer'] == step
+        assert qprobe['actor_snapshot_id'] == run['run_id']+':'+str(step)
+        for proof in (qprobe, qprobe['head']):
+            path = Path(proof['path'])
+            assert path.resolve().is_relative_to(state_dir.resolve())
+            assert path.stat().st_size == proof['bytes'] and digest(path) == proof['sha256']
+            result['files_sha256'][str(path.relative_to(checkpoint))] = proof['sha256']
+        result['question_probe'] = dict(completed_outer=step, head_version=qprobe['head_version'],
+            actor_snapshot_id=qprobe['actor_snapshot_id'], feature_spec_sha=qprobe['feature_spec_sha'])
     result.update(actual_optimizer_writes_per_rank=writes[0],
         training_state_readback='all rank Adam/scheduler states and actual driver cursor verified; actual restart/reload pending')
     from reproduction.a800.owned_processes import publish

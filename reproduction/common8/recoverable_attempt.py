@@ -68,7 +68,8 @@ def record_attempt(result):
     assert run['policy_safety_mode']=='inline_first_five' and result['all_ranks_agreed'] is True
     path=base/'logs/actual-attempts.jsonl'
     previous=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
-    start=run.get('full_state_restore',{}).get('completed_outer',0)+1
+    restored=run.get('full_state_restore',{})
+    start=restored.get('attempt_index',restored.get('completed_outer',0))+1
     assert [row['attempt_index'] for row in previous]==list(range(start,result['attempt_index']))
     assert result['attempt_id'] not in {row['attempt_id'] for row in previous}
     assert type(result['real_rank_count']) is int and result['real_rank_count']==world_size(run)

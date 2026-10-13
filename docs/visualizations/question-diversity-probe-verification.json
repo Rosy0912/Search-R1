@@ -1,0 +1,213 @@
+{
+  "illustrative": true,
+  "errors": [],
+  "layouts": [
+    {
+      "width": 320,
+      "step": 0,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "step": 1,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "step": 2,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "step": 3,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "step": 4,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 320,
+      "step": 5,
+      "rootWidth": 288,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 0,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 1,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 2,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 3,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 4,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 360,
+      "step": 5,
+      "rootWidth": 328,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 0,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 1,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 2,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 3,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 4,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 736,
+      "step": 5,
+      "rootWidth": 704,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 0,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 1,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 2,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 3,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 4,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    },
+    {
+      "width": 1024,
+      "step": 5,
+      "rootWidth": 992,
+      "horizontalOverflow": false,
+      "overflow": []
+    }
+  ],
+  "controls": {
+    "predictedMean": "0.530",
+    "predictedStd": "0.468",
+    "playPause": true,
+    "autoStopsAtEnd": true
+  },
+  "maths": {
+    "0": {
+      "mean": 0,
+      "sampleStd": 0,
+      "displayedStd": 0
+    },
+    "1": {
+      "mean": 0.2,
+      "sampleStd": 0.4472135954999579,
+      "displayedStd": 0.447
+    },
+    "2": {
+      "mean": 0.4,
+      "sampleStd": 0.5477225575051661,
+      "displayedStd": 0.548
+    },
+    "3": {
+      "mean": 0.6,
+      "sampleStd": 0.5477225575051661,
+      "displayedStd": 0.548
+    },
+    "4": {
+      "mean": 0.8,
+      "sampleStd": 0.4472135954999579,
+      "displayedStd": 0.447
+    },
+    "5": {
+      "mean": 1,
+      "sampleStd": 0,
+      "displayedStd": 0
+    }
+  },
+  "passed": true
+}

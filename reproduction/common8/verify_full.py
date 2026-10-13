@@ -135,6 +135,7 @@ def verify_full(base):
     data=verify(base/'data')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     restoration=run.get('full_state_restore')
+    paired_restoration=bool(restoration and restoration.get('kind')=='question_probe_pair')
     first=restoration['completed_outer']+1 if restoration else 1
     assert [r['step'] for r in records]==list(range(first,TARGET_UPDATES+1))
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
@@ -153,15 +154,21 @@ def verify_full(base):
     if restoration:
         five=json.loads((base/'logs/five-resumed-updates-acceptance.json').read_text())
         assert five['accepted'] and five['run_id']==run['run_id']
-        assert five['source_completed_outer']==5 and five['source_actual_optimizer_writes_per_rank']==100
-        assert five['actual_updates']==records[:5] and [v['step'] for v in records[:5]]==list(range(6,11))
+        source_outer=restoration['completed_outer'] if paired_restoration else 5
+        source_writes=restoration['actual_optimizer_writes_per_rank'] if paired_restoration else 100
+        followup_last=min(source_outer+5,TARGET_UPDATES)
+        followup_count=followup_last-source_outer
+        assert five['source_completed_outer']==source_outer and five['source_actual_optimizer_writes_per_rank']==source_writes
+        assert five['actual_updates']==records[:followup_count]
+        assert [v['step'] for v in records[:followup_count]]==list(range(source_outer+1,followup_last+1))
         from search_g1.full_state_restore import verified_runtime_prefix,source
         prefix=verified_runtime_prefix(base,run)
         _,source_proof,source_cp,origin,parent=source(restoration['source_receipt'])
-        inline_first_five=dict(scope='actual parent first5 checkpoint states and raw receipts; no reconstructed driver metric5',
+        inline_first_five=dict(scope=('verified saved parent prefix and actual current suffix; historical raw updates are not reconstructed'
+            if paired_restoration else 'actual parent first5 checkpoint states and raw receipts; no reconstructed driver metric5'),
             source_checkpoint=source_proof,restored_prefix=prefix)
         for rank in ranks(run):
-            selected=[v for v in scheduler_receipts[str(rank)]['selected_rows'] if 6<=v['logical_update']<=10]
+            selected=[v for v in scheduler_receipts[str(rank)]['selected_rows'] if source_outer<v['logical_update']<=followup_last]
             assert five['scheduler_receipts'][str(rank)]['selected_rows']==selected
     else:
         five=json.loads((base/'logs/five-updates-acceptance.json').read_text())
@@ -185,8 +192,18 @@ def verify_full(base):
         for rank in ranks(run):
             verify_five_scheduler_prefix(five['scheduler_receipts'][str(rank)],scheduler_receipts[str(rank)])
     snapshots={}
+    missing_historical_checkpoints=[]
+    historical_checkpoint_paths={}
+    if paired_restoration:
+        historical_checkpoint_paths={item['step']:Path(item['path']).parent
+            for item in source_proof.get('historical_artifacts',{}).get('checkpoints',[])}
+        historical_checkpoint_paths[source_outer]=source_cp
     for step in SAVE_STEPS:
-        checkpoint=source_cp if restoration and step==5 else Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
+        if paired_restoration and step<=source_outer:
+            if step not in historical_checkpoint_paths:
+                missing_historical_checkpoints.append(step);continue
+            checkpoint=historical_checkpoint_paths[step]
+        else:checkpoint=source_cp if restoration and step==5 else Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
         proof=json.loads((checkpoint/'complete.json').read_text())
         assert proof['run_id']==run['run_id'] and proof['step']==step and proof['finite_all_saved_tensors'] is True
         assert Path(proof['checkpoint']).resolve()==checkpoint.resolve()
@@ -199,22 +216,46 @@ def verify_full(base):
     archived={};archived_paths={}
     paths=list((base/'artifacts').glob('round_*-attempt-*/version-manifest.json'))
     paths+=list((base/'artifacts').glob('round_0-adopted-*/version-manifest.json'))
+    if paired_restoration:
+        paths += [Path(item['path']) for item in source_proof.get('historical_artifacts',{}).get('reward_archives',[])]
     for path in paths:
         live=json.loads(path.read_text())
         if live['run_id']==run['run_id']:
+            if paired_restoration and live['version'] in archived:
+                assert archived[live['version']]==live, 'Different historical manifest reused an archived UUID'
+                continue
             assert live['version'] not in archived, 'Duplicate archived UUID'
             archived[live['version']]=live
             archived_paths[live['version']]=path
+    if paired_restoration and restoration['reward_probe_version'] not in archived:
+        pinned_path=Path(source_proof['reward_probe_manifest']['path'])
+        pinned=json.loads(pinned_path.read_text())
+        archived[pinned['version']]=pinned;archived_paths[pinned['version']]=pinned_path
     versions={}
     for round_id in PROBE_ROUNDS:
         adopted={r['probe_version'] for r in records if round_id<r['step']<=round_id+50}
+        if paired_restoration and not adopted:continue
         assert len(adopted)==1
         live=archived[adopted.pop()];assert live['round']==round_id
         versions[round_id]=live
     initial_probe_adoption=None
     for round_id,live in versions.items():
         encoder=Path(live['encoder'])
-        if round_id==0:
+        if paired_restoration and round_id==restoration['reward_probe_round']:
+            # The first suffix uses the old probe pinned after the source CP's
+            # actual evaluator adoption, not a newly generated calibration.
+            pinned=json.loads(Path(source_proof['reward_probe_manifest']['path']).read_text())
+            assert live['version']==restoration['reward_probe_version']
+            assert all(live[key]==pinned[key] for key in ('run_id','round','version','encoder','encoder_sha256',
+                       'head_sha256','calibration_report','label_proof'))
+            assert all(digest(encoder/name)==sha for name,sha in live['encoder_sha256'].items())
+            assert all(digest(Path(live[key]))==live['head_sha256'][name]
+                for name,key in (('commit_probe.pkl','commit'),('boundary_probe.pkl','boundary')))
+            # SHA/readout identity of the pinned restored evaluator is checked
+            # above. Its historical calibration rollout is not regenerated or
+            # silently asserted present in this execution namespace.
+            continue
+        elif round_id==0:
             expected_encoder={n:h for n,h in run['initial_model_sha256'].items()
                               if n not in ('vocab.json','merges.txt','generation_config.json')}
             assert encoder.resolve()==Path(run['initial_model']).resolve()
@@ -233,8 +274,12 @@ def verify_full(base):
             assert initial_probe['archive']==str(archive_path.relative_to(base)) and initial_probe['archive_sha256']==digest(archive_path)
         else:
             snapshot=snapshots[str(round_id)]
-            expected_encoder=dict(snapshot['files_sha256'])
-            expected_encoder.update({n:run['initial_model_sha256'][n] for n in ('tokenizer.json','tokenizer_config.json')})
+            checkpoint_path=Path(snapshot['checkpoint'])
+            index=json.loads((checkpoint_path/'model.safetensors.index.json').read_text())
+            encoder_names=set(index['weight_map'].values())|{'model.safetensors.index.json','config.json',
+                                                          'tokenizer.json','tokenizer_config.json'}
+            expected_encoder={name:(snapshot['files_sha256'][name] if name in snapshot['files_sha256'] else
+                                   run['initial_model_sha256'][name]) for name in encoder_names}
             assert encoder.resolve()==Path(snapshot['checkpoint']).resolve()
         assert live['encoder_sha256']==expected_encoder
         assert all(digest(encoder/name)==sha for name,sha in live['encoder_sha256'].items())
@@ -284,6 +329,16 @@ def verify_full(base):
         final_weighted_f1=evaluation['weighted_f1'],
         semantics='full training/data/numerical structure verified; accuracy is the measured result, not automatically reproduction success',
         checked_unix=time.time())
+    if paired_restoration:
+        proof['semantics']='verified saved parent prefix state and actual current raw suffix/data/numerical structure; historical raw prefix is not reconstructed; accuracy is the measured result, not automatically reproduction success'
+        proof['per_rank_optimizer_opportunities_semantics']='expected fixed-budget opportunities (200 outer updates × 20), not measured historical raw-prefix optimizer calls; actual cumulative writes come from authenticated Adam/scheduler counters'
+        proof['restoration_verification_scope']=dict(source_completed_outer=source_outer,
+            source_actual_optimizer_writes_per_rank=source_writes,
+            current_raw_receipt_first_outer=first,current_raw_receipt_last_outer=TARGET_UPDATES,
+            historical_raw_training_prefix_verified=False,
+            pinned_reward_calibration_raw_rebuilt=False,
+            missing_historical_checkpoints=missing_historical_checkpoints,
+            scope='saved parent prefix model/Adam/scheduler/head/RNG and raw current suffix; not an assertion that all1..200 historical raw receipts are available')
     if initial_probe_adoption is not None:proof['initial_probe_adoption']=initial_probe_adoption
     from reproduction.common8.calibration_runtime import write_once
     write_once(base/'logs/full-run-acceptance.json',proof)

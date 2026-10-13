@@ -21,7 +21,7 @@ from reproduction.common8.topology import validate_base
 from reproduction.common8.precision_contract import BF16_PROFILE,SAMPLING_JOURNAL_POLICY
 
 
-def prepare(base,model,official_path,commit,initial_probes_source_base=None):
+def prepare(base,model,official_path,commit,initial_probes_source_base=None,restore_receipt=None):
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
         slurm_job_id=None,execution_id=uuid.uuid4().hex,precision_profile=BF16_PROFILE,
@@ -50,7 +50,17 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
             assert link.is_symlink() and link.resolve()==destination.resolve(), 'Existing run resource differs: '+name
         else:link.symlink_to(destination,target_is_directory=True)
     data_proof=verify(base/'data');model_hashes=verify_model(model,official_path)
-    audit=derive_calibration(base)
+    if restore_receipt:
+        assert initial_probes_source_base is None, 'A complete pair and fresh probe adoption are mutually exclusive'
+        from search_g1.qprobe_checkpoint import read_source
+        _,restore_source,_,origin,restore_parent=read_source(restore_receipt)
+        assert restore_source['world_size']==4, 'Local restoration requires the exact four-rank source layout'
+        import shutil
+        for name in ('calibration-300.parquet','audit.json'):
+            assert not (base/'data'/name).exists()
+            shutil.copy2(origin/'data'/name,base/'data'/name)
+        audit=json.loads((base/'data/audit.json').read_text())
+    else:audit=derive_calibration(base)
     source={str(p.relative_to(repo)):digest(p) for p in runtime_files(repo)}
     budget=copy.deepcopy(json.loads((repo/'reproduction/common8/budget.json').read_text()))
     budget.update(formal_mathematics(identity))
@@ -111,6 +121,13 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None):
         # Selection metadata only; the pipeline must verify the actual immutable
         # source probe artifacts and receipts before it can adopt them.
         result['initial_probe_adoption_source_base']=str(initial_probes_source_base)
+    if restore_receipt:
+        from search_g1.qprobe_checkpoint import bind_restore
+        result['actor_micro_batch_per_rank']=restore_parent['actor_micro_batch_per_rank']
+        result['budget']=copy.deepcopy(restore_parent['budget'])
+        for key in ('precision_profile','behavior_probability_policy'):
+            if key in restore_parent:result[key]=copy.deepcopy(restore_parent[key])
+        bind_restore(result,restore_receipt)
     assert_formal_run(result)
     target.parent.mkdir(parents=True,exist_ok=True)
     with target.open('x') as f:
@@ -125,5 +142,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--base',required=True)
     p.add_argument('--model',default='/data/search-g1/assets/qwen2.5-3b-instruct')
     p.add_argument('--official-manifest',required=True);p.add_argument('--source-commit',required=True)
-    p.add_argument('--initial-probes-source-base');a=p.parse_args()
-    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base)))
+    p.add_argument('--initial-probes-source-base');p.add_argument('--restore-receipt');a=p.parse_args()
+    print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,a.initial_probes_source_base,a.restore_receipt)))

@@ -89,6 +89,11 @@ class FormalContractTests(unittest.TestCase):
         (base/'logs/actual-updates.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in records))
         (base/'logs/training-launch-claim.json').write_text(json.dumps(dict(run_id=run['run_id'],slurm_job_id='123',
             shell_pid=10,shell_start_ticks=999)))
+        # Synthetic allocation required by the current durable scheduler reader;
+        # this fixture does not assert that any CUDA allocation was performed.
+        (base/'logs/native-allocation-admission.json').write_text(json.dumps(dict(
+            accepted=True,run_id=run['run_id'],slurm_job_id='123',
+            fixture_scope='constructed CPU protocol evidence only')))
         leader=dict(pid=10,start_ticks=999,sid=10,uid=123)
         ledger={str(100+rank):dict(pid=100+rank,start_ticks=1000+rank,sid=10,uid=123) for rank in range(8)}
         (base/'logs/process-ledger.json').write_text(json.dumps(dict(run_id=run['run_id'],

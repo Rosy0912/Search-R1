@@ -22,6 +22,8 @@ def digest(path):
 
 def source(receipt_path):
     p=Path(receipt_path).resolve();r=json.loads(p.read_text())
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,read_source
+    if r.get('status')==PAIR_STATUS:return read_source(p)
     assert r['status']=='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS'
     assert r['step']==5 and r['cpu_regression_tests']==3
     assert len(r['ranks'])==8 and sorted(v['rank'] for v in r['ranks'])==list(range(8))
@@ -59,6 +61,8 @@ def execution_budget_compatible(run, parent):
 
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,bind_restore
+    if r.get('status')==PAIR_STATUS:return bind_restore(run,receipt_path)
     execution_budget_compatible(run, parent)
     assert run['input_sha256']==parent['input_sha256']
     assert run['initial_model_sha256']==parent['initial_model_sha256']
@@ -85,7 +89,13 @@ def from_config(config):
     p,r,checkpoint,origin,parent=source(receipt)
     assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
     assert config.trainer.total_training_steps==201 and config.trainer.acceptance_step==5
-    assert config.actor_rollout_ref.actor.ppo_micro_batch_size==16
+    from search_g1.qprobe_checkpoint import PAIR_STATUS
+    if r.get('status')==PAIR_STATUS:
+        from reproduction.common8.topology import world_size
+        assert world_size(parent)==r['world_size']
+        assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*r['world_size']
+        assert config.data.get('selection_mode',None)=='question_probe'
+    else:assert config.actor_rollout_ref.actor.ppo_micro_batch_size==16
     return r
 
 
@@ -101,6 +111,11 @@ def equal_tree(a,b):
     elif isinstance(a,(list,tuple)):
         assert type(a) is type(b) and len(a)==len(b)
         for x,y in zip(a,b):equal_tree(x,y)
+    elif all(hasattr(a,key) for key in ('batch','non_tensor_batch','meta_info')):
+        assert type(a) is type(b)
+        assert set(a.batch.keys())==set(b.batch.keys())
+        for key in a.batch.keys():equal_tree(a.batch[key],b.batch[key])
+        equal_tree(a.non_tensor_batch,b.non_tensor_batch);equal_tree(a.meta_info,b.meta_info)
     else:assert a==b
 
 
@@ -119,11 +134,18 @@ def restore_worker(worker,receipt_path):
     from verl.utils.fsdp_utils import load_fsdp_param_and_grad,offload_fsdp_param_and_grad
     from search_g1.training_state import worker_rng,cpu_tree
     p,r,checkpoint,origin,parent=source(receipt_path);rank=worker.rank
-    assert torch.distributed.get_world_size()==8
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,validate_rank_state
+    paired=r.get('status')==PAIR_STATUS
+    size=r['world_size'] if paired else 8
+    outer=r['step'] if paired else 5
+    writes=r['attempt_progress']['cumulative_writes'] if paired else 100
+    expected_tensors=r['hf_saved_tensor_count'] if paired else 435
+    assert torch.distributed.get_world_size()==size
     proof=next(v for v in r['files'] if v['relative_path']==f'training_state/rank-{rank}.pt')
     assert digest(proof['path'])==proof['full_read_sha256']
     saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
-    assert saved['rank']==rank and saved['world_size']==8 and saved['actual_optimizer_writes']==100
+    assert saved['rank']==rank and saved['world_size']==size and saved['actual_optimizer_writes']==writes
+    if paired:validate_rank_state(saved,rank,size,outer,expected_writes=writes)
     # Compare all actual FSDP-restored model tensors with saved HF tensors.
     if worker._is_offload_param:
         load_fsdp_param_and_grad(module=worker.actor_module_fsdp,device_id=torch.cuda.current_device(),load_grad=False)
@@ -136,7 +158,7 @@ def restore_worker(worker,receipt_path):
         for shard in sorted(set(weightmap.values())):
             with safe_open(str(checkpoint/shard),framework='pt',device='cpu') as f:
                 for name in f.keys():equal_tree(actual_model[name],f.get_tensor(name));checked+=1
-        assert checked==435
+        assert checked==expected_tensors
     del actual_model
     from reproduction.common8.precision_contract import remove_padding
     current_run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
@@ -149,15 +171,26 @@ def restore_worker(worker,receipt_path):
     worker.actor_lr_scheduler.load_state_dict(saved['scheduler'])
     equal_tree(cpu_tree(worker.actor_optimizer.state_dict()),saved['optimizer'])
     equal_tree(cpu_tree(worker.actor_lr_scheduler.state_dict()),saved['scheduler'])
-    worker.actor._optimizer_writes=100;worker.actor._complete_outers=5;worker.actor._last_attempt_index=5
+    worker.actor._optimizer_writes=writes;worker.actor._complete_outers=outer
+    worker.actor._last_attempt_index=saved['last_attempt_index'] if paired else 5
     worker.actor._inline_initial_optimizer_published=True
-    parent_attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
-    assert [v['attempt_index'] for v in parent_attempts]==list(range(1,6))
-    worker.actor._used_attempt_ids={v['attempt_id'] for v in parent_attempts}
-    parent_monitor=[v for v in map(json.loads,(origin/f'logs/optimizer-rank-{rank}.jsonl').read_text().splitlines()) if v['kind']=='POLICY_MONITOR']
-    assert parent_monitor and parent_monitor[-1]['optimizer_writes']==100
-    worker.actor._policy_rejections=parent_monitor[-1]['rejection_count']
-    rng=saved['rng'];manager=worker.rollout_sharding_manager
+    if paired:
+        # Counters/attempt identities come from this checkpoint only. Parent
+        # logs may contain a later suffix and must never leak future attempts.
+        worker.actor._used_attempt_ids=set(saved['used_attempt_ids'])
+        worker.actor._policy_rejections=saved['policy_rejections']
+    else:
+        parent_attempts=[json.loads(line) for line in (origin/'logs/actual-attempts.jsonl').read_text().splitlines()]
+        assert [v['attempt_index'] for v in parent_attempts]==list(range(1,6))
+        worker.actor._used_attempt_ids={v['attempt_id'] for v in parent_attempts}
+        parent_monitor=[v for v in map(json.loads,(origin/f'logs/optimizer-rank-{rank}.jsonl').read_text().splitlines()) if v['kind']=='POLICY_MONITOR']
+        assert parent_monitor and parent_monitor[-1]['optimizer_writes']==100
+        worker.actor._policy_rejections=parent_monitor[-1]['rejection_count']
+    if paired:
+        from search_g1.qprobe_checkpoint import boundary_worker_rng
+        rng=boundary_worker_rng(r,rank,saved)
+    else:rng=saved['rng']
+    manager=worker.rollout_sharding_manager
     engine=worker.rollout.inference_engine.llm_engine;assert not engine.has_unfinished_requests()
     runner=engine.model_executor.worker.model_runner;generators=runner.get_generators();generators.clear()
     for key,v in rng['request_generators'].items():
@@ -173,11 +206,13 @@ def restore_worker(worker,receipt_path):
     allocation=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/native-allocation-admission.json').read_text())
     assert cuda_uuid in allocation['actual_cuda_runtime_uuids']
     row=dict(rank=rank,process_identity=identity(os.getpid()),actual_cuda_uuid=cuda_uuid,
-        slurm_job_id=os.environ['SLURM_JOB_ID'],source_checkpoint=str(checkpoint),source_state_full_sha256=proof['full_read_sha256'],
-        actual_optimizer_writes=100,scheduler_last_epoch=5,model_hf_exact_tensors_checked_on_rank0=checked,
-        actual_adam_scheduler_readback_equal=True,actual_rng_readback_equal=True,world_size=8,
+        slurm_job_id=os.environ.get('SLURM_JOB_ID'),source_checkpoint=str(checkpoint),source_state_full_sha256=proof['full_read_sha256'],
+        actual_optimizer_writes=writes,scheduler_last_epoch=outer,model_hf_exact_tensors_checked_on_rank0=checked,
+        actual_adam_scheduler_readback_equal=True,actual_rng_readback_equal=True,world_size=size,
+        last_attempt_index=worker.actor._last_attempt_index,
         policy_rejections=worker.actor._policy_rejections,
-        source_run_id=saved['run_id'],source_step=5,checked_unix=time.time())
+        source_run_id=saved['run_id'],source_step=outer,checked_unix=time.time())
+    if paired:row['sampling_rng_source']='authenticated post-evaluation/refit boundary-worker-rng'
     publish(Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'full-state-restored-rank-{rank}.json',row)
     return row
 
@@ -191,7 +226,11 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
     version=saved['probe_version']
     assert source_run_id==run['run_id']==live['run_id']
     if 'run_id' in saved:assert saved['run_id']==source_run_id
-    assert version==run['initial_probe_version']==live['version'] and live['round']==0
+    assert version==run['initial_probe_version']==live['version']
+    binding=run.get('full_state_restore') or {}
+    if binding.get('kind')=='question_probe_pair':
+        assert live['round']==binding['reward_probe_round'] and version==binding['reward_probe_version']
+    else:assert live['round']==0
     assert trainer.reward_fn.no_self is True, 'Uncheckpointed adaptive reward cannot be resumed'
     managers=[trainer.reward_fn]
     if getattr(trainer,'val_reward_fn',None) is not None:managers.append(trainer.val_reward_fn)
@@ -203,6 +242,9 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
 
 
 def restore_driver(trainer,receipt_path):
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,restore_driver as restore_pair_driver
+    if json.loads(Path(receipt_path).read_text()).get('status')==PAIR_STATUS:
+        return restore_pair_driver(trainer,receipt_path)
     import torch,numpy as np
     from search_g1.training_state import driver_rng,compact_stream_state
     p,r,checkpoint,origin,parent=source(receipt_path)
@@ -234,9 +276,12 @@ def prepare_guarded_restore(base,run,document,method,initial,receipts):
     base=Path(base);binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
+    paired=binding.get('kind')=='question_probe_pair'
+    actual_writes=binding['actual_optimizer_writes_per_rank'] if paired else 100
+    step=binding['completed_outer'] if paired else 5
     probability=dict(role='verified_full_state_restore_source',run_id=run['run_id'],
-        slurm_job_id=allocation['slurm_job_id'],actual_optimizer_writes=100,
-        source_receipt_sha256=digest(p),source_checkpoint=str(cp),source_step=5,
+        slurm_job_id=allocation['slurm_job_id'],actual_optimizer_writes=actual_writes,
+        source_receipt_sha256=digest(p),source_checkpoint=str(cp),source_step=step,
         source_sha256=run['source_sha256'],resolved_config_sha256=document_sha256(document),
         actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'],
         actual_model_gpu_restore_required_before_first_write=True,
@@ -249,8 +294,8 @@ def prepare_guarded_restore(base,run,document,method,initial,receipts):
         initial_probe_version=run['initial_probe_version'],initial_probe_archive=initial['archive'],
         method_sha256=digest(base/'preparation/formal-inline-method.json'),probability=probability,
         receipts_sha256=receipts,slurm_job_id=allocation['slurm_job_id'],native_birth=native_birth(allocation),
-        actual_optimizer_writes_at_freeze=100,optimizer_counting=FORMAL_COUNTING,created_unix=time.time(),
-        restoration_scope='verified source state; real model/Adam/scheduler/RNG load is mandatory before Adam6',**FORMAL_SAFEGUARDS)
+        actual_optimizer_writes_at_freeze=actual_writes,optimizer_counting=FORMAL_COUNTING,created_unix=time.time(),
+        restoration_scope='verified source state; real model/Adam/scheduler/RNG load is mandatory before the next outer',**FORMAL_SAFEGUARDS)
     publish(base/'logs/policy-safety-calibration.json',artifact)
     return artifact
 
@@ -260,7 +305,10 @@ def verify_guarded_restore(base,run,probability):
     binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']==probability['source_receipt_sha256']
     assert probability['role']=='verified_full_state_restore_source'
-    assert probability['actual_optimizer_writes']==100 and probability['source_step']==5
+    if binding.get('kind')=='question_probe_pair':
+        assert probability['actual_optimizer_writes']==binding['actual_optimizer_writes_per_rank']
+        assert probability['source_step']==binding['completed_outer']
+    else:assert probability['actual_optimizer_writes']==100 and probability['source_step']==5
     assert probability['source_checkpoint']==str(cp) and probability['run_id']==run['run_id']==parent['run_id']
     assert probability['source_sha256']==run['source_sha256']
     allocation=json.loads((Path(base)/'logs/native-allocation-admission.json').read_text())
@@ -279,33 +327,42 @@ def accept_resumed_five(records):
     from reproduction.common8.runtime import budget_rows,verify_scheduler_receipts
     from reproduction.common8.worker_evidence import read_console_form
     base=Path(os.environ['SEARCH_G1_BASE']);run=json.loads((base/'logs/run-manifest.json').read_text())
-    binding=active(run);assert binding and [r['step'] for r in records]==list(range(6,11))
+    binding=active(run)
+    paired=(binding or {}).get('kind')=='question_probe_pair'
+    first=binding['completed_outer']+1 if paired else 6
+    last=min(first+4,200) if paired else 10
+    assert binding and [r['step'] for r in records]==list(range(first,last+1))
     driver=json.loads((base/'logs/full-state-restored-driver.json').read_text());assert driver['actual_driver_rng_readback_equal']
     workers=json.loads((base/'logs/full-state-restored-workers.json').read_text())['ranks']
-    assert len(workers)==8 and all(v['actual_rng_readback_equal'] and v['actual_adam_scheduler_readback_equal'] for v in workers)
+    from reproduction.common8.topology import world_size
+    assert len(workers)==(world_size(run) if paired else 8) and all(v['actual_rng_readback_equal'] and v['actual_adam_scheduler_readback_equal'] for v in workers)
     actual=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
-    assert [v['step'] for v in actual]==list(range(6,11))
+    assert [v['step'] for v in actual]==list(range(first,last+1))
     assert all(all(math.isfinite(v) for v in r['metrics'].values()) for r in actual)
     gates={str(r['step']):read_gate_receipt(base,run,r['step'],update_record=r) for r in actual}
-    verify_write_receipt_links(base,gates,6,10)
-    budgets=budget_rows(read_console_form(base,run['run_id']),6,10,complete_records=actual,run=run)
-    schedules=verify_scheduler_receipts(base,run,6,10,gates)
+    verify_write_receipt_links(base,gates,first,last)
+    budgets=budget_rows(read_console_form(base,run['run_id']),first,last,complete_records=actual,run=run)
+    schedules=verify_scheduler_receipts(base,run,first,last,gates)
     checkpoint10=None
     if run.get('followup_checkpoint_required'):
-        checkpoint10=json.loads((Path(run['checkpoint_dir'])/'actor/global_step_10/complete.json').read_text())
-        assert checkpoint10['step']==10 and checkpoint10['actual_optimizer_writes_per_rank']==actual[-1]['optimizer_writes_after']
+        checkpoint10=json.loads((Path(run['checkpoint_dir'])/f'actor/global_step_{last}/complete.json').read_text())
+        assert checkpoint10['step']==last and checkpoint10['actual_optimizer_writes_per_rank']==actual[-1]['optimizer_writes_after']
         assert 'training_state/manifest.json' in checkpoint10['files_sha256']
-    result=dict(checkpoint10=checkpoint10,accepted=True,run_id=run['run_id'],source_completed_outer=5,source_actual_optimizer_writes_per_rank=100,
-        first_resumed_outer=6,last_resumed_outer=10,next_outer=11,actual_updates=actual,
+    result=dict(checkpoint10=checkpoint10,accepted=True,run_id=run['run_id'],source_completed_outer=first-1,
+        source_actual_optimizer_writes_per_rank=binding['actual_optimizer_writes_per_rank'] if paired else 100,
+        first_resumed_outer=first,last_resumed_outer=last,next_outer=last+1,actual_updates=actual,
         budgets=budgets,scheduler_receipts=schedules,actual_restore_workers=workers,actual_restore_driver=driver,
         extra_validation_performed=False,new_checkpoint10_claimed=bool(run.get("followup_checkpoint_required")),total_budget=200,checked_unix=time.time())
     publish(base/'logs/five-resumed-updates-acceptance.json',result)
-    print('SEARCH_G1_RESUMED_FIVE_ACCEPTED=6-10;CONTINUING11',flush=True)
+    print(f'SEARCH_G1_RESUMED_FIVE_ACCEPTED={first}-{last};CONTINUING{last+1}',flush=True)
     return result
 
 
 def verified_runtime_prefix(base,run):
     """Require actual restored worker/driver readbacks before auditing a suffix."""
+    if (active(run) or {}).get('kind')=='question_probe_pair':
+        from search_g1.qprobe_checkpoint import verified_runtime_prefix as pair_prefix
+        return pair_prefix(base,run)
     base=Path(base);binding=active(run);assert binding
     p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
@@ -330,6 +387,26 @@ def verified_runtime_prefix(base,run):
 def record_original_baseline(base,run):
     """Link the actual official0 evaluation; do not repeat or relabel its rows."""
     p,r,cp,origin,parent=source(active(run)['source_receipt'])
+    if (active(run) or {}).get('kind')=='question_probe_pair':
+        historical=r.get('historical_artifacts',{}).get('development',{}).get('before')
+        original=None
+        if historical:
+            assert digest(historical['path'])==historical['full_read_sha256']
+            original=json.loads(Path(historical['path']).read_text())
+            # Repeated resumes may wrap a genuine historical baseline. Unwrap
+            # payloads, never follow a mutable later source log or invent rows.
+            for _ in range(64):
+                if original.get('role')!='full_state_restore_original_development_baseline':break
+                if not isinstance(original.get('original'),dict):break
+                original=original['original']
+        result=dict(schema_version=1,role='full_state_restore_original_development_baseline',
+            run_id=run['run_id'],step=0,source_pair_receipt=str(p),source_pair_receipt_sha256=digest(p),
+            source_path=None if historical is None else historical['path'],
+            source_sha256=None if historical is None else historical['full_read_sha256'],
+            current_evaluation_performed=False,original=original,
+            historical_measurement_available=original is not None,paired_same_run=False)
+        publish(Path(base)/'logs/formal-inline-development-before.json',result)
+        return result
     original=origin/'logs/formal-inline-development-before.json'
     result=dict(schema_version=1,role='full_state_restore_original_development_baseline',
         run_id=run['run_id'],step=0,source_path=str(original),source_sha256=digest(original),
@@ -340,6 +417,22 @@ def record_original_baseline(base,run):
 
 
 def verify_restored_pair(base,run):
+    if (active(run) or {}).get('kind')=='question_probe_pair':
+        p,r,_,_,_=source(active(run)['source_receipt'])
+        before=json.loads((Path(base)/'logs/formal-inline-development-before.json').read_text())
+        assert before['source_pair_receipt_sha256']==digest(p) and before['current_evaluation_performed'] is False
+        history=r.get('historical_artifacts',{}).get('development',{})
+        measurements={}
+        for key,item in history.items():
+            assert digest(item['path'])==item['full_read_sha256']
+            measurements[key]=dict(path=item['path'],sha256=item['full_read_sha256'],
+                                    original=json.loads(Path(item['path']).read_text()))
+        return dict(role='completed_pair_historical_development_evidence',
+            source_completed_outer=r['step'],source_receipt_sha256=digest(p),
+            current_evaluation_performed=False,paired_same_run=False,
+            available_historical_measurements=measurements,
+            missing_historical_measurements=[key for key in ('before','after5') if key not in measurements],
+            accuracy_health_gate=False,semantics='actual linked historical artifacts only; no reconstructed early EM or new dev512 generation')
     from reproduction.common8.calibration_evaluation import aggregate
     from reproduction.common8.formal_inline_evaluation import score_counts
     from reproduction.common8.validation_identity import expected
@@ -370,7 +463,8 @@ def optimizer_construction_config(config,model_path):
     if not binding:return config
     p,r,checkpoint,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
-    assert config.get('completed_updates',0)==r['step']==binding['completed_outer']==5
+    assert config.get('completed_updates',0)==r['step']==binding['completed_outer']
+    if binding.get('kind')!='question_probe_pair':assert r['step']==5
     assert Path(model_path).resolve()==checkpoint
     construction=copy.deepcopy(dict(config));construction['completed_updates']=0
     # This does not change the resolved training counter or pretend restoration
