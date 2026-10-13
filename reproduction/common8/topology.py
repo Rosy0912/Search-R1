@@ -100,6 +100,10 @@ def validate_base(base, run):
         execution_job_id(run)
         assert re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[A-Za-z0-9._-]+', str(base)), \
             'Local training requires its fresh A800 run namespace'
+    elif run.get('execution_site') == 'hpc3':
+        assert re.fullmatch(r'/data/user/jxu957/experiments/qprobe-teacher-warmup200-[A-Za-z0-9._-]+',str(base)), \
+            'HPC3 requires the dedicated question-probe run namespace'
+        assert run.get('execution_backend','slurm')=='slurm' and world_size(run)==8
     else:
         assert str(base).startswith('/mnt/data/shaoshitong/'), 'Native training namespace changed'
     return base

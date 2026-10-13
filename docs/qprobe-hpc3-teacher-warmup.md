@@ -41,3 +41,16 @@ fixed question features; submission or feature completion alone is not proof
 that warmup or formal training has run. Runtime acceptance requires actual warmup
 25600 trajectories, all5120 fitted labels, eight-rank frozen-state/RNG evidence,
 then actual complete formal updates and eventual outer200 acceptance.
+
+The full native entry is `reproduction/hpc3_qprobe/train.sh BASE COMMIT`, with
+one exclusive eight-GPU Slurm allocation after successful feature preparation.
+It retains the existing actual resource, CUDA/FSDP, model/reference/vLLM,
+retrieval parity and policy-safety gates. The explicit native BF16 profile keeps
+FP32 master parameters, optimizer state and reductions. The shared original
+Python3.10 binary and matching headers are bound by full SHA; private wrappers
+preserve inherited library search paths needed by the retrieval overlay.
+
+An independent single-GPU debug entry exercises real CUDA JIT, FlashAttention,
+two official Qwen question features and two short vLLM generations. It has
+separate immutable outputs and zero formal training outers. It cannot replace
+the full feature cache, real teacher search collection or actor training.

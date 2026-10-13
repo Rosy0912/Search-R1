@@ -1,5 +1,6 @@
 """Once-only HPC3 stage submission and read-only reuse of existing assets."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -30,6 +31,25 @@ def link(target,source):
     else:target.symlink_to(source)
 
 
+def headers(base,binary):
+    source=Path('/share/anaconda3/envs/video_dit/include/python3.10')
+    from search_g1.qprobe_features import sha_file
+    if not (source/'Python.h').is_file() or not (source/'pyconfig.h').is_file():
+        raise ValueError('Matching reusable Python3.10 headers unavailable')
+    origin=source.parents[1]/'bin/python3.10'
+    if sha_file(origin)!=sha_file(binary):raise ValueError('Python headers belong to another runtime binary')
+    target=base/'bootstrap-tools/python-dev/usr/include';target.mkdir(parents=True,exist_ok=True)
+    link(target/'python3.10',source)
+    value=dict(source=str(source),runtime_binary_sha256=sha_file(binary),
+        files={str(p.relative_to(source)):sha_file(p) for p in sorted(source.rglob('*')) if p.is_file()},
+        status='MATCHING_PYTHON310_HEADER_FULL_SHA_PASS')
+    receipt=base/'preparation/python310-headers.json'
+    if receipt.exists():
+        if json.loads(receipt.read_text())!=value:raise ValueError('Reusable Python headers changed after binding')
+    else:publish(receipt,value)
+    return value
+
+
 def prepare(base):
     base=own_base(base)
     for name in ('logs','preparation','data','tmp','cache/hf','env/bin','env/lib/python3.10'):
@@ -43,13 +63,30 @@ def prepare(base):
     binary=REUSED/'runtime/retriever-python310-candidate/bin/python3.10'
     if not site.is_dir() or not binary.is_file():raise ValueError('Verified reusable Python runtime unavailable')
     link(base/'env/lib/python3.10/site-packages',site)
+    (base/'assets').mkdir(exist_ok=True)
+    link(base/'assets/e5-base-v2',REUSED/'source/assets-root/assets/e5-base-v2')
+    link(base/'retriever-gpu-lib',REUSED/'runtime/gpu-faiss-alignment-candidate')
+    headers(base,binary)
     wrapper='#!/usr/bin/env bash\nset -euo pipefail\n'
     wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(REUSED/'runtime/gpu-faiss-alignment-candidate')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
-    wrapper+='export LD_LIBRARY_PATH='+shlex.quote(str(REUSED/'runtime/retriever-python310-candidate/lib'))+'\n'
+    wrapper+='export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'
     wrapper+='unset PYTHONHOME\nexec '+shlex.quote(str(binary))+' "$@"\n'
     python=base/'env/bin/python'
     if python.exists():
-        if python.read_text()!=wrapper:raise ValueError('Existing runtime wrapper differs')
+        existing=python.read_text()
+        if existing!=wrapper:
+            legacy=wrapper.replace('export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"',
+                                  'export LD_LIBRARY_PATH='+shlex.quote(str(REUSED/'runtime/retriever-python310-candidate/lib')))
+            if existing!=legacy or any((base/'preparation'/x).exists() for x in ('training-submit-claim.json','debug-submit-claim.json')):
+                raise ValueError('Unexpected or already-used runtime wrapper differs')
+            # Feature job has its own direct immutable binary entry; it never
+            # references this wrapper. Upgrade only before debug/training claim.
+            temporary=python.with_suffix('.prepared');temporary.write_text(wrapper);temporary.chmod(0o755)
+            temporary.replace(python)
+            publish(base/'preparation/env-wrapper-upgrade.json',dict(
+                before_sha256=hashlib.sha256(existing.encode()).hexdigest(),
+                after_sha256=hashlib.sha256(wrapper.encode()).hexdigest(),
+                feature_entry_modified=False,training_claim_absent=True))
     else:
         with python.open('x') as f:f.write(wrapper);f.flush();os.fsync(f.fileno())
         python.chmod(0o755)
@@ -85,11 +122,63 @@ def submit_features(base,commit):
     return value
 
 
+def submit_training(base,commit):
+    base=own_base(base);prepare(base)
+    source=base/'source'/commit
+    verification=json.loads((base/'preparation'/('source-'+commit+'-verification.json')).read_text())
+    if verification['commit']!=commit or verification['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS':
+        raise ValueError('Training source publication/deployment not accepted')
+    features=json.loads((base/'preparation/features-submission.json').read_text())
+    if features['returncode']!=0 or not features['job'].isdecimal():raise ValueError('Missing own feature dependency')
+    intent=base/'preparation/training-submit-claim.json';receipt=base/'preparation/training-submission.json'
+    if intent.exists() or receipt.exists():raise ValueError('Training submission already attempted; never duplicate')
+    if (base/'repo').exists() or (base/'repo').is_symlink():
+        if (base/'repo').resolve()!=source:raise ValueError('Immutable run source already points elsewhere')
+    else:(base/'repo').symlink_to(source)
+    command=['sbatch','--parsable','--partition=acd_u','--nodes=1','--ntasks=1',
+        '--gres=gpu:8','--exclusive','--cpus-per-task=96','--mem=512G','--time=7-00:00:00',
+        '--job-name=qprobe-warmup200','--export=NONE','--dependency=afterok:'+features['job'],
+        '--output='+str(base/'logs/training-%j.log'),'--error='+str(base/'logs/training-%j.log'),
+        str(source/'reproduction/hpc3_qprobe/train.sh'),str(base),commit]
+    publish(intent,dict(commit=commit,command=command,epoch=time.time(),feature_dependency=features['job']))
+    result=subprocess.run(command,capture_output=True,text=True,timeout=30)
+    value=dict(commit=commit,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr,epoch=time.time(),feature_dependency=features['job'])
+    if result.returncode==0:
+        value['job']=result.stdout.strip().split(';')[0]
+        if not value['job'].isdecimal():raise ValueError('Invalid actual training job ID')
+    publish(receipt,value)
+    if result.returncode:raise RuntimeError('Training submission failed; inspect saved evidence')
+    return value
+
+
+def submit_debug(base,commit):
+    base=own_base(base);prepare(base);source=base/'source'/commit
+    proof=json.loads((base/'preparation'/('source-'+commit+'-verification.json')).read_text())
+    if proof['commit']!=commit or proof['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS':
+        raise ValueError('Debug source not published and verified')
+    intent=base/'preparation/debug-submit-claim.json';receipt=base/'preparation/debug-submission.json'
+    if intent.exists() or receipt.exists():raise ValueError('Debug submission already attempted; inspect actual job')
+    command=['sbatch','--parsable','--partition=debug','--nodes=1','--ntasks=1','--gres=gpu:1',
+        '--cpus-per-task=8','--mem=64G','--time=00:20:00','--job-name=qprobe-runtime-debug','--export=NONE',
+        '--output='+str(base/'logs/debug-%j.log'),'--error='+str(base/'logs/debug-%j.log'),
+        str(source/'reproduction/hpc3_qprobe/debug.sh'),str(base),str(source)]
+    publish(intent,dict(commit=commit,command=command,epoch=time.time()))
+    r=subprocess.run(command,capture_output=True,text=True,timeout=30)
+    value=dict(commit=commit,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,epoch=time.time())
+    if r.returncode==0:
+        value['job']=r.stdout.strip().split(';')[0]
+        if not value['job'].isdecimal():raise ValueError('Invalid actual debug job ID')
+    publish(receipt,value)
+    if r.returncode:raise RuntimeError('Debug submission failed; inspect evidence')
+    return value
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=('prepare','submit-features'))
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=('prepare','submit-features','submit-training','submit-debug'))
     p.add_argument('--base',required=True);p.add_argument('--commit')
     a=p.parse_args()
-    result=prepare(a.base) if a.mode=='prepare' else submit_features(a.base,a.commit)
+    result=prepare(a.base) if a.mode=='prepare' else {'submit-features':submit_features,
+        'submit-training':submit_training,'submit-debug':submit_debug}[a.mode](a.base,a.commit)
     print(json.dumps(result),flush=True)
 
 

@@ -46,6 +46,16 @@ def moments(vector):
     return count, count / GROUP_SIZE, math.sqrt(count * (GROUP_SIZE-count) / 20)
 
 
+def verify_frozen(before, after):
+    before=sorted(before,key=lambda x:x['rank']);after=sorted(after,key=lambda x:x['rank'])
+    keys=('rank','parameter_sha256','optimizer_sha256','scheduler_sha256','actual_optimizer_writes','completed_outer')
+    if [x['rank'] for x in before] != list(range(8)) or [x['rank'] for x in after] != list(range(8)) or any(
+            {k:a[k] for k in keys} != {k:b[k] for k in keys} or a['actual_optimizer_writes'] or a['completed_outer']
+            for a,b in zip(before,after)):
+        raise ValueError('WARMUP_TEACHER_MODEL_OR_OPTIMIZER_WAS_NOT_FROZEN')
+    return dict(before=before,after=after,actual_eight_rank_frozen_readback=True)
+
+
 class TeacherCache:
     def __init__(self, root, identity):
         self.root = Path(root).resolve()
@@ -78,6 +88,9 @@ class TeacherCache:
     def validate_chunk(self, index, value):
         if value.get('index') != index or len(value.get('groups', [])) != CHUNK_SIZE:
             raise ValueError('WARMUP_INCOMPLETE_CHUNK')
+        if self.identity.get('teacher_frozen_evidence_required'):
+            frozen=value['frozen_workers']
+            verify_frozen(frozen['before'],frozen['after'])
         expected = self.identity['questions'][index*CHUNK_SIZE:(index+1)*CHUNK_SIZE]
         ids = set()
         for question, group in zip(expected, value['groups']):
@@ -95,8 +108,9 @@ class TeacherCache:
         if path.resolve().parent != self.root or path.stat().st_size != proof['bytes'] or sha_file(path) != proof['sha256']:
             raise ValueError('WARMUP_ACTUAL_ROLLOUT_FULL_SHA_DIFFERS')
 
-    def commit_chunk(self, index, groups, raw_rollout, contracts):
+    def commit_chunk(self, index, groups, raw_rollout, contracts, frozen_workers=None):
         value = dict(index=index, groups=groups, raw_rollout=raw_rollout, contracts=contracts)
+        if frozen_workers is not None:value['frozen_workers']=frozen_workers
         self.validate_chunk(index, value)
         write_once(self.root / ('chunk-%02d.json' % index), value)
         print(json.dumps(dict(stage='frozen_teacher_warmup_chunk_complete',
@@ -166,6 +180,7 @@ def run(trainer, manager, runtime, stream):
         non_tensors={'candidate_original_question':np.array([x[1] for x in rows], dtype=object),
                      'candidate_stable_id':np.array([x[2] for x in rows], dtype=object)})
     identity = dict(schema=1, model_revision=manifest['model_revision'],
+        teacher_frozen_evidence_required=True,
         model_files_sha256=manifest['initial_model_sha256'],
         train_parquet_sha256=manifest['input_sha256']['train.parquet'],
         data_manifest_sha256=manifest['budget']['common_manifest_sha256'],
@@ -176,7 +191,11 @@ def run(trainer, manager, runtime, stream):
         max_turns=trainer.config.max_turns, seed=runtime.config['seed'],
         questions=[dict(qid=qid, question_hash=question_text_sha(q)) for _,q,qid in rows],
         scorer_sources={name: manifest['source_sha256'][name] for name in (
-            'search_g1/signals.py','search_r1/qa_protocol.py','verl/utils/reward_score/qa_em.py')})
+            'search_g1/signals.py','search_r1/qa_protocol.py','verl/utils/reward_score/qa_em.py')},
+        rollout_sources={name:value for name,value in manifest['source_sha256'].items()
+            if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
+                'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
+                'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
     cache = TeacherCache(cache_path, identity)
     try:
         reused = 0
@@ -191,6 +210,7 @@ def run(trainer, manager, runtime, stream):
             if raw_path.exists():
                 raw = torch.load(raw_path, map_location='cpu', weights_only=False)
                 output, generation_id, contracts = raw['output'], raw['identity'], raw['contracts']
+                frozen=raw['frozen_workers'];verify_frozen(frozen['before'],frozen['after'])
                 if raw['question_bindings'] != identity['questions'][ordinals[0]:ordinals[-1]+1]:
                     raise ValueError('WARMUP_UNCOMMITTED_REAL_ROLLOUT_QUESTIONS_DIFFER')
             else:
@@ -204,7 +224,10 @@ def run(trainer, manager, runtime, stream):
                     initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
                 _complete_generation(output, generation_id)
                 contracts = _contracts(trainer, output, manifest)
+                chunk_after=trainer.actor_rollout_wg.capture_frozen_teacher_boundary(str(boundary/('chunk-%02d'%chunk)))
+                frozen=verify_frozen(before_workers,chunk_after)
                 atomic_save(raw_path, dict(output=output, identity=generation_id, contracts=contracts,
+                    frozen_workers=frozen,
                     question_bindings=identity['questions'][ordinals[0]:ordinals[-1]+1]))
             _complete_generation(output, generation_id)
             vectors = strict_vectors(parent, output, trainer.tokenizer)
@@ -217,7 +240,7 @@ def run(trainer, manager, runtime, stream):
                     policy_snapshot_id=generation_id['policy_snapshot_id'], source_outer=0,
                     run_id=generation_id['run_id'], attempt_id='teacher-warmup-%02d'%chunk))
             cache.commit_chunk(chunk, groups, dict(relative_path=raw_path.name,
-                bytes=raw_path.stat().st_size, sha256=sha_file(raw_path)), contracts)
+                bytes=raw_path.stat().st_size, sha256=sha_file(raw_path)), contracts, frozen)
         proof, groups, chunks = cache.verify_complete()
         labels = [dict(g, complete=True, selection_source='bootstrap_all_candidate',
             **proof['protocol']) for g in groups]
@@ -230,13 +253,7 @@ def run(trainer, manager, runtime, stream):
         head_path.parent.mkdir(parents=True, exist_ok=True)
         head_receipt = runtime.head.save(head_path, actor_snapshot_id=manifest['run_id']+':0')
         after_workers = trainer.actor_rollout_wg.capture_frozen_teacher_boundary(str(boundary/'after'))
-        keys = ('rank','parameter_sha256','optimizer_sha256','scheduler_sha256','actual_optimizer_writes','completed_outer')
-        before_workers = sorted(before_workers, key=lambda x:x['rank'])
-        after_workers = sorted(after_workers, key=lambda x:x['rank'])
-        if [x['rank'] for x in before_workers] != list(range(8)) or [x['rank'] for x in after_workers] != list(range(8)) or any(
-                {k:a[k] for k in keys} != {k:b[k] for k in keys} or a['actual_optimizer_writes'] or a['completed_outer']
-                for a,b in zip(before_workers,after_workers)):
-            raise ValueError('WARMUP_TEACHER_MODEL_OR_OPTIMIZER_WAS_NOT_FROZEN')
+        verify_frozen(before_workers,after_workers)
         restored = trainer.actor_rollout_wg.restore_frozen_teacher_rng(str(boundary/'before'))
         if len(restored) != 8 or not all(x['rng_equal'] for x in restored):
             raise ValueError('WARMUP_DID_NOT_RESTORE_INDEPENDENT_ACTOR_RNG_BOUNDARY')

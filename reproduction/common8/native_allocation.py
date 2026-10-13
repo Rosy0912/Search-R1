@@ -21,7 +21,12 @@ from pathlib import Path
 
 
 def fields(text):
-    return dict(re.findall(r'(\w+)=(\S+)', text))
+    result=dict(re.findall(r'(\w+)=(\S+)', text))
+    # Newer Slurm distinguishes requested from actually allocated resources.
+    # Never use ReqTRES to manufacture allocation evidence.
+    if 'TRES' not in result and result.get('AllocTRES') not in (None,'(null)'):
+        result['TRES']=result['AllocTRES']
+    return result
 
 
 def allocated_indices(detail, node):
@@ -71,7 +76,7 @@ def cuda_uuids(count=8):
 def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated, actual_cuda_uuids, allowed_applications=None):
     assert job['JobState']=='RUNNING', 'No active native allocation'
     assert job['NodeList']==node and job['NumNodes']=='1', 'Allocation is not this single node'
-    assert job['TresPerNode'] in ('gres:gpu:h100:8','gres:gpu:8'), 'Eight GPUs were not requested'
+    assert job['TresPerNode'] in ('gres:gpu:h100:8','gres:gpu:8','gres/gpu:8'), 'Eight GPUs were not requested'
     assert len(visible)==8 and len(set(visible))==8, 'Expected eight unique allocated CUDA devices'
     assert set(active_jobs)=={job['JobId']}, 'Another native allocation shares the node'
     assert len(gpu_rows)==8 and len({r[1] for r in gpu_rows})==8, 'Expected eight physical GPUs'

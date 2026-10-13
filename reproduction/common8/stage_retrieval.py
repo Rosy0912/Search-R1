@@ -89,7 +89,11 @@ def binding(base):
     assert job['JobState']=='RUNNING' and job['NodeList']==socket.gethostname().split('.')[0]
     assert job['JobId']==job_id
     # This version stages only onto the already verified H100-8 target.
-    assert job['NodeList']=='h100-8', 'Re-admit another node before changing target'
+    if run.get('execution_site')=='hpc3':
+        from reproduction.common8.topology import validate_base
+        validate_base(base,run)
+        assert admission['node']==job['NodeList']
+    else:assert job['NodeList']=='h100-8', 'Re-admit another node before changing target'
     return run,job,admission
 
 
@@ -151,7 +155,7 @@ def stage(base,port):
     try:os.fsync(fd)
     finally:os.close(fd)
     status=dict(run_id=run['run_id'],slurm_job_id=job['JobId'],stage='CREATING',accepted=False,
-        root=str(root),resources=resources,files={},source_node='h100-9',target_node='h100-8')
+        root=str(root),resources=resources,files={},source_node='read-only-local-assets' if run.get('local_retrieval_assets') else 'h100-9',target_node=job['NodeList'])
     target=base/'logs/retrieval-staging-status.json'
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
     try:

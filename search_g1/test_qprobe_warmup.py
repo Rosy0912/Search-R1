@@ -11,7 +11,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from search_g1.qprobe_warmup import TeacherCache, moments, QUESTIONS, CHUNK_SIZE, STATUS
+from search_g1.qprobe_warmup import TeacherCache, moments, verify_frozen, QUESTIONS, CHUNK_SIZE, STATUS
 from search_g1.qprobe_features import sha_file
 
 
@@ -26,6 +26,42 @@ class MomentTests(unittest.TestCase):
     def test_incomplete_or_nonbinary_labels_never_become_wrong_answers(self):
         for vector in [[],[0]*4,[0]*6,[0,0,0,0,2],[False]*5,[float('nan')]*5]:
             with self.assertRaises(ValueError):moments(vector)
+
+    def test_frozen_readback_rejects_missing_rank_parameter_changes_and_writes(self):
+        before=[dict(rank=i,parameter_sha256='model',optimizer_sha256='adam',scheduler_sha256='lr',
+                     actual_optimizer_writes=0,completed_outer=0) for i in range(8)]
+        self.assertTrue(verify_frozen(before,copy.deepcopy(before))['actual_eight_rank_frozen_readback'])
+        for key,value in [('parameter_sha256','changed'),('optimizer_sha256','changed'),
+                          ('scheduler_sha256','changed'),('actual_optimizer_writes',1),('completed_outer',1)]:
+            after=copy.deepcopy(before);after[3][key]=value
+            with self.assertRaises(ValueError):verify_frozen(before,after)
+        with self.assertRaises(ValueError):verify_frozen(before,before[:-1])
+
+    def test_full_5120_head_fit_keeps_zero_formal_counters_and_all_classes(self):
+        import torch
+        from search_g1.qprobe_model import OnlineQProbe, QProbeConfig
+        threads=torch.get_num_threads();torch.set_num_threads(1)
+        try:
+            counts=torch.arange(QUESTIONS)%6
+            features=torch.nn.functional.one_hot(counts,6).float()
+            head=OnlineQProbe(6,QProbeConfig(bootstrap_max_groups_per_outer=QUESTIONS,seed=20261013),
+                              feature_spec_sha='a'*64)
+            labels=[dict(qid=str(i),question_hash='b'*64,strict_em=[1]*(i%6)+[0]*(5-i%6),
+                complete=True,selection_source='bootstrap_all_candidate',source_outer=0,
+                policy_snapshot_id='synthetic-frozen-teacher:0',run_id='synthetic-run',attempt_id='warmup',
+                sampling_contract_sha='c'*64,strict_scoring_contract_sha='d'*64,retriever_version='e'*64)
+                for i in range(QUESTIONS)]
+            cold=torch.nn.functional.cross_entropy(head.predict(features)['logits'],counts).item()
+            actor_rng=torch.get_rng_state().clone()
+            fit=head.bootstrap(labels,features,actor_outer=0,actor_snapshot_id='synthetic-frozen-teacher:0')
+            self.assertEqual(fit['bootstrap_groups'],QUESTIONS)
+            self.assertEqual(len(head.replay_labels),QUESTIONS)
+            self.assertEqual({x['correct_count'] for x in head.replay_labels},set(range(6)))
+            self.assertEqual((head.completed_outer,head.update_count),(0,0))
+            self.assertTrue(head.optimizer.state)
+            self.assertTrue(torch.equal(actor_rng,torch.get_rng_state()))
+            self.assertLess(torch.nn.functional.cross_entropy(head.predict(features)['logits'],counts).item(),cold)
+        finally:torch.set_num_threads(threads)
 
 
 @unittest.skipUnless(os.environ.get('QPROBE_TEST_REMOTE_ROOT'),'remote synthetic cache storage required')
