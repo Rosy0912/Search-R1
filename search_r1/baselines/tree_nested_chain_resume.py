@@ -237,13 +237,16 @@ def failed_terminal_evidence():
     observed = dict(line.split('=', 1) for line in fault['systemd'].splitlines() if '=' in line)
     bound = {entry['path']: entry for entry in fault['descriptors']}
     require(terminal['status'] == 'FAILED' and terminal['job_id'] == PARENT_JOB
-            and terminal['code_commit'] == PARENT_COMMIT and terminal['own_cgroup_live_residual_empty'] is True
+            and terminal['code_commit'] == PARENT_COMMIT
+            and terminal['systemd_unit'] == 'sst-tree-nested-branch-fresh200-ba9f6627.service'
             and terminal['actual_progress_evidence']['actual_completed_outer_from_attempt_results'] == 5
             and terminal['actual_progress_evidence']['completed_actual_optimizer_calls_per_rank'] == COUNTS
             and terminal['native_continuation_start']['receipt_sha256'] == ANCESTRY_RECEIPT_SHA256
             and observed.get('MainPID') == '0' and observed.get('Result') == 'exit-code'
             and observed.get('ExecMainStatus') == '1' and observed.get('ActiveState') == 'failed'
             and observed.get('MemoryMax') == str(384*1024**3) and observed.get('TasksMax') == '4096'
+            and observed.get('ControlGroup') == ''
+            and fault['actual_cgroup_path'] == '/sys/fs/cgroup/system.slice/sst-tree-nested-branch-fresh200-ba9f6627.service'
             and fault['actual_cgroup_exists'] is False and not fault['gpu'].strip()
             and not fault['port_listeners'].strip()
             and bound[str(PARENT_FAILED_TERMINAL)]['sha256'] == PARENT_FAILED_TERMINAL_SHA256
@@ -255,7 +258,11 @@ def failed_terminal_evidence():
         original_main_pid=0, original_systemd_result='exit-code', original_exit_status=1,
         failure_component='Ray_lazy_RPC_server_thread_creation_EAGAIN_HandleLocalGC',
         exact_pids_limit_cause_proven=False, original_cpu_memory_max_bytes=384*1024**3,
-        original_tasks_max=4096, original_native6_save_complete=False)
+        original_tasks_max=4096, original_native6_save_complete=False,
+        own_residual_evidence_source='SHA_pinned_independent_terminal_fault_snapshot',
+        original_own_cgroup_exists=False, original_compute_and_port_residuals_empty=True,
+        parent_cleanup_error_retained=terminal.get('cleanup_error'),
+        parent_cleanup_success_claimed=False)
 
 
 def failed_save_evidence(manifest):

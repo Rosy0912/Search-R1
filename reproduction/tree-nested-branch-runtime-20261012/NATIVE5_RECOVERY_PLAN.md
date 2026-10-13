@@ -55,3 +55,9 @@ render_shared_dispatch.py with exact package/release hashes. Building/rendering
 never deploys or starts training. Root owns remote deployment and exactly-once
 submission. Completion and restore behavior require actual execution evidence;
 this source publication does not claim either future success or acceptance.
+
+The ba9 cleanup timed out and its immutable run-result has no residual-empty field.
+The continuation checks the independently collected, SHA-pinned terminal snapshot
+for exact own unit/cgroup binding, MainPID0, empty ControlGroup, cgroup absence,
+and empty compute/port residuals. It retains the parent cleanup error and does not
+claim that cleanup itself succeeded.
