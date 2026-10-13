@@ -11,6 +11,7 @@ s=dict(status=phase,phase=phase,method='nested_tree_grpo',source_commit=d['sourc
 s['latest_rollout_cost']=d.get('rollout_cost',[])
 s['output_metadata']=d.get('output_metadata',[])
 s['first_rollout_entered']=d.get('first_rollout_entered',False)
+s['recent_iteration_metrics']=d.get('iteration_metrics',[])
 report='Current nested Tree-GRPO experiment on original H10018.\n\n'+f'Phase: {phase}; actual completed outer {completed}/200, successful Adam writes per rank {s["successful_adam_per_rank"]}, all-skipped attempts {s["all_skipped_attempts"]}. Unit {d["unit"]}; physical8, Slurm reserved0; source {d["source_commit"]}.\n\nOfficial fresh base; same 512x5, mini128, actor16/old-ref32, BF16 forward/FP32 master+Adam, lr1e-6/warm57, existing protections and lengths. Continuous first5 then6..200 in the same instance, no initial baseline repeat. No additional reviews.\n\nLatest actual rollout cost: '+json.dumps(s['latest_rollout_cost'])+'\n\nPredecessor3360 completed200/51713 and actual independent HF/tokenizer/cost/cleanup acceptance. Final F1=51.072665%, EM=44.340881%; these are predecessor results, not new-experiment evaluation. Detailed old result stays outputs/tree-eval-resume-20261013/FINAL_RESULT.md.\n'
 for out in [Path('outputs'),Path('outputs/tree-nested-branch')]:
  out.mkdir(parents=True,exist_ok=True);(out/'STATUS.json').write_text(json.dumps(s,indent=2)+'\n');(out/'REPORT.md').write_text(report)
