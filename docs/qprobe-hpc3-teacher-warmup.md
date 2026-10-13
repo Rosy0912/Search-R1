@@ -54,3 +54,14 @@ An independent single-GPU debug entry exercises real CUDA JIT, FlashAttention,
 two official Qwen question features and two short vLLM generations. It has
 separate immutable outputs and zero formal training outers. It cannot replace
 the full feature cache, real teacher search collection or actor training.
+
+Slurm single-card cgroups may reindex a physical card to process-local ordinal0.
+Debug admission binds the actual Slurm device index to the NVML device minor,
+then checks the UUID read through CUDA. Requested GRES never substitutes for
+the actual allocation. Failed debug jobs retain their source, log and terminal
+evidence; a once-only recovery submission requires an actually failed own job.
+
+Before native model work, a fresh actual shared-account storage readback must
+fit the 1TB personal budget after reserving all five full checkpoints and96GiB
+for other outputs. Filesystem free space is not personal quota evidence. This
+prelaunch floor does not replace later measurement of actual artifact growth.

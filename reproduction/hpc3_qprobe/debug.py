@@ -14,6 +14,26 @@ import subprocess
 import time
 
 
+def device_minor(uuid):
+    # Public NVML API: /dev/nvidia<minor>, independent of enumeration ordinals.
+    # https://docs.nvidia.com/deploy/nvml-api/latest/api/group__nvmlDeviceQueries.html
+    import ctypes
+    lib=ctypes.CDLL('libnvidia-ml.so.1')
+    lib.nvmlInit_v2.argtypes=[];lib.nvmlInit_v2.restype=ctypes.c_int
+    lib.nvmlShutdown.argtypes=[];lib.nvmlShutdown.restype=ctypes.c_int
+    lib.nvmlDeviceGetHandleByUUID.argtypes=[ctypes.c_char_p,ctypes.POINTER(ctypes.c_void_p)]
+    lib.nvmlDeviceGetHandleByUUID.restype=ctypes.c_int
+    lib.nvmlDeviceGetMinorNumber.argtypes=[ctypes.c_void_p,ctypes.POINTER(ctypes.c_uint)]
+    lib.nvmlDeviceGetMinorNumber.restype=ctypes.c_int
+    if lib.nvmlInit_v2()!=0:raise ValueError('DEBUG_NVML_INIT_FAILED')
+    try:
+        handle=ctypes.c_void_p();minor=ctypes.c_uint()
+        if lib.nvmlDeviceGetHandleByUUID(uuid.encode(),ctypes.byref(handle))!=0 or lib.nvmlDeviceGetMinorNumber(handle,ctypes.byref(minor))!=0:
+            raise ValueError('DEBUG_NVML_MINOR_READBACK_FAILED')
+        return str(minor.value)
+    finally:lib.nvmlShutdown()
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--base',required=True);a=p.parse_args()
     from reproduction.hpc3_qprobe.control import own_base
@@ -29,11 +49,13 @@ def main():
     indices=re.search(r'GRES=gpu:1\(IDX:(\d+)\)',line)
     if not indices:raise ValueError('DEBUG_ACTUAL_PHYSICAL_GPU_INDEX_MISSING')
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','')
-    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,minor_number','--format=csv,noheader,nounits'],text=True)
+    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True)
     write_once(root/'allocation-observation.json',dict(actual_job=actual,allocation_detail=detail,
         nvidia_inventory=rows,cuda_visible_devices=visible,slurm_job_gpus=os.environ.get('SLURM_JOB_GPUS'),
         slurm_step_gpus=os.environ.get('SLURM_STEP_GPUS'),checked_unix=time.time()))
     inventory=[list(map(str.strip,x.split(','))) for x in rows.splitlines()]
+    for row in inventory:row.append(device_minor(row[1]))
+    write_once(root/'nvml-device-minors.json',dict(inventory=inventory,checked_unix=time.time()))
     # Slurm cgroups can reindex NVML/CUDA ordinal2 to process-local ordinal0.
     # Preserve both namespaces and bind the real /dev/nvidia minor number.
     matched=[x for x in inventory if x[2]==indices.group(1)]
