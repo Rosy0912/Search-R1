@@ -66,8 +66,12 @@ def run(base):
     p=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30)
     after_text=show('job',job);after=fields(after_text)
     result=dict(job=job,source_commit=commit,returncode=p.returncode,stdout=p.stdout,stderr=p.stderr,
-        after=after_text,epoch=time.time(),submission=False,requeue=False,training_started=False)
-    same=all(after.get(k)==before.get(k) for k in tuple(expected)+('Command','SubmitTime','EligibleTime','ReqTRES'))
+        after=after_text,epoch=time.time(),submission=False,requeue=False,
+        actual_job_state_after=after['JobState'],training_started=after['JobState'] in ('CONFIGURING','RUNNING','COMPLETING'))
+    # A successful scheduler cycle can allocate this same job before readback.
+    # Slurm then renders NumNodes as 1 rather than the pending request 1-1.
+    persistent=tuple(k for k in expected if k!='NumNodes')+('Command','SubmitTime','ReqTRES')
+    same=all(after.get(k)==before.get(k) for k in persistent) and after.get('NumNodes') in ('1','1-1')
     same=same and (base/'repo').resolve()==source and hashlib.sha256(entry.read_bytes()).hexdigest()==entry_sha
     result['immutable_source_and_original_resources_equal']=same
     result['status']='EXISTING_PENDING_JOB_PARTITION_UPDATED' if p.returncode==0 and same and after['Partition']=='acd_ue' else 'PARTITION_UPDATE_NOT_ACCEPTED'
