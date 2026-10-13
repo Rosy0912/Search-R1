@@ -15,6 +15,14 @@ import time
 from reproduction.common8.native_allocation import fields
 
 
+def scheduler_fields(text):
+    result=fields(text)
+    # Preserve Slurm compound request keys such as CPUs/Task; the allocation
+    # parser intentionally only consumes simple keys and drops this prefix.
+    result.update(dict(re.findall(r'([\w/:]+)=(\S+)',text)))
+    return result
+
+
 def show(*args):
     return subprocess.check_output(['scontrol','show']+list(args),universal_newlines=True)
 
@@ -35,7 +43,7 @@ def run(base):
     source=base/'source'/commit;entry=source/'reproduction/hpc3_qprobe/train.sh'
     if (base/'repo').resolve()!=source or not entry.is_file():raise ValueError('Queued immutable source differs')
     groups=set(subprocess.check_output(['id','-nG'],universal_newlines=True).split())
-    old=fields(show('partition','acd_u'));new=fields(show('partition','acd_ue'))
+    old=scheduler_fields(show('partition','acd_u'));new=scheduler_fields(show('partition','acd_ue'))
     for partition in (old,new):
         if partition['State']!='UP' or partition['RootOnly']!='NO' or partition['ReqResv']!='NO' or partition['PreemptMode']!='OFF':
             raise ValueError('Partition eligibility/preemption policy changed')
@@ -43,7 +51,7 @@ def run(base):
         if partition['AllowAccounts']!='ALL' or partition['AllowQos']!='ALL':raise ValueError('Unexpected account/QOS restriction')
     if old['Nodes']!=new['Nodes'] or old['MaxTime']!=new['MaxTime'] or int(new['PriorityTier'])<=int(old['PriorityTier']):
         raise ValueError('Destination does not preserve the same nodes/time with higher configured tier')
-    before_text=show('job',job);before=fields(before_text)
+    before_text=show('job',job);before=scheduler_fields(before_text)
     if before['JobState']!='PENDING' or before['Partition']!='acd_u' or before['AllocTRES']!='(null)':
         raise ValueError('Inspect existing handle; only the original still-pending job can be updated')
     if before['UserId']!='mou176('+str(os.geteuid())+')' or before['Command']!=str(entry):
@@ -62,9 +70,9 @@ def run(base):
     once(intent,dict(job=job,source_commit=commit,entry_sha256=entry_sha,before=before_text,
         original_partition=old,destination_partition=new,current_groups=sorted(groups),
         command=command,epoch=time.time(),submission=False,requeue=False,resource_changes=False))
-    if fields(show('job',job))['JobState']!='PENDING':raise ValueError('Job started before update; leave it alone')
+    if scheduler_fields(show('job',job))['JobState']!='PENDING':raise ValueError('Job started before update; leave it alone')
     p=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=30)
-    after_text=show('job',job);after=fields(after_text)
+    after_text=show('job',job);after=scheduler_fields(after_text)
     result=dict(job=job,source_commit=commit,returncode=p.returncode,stdout=p.stdout,stderr=p.stderr,
         after=after_text,epoch=time.time(),submission=False,requeue=False,
         actual_job_state_after=after['JobState'],training_started=after['JobState'] in ('CONFIGURING','RUNNING','COMPLETING'))
