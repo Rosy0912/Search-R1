@@ -13,7 +13,9 @@ def live():
 assert live(),'Owner not live; inspect actual terminal instead of blind restart'
 log=base/'logs/training.log';latest=100
 with log.open(errors='replace') as stream:
- for line in stream:
+ while True:
+  line=stream.readline()
+  if not line:break
   a=re.search(r'\bstep:(\d+)\b',line);b=re.search(r'training/actual_outer_updates:\s*(\d+)',line)
   if a and b and a.group(1)==b.group(1) and 'timing_s/step:' in line:latest=max(latest,int(a.group(1)))
  offset=stream.tell()
