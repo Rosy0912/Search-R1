@@ -38,6 +38,22 @@ def protocol(config):
     if urlparse(config.retriever.url).hostname not in ('127.0.0.1','localhost','::1'):
         raise ValueError('Retriever must be existing guarded loopback service')
 
+def resource_options(environment, original_utilization):
+    """Explicit shared opt-in; native Slurm provenance is an opaque runtime ID."""
+    mode=environment.get('TREE_EVAL_SHARED_MEMORY_MODE','0')
+    if mode not in ('0','1'):
+        raise ValueError('Unknown shared resource mode')
+    if mode == '1':
+        unit=environment.get('TREE_EVAL_SYSTEMD_UNIT','')
+        if not unit or '/' in unit or environment.get('TREE_EVAL_RESOURCE_PROTOCOL') != 'memory_headroom_shared_v1':
+            raise ValueError('Explicit guarded shared systemd resource protocol required')
+        if environment.get('SLURM_JOB_ID') != 'not-slurm;systemd:'+unit:
+            raise ValueError('Shared native provenance must state not-slurm and own systemd unit')
+        return dict(resource_protocol='memory_headroom_shared_v1',allocation_kind='shared_systemd',
+                    physical_gpus=8,slurm_reserved_gpus=0,gpu_memory_utilization=.20)
+    return dict(resource_protocol='slurm_gpu_lease_v1',allocation_kind='slurm',
+                physical_gpus=8,slurm_reserved_gpus=8,gpu_memory_utilization=float(original_utilization))
+
 def main():
     p=argparse.ArgumentParser()
     for key in ('config','prefix','output','model','manifest'):
@@ -65,6 +81,7 @@ def main():
     if vllm_version != '0.6.3':
         raise ValueError('Reviewed custom native engine requires vLLM 0.6.3')
     config=OmegaConf.load(a.config); OmegaConf.resolve(config); protocol(config)
+    resource=resource_options(os.environ,config.actor_rollout_ref.rollout.gpu_memory_utilization)
     manifest=json.loads(Path(a.manifest).read_text())
     actual=asset_manifest(a.config,a.model)
     if manifest != actual:
@@ -130,6 +147,7 @@ def main():
     rollout_cfg.tensor_model_parallel_size=1
     rollout_cfg.dtype='bfloat16'; rollout_cfg.load_format='hf'
     rollout_cfg.free_cache_engine=False
+    rollout_cfg.gpu_memory_utilization=resource['gpu_memory_utilization']
     engine=vLLMRollout(weights,rollout_cfg,tokenizer,AutoConfig.from_pretrained(a.model,local_files_only=True),train_tp=1)
     engine.inference_engine.sync_model_weights(weights,load_format='hf')
     del weights,hf; gc.collect(); torch.cuda.empty_cache()
@@ -146,7 +164,8 @@ def main():
         search_url=config.retriever.url,topk=config.retriever.topk,force_final_answer=config.force_final_answer)
     manager=LLMGenerationManager(tokenizer,ResidentAdapter(),gen,is_validation=True)
     execution=dict(local_batch_size=64,world_size=8,tensor_parallel_size=1,resident_weights=True,
-        free_cache_engine=False,rollout_padding_divisor=1,backend='XFORMERS',dtype='bfloat16',native_emission=True)
+        free_cache_engine=False,rollout_padding_divisor=1,backend='XFORMERS',dtype='bfloat16',native_emission=True,
+        **resource)
     atomic_immutable(Path(a.output)/('rank-%d-provenance.json'%rank),dict(identity=identities(manifest),execution=execution))
     print('EVAL_RESIDENT_READY '+json.dumps(dict(rank=rank,remaining_batches=len(work))),flush=True)
     for indices in work:

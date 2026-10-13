@@ -1,0 +1,50 @@
+{
+  "status": "ACCEPTED",
+  "review_status": "ACCEPTED",
+  "reviewed_at_utc": "2026-10-13T13:33:17.737119+00:00",
+  "review_scope": "Independent local static review of shared runtime delta and prior accepted evaluation pipeline; no remote actions by reviewer.",
+  "files": {
+    "bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
+    "dispatch_once.py": "7f98759a94d95c2edf597f27cf4f1c9f3564eef7a5630342db8bdeb231f498fc",
+    "eval_merge.py": "9159f0b2021a97cb4aa24bcfe8e67c08c6cafc44f7d567976aae8a851e1b205a",
+    "eval_worker.py": "c158e301350e4f7f3841958659fc3942da6f9268aa023c82ad2b8ee3c4d18adb",
+    "expected-gpu-uuids-retained18.json": "609e1a657db48b39d0548dd61dcbf3bcdfaf1b64d8a968a549f6d3cc71e361db",
+    "guard.py": "3880e5d002d99c9647fbeeeff271e819de97b93c0972daa616eb1af33f594d02",
+    "launch.sbatch": "0e7eed08ec524859900f51546e77dbd5be25fdc280de203006798523122cc789",
+    "resource_guard_retained18.py": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
+    "salvage_cpython310_qa.py": "4345faaf6c24bd30d7599f68fd5e32ab30d37386cc925b6c877a766b686081b3",
+    "shared_dispatch_once.py": "2291e162fd38b9456eb2f0b0d89cc6d85d80422b41ee7a870e4229a18020d8e9",
+    "shared_guard.py": "b750ae444454106b002138b79e188769f46562bc95066e9dcfc488acb5740086",
+    "shared_supervisor.py": "3b5d88f6bb43a85e6548b5eab02c1ed8f10d9aefb3478acd3eaa091f94729a51",
+    "supervisor.py": "9ed4d2626a14d36a2a5213d52018aa03fcb099fb1674477df4b361b1b40665ea"
+  },
+  "blockers": [],
+  "positive_checks": [
+    "Current explicit human cohosting authorization supersedes prior foreignSM15%/exclusive-empty requirement; sharing protocol records no foreign SM limit and makes no Slurm reservation claim.",
+    "Inventory of four nodes inspected: h100-10 all eight physical GPUs empty at sample and asset-local; h100-8/h100-11 free memory adequate but missing local assets; h100-5 heavier existing memory and100% compute. Startup freshly requires >=40GiB free on each selected UUID.",
+    "New independent systemd service requires exact own unit component in actual cgroup and forbids Slurm job cgroups; no device ACL/Slurm config/foreign cgroup changes appear in source.",
+    "systemd-run bounds own unit CPUQuota=3200%, MemoryMax=256G, TasksMax4096 and KillMode=control-group; user sharing authorization is recorded in durable launch journal.",
+    "Dispatcher validates accepted exact source hashes, durable bound-prefix/model/config manifest, exact known pending own3392 name/node/old-release identity, absent known unit, journals UNKNOWN before external launch and never automatically retries unknown outcome. Cancellation target is only3392; foreign3391 never canceled.",
+    "UUID flock leases remain parent-held through own child processes. Memory guard measures physical free memory every second and own per-GPU memory by own unit cgroup; failure/stale guard stops own supervisor descendants only through prior-reviewed pidfd/cgroup cleanup.",
+    "Worker explicit opt-in requires memory_headroom_shared_v1 and clearly labeled not-slurm;systemd:<ownunit> provenance; resident cache budget=.20, physical_gpus8, slurm_reserved_gpus0. Greedy/token/search/split/length protocol remains unchanged.",
+    "Final merge requires exactly eight rank provenance files with matching identities/resource execution records and reports shared systemd, zero Slurm reserved GPUs,20% inference GPU budget.",
+    "Prior accepted prefix binding/actual200/checkpoint/data identities, persistent immutable ledger, orphan recovery, exact51713 final count and original frozen source hash checks remain applicable."
+  ],
+  "tests": {
+    "all_python_ast_parse": "PASS",
+    "resource_options_normal_default": "PASS",
+    "resource_options_shared_truthful_20_percent": "PASS",
+    "resource_options_reject_unknown_mode_foreign_Slurm_ID_wrong_protocol_slash_unit": "PASS"
+  },
+  "evidence": {
+    "four_node_inventory_sha256": "a5cc2e2ef094911fe2f1887030df3385a546e9649f7ec84d7251e30aabf0b8a2",
+    "bound_prefix_sha256": "cbc70dc4138eae5c79c0cf61e6b63793936802383fba42aae543e1ff54882435",
+    "preserved_count": 30880,
+    "remaining_count": 20833
+  },
+  "runtime_limits": [
+    "Acceptance covers the exact software and explicit sharing scope; model/cache fit and shared throughput remain subject to actual startup and batches.",
+    "Verify two actual committed batch increments plus guard/exit status; completion requires merged51713 metrics and SHA receipts.",
+    "Memory guard is reactive at1second intervals; physical headroom checks stop only own unit and never kill or reconfigure foreign work."
+  ]
+}

@@ -147,9 +147,26 @@ def merge(output, prefix, manifest):
         group = [r for r in rows if r['source'] == source]
         metrics['val/test_score/'+source] = sum(r['em'] for r in group)/len(group)
         metrics['val/evaluated_count/'+source] = len(group)
+    execution_records=[]
+    provenance_paths=sorted(Path(output).glob('rank-*-provenance.json'))
+    if {p.name for p in provenance_paths} != {'rank-%d-provenance.json'%rank for rank in range(8)}:
+        raise ValueError('Eight rank execution provenance records required')
+    for provenance in provenance_paths:
+        value=json.loads(provenance.read_text())
+        if value['identity'] != identities(manifest):
+            raise ValueError('Rank execution provenance identity mismatch')
+        if value['execution'] not in execution_records:
+            execution_records.append(value['execution'])
+    if len(execution_records) != 1:
+        raise ValueError('Ranks disagree on reviewed execution/resource protocol')
+    changes=['8 resident TP1 ranks', 'local batch 64 (global scheduling width 512)',
+             'no FSDP/reload/cache teardown', 'no eight-GPU rollout padding']
+    if any(x.get('allocation_kind')=='shared_systemd' for x in execution_records):
+        changes.extend(['explicit shared systemd memory_headroom_shared_v1 execution',
+                        'physical GPUs 8; Slurm reserved GPUs 0; no exclusive allocation claim',
+                        'resident vLLM GPU memory/cache fraction 20%'])
     result = dict(identity=identities(manifest), evaluated_count=len(rows), metrics=metrics,
-        execution_changes=['8 resident TP1 ranks', 'local batch 64 (global scheduling width 512)',
-                           'no FSDP/reload/cache teardown', 'no eight-GPU rollout padding'],
+        execution_changes=changes,execution_records=execution_records,
         numerical_caveat='HF weights unchanged; altered greedy batching/kernel shapes are not guaranteed bit-identical.')
     atomic_immutable(Path(output)/'final-metrics.json', result)
     atomic_immutable(Path(output)/'final-metrics.done.json', dict(sha256=digest(Path(output)/'final-metrics.json')))
