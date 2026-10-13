@@ -1,0 +1,16 @@
+{
+  "review_status": "ACCEPTED",
+  "scope": "Minimal independent static v2 costcoverage repair review; no remote execution or actualartifact acceptance",
+  "source_path": "work/tree-speed-repair-20261008/bind_handoff_cost_coverage.py",
+  "source_sha256": "12cbc079b5394da668bbbfd0d6d1a7f541c1fe8345f9822f781b34d10a8d5b89",
+  "reviewed_at_utc": "2026-10-13T15:05:09.484467+00:00",
+  "blocking_findings": [],
+  "checks": [
+    "Pinned immutablev1 SHA58680c1a0736f4ff10baa5b17da3696a5d4fdb4576fb4021ec5ae57e3de6e67f and composite SHA checked; existing measured totals are reused with no recomputation or service relaunch.",
+    "All required composite replacementterminal/allocation/finalmetrics/done/batch/done/originalpartialcost descriptors added with exacthashes; tokenizer/actualterminal and optionalsharedcost also bound.",
+    "Each failed unit receives exact existing own dispatch journal by journal unitidentity; firsttwo noresult units retain realobservations with journal without fake results.",
+    "v1 file is never rewritten and its descriptor is included in v2. New cost-summary-v2.json is exclusive/fsynced; collisions refuse overwrite.",
+    "Standalone remotePython syntax and outer shellquote roundtrip pass."
+  ],
+  "actual_artifact_acceptance": false
+}
