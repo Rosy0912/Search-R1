@@ -1,0 +1,108 @@
+{
+  "status": "NATIVE_MANIFEST_HISTORY_COLLECTED",
+  "observed_start_epoch": 1791911126.0562835,
+  "observed_end_epoch": 1791911126.0617716,
+  "history_directory": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/native-manifest-history",
+  "records_checked_this_call": [
+    {
+      "scope": "parent_outer1",
+      "source_commit": "0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+      "completed_outer": 1,
+      "source_manifest_sha256": "90f0420ccdc30a3e15245861a73b405f3f760d333722314d08b96b95765f9a1f",
+      "source_manifest_bytes": 16752,
+      "history_manifest_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/native-manifest-history/source-0befbaf99fc44942105831b3fbec94e4bf1b8ccb-outer-000001.manifest.json",
+      "receipt_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/native-manifest-history/source-0befbaf99fc44942105831b3fbec94e4bf1b8ccb-outer-000001.receipt.json",
+      "created": false,
+      "full_worker_state_finite_by_rank": {
+        "0": true,
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true
+      },
+      "actual_optimizer_calls_per_rank": {
+        "0": 20,
+        "1": 20,
+        "2": 20,
+        "3": 20,
+        "4": 20,
+        "5": 20,
+        "6": 20,
+        "7": 20
+      },
+      "scheduler_last_epoch_by_rank": {
+        "0": 1,
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1
+      },
+      "source_PT_present_at_capture": true,
+      "independent_cold_reload_performed": false
+    },
+    {
+      "scope": "child_native1_continuation",
+      "source_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+      "completed_outer": 2,
+      "source_manifest_sha256": "1b4a45088b56ba8d146e397691cb032e40f7b34cad00d62a417a854029109964",
+      "source_manifest_bytes": 16742,
+      "history_manifest_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/native-manifest-history/source-ba9f6627ec9a4e9749830d7b6acca53f6feec6b4-outer-000002.manifest.json",
+      "receipt_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/output/native-manifest-history/source-ba9f6627ec9a4e9749830d7b6acca53f6feec6b4-outer-000002.receipt.json",
+      "created": false,
+      "full_worker_state_finite_by_rank": {
+        "0": true,
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true
+      },
+      "actual_optimizer_calls_per_rank": {
+        "0": 40,
+        "1": 40,
+        "2": 40,
+        "3": 40,
+        "4": 40,
+        "5": 40,
+        "6": 40,
+        "7": 40
+      },
+      "scheduler_last_epoch_by_rank": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2
+      },
+      "source_PT_present_at_capture": true,
+      "independent_cold_reload_performed": false
+    }
+  ],
+  "indexed_steps_by_source": {
+    "0befbaf99fc44942105831b3fbec94e4bf1b8ccb": [
+      1
+    ],
+    "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4": [
+      2
+    ]
+  },
+  "skipped": [],
+  "audit_error": null,
+  "audit_errors": [],
+  "tensor_contents_read": false,
+  "training_signals_sent": false,
+  "frozen_source_modified": false,
+  "independent_cold_reload_performed": false,
+  "coverage_scope": "Receipt metadata index; this call validates currently retained complete native manifests, not independently reloads historical PT."
+}

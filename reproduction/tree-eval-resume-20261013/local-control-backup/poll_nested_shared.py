@@ -28,6 +28,14 @@ def main():
         source_checkout=str(Path(args.source_checkout or ('work/tree-speed-repair-20261008/nested-native1-recovery-source' if native else 'work/tree-speed-repair-20261008/nested-branch-source')).resolve()),
         source_branch=args.source_branch or ('codex/tree-nested-native1-recovery-20261014' if native else 'codex/tree-nested-branch-20261012'),
         native1_continuation_requested=native, experiment_origin='fresh')
+    history_code = 'native_manifest_history_receipt=None'
+    if native and args.source == NATIVE1_SOURCE:
+        try:
+            history_spec = importlib.util.spec_from_file_location('native_manifest_history', Path(__file__).with_name('native_manifest_history_collector.py'))
+            history_module = importlib.util.module_from_spec(history_spec); history_spec.loader.exec_module(history_module)
+            history_code = history_module.remote_code(config['run'])
+        except Exception as error:
+            history_code = 'native_manifest_history_receipt=' + repr(dict(status='NATIVE_MANIFEST_HISTORY_AUDIT_ERROR', audit_error=repr(error), training_signals_sent=False, frozen_source_modified=False))
     spec = importlib.util.spec_from_file_location('ssh', Path(__file__).with_name('ssh_retained18.py'))
     ssh = importlib.util.module_from_spec(spec); spec.loader.exec_module(ssh)
     code = r'''import json,subprocess,time,sys,re
@@ -71,14 +79,16 @@ if (run/'stage.log').is_file():
     iteration_metrics.append({k:float(v) for k,v in re.findall(r'([a-zA-Z0-9_./-]+):(-?[0-9]+(?:[.][0-9]+)?(?:[eE][+-]?[0-9]+)?)',line)})
 d['iteration_metrics']=iteration_metrics[-3:]
 d['native_manifests']=[str(p) for p in (run/'checkpoints/training_state').rglob('manifest.json')]
+__NATIVE_HISTORY_CODE__
+d['native_manifest_history']=native_manifest_history_receipt
 print(json.dumps(d))
-'''.replace('__CONFIG__', repr(config))
+'''.replace('__CONFIG__', repr(config)).replace('__NATIVE_HISTORY_CODE__', history_code)
     response = ssh.run('env CUDA_VISIBLE_DEVICES= python3 -c ' + shlex.quote(code), timeout=60)
     if response.returncode:
         raise RuntimeError(response.stdout + response.stderr)
     data = json.loads(response.stdout)
     Path(args.output).write_text(json.dumps(data, indent=2) + '\n')
-    print(json.dumps(dict(epoch=data['epoch'], systemd=data['systemd'], progress=data['progress'], native1_load_receipt=data['native1_load_receipt'], direct_rank_records=data['direct_rank_records'], run_result=data['run_result'], journal=data['journal'][-1600:], stage_log=data['logs']['stage.log'])))
+    print(json.dumps(dict(epoch=data['epoch'], systemd=data['systemd'], progress=data['progress'], native1_load_receipt=data['native1_load_receipt'], native_manifest_history=data['native_manifest_history'], direct_rank_records=data['direct_rank_records'], run_result=data['run_result'], journal=data['journal'][-1600:], stage_log=data['logs']['stage.log'])))
 
 
 if __name__ == '__main__':

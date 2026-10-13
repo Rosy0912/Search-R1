@@ -97,6 +97,8 @@ def main():
         latest_human_preference='Use original18 assets; same-goal native1 continuation, retain failed outer2 costs, recompute child outer2; no redundant reviews',
         predecessor=dict(job_id=3360, completed_outer=200, final_evaluated_rows=51713, final_f1=.510726647820571, final_em=.44340881403128807, independent_final_acceptance=True, independent_acceptance_sha256='11330f3b73d34d837b2a986d8d877e09f9af65d17415260268365e72e82aad1e', status_file='outputs/tree-eval-resume-20261013/STATUS.json'), goal_complete=False)
     status.update(latest_rollout_cost=data.get('rollout_cost', []), output_metadata=data.get('output_metadata', []), first_rollout_entered=data.get('first_rollout_entered', False), recent_iteration_metrics=data.get('iteration_metrics', []))
+    status['native_manifest_history'] = data.get('native_manifest_history')
+    status['native_manifest_history_audit_error'] = (data.get('native_manifest_history') or {}).get('audit_error')
     report = ('Current nested Tree-GRPO experiment on original H10018.\n\n'
         + f'Phase: {phase}; effective completed outer {completed}/200; child completed outer {child_completed}; successful Adam writes per rank {totals}. Unit {data["unit"]}; source {data["source_commit"]}.\n\n'
         + initialization + '. Experiment origin remains fresh.\n\n'
