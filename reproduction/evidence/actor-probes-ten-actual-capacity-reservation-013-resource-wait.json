@@ -1,0 +1,116 @@
+{
+  "role": "actual_actor_probes_ten_pretrainer_resource_wait_and_owned_capacity",
+  "run_id": "ff6be623b39a41209167a116b591551b",
+  "execution_id": "61fa4331d2cc46a18463911e1a676852",
+  "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "stage": "PRETRAINER_RESOURCE_ADMISSION_EXIT",
+  "complete_outers": 0,
+  "processed_opportunities": 0,
+  "returned_adam": 0,
+  "skips": 0,
+  "lost_updates": 0,
+  "counter_basis": "One actual Popen failed before GPUclaim/services/trainer/fit0/ledger; no training ever started, not parsed empty ledger",
+  "initial_fit0_started": false,
+  "new_scores": null,
+  "new_reward": null,
+  "training_gpu_peak": null,
+  "native_algorithm_accepted": false,
+  "actual_prepared_source_deployment_independent_review_accepted": true,
+  "review_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "review_sha256": "eba9ffba99c693f631f810d9efdb32569d0c1d7747d7b370811efbc55a1bc76f",
+  "reward_schedule": "G1 logical1..100; binaryEM1/0 logical101..200",
+  "probe_semantics": "two independent binary classifier Heads on current actor detached representations; only independent Heads receive probe gradients; refresh every10 completed outer",
+  "owned_capacity_keepers": [
+    {
+      "role": "only_capacity_reservation",
+      "physical_indices": [
+        0,
+        3
+      ],
+      "identity": {
+        "pid": 2274790,
+        "start_ticks": 600696537,
+        "sid": 2274790,
+        "uid": 0
+      },
+      "source_sha256": "f24ace2a9e07ad27d4d3d3694e808cc5e66505d1cd26c7dcdfe40fe1ee1bc34c",
+      "namespace": "/data/search-g1/reservations/hold-f8a0c833b8084708b8619cb17fa5948a",
+      "log": "/data/search-g1/reservation-tools/reservation-f8a0c833b8084708b8619cb17fa5948a.log",
+      "launch_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free-training-gpu-reservation-subset03-launch.json",
+      "bytes_per_gpu": 64424509440,
+      "actual_two_readings_accepted": true,
+      "training_process": false
+    },
+    {
+      "role": "only_capacity_reservation",
+      "physical_indices": [
+        1
+      ],
+      "identity": {
+        "pid": 2284272,
+        "start_ticks": 600757072,
+        "sid": 2284272,
+        "uid": 0
+      },
+      "source_sha256": "94669f3ec8c9072e46a4f48a36e4dcf516239af564c006557a3170258214e072",
+      "namespace": "/data/search-g1/reservations/hold-c5d8f264ace3438f8b43655b9f9ea729",
+      "log": "/data/search-g1/reservation-tools/reservation-c5d8f264ace3438f8b43655b9f9ea729.log",
+      "launch_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free-training-gpu-reservation-single1-launch.json",
+      "bytes_per_gpu": 64424509440,
+      "actual_two_readings_accepted": true,
+      "training_process": false
+    }
+  ],
+  "remaining_foreign_training_cuda_applications": [
+    {
+      "gpu_index": 2,
+      "pid": 2258716,
+      "used_mib": "18730",
+      "start_ticks": 600586007,
+      "sid": 2258716,
+      "uid": 0,
+      "state": "S",
+      "cwd_sha256": "225a353eeaf767d7b2fc350256d655857f1fc2ffd0b2e3dac3d4473271e79f51"
+    }
+  ],
+  "observations": [
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free-training-gpu-reservation-single1-first-read.json",
+      "sha256": "ad39178f095165f0ed7c74a26f3757731b94f1799a6f38370c68fd16662cee06",
+      "checked_unix": 1791928016.3680274
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-owned-free-training-gpu-reservation-single1-second-read.json",
+      "sha256": "2bd419f2ca140dc69e9c248879da1d32f4e8344732c907c9073fd43f630f053e",
+      "checked_unix": 1791928054.6115062
+    }
+  ],
+  "checked_unix": 1791928054.6115062,
+  "failed_pipeline_recorded_birth_absent": true,
+  "failed_namespace_and_launch_claims_preserved": true,
+  "foreign_signals_sent": false,
+  "protected_gpu4_7_used": false,
+  "aux_gpu5_6_reserved": false,
+  "reservation_buffers_are_training_progress_or_peak": false,
+  "scientific_training_world_size": 4,
+  "scientific_configuration_changed": false,
+  "fresh_retry_created": false,
+  "predecessor": {
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "complete_outers": 200,
+    "processed_opportunities": 4000,
+    "returned_adam": 3993,
+    "skipped_opportunities": 7,
+    "final_count": 51713,
+    "correct": 21845,
+    "em": 0.42242762941620093,
+    "f1": 0.48704778769330365,
+    "full_terminal_owned_cleanup_accepted": true,
+    "publication_commit": "05115242af47e3b0627f9e51412c9c8fa53ba246",
+    "weights_or_training_state_inherited": false
+  },
+  "previous_hour_anchor_archive_pending_actual_report": true,
+  "goal_complete": false,
+  "genuine_resource_blocker_consecutive_goal_turns": 1,
+  "next_bounded_resource_observation_not_before_unix": 1791929854.6115062
+}
