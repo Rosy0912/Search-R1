@@ -1,52 +1,49 @@
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-import fs from 'node:fs';
-import os from 'node:os';
-const require = createRequire(import.meta.url);
-let playwright;
-try { playwright = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright'); } catch { playwright = require(path.join(os.homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright')); }
-const { chromium } = playwright;
-const directory = path.dirname(fileURLToPath(import.meta.url));
-const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', path.join(os.homedir(), 'Library/Caches/ms-playwright/chromium-1208/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing')].find(candidate => fs.existsSync(candidate));
-const browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
-const report = { illustrative: true, compiler: 'TypeScript 5.8.3 / React 18.3.1', syntaxDiagnostics: [], runtimeErrors: [], passed: false };
+import { browserForVisualization, directory, assertInteractiveStates, layoutSnapshot, graphicSnapshot, graphicsPass, openFrame, fs, path } from './visualization-test-utils.mjs';
+
+const browser = await browserForVisualization();
+const report = { illustrative: true, compiler: 'TypeScript 5.8.3 / React 18.3.1', syntaxDiagnostics: [], errors: [], layouts: [], controls: [], passed: false };
 try {
-  const page = await browser.newPage({ viewport: { width: 736, height: 1000 } });
-  page.on('pageerror', error => report.runtimeErrors.push(error.message));
-  await page.goto('file://' + path.join(directory, 'question-diversity-probe-demo.html'));
-  const frame = page.frames().find(frame => frame !== page.mainFrame());
-  await frame.locator('#qd-probe-20261013').waitFor();
-  for (const url of ['https://cdn.jsdelivr.net/npm/typescript@5.8.3/lib/typescript.js', 'https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js', 'https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js']) await frame.addScriptTag({ url });
-  const source = fs.readFileSync(path.join(directory, 'question-diversity-probe.canvas.tsx'), 'utf8').replace(/^import React[^\n]*\n/, 'const { useEffect, useRef, useState } = React;\n').replace(/^import \{ questionDiversityStyles \}[^\n]*\n/m, 'const questionDiversityStyles = window.__qdStyles;\n').replace('export default function', 'function');
-  const css = fs.readFileSync(path.join(directory, 'question-diversity-probe.fragment.html'), 'utf8').split('<style>\n')[1].split('</style>')[0];
-  report.syntaxDiagnostics = await frame.evaluate(({ source, css }) => {
-    window.__qdStyles = css;
-    const compiled = window.ts.transpileModule(source, { compilerOptions: { target: window.ts.ScriptTarget.ES2020, module: window.ts.ModuleKind.None, jsx: window.ts.JsxEmit.React }, fileName: 'question-diversity-probe.canvas.tsx', reportDiagnostics: true });
-    const diagnostics = compiled.diagnostics.map(d => window.ts.flattenDiagnosticMessageText(d.messageText, '\n'));
-    if (diagnostics.length === 0) {
+  for (const theme of ['light', 'dark']) for (const width of [320, 360, 736, 1024]) {
+    const { page, frame } = await openFrame(browser, { width, theme });
+    page.on('pageerror', error => report.errors.push(error.message));
+    for (const url of ['https://cdn.jsdelivr.net/npm/typescript@5.8.3/lib/typescript.js', 'https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js', 'https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js']) await frame.addScriptTag({ url });
+    const diagnostics = await frame.evaluate(({ canvas, styles }) => {
+      const diagnostics = [];
+      const compile = (source, filename) => {
+        const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.React, esModuleInterop: true }, fileName: filename, reportDiagnostics: true });
+        diagnostics.push(...compiled.diagnostics.map(d => ts.flattenDiagnosticMessageText(d.messageText, '\n')));
+        const module = { exports: {} };
+        new Function('require', 'module', 'exports', compiled.outputText)(name => {
+          if (name === 'react') return React;
+          if (name === './question-diversity-probe.styles') return styleModule;
+          throw new Error('Unexpected dependency ' + name);
+        }, module, module.exports);
+        return module.exports;
+      };
+      const styleModule = compile(styles, 'question-diversity-probe.styles.ts');
+      const canvasModule = compile(canvas, 'question-diversity-probe.canvas.tsx');
       const mount = document.createElement('div');
       document.body.replaceChildren(mount);
-      new Function('mount', compiled.outputText + '\nReactDOM.createRoot(mount).render(React.createElement(QuestionDiversityProbe));')(mount);
+      ReactDOM.createRoot(mount).render(React.createElement(canvasModule.default));
+      return diagnostics;
+    }, { canvas: fs.readFileSync(path.join(directory, 'question-diversity-probe.canvas.tsx'), 'utf8'), styles: fs.readFileSync(path.join(directory, 'question-diversity-probe.styles.ts'), 'utf8') });
+    report.syntaxDiagnostics.push(...diagnostics);
+    if (diagnostics.length) throw new Error('Canvas syntax diagnostics');
+    await frame.locator('#qd-probe-20261013').waitFor();
+    report.controls.push({ width, theme, ...(await assertInteractiveStates(frame)) });
+    for (let step = 0; step < 6; step++) {
+      await frame.locator(`[data-step="${step}"]`).click();
+      const graphics = await graphicSnapshot(frame, step);
+      report.layouts.push({ width, theme, step, ...(await layoutSnapshot(frame)), graphics, graphicsPass: graphicsPass(step, graphics) });
     }
-    return diagnostics;
-  }, { source, css });
-  if (report.syntaxDiagnostics.length) throw new Error('Canvas syntax diagnostics');
-  await frame.locator('#qd-probe-20261013').waitFor();
-  await frame.locator('#qd-canvas-explore').selectOption('128');
-  const selectedText = await frame.locator('.qd-selection-labels').textContent();
-  if (!selectedText.includes('128') || !selectedText.includes('384')) throw new Error('Canvas exploration selection mismatch');
-  await frame.getByRole('button', { name: /5\s*真实轨迹/ }).click();
-  await frame.locator('#qd-canvas-correct').selectOption('2');
-  if (!(await frame.locator('.qd-moments').textContent()).includes('0.548')) throw new Error('Canvas sample std mismatch');
-  await frame.getByRole('button', { name: '播放流程', exact: true }).click();
-  await frame.locator('.qd-stage-heading').filter({ hasText: '6 / 6' }).waitFor({ timeout: 7000 });
-  report.passed = report.runtimeErrors.length === 0;
-} catch (error) {
-  report.failure = String(error);
-} finally {
+    if (width === 736 && theme === 'light') await frame.locator('#qd-probe-20261013').screenshot({ path: path.join(directory, 'question-diversity-probe-redesign-native-736.png') });
+    await page.close();
+  }
+  report.passed = !report.errors.length && !report.syntaxDiagnostics.length && report.layouts.every(item => !item.horizontalOverflow && !item.overflow.length && !item.nonFinite.length && item.graphicsPass);
+} catch (error) { report.failure = String(error); }
+finally {
   await browser.close();
   fs.writeFileSync(path.join(directory, 'question-diversity-probe-canvas-verification.json'), JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify(report));
+  console.log(JSON.stringify({ passed: report.passed, errors: report.errors, syntaxDiagnostics: report.syntaxDiagnostics, failure: report.failure, layoutCases: report.layouts.length, failedCases: report.layouts.filter(item => item.horizontalOverflow || item.overflow.length || item.nonFinite.length || !item.graphicsPass) }));
 }
 if (!report.passed) process.exitCode = 1;

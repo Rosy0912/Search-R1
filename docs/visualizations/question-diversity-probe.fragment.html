@@ -1,194 +1,298 @@
-<div id="qd-probe-20261013" class="qd-root">
-  <div class="qd-heading">
-    <div><h2>先选问题，再生成轨迹</h2><span class="text-small text-muted">Question diversity probe · 原理演示，非训练结果</span></div>
-  </div>
-  <div class="viz-controls qd-controls">
-    <button class="btn btn-primary" type="button" data-action="play">播放流程</button>
-    <button class="btn" type="button" data-action="next">下一步</button>
-    <button class="btn btn-ghost" type="button" data-action="reset">重播</button>
-    <label class="form-label" for="qd-explore">随机探索题数 <select id="qd-explore" class="form-select"><option value="0">0</option><option value="64" selected>64</option><option value="128">128</option><option value="256">256</option></select></label>
-  </div>
-  <div class="qd-steps" aria-label="训练流程">
-    <button class="btn btn-ghost" type="button" data-step="0"><span class="qd-index">1</span> 候选题</button>
-    <button class="btn btn-ghost" type="button" data-step="1"><span class="qd-index">2</span> 问题编码</button>
-    <button class="btn btn-ghost" type="button" data-step="2"><span class="qd-index">3</span> 预测差异</button>
-    <button class="btn btn-ghost" type="button" data-step="3"><span class="qd-index">4</span> 选 512 题</button>
-    <button class="btn btn-ghost" type="button" data-step="4"><span class="qd-index">5</span> 真实轨迹</button>
-    <button class="btn btn-ghost" type="button" data-step="5"><span class="qd-index">6</span> 双路更新</button>
-  </div>
-  <div class="qd-stage-heading"><h3 data-field="stage-title"></h3><span class="text-small text-muted tabular-nums" data-field="stage-count"></span></div>
-  <div class="qd-main" data-phase="0">
-    <section class="qd-scene" data-scene="0" aria-label="候选问题池">
-      <div class="qd-pool-label"><span>候选问题池</span><span class="tabular-nums">5,120 题</span></div>
-      <div class="qd-question-cloud" data-field="candidate-grid" aria-hidden="true"></div>
-      <div class="qd-flow-line"><span>只有问题文本</span><span>→</span><span>下一步：固定编码器</span></div>
-    </section>
-    <section class="qd-scene" data-scene="1" hidden aria-label="只对问题编码，不做检索">
-      <div class="qd-encoder-layout">
-        <div class="qd-input-stack" aria-hidden="true"><div>问题 q₁</div><div>问题 q₂</div><div>问题 q₃</div><div>…</div></div>
-        <div class="qd-stream" aria-hidden="true"><span></span><span></span><span></span></div>
-        <div class="qd-encoder"><div class="qd-encoder-mark" aria-hidden="true"></div><span>固定问题 encoder</span><span class="text-small text-muted">首次编码 · 后续读缓存</span></div>
-        <div class="qd-stream" aria-hidden="true"><span></span><span></span><span></span></div>
-        <div class="qd-vectors"><div class="qd-vector" aria-hidden="true"></div><div class="qd-vector" aria-hidden="true"></div><div class="qd-vector" aria-hidden="true"></div><span class="text-small text-muted">问题表征缓存</span></div>
-      </div>
-      <div class="qd-flow-line"><span>无 CoT</span><span>·</span><span>无搜索</span><span>·</span><span>无答案生成</span></div>
-    </section>
-    <section class="qd-scene" data-scene="2" hidden aria-label="预测五条轨迹的答对条数分布">
-      <div class="qd-distribution-heading"><span>同一个问题 q · 预测答对条数 K</span><span class="text-small text-muted">轻量探针</span></div>
-      <div data-field="distribution" class="qd-distribution"></div>
-      <div class="qd-moments"><span>预测 mean <strong class="tabular-nums" data-field="pred-mean"></strong></span><span>预测 std <strong class="tabular-nums" data-field="pred-std"></strong></span><span class="text-small text-muted">std = 未来五条 EM 的样本标准差期望</span></div>
-    </section>
-    <section class="qd-scene" data-scene="3" hidden aria-label="随机探索与高预测差异选题">
-      <div class="qd-pool-label"><span>从 5,120 题中选择</span><span class="tabular-nums">512 题</span></div>
-      <div class="qd-selection-strip" role="img" aria-label="选择题目组成"><div class="qd-exploration-fill"></div><div class="qd-top-fill"></div></div>
-      <div class="qd-selection-labels"><span><i class="qd-legend-dot qd-explore-color"></i>均匀随机 <strong class="tabular-nums" data-field="explore-count"></strong> 题</span><span><i class="qd-legend-dot qd-focus-color"></i>预测 std 最高 <strong class="tabular-nums" data-field="focus-count"></strong> 题</span></div>
-      <div class="qd-selected-cloud" data-field="selected-grid" aria-hidden="true"></div>
-      <div class="qd-flow-line"><span>先随机，再从剩余候选取 Top</span><span>·</span><span>每题只选一次</span></div>
-    </section>
-    <section class="qd-scene" data-scene="4" hidden aria-label="生成真实五条轨迹，得到严格 EM 标签">
-      <div class="qd-rollout-heading"><span>512 题 × 5 条 = <strong class="tabular-nums">2,560 条真实轨迹</strong></span><label class="form-label" for="qd-correct">示例答对数 <select id="qd-correct" class="form-select"><option value="0">0 / 5</option><option value="1">1 / 5</option><option value="2" selected>2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></label></div>
-      <div class="qd-rollout"><div class="qd-rollout-q">问题 q</div><div data-field="trajectories" class="qd-trajectories"></div></div>
-      <div class="qd-moments"><span>实测 mean <strong class="tabular-nums" data-field="true-mean"></strong></span><span>实测 std <strong class="tabular-nums" data-field="true-std"></strong></span><span class="text-small text-muted">strict EM · ddof = 1</span></div>
-    </section>
-    <section class="qd-scene" data-scene="5" hidden aria-label="actor 保留原奖励训练，选题探针每轮更新">
-      <div class="qd-feedback-source">同一批真实轨迹</div>
-      <div class="qd-update-lanes">
-        <div class="qd-update-lane"><div class="qd-lane-link" aria-hidden="true"></div><span>原 Search-G1 奖励</span><div class="qd-update-mark qd-actor-mark" aria-hidden="true"></div><strong>Actor / PPO 更新</strong><span class="text-small text-muted">原奖励与三项防护</span></div>
-        <div class="qd-update-lane"><div class="qd-lane-link" aria-hidden="true"></div><span>严格 EM → K / mean / std</span><div class="qd-update-mark qd-head-mark" aria-hidden="true"></div><strong>选题 head 在线更新</strong><span class="text-small text-muted">每个成功 iteration 更新一次</span></div>
-      </div>
-      <div class="qd-next-loop"><span class="qd-loop-mark" aria-hidden="true">↶</span><span>下一轮：新 actor + 新选题 head → 再选 512 题</span></div>
-      <div class="text-small text-muted qd-reward-note">原奖励 probe 的 50 轮刷新周期独立保留</div>
-    </section>
-  </div>
-  <div class="qd-detail text-small" data-field="detail" aria-live="polite"></div>
-  <div class="qd-budget" aria-label="完整轨迹生成预算对比">
-    <div class="qd-budget-row"><span>原 mixed-first 上限</span><div class="qd-budget-track"><div class="qd-budget-old"></div></div><span class="tabular-nums">10,240 条</span></div>
-    <div class="qd-budget-row"><span>探针选题</span><div class="qd-budget-track"><div class="qd-budget-new"></div></div><span class="tabular-nums">2,560 条</span></div>
-    <div class="text-small text-muted">完整轨迹生成量比较，不代表总训练耗时缩短 4 倍</div>
-  </div>
-</div>
-<style>
-#qd-probe-20261013 { --qd-ink:var(--foreground); --qd-soft:var(--muted); --qd-focus:var(--viz-series-1); --qd-explore:var(--viz-series-2); color:var(--foreground); font-family:inherit; font-size:var(--font-size-base); width:100%; box-sizing:border-box; }
+<div id="qd-probe-20261013" class="qd-root" data-model="{&quot;stages&quot;:[&quot;候选题&quot;,&quot;缓存&quot;,&quot;预测&quot;,&quot;选题&quot;,&quot;轨迹&quot;,&quot;更新&quot;],&quot;titles&quot;:[&quot;先看问题，不急着生成&quot;,&quot;一次编码，之后轻量读取&quot;,&quot;预测：五条回答会有多大差异？&quot;,&quot;把预算留给高差异问题&quot;,&quot;现在，才生成真实搜索轨迹&quot;,&quot;同一批轨迹，两路学习&quot;],&quot;details&quot;:[&quot;5,120 个候选，此时没有 CoT、检索或答案生成。&quot;,&quot;官方固定 encoder → 问题表征缓存；每轮只运行轻量 head。&quot;,&quot;排序依据是五条严格 EM 的期望样本 std，而非平均准确率。&quot;,&quot;先均匀随机探索，再从剩余候选取 Top；不重复、不按实测 EM 补采。&quot;,&quot;真实 EM 再作为探针标签；全对、全错组也完整保留。&quot;,&quot;标签对应更新前的 actor；新 actor 与新 head 用于下一轮选题。&quot;],&quot;probabilities&quot;:[0.05,0.1,0.25,0.4,0.15,0.05],&quot;phaseMs&quot;:[3900,4200,5200,4600,5400,4200]}" data-phase="0" data-animated="false"><style>
+
+#qd-probe-20261013 { --qd-focus:var(--viz-series-1); --qd-explore:var(--viz-series-2); --qd-neutral:color-mix(in srgb,var(--foreground) 12%,transparent); width:100%; color:var(--foreground); font-family:inherit; }
 #qd-probe-20261013 * { box-sizing:border-box; }
-#qd-probe-20261013 h2,#qd-probe-20261013 h3 { margin:0; font-weight:500; }
-#qd-probe-20261013 strong { font-weight:500; }
 #qd-probe-20261013 [hidden] { display:none!important; }
-#qd-probe-20261013 .qd-heading { display:flex; padding:4px 96px 18px 0; }
-#qd-probe-20261013 .qd-controls { margin-bottom:18px; }
-#qd-probe-20261013 .qd-controls .form-label { display:flex; align-items:center; gap:8px; margin-left:auto; }
-#qd-probe-20261013 .qd-steps { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px; padding-bottom:12px; border-bottom:1px solid var(--border); }
-#qd-probe-20261013 .qd-index { display:block; opacity:.55; }
-#qd-probe-20261013 .qd-stage-heading { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0 12px; }
-#qd-probe-20261013 .qd-main { min-height:270px; display:grid; align-items:center; }
-#qd-probe-20261013 .qd-scene { width:100%; padding:10px 0; }
-#qd-probe-20261013 .qd-pool-label { display:flex; justify-content:space-between; margin-bottom:16px; }
-#qd-probe-20261013 .qd-question-cloud { display:grid; grid-template-columns:repeat(16,minmax(0,1fr)); gap:6px; }
-#qd-probe-20261013 .qd-question { height:23px; background:color-mix(in srgb,var(--foreground) 10%,transparent); border-radius:3px; position:relative; transform:translateY(0); }
-#qd-probe-20261013 .qd-question::after { content:""; position:absolute; top:8px; bottom:8px; left:8px; right:8px; background:color-mix(in srgb,var(--foreground) 16%,transparent); }
-#qd-probe-20261013 .qd-flow-line { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:12px; padding:22px 0 0; color:var(--muted-foreground); }
-#qd-probe-20261013 .qd-encoder-layout { display:grid; grid-template-columns:1fr 50px 1.35fr 50px 1fr; gap:14px; align-items:center; }
-#qd-probe-20261013 .qd-input-stack { display:grid; gap:9px; }
-#qd-probe-20261013 .qd-input-stack div { padding:8px 12px; background:color-mix(in srgb,var(--foreground) 7%,transparent); border-radius:3px; }
-#qd-probe-20261013 .qd-stream { position:relative; height:2px; background:var(--border); }
-#qd-probe-20261013 .qd-stream span { position:absolute; left:0; top:-3px; width:8px; height:8px; border-radius:50%; background:var(--qd-focus); opacity:0; }
-#qd-probe-20261013 .qd-encoder { display:grid; justify-items:center; gap:12px; text-align:center; }
-#qd-probe-20261013 .qd-encoder-mark { width:72px; height:72px; border-radius:50%; background:color-mix(in srgb,var(--qd-focus) 14%,transparent); position:relative; }
-#qd-probe-20261013 .qd-encoder-mark::before,#qd-probe-20261013 .qd-encoder-mark::after { content:""; position:absolute; inset:20px; background:var(--qd-focus); border-radius:3px; opacity:.75; transform:rotate(45deg); }
-#qd-probe-20261013 .qd-encoder-mark::after { inset:29px; background:var(--background); }
-#qd-probe-20261013 .qd-vectors { display:grid; gap:12px; justify-items:center; }
-#qd-probe-20261013 .qd-vector { display:flex; gap:4px; height:22px; align-items:center; }
-#qd-probe-20261013 .qd-vector i { display:block; width:7px; background:var(--qd-focus); opacity:.65; border-radius:1px; }
-#qd-probe-20261013 .qd-distribution-heading { display:flex; justify-content:space-between; gap:12px; margin-bottom:8px; }
-#qd-probe-20261013 .qd-distribution { width:100%; min-height:170px; }
-#qd-probe-20261013 .qd-distribution svg { display:block; width:100%; }
-#qd-probe-20261013 .qd-distribution svg text { fill:var(--foreground); font-family:inherit; font-size:12px; font-weight:400; }
-#qd-probe-20261013 .qd-moments { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:18px; padding-top:18px; }
-#qd-probe-20261013 .qd-moments strong { margin-left:6px; }
-#qd-probe-20261013 .qd-selection-strip { display:flex; height:44px; gap:3px; margin:8px 0 14px; }
-#qd-probe-20261013 .qd-exploration-fill { background:var(--qd-explore); width:12.5%; transition:width .55s cubic-bezier(.22,1,.36,1); }
-#qd-probe-20261013 .qd-top-fill { background:var(--qd-focus); width:87.5%; transition:width .55s cubic-bezier(.22,1,.36,1); }
-#qd-probe-20261013 .qd-selection-labels { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
-#qd-probe-20261013 .qd-legend-dot { width:9px; height:9px; display:inline-block; border-radius:50%; margin-right:7px; }
-#qd-probe-20261013 .qd-explore-color { background:var(--qd-explore); }
-#qd-probe-20261013 .qd-focus-color { background:var(--qd-focus); }
-#qd-probe-20261013 .qd-selected-cloud { display:grid; grid-template-columns:repeat(16,minmax(0,1fr)); gap:5px; padding-top:16px; }
-#qd-probe-20261013 .qd-selected-cloud .qd-question { height:16px; }
-#qd-probe-20261013 .qd-selected-cloud .qd-question::after { display:none; }
-#qd-probe-20261013 .qd-rollout-heading { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-#qd-probe-20261013 .qd-rollout-heading .form-label { display:flex; align-items:center; gap:8px; }
-#qd-probe-20261013 .qd-rollout { display:grid; grid-template-columns:85px 1fr; align-items:center; gap:25px; padding-top:18px; }
-#qd-probe-20261013 .qd-rollout-q { padding:16px 8px; text-align:center; background:color-mix(in srgb,var(--foreground) 8%,transparent); border-radius:3px; }
-#qd-probe-20261013 .qd-trajectories { display:grid; gap:10px; }
-#qd-probe-20261013 .qd-trajectory { display:grid; grid-template-columns:1fr 30px 48px; align-items:center; gap:10px; }
-#qd-probe-20261013 .qd-trace { display:flex; align-items:center; gap:5px; height:21px; position:relative; }
-#qd-probe-20261013 .qd-trace::before { content:""; position:absolute; inset:50% 0 auto; border-top:1px solid var(--border); }
-#qd-probe-20261013 .qd-trace i { height:8px; border-radius:1px; background:color-mix(in srgb,var(--qd-focus) 58%,var(--background)); z-index:1; width:18%; transform-origin:left; }
-#qd-probe-20261013 .qd-em { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; color:var(--foreground); background:color-mix(in srgb,var(--foreground) 10%,transparent); }
-#qd-probe-20261013 .qd-em.is-correct { background:color-mix(in srgb,var(--qd-focus) 23%,transparent); }
-#qd-probe-20261013 .qd-feedback-source { text-align:center; }
-#qd-probe-20261013 .qd-update-lanes { display:grid; grid-template-columns:1fr 1fr; gap:28px; padding:0 10px; }
-#qd-probe-20261013 .qd-update-lane { display:grid; gap:12px; justify-items:center; text-align:center; }
-#qd-probe-20261013 .qd-lane-link { height:28px; width:1px; background:var(--border); }
-#qd-probe-20261013 .qd-update-mark { width:66px; height:22px; border-radius:3px; background:var(--qd-focus); opacity:.85; }
-#qd-probe-20261013 .qd-actor-mark { background:color-mix(in srgb,var(--foreground) 22%,transparent); }
-#qd-probe-20261013 .qd-next-loop { display:flex; justify-content:center; align-items:center; gap:10px; padding-top:20px; }
-#qd-probe-20261013 .qd-loop-mark { color:var(--muted-foreground); }
-#qd-probe-20261013 .qd-reward-note { text-align:center; padding-top:8px; }
-#qd-probe-20261013 .qd-detail { min-height:32px; display:flex; align-items:center; padding:10px 0 15px; color:var(--muted-foreground); border-bottom:1px solid var(--border); }
-#qd-probe-20261013 .qd-budget { padding-top:17px; display:grid; gap:10px; }
-#qd-probe-20261013 .qd-budget-row { display:grid; grid-template-columns:150px 1fr 92px; gap:12px; align-items:center; }
-#qd-probe-20261013 .qd-budget-track { height:11px; background:color-mix(in srgb,var(--foreground) 5%,transparent); }
-#qd-probe-20261013 .qd-budget-old { width:100%; height:100%; background:color-mix(in srgb,var(--foreground) 25%,transparent); }
-#qd-probe-20261013 .qd-budget-new { width:25%; height:100%; background:var(--qd-focus); }
-#qd-probe-20261013 .qd-budget-row>span:last-child { text-align:right; }
-#qd-probe-20261013 .qd-enter .qd-question { animation:qd-rise .7s cubic-bezier(.22,1,.36,1) both; animation-delay:calc(var(--i,0)*7ms); }
-#qd-probe-20261013 .qd-enter .qd-stream span { animation:qd-stream 1.3s ease both; }
-#qd-probe-20261013 .qd-enter .qd-stream span:nth-child(2) { animation-delay:.22s; }
-#qd-probe-20261013 .qd-enter .qd-stream span:nth-child(3) { animation-delay:.44s; }
-#qd-probe-20261013 .qd-enter .qd-trace i { animation:qd-grow .7s cubic-bezier(.22,1,.36,1) both; animation-delay:calc(var(--i,0)*150ms); }
-#qd-probe-20261013 .qd-enter .qd-update-mark { animation:qd-rise .8s cubic-bezier(.22,1,.36,1) both; }
-@keyframes qd-rise { from { transform:translateY(18px); } to { transform:translateY(0); } }
-@keyframes qd-stream { 0% { transform:translateX(0); opacity:0; } 20% { opacity:1; } 80% { opacity:1; } 100% { transform:translateX(44px); opacity:0; } }
-@keyframes qd-grow { from { transform:scaleX(.02); } to { transform:scaleX(1); } }
-@media (max-width:620px) { #qd-probe-20261013 .qd-steps { grid-template-columns:repeat(3,minmax(0,1fr)); } #qd-probe-20261013 .qd-controls .form-label { margin-left:0; } #qd-probe-20261013 .qd-encoder-layout { grid-template-columns:1fr 20px 1.3fr; } #qd-probe-20261013 .qd-encoder-layout>.qd-stream:nth-of-type(4),#qd-probe-20261013 .qd-vectors { display:none; } #qd-probe-20261013 .qd-question-cloud { grid-template-columns:repeat(10,minmax(0,1fr)); } #qd-probe-20261013 .qd-selected-cloud { grid-template-columns:repeat(8,minmax(0,1fr)); } #qd-probe-20261013 .qd-budget-row { grid-template-columns:128px 1fr 85px; gap:8px; } #qd-probe-20261013 .qd-update-lanes { gap:12px; padding:0; } #qd-probe-20261013 .qd-heading { padding-right:90px; } }
-@media (max-width:380px) { #qd-probe-20261013 .qd-budget-row { grid-template-columns:1fr 80px; } #qd-probe-20261013 .qd-budget-track { grid-row:2; grid-column:1/-1; } #qd-probe-20261013 .qd-rollout { grid-template-columns:60px 1fr; gap:12px; } #qd-probe-20261013 .qd-moments { gap:12px; } }
-@media (prefers-reduced-motion:reduce) { #qd-probe-20261013 *,#qd-probe-20261013 *::before,#qd-probe-20261013 *::after { animation:none!important; transition:none!important; } }
-</style>
+#qd-probe-20261013 h1,#qd-probe-20261013 h2,#qd-probe-20261013 h3 { margin:0; font-weight:500; }
+#qd-probe-20261013 strong { font-weight:500; }
+#qd-probe-20261013 .qd-header { display:grid; gap:10px; padding:4px 92px 24px 0; }
+#qd-probe-20261013 .qd-eyebrow { letter-spacing:.12em; }
+#qd-probe-20261013 .qd-player { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-bottom:14px; }
+#qd-probe-20261013 .qd-navigation { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; padding-bottom:20px; position:relative; }
+#qd-probe-20261013 .qd-navigation::before { content:""; position:absolute; height:1px; background:var(--border); left:8%; right:8%; top:19px; z-index:0; }
+#qd-probe-20261013 .qd-nav-item { display:grid; gap:6px; justify-items:center; position:relative; z-index:1; color:var(--muted-foreground); }
+#qd-probe-20261013 .qd-nav-item.is-active { color:var(--foreground); }
+#qd-probe-20261013 .qd-stage-heading { display:flex; align-items:center; gap:10px; padding:18px 0 20px; border-top:1px solid var(--border); }
+#qd-probe-20261013 .qd-stage-rule { width:4px; height:18px; background:var(--foreground); border-radius:2px; flex:none; }
+#qd-probe-20261013 .qd-main { min-height:320px; display:grid; align-items:center; }
+#qd-probe-20261013 .qd-scene { padding:0 2px 12px; width:100%; }
+#qd-probe-20261013 .qd-candidate-top,#qd-probe-20261013 .qd-select-head { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:20px; }
+#qd-probe-20261013 .qd-candidate-top>div,#qd-probe-20261013 .qd-select-head>div { display:grid; gap:5px; }
+#qd-probe-20261013 .qd-pool { display:grid; grid-template-columns:repeat(16,minmax(0,1fr)); gap:8px; }
+#qd-probe-20261013 .qd-ticket { position:relative; display:grid; align-content:center; gap:3px; height:31px; padding:6px; background:var(--qd-neutral); border-radius:3px; transform:translate(0,0); }
+#qd-probe-20261013 .qd-ticket i { display:block; height:2px; background:color-mix(in srgb,var(--foreground) 22%,transparent); border-radius:1px; }
+#qd-probe-20261013 .qd-ticket i:nth-child(2) { width:78%; }
+#qd-probe-20261013 .qd-ticket i:nth-child(3) { width:48%; }
+#qd-probe-20261013 .qd-pool-selected { padding-top:20px; }
+#qd-probe-20261013 .qd-ticket.is-focus { background:color-mix(in srgb,var(--qd-focus) 18%,transparent); }
+#qd-probe-20261013 .qd-ticket.is-explore { background:color-mix(in srgb,var(--qd-explore) 20%,transparent); }
+#qd-probe-20261013 .qd-ticket.is-focus i { background:color-mix(in srgb,var(--qd-focus) 66%,transparent); }
+#qd-probe-20261013 .qd-ticket.is-explore i { background:color-mix(in srgb,var(--qd-explore) 66%,transparent); }
+#qd-probe-20261013 .qd-flow-caption { display:flex; align-items:center; justify-content:center; gap:16px; padding-top:24px; }
+#qd-probe-20261013 .qd-arrow { color:var(--muted-foreground); }
+#qd-probe-20261013 .qd-mini-paper { width:23px; height:28px; display:grid; align-content:center; gap:3px; padding:5px; background:var(--qd-neutral); border-radius:2px; }
+#qd-probe-20261013 .qd-mini-paper i { height:2px; background:color-mix(in srgb,var(--foreground) 36%,transparent); }
+#qd-probe-20261013 .qd-cache-flow { display:grid; grid-template-columns:1fr 42px 1.15fr 42px 1.1fr; align-items:center; gap:16px; padding:26px 0 24px; }
+#qd-probe-20261013 .qd-flow-unit { display:grid; justify-items:center; text-align:center; gap:12px; }
+#qd-probe-20261013 .qd-paper-stack { position:relative; width:82px; height:92px; margin-left:6px; margin-bottom:8px; }
+#qd-probe-20261013 .qd-paper-stack div { position:absolute; width:56px; height:72px; padding:16px 10px; display:grid; align-content:start; gap:7px; background:color-mix(in srgb,var(--foreground) 10%,var(--background)); border-radius:4px; }
+#qd-probe-20261013 .qd-paper-stack div:first-child { transform:translate(0,0) rotate(-8deg); }
+#qd-probe-20261013 .qd-paper-stack div:nth-child(2) { transform:translate(12px,8px) rotate(2deg); }
+#qd-probe-20261013 .qd-paper-stack div:nth-child(3) { transform:translate(22px,17px) rotate(9deg); }
+#qd-probe-20261013 .qd-paper-stack i { height:3px; border-radius:2px; background:color-mix(in srgb,var(--foreground) 27%,transparent); }
+#qd-probe-20261013 .qd-paper-stack i:nth-child(2) { width:80%; }
+#qd-probe-20261013 .qd-encoder-art { width:100px; height:100px; display:grid; grid-template-columns:repeat(3,1fr); padding:21px; gap:7px; background:color-mix(in srgb,var(--qd-focus) 9%,transparent); border-radius:20px; }
+#qd-probe-20261013 .qd-encoder-art span { border-radius:3px; background:color-mix(in srgb,var(--qd-focus) 35%,transparent); }
+#qd-probe-20261013 .qd-encoder-art span:nth-child(5) { background:var(--qd-focus); }
+#qd-probe-20261013 .qd-transport { height:1px; background:var(--border); position:relative; }
+#qd-probe-20261013 .qd-transport span { position:absolute; left:0; top:-3px; width:7px; height:7px; border-radius:50%; background:var(--qd-focus); opacity:0; }
+#qd-probe-20261013 .qd-vector-cache { display:grid; gap:6px; height:100px; align-content:center; }
+#qd-probe-20261013 .qd-vector-cache>div { display:flex; gap:4px; }
+#qd-probe-20261013 .qd-vector-cache i { display:block; width:8px; height:14px; border-radius:2px; background:var(--qd-focus); }
+#qd-probe-20261013 .qd-cache-read { display:flex; justify-content:center; align-items:center; gap:12px; padding-top:20px; }
+#qd-probe-20261013 .qd-cache-line { height:1px; width:35px; background:var(--border); }
+#qd-probe-20261013 .qd-prediction-context { display:flex; justify-content:space-between; align-items:center; gap:15px; padding-bottom:15px; }
+#qd-probe-20261013 .qd-chart-label { padding-bottom:10px; }
+#qd-probe-20261013 .qd-bars { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:18px; padding:0 18px; }
+#qd-probe-20261013 .qd-bar-column { display:grid; gap:10px; justify-items:center; }
+#qd-probe-20261013 .qd-bar-space { height:144px; width:100%; position:relative; display:flex; justify-content:center; align-items:flex-end; }
+#qd-probe-20261013 .qd-bar-measure { width:65%; max-width:54px; display:flex; flex-direction:column; position:relative; }
+#qd-probe-20261013 .qd-bar-measure>span { position:absolute; top:-23px; width:100%; text-align:center; color:var(--foreground); }
+#qd-probe-20261013 .qd-bar { flex:1; background:color-mix(in srgb,var(--qd-focus) 78%,transparent); border-radius:3px 3px 0 0; transform-origin:bottom; }
+#qd-probe-20261013 .qd-bar-column.is-endpoint .qd-bar { background:var(--qd-neutral); }
+#qd-probe-20261013 .qd-chart-axis { text-align:right; padding:12px 0 0; }
+#qd-probe-20261013 .qd-moments { display:grid; grid-template-columns:auto auto 1fr; gap:38px; align-items:end; margin-top:20px; padding-top:17px; border-top:1px solid var(--border); }
+#qd-probe-20261013 .qd-moments>div { display:grid; gap:5px; }
+#qd-probe-20261013 .qd-moment-note { text-align:right; padding-bottom:3px; }
+#qd-probe-20261013 .qd-select-setting { display:grid; gap:4px; min-width:118px; }
+#qd-probe-20261013 .qd-rollout-setting { display:grid; grid-template-columns:max-content 110px; align-items:center; gap:10px; white-space:nowrap; }
+#qd-probe-20261013 .qd-selection-strip { display:flex; gap:3px; height:11px; }
+#qd-probe-20261013 .qd-exploration-fill { background:var(--qd-explore); border-radius:2px; transition:width .7s cubic-bezier(.22,1,.36,1); }
+#qd-probe-20261013 .qd-top-fill { background:var(--qd-focus); border-radius:2px; transition:width .7s cubic-bezier(.22,1,.36,1); }
+#qd-probe-20261013 .qd-selection-labels { display:flex; justify-content:space-between; gap:14px; padding-top:14px; }
+#qd-probe-20261013 .qd-selection-labels strong { margin-left:5px; }
+#qd-probe-20261013 .qd-legend-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; }
+#qd-probe-20261013 .qd-legend-dot.is-focus { background:var(--qd-focus); }
+#qd-probe-20261013 .qd-legend-dot.is-explore { background:var(--qd-explore); }
+#qd-probe-20261013 .qd-selection-order { display:flex; align-items:center; justify-content:center; gap:14px; padding-top:22px; }
+#qd-probe-20261013 .qd-rollout-heading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+#qd-probe-20261013 .qd-rollout { display:grid; grid-template-columns:90px 1fr; gap:50px; align-items:center; padding-top:24px; }
+#qd-probe-20261013 .qd-q-origin { display:grid; gap:10px; justify-items:center; position:relative; text-align:center; }
+#qd-probe-20261013 .qd-q-origin h2 { display:grid; place-items:center; width:58px; height:58px; border-radius:14px; background:var(--qd-neutral); }
+#qd-probe-20261013 .qd-q-origin::after { content:""; position:absolute; right:-30px; top:46px; width:28px; height:1px; background:var(--border); }
+#qd-probe-20261013 .qd-traces { display:grid; gap:13px; position:relative; }
+#qd-probe-20261013 .qd-traces::before { content:""; position:absolute; left:-21px; top:42px; bottom:16px; border-left:1px solid var(--border); border-radius:8px; }
+#qd-probe-20261013 .qd-trace-labels,#qd-probe-20261013 .qd-trace-row { display:grid; grid-template-columns:1fr 1fr 1fr 28px; gap:18px; align-items:center; }
+#qd-probe-20261013 .qd-trace-row { min-height:28px; position:relative; }
+#qd-probe-20261013 .qd-trace-row::before { content:""; position:absolute; width:18px; left:-21px; top:14px; height:1px; background:var(--border); }
+#qd-probe-20261013 .qd-trace-row>div { height:27px; position:relative; display:grid; align-content:center; gap:4px; padding:5px 7px; border-radius:3px; background:color-mix(in srgb,var(--qd-focus) 11%,transparent); transform-origin:left; }
+#qd-probe-20261013 .qd-trace-row>div::after { content:""; position:absolute; top:13px; right:-18px; width:18px; height:1px; background:var(--border); }
+#qd-probe-20261013 .qd-trace-row i { height:3px; border-radius:2px; background:color-mix(in srgb,var(--qd-focus) 44%,transparent); width:86%; }
+#qd-probe-20261013 .qd-trace-search span { position:absolute; right:7px; top:7px; width:4px; height:4px; border-radius:50%; background:var(--qd-focus); }
+#qd-probe-20261013 .qd-em { display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--qd-neutral); font-variant-numeric:tabular-nums; }
+#qd-probe-20261013 .qd-em.is-correct { background:color-mix(in srgb,var(--qd-focus) 24%,transparent); }
+#qd-probe-20261013 .qd-update-source { display:grid; justify-items:center; gap:12px; }
+#qd-probe-20261013 .qd-mini-traces { display:flex; gap:5px; height:24px; align-items:center; }
+#qd-probe-20261013 .qd-mini-traces i { height:5px; width:40px; border-radius:2px; background:color-mix(in srgb,var(--qd-focus) 45%,transparent); }
+#qd-probe-20261013 .qd-fork { display:flex; justify-content:center; height:40px; }
+#qd-probe-20261013 .qd-fork span { display:block; width:25%; height:24px; margin-top:13px; border-top:1px solid var(--border); }
+#qd-probe-20261013 .qd-fork span:first-child { border-left:1px solid var(--border); border-radius:9px 0 0; }
+#qd-probe-20261013 .qd-fork span:last-child { border-right:1px solid var(--border); border-radius:0 9px 0 0; }
+#qd-probe-20261013 .qd-learning-lanes { display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+#qd-probe-20261013 .qd-learning-lane { display:grid; justify-items:center; gap:10px; text-align:center; }
+#qd-probe-20261013 .qd-actor-art,#qd-probe-20261013 .qd-probe-art { display:flex; gap:5px; align-items:end; height:42px; padding-bottom:3px; }
+#qd-probe-20261013 .qd-actor-art i,#qd-probe-20261013 .qd-probe-art i { width:12px; height:21px; border-radius:2px; background:color-mix(in srgb,var(--foreground) 24%,transparent); }
+#qd-probe-20261013 .qd-actor-art i:nth-child(2),#qd-probe-20261013 .qd-probe-art i:nth-child(2) { height:31px; }
+#qd-probe-20261013 .qd-actor-art i:nth-child(3),#qd-probe-20261013 .qd-probe-art i:nth-child(3) { height:26px; }
+#qd-probe-20261013 .qd-probe-art i { background:color-mix(in srgb,var(--qd-focus) 58%,transparent); }
+#qd-probe-20261013 .qd-return-flow { display:flex; align-items:center; justify-content:center; gap:12px; padding-top:28px; }
+#qd-probe-20261013 .qd-old-probe-note { text-align:center; padding-top:12px; }
+#qd-probe-20261013 .qd-detail { padding:16px 0 20px; min-height:45px; }
+#qd-probe-20261013 .qd-footer { display:flex; flex-wrap:wrap; align-items:center; gap:8px 22px; padding-top:17px; border-top:1px solid var(--border); }
+#qd-probe-20261013 .qd-footer>span:last-child { margin-left:auto; }
+#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-ticket { animation:qd-ticket-arrive .85s cubic-bezier(.22,1,.36,1) both; animation-delay:calc(var(--i)*9ms); }
+#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-transport span { animation:qd-vector-pass 1.4s ease both; animation-delay:.2s; }
+#qd-probe-20261013[data-animated="true"] .qd-transport span:nth-child(2) { animation-delay:.55s; }
+#qd-probe-20261013[data-animated="true"] .qd-transport span:nth-child(3) { animation-delay:.9s; }
+#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-bar { animation:qd-bar-grow .9s cubic-bezier(.22,1,.36,1) both; }
+#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-trace-row>div { animation:qd-bar-grow .7s cubic-bezier(.22,1,.36,1) both; animation-delay:calc(var(--i)*.14s); }
+#qd-probe-20261013[data-animated="true"] .qd-trace-row>div:nth-child(2) { animation-delay:calc(var(--i)*.14s + .35s); }
+#qd-probe-20261013[data-animated="true"] .qd-trace-row>div:nth-child(3) { animation-delay:calc(var(--i)*.14s + .7s); }
+#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-probe-art i,#qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-actor-art i { animation:qd-ticket-arrive .8s cubic-bezier(.22,1,.36,1) both; }
+@keyframes qd-ticket-arrive { from { transform:translateY(15px) scale(.88); } to { transform:translateY(0) scale(1); } }
+@keyframes qd-vector-pass { 0% { transform:translateX(0); opacity:0; } 20%,75% { opacity:1; } 100% { transform:translateX(38px); opacity:0; } }
+@keyframes qd-vertical-vector-pass { 0% { transform:translateY(0); opacity:0; } 20%,75% { opacity:1; } 100% { transform:translateY(16px); opacity:0; } }
+@keyframes qd-bar-grow { from { transform:scaleY(.06); } to { transform:scaleY(1); } }
+@media(max-width:620px) {
+ #qd-probe-20261013 .qd-header { padding-right:90px; }
+ #qd-probe-20261013 .qd-header h1>span { display:block; }
+ #qd-probe-20261013[data-animated="true"] .qd-scene:not([hidden]) .qd-transport span { animation-name:qd-vertical-vector-pass; }
+ #qd-probe-20261013 .qd-pool { gap:5px; grid-template-columns:repeat(10,minmax(0,1fr)); }
+ #qd-probe-20261013 .qd-pool-selected { grid-template-columns:repeat(8,minmax(0,1fr)); }
+ #qd-probe-20261013 .qd-ticket { height:25px; padding:4px; }
+ #qd-probe-20261013 .qd-cache-flow { grid-template-columns:1fr; padding:6px 0; gap:15px; }
+ #qd-probe-20261013 .qd-flow-unit { grid-template-columns:100px 1fr; justify-items:start; text-align:left; align-items:center; gap:4px 17px; }
+ #qd-probe-20261013 .qd-flow-unit>:first-child { grid-row:1/3; }
+ #qd-probe-20261013 .qd-transport { width:1px; height:20px; margin-left:49px; }
+ #qd-probe-20261013 .qd-transport span { left:-3px; top:0; }
+ #qd-probe-20261013 .qd-paper-stack { height:90px; margin-bottom:0; }
+ #qd-probe-20261013 .qd-cache-read { padding-top:16px; gap:9px; }
+ #qd-probe-20261013 .qd-cache-line { display:none; }
+ #qd-probe-20261013 .qd-prediction-context { align-items:start; }
+ #qd-probe-20261013 .qd-moments { gap:24px; grid-template-columns:auto auto; }
+ #qd-probe-20261013 .qd-moment-note { text-align:left; grid-column:1/-1; padding:0; }
+ #qd-probe-20261013 .qd-bars { gap:10px; padding:0 5px; }
+ #qd-probe-20261013 .qd-candidate-top { align-items:start; }
+ #qd-probe-20261013 .qd-candidate-top>span { max-width:132px; text-align:right; }
+ #qd-probe-20261013 .qd-select-head { align-items:end; gap:12px; }
+
+ #qd-probe-20261013 .qd-rollout-heading { flex-wrap:wrap; }
+ #qd-probe-20261013 .qd-rollout { grid-template-columns:45px 1fr; gap:27px; }
+ #qd-probe-20261013 .qd-q-origin h2 { width:42px; height:48px; border-radius:9px; }
+ #qd-probe-20261013 .qd-q-origin>span { display:none; }
+ #qd-probe-20261013 .qd-q-origin::after { width:13px; right:-15px; top:23px; }
+ #qd-probe-20261013 .qd-traces::before { left:-12px; }
+ #qd-probe-20261013 .qd-trace-row::before { left:-12px; width:9px; }
+ #qd-probe-20261013 .qd-trace-labels,#qd-probe-20261013 .qd-trace-row { gap:9px; grid-template-columns:1fr 1fr 1fr 24px; }
+ #qd-probe-20261013 .qd-trace-row>div { padding:5px; }
+ #qd-probe-20261013 .qd-trace-row>div::after { right:-9px; width:9px; }
+ #qd-probe-20261013 .qd-em { width:24px; height:24px; }
+ #qd-probe-20261013 .qd-learning-lanes { gap:18px; }
+ #qd-probe-20261013 .qd-return-flow { flex-wrap:wrap; gap:10px; }
+ #qd-probe-20261013 .qd-footer>span:last-child { margin-left:0; width:100%; }
+}
+@media(max-width:380px) {
+ #qd-probe-20261013 .qd-navigation { gap:3px; }
+ #qd-probe-20261013 .qd-header { gap:8px; }
+ #qd-probe-20261013 .qd-eyebrow { letter-spacing:.06em; }
+ #qd-probe-20261013 .qd-flow-caption { gap:10px; }
+ #qd-probe-20261013 .qd-mini-paper { display:none; }
+ #qd-probe-20261013 .qd-selection-labels { gap:10px; flex-wrap:wrap; }
+ #qd-probe-20261013 .qd-selection-order { gap:7px; }
+ #qd-probe-20261013 .qd-chart-axis { text-align:left; }
+}
+@media(prefers-reduced-motion:reduce) { #qd-probe-20261013 *,#qd-probe-20261013 *::before,#qd-probe-20261013 *::after { animation:none!important; transition:none!important; } }
+
+</style><header class="qd-header"><span class="qd-eyebrow text-small text-muted">SEARCH-G1 / QUESTION DIVERSITY PROBE</span><h1><span>先选好问题，</span><span>再生成轨迹。</span></h1><span class="text-small text-muted">算法原理 · 示意预测与轨迹，非训练结果</span></header><div class="qd-player"><div class="viz-controls"><button type="button" class="btn btn-primary" data-action="play" aria-pressed="false">播放流程</button><button type="button" class="btn btn-ghost" data-action="next">下一步 →</button></div><span class="qd-player-phase text-small text-muted tabular-nums" data-field="stage-count">1 / 6</span></div><nav class="qd-navigation" aria-label="六个阶段"><div class="qd-nav-item is-active" data-nav-index="0"><button type="button" class="btn btn-ghost" data-step="0" aria-label="1 候选" aria-pressed="true">01</button><span class="text-small">候选题</span></div><div class="qd-nav-item" data-nav-index="1"><button type="button" class="btn btn-ghost" data-step="1" aria-label="2 缓存" aria-pressed="false">02</button><span class="text-small">缓存</span></div><div class="qd-nav-item" data-nav-index="2"><button type="button" class="btn btn-ghost" data-step="2" aria-label="3 预测" aria-pressed="false">03</button><span class="text-small">预测</span></div><div class="qd-nav-item" data-nav-index="3"><button type="button" class="btn btn-ghost" data-step="3" aria-label="4 选择" aria-pressed="false">04</button><span class="text-small">选题</span></div><div class="qd-nav-item" data-nav-index="4"><button type="button" class="btn btn-ghost" data-step="4" aria-label="5 生成" aria-pressed="false">05</button><span class="text-small">轨迹</span></div><div class="qd-nav-item" data-nav-index="5"><button type="button" class="btn btn-ghost" data-step="5" aria-label="6 更新" aria-pressed="false">06</button><span class="text-small">更新</span></div></nav><div class="qd-stage-heading"><span class="qd-stage-rule"></span><h3 data-field="stage-title">先看问题，不急着生成</h3></div><main class="qd-main"><section class="qd-scene" data-scene="0"><div class="qd-candidate-top"><div><span class="text-small text-muted">本轮候选问题池</span><h2 class="tabular-nums">5,120 <span class="text-small text-muted">题</span></h2></div><span class="text-small text-muted">仅问题文本 · 尚未 rollout</span></div><div class="qd-pool" role="img" aria-label="5,120个候选问题，方块为示意"><span data-pool-index="0" data-question-index="0" class="qd-ticket" style="--i:0"><i></i><i></i><i></i></span><span data-pool-index="1" data-question-index="1" class="qd-ticket" style="--i:1"><i></i><i></i><i></i></span><span data-pool-index="2" data-question-index="2" class="qd-ticket" style="--i:2"><i></i><i></i><i></i></span><span data-pool-index="3" data-question-index="3" class="qd-ticket" style="--i:3"><i></i><i></i><i></i></span><span data-pool-index="4" data-question-index="4" class="qd-ticket" style="--i:4"><i></i><i></i><i></i></span><span data-pool-index="5" data-question-index="5" class="qd-ticket" style="--i:5"><i></i><i></i><i></i></span><span data-pool-index="6" data-question-index="6" class="qd-ticket" style="--i:6"><i></i><i></i><i></i></span><span data-pool-index="7" data-question-index="7" class="qd-ticket" style="--i:7"><i></i><i></i><i></i></span><span data-pool-index="8" data-question-index="8" class="qd-ticket" style="--i:8"><i></i><i></i><i></i></span><span data-pool-index="9" data-question-index="9" class="qd-ticket" style="--i:9"><i></i><i></i><i></i></span><span data-pool-index="10" data-question-index="10" class="qd-ticket" style="--i:10"><i></i><i></i><i></i></span><span data-pool-index="11" data-question-index="11" class="qd-ticket" style="--i:11"><i></i><i></i><i></i></span><span data-pool-index="12" data-question-index="12" class="qd-ticket" style="--i:12"><i></i><i></i><i></i></span><span data-pool-index="13" data-question-index="13" class="qd-ticket" style="--i:13"><i></i><i></i><i></i></span><span data-pool-index="14" data-question-index="14" class="qd-ticket" style="--i:14"><i></i><i></i><i></i></span><span data-pool-index="15" data-question-index="15" class="qd-ticket" style="--i:15"><i></i><i></i><i></i></span><span data-pool-index="16" data-question-index="16" class="qd-ticket" style="--i:16"><i></i><i></i><i></i></span><span data-pool-index="17" data-question-index="17" class="qd-ticket" style="--i:17"><i></i><i></i><i></i></span><span data-pool-index="18" data-question-index="18" class="qd-ticket" style="--i:18"><i></i><i></i><i></i></span><span data-pool-index="19" data-question-index="19" class="qd-ticket" style="--i:19"><i></i><i></i><i></i></span><span data-pool-index="20" data-question-index="20" class="qd-ticket" style="--i:20"><i></i><i></i><i></i></span><span data-pool-index="21" data-question-index="21" class="qd-ticket" style="--i:21"><i></i><i></i><i></i></span><span data-pool-index="22" data-question-index="22" class="qd-ticket" style="--i:22"><i></i><i></i><i></i></span><span data-pool-index="23" data-question-index="23" class="qd-ticket" style="--i:23"><i></i><i></i><i></i></span><span data-pool-index="24" data-question-index="24" class="qd-ticket" style="--i:24"><i></i><i></i><i></i></span><span data-pool-index="25" data-question-index="25" class="qd-ticket" style="--i:25"><i></i><i></i><i></i></span><span data-pool-index="26" data-question-index="26" class="qd-ticket" style="--i:26"><i></i><i></i><i></i></span><span data-pool-index="27" data-question-index="27" class="qd-ticket" style="--i:27"><i></i><i></i><i></i></span><span data-pool-index="28" data-question-index="28" class="qd-ticket" style="--i:28"><i></i><i></i><i></i></span><span data-pool-index="29" data-question-index="29" class="qd-ticket" style="--i:29"><i></i><i></i><i></i></span><span data-pool-index="30" data-question-index="30" class="qd-ticket" style="--i:30"><i></i><i></i><i></i></span><span data-pool-index="31" data-question-index="31" class="qd-ticket" style="--i:31"><i></i><i></i><i></i></span><span data-pool-index="32" data-question-index="32" class="qd-ticket" style="--i:32"><i></i><i></i><i></i></span><span data-pool-index="33" data-question-index="33" class="qd-ticket" style="--i:33"><i></i><i></i><i></i></span><span data-pool-index="34" data-question-index="34" class="qd-ticket" style="--i:34"><i></i><i></i><i></i></span><span data-pool-index="35" data-question-index="35" class="qd-ticket" style="--i:35"><i></i><i></i><i></i></span><span data-pool-index="36" data-question-index="36" class="qd-ticket" style="--i:36"><i></i><i></i><i></i></span><span data-pool-index="37" data-question-index="37" class="qd-ticket" style="--i:37"><i></i><i></i><i></i></span><span data-pool-index="38" data-question-index="38" class="qd-ticket" style="--i:38"><i></i><i></i><i></i></span><span data-pool-index="39" data-question-index="39" class="qd-ticket" style="--i:39"><i></i><i></i><i></i></span><span data-pool-index="40" data-question-index="40" class="qd-ticket" style="--i:40"><i></i><i></i><i></i></span><span data-pool-index="41" data-question-index="41" class="qd-ticket" style="--i:41"><i></i><i></i><i></i></span><span data-pool-index="42" data-question-index="42" class="qd-ticket" style="--i:42"><i></i><i></i><i></i></span><span data-pool-index="43" data-question-index="43" class="qd-ticket" style="--i:43"><i></i><i></i><i></i></span><span data-pool-index="44" data-question-index="44" class="qd-ticket" style="--i:44"><i></i><i></i><i></i></span><span data-pool-index="45" data-question-index="45" class="qd-ticket" style="--i:45"><i></i><i></i><i></i></span><span data-pool-index="46" data-question-index="46" class="qd-ticket" style="--i:46"><i></i><i></i><i></i></span><span data-pool-index="47" data-question-index="47" class="qd-ticket" style="--i:47"><i></i><i></i><i></i></span><span data-pool-index="48" data-question-index="48" class="qd-ticket" style="--i:48"><i></i><i></i><i></i></span><span data-pool-index="49" data-question-index="49" class="qd-ticket" style="--i:49"><i></i><i></i><i></i></span><span data-pool-index="50" data-question-index="50" class="qd-ticket" style="--i:50"><i></i><i></i><i></i></span><span data-pool-index="51" data-question-index="51" class="qd-ticket" style="--i:51"><i></i><i></i><i></i></span><span data-pool-index="52" data-question-index="52" class="qd-ticket" style="--i:52"><i></i><i></i><i></i></span><span data-pool-index="53" data-question-index="53" class="qd-ticket" style="--i:53"><i></i><i></i><i></i></span><span data-pool-index="54" data-question-index="54" class="qd-ticket" style="--i:54"><i></i><i></i><i></i></span><span data-pool-index="55" data-question-index="55" class="qd-ticket" style="--i:55"><i></i><i></i><i></i></span><span data-pool-index="56" data-question-index="56" class="qd-ticket" style="--i:56"><i></i><i></i><i></i></span><span data-pool-index="57" data-question-index="57" class="qd-ticket" style="--i:57"><i></i><i></i><i></i></span><span data-pool-index="58" data-question-index="58" class="qd-ticket" style="--i:58"><i></i><i></i><i></i></span><span data-pool-index="59" data-question-index="59" class="qd-ticket" style="--i:59"><i></i><i></i><i></i></span><span data-pool-index="60" data-question-index="60" class="qd-ticket" style="--i:60"><i></i><i></i><i></i></span><span data-pool-index="61" data-question-index="61" class="qd-ticket" style="--i:61"><i></i><i></i><i></i></span><span data-pool-index="62" data-question-index="62" class="qd-ticket" style="--i:62"><i></i><i></i><i></i></span><span data-pool-index="63" data-question-index="63" class="qd-ticket" style="--i:63"><i></i><i></i><i></i></span><span data-pool-index="64" data-question-index="64" class="qd-ticket" style="--i:64"><i></i><i></i><i></i></span><span data-pool-index="65" data-question-index="65" class="qd-ticket" style="--i:65"><i></i><i></i><i></i></span><span data-pool-index="66" data-question-index="66" class="qd-ticket" style="--i:66"><i></i><i></i><i></i></span><span data-pool-index="67" data-question-index="67" class="qd-ticket" style="--i:67"><i></i><i></i><i></i></span><span data-pool-index="68" data-question-index="68" class="qd-ticket" style="--i:68"><i></i><i></i><i></i></span><span data-pool-index="69" data-question-index="69" class="qd-ticket" style="--i:69"><i></i><i></i><i></i></span><span data-pool-index="70" data-question-index="70" class="qd-ticket" style="--i:70"><i></i><i></i><i></i></span><span data-pool-index="71" data-question-index="71" class="qd-ticket" style="--i:71"><i></i><i></i><i></i></span><span data-pool-index="72" data-question-index="72" class="qd-ticket" style="--i:72"><i></i><i></i><i></i></span><span data-pool-index="73" data-question-index="73" class="qd-ticket" style="--i:73"><i></i><i></i><i></i></span><span data-pool-index="74" data-question-index="74" class="qd-ticket" style="--i:74"><i></i><i></i><i></i></span><span data-pool-index="75" data-question-index="75" class="qd-ticket" style="--i:75"><i></i><i></i><i></i></span><span data-pool-index="76" data-question-index="76" class="qd-ticket" style="--i:76"><i></i><i></i><i></i></span><span data-pool-index="77" data-question-index="77" class="qd-ticket" style="--i:77"><i></i><i></i><i></i></span><span data-pool-index="78" data-question-index="78" class="qd-ticket" style="--i:78"><i></i><i></i><i></i></span><span data-pool-index="79" data-question-index="79" class="qd-ticket" style="--i:79"><i></i><i></i><i></i></span></div><div class="qd-flow-caption"><div class="qd-mini-paper"><i></i><i></i><i></i></div><span>问题 q</span><span class="qd-arrow">→</span><span>轻量预测</span><span class="qd-arrow">→</span><span>选择 512 题</span></div></section><section class="qd-scene" data-scene="1" hidden=""><div class="qd-cache-flow"><div class="qd-flow-unit qd-input-unit"><div class="qd-paper-stack"><div><i></i><i></i><i></i></div><div><i></i><i></i><i></i></div><div><i></i><i></i><i></i></div></div><span>只有问题文本</span></div><div class="qd-transport"><span></span><span></span><span></span></div><div class="qd-flow-unit"><div class="qd-encoder-art"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span>固定 encoder</span><span class="text-small text-muted">官方 Qwen · 不随 actor 更新</span></div><div class="qd-transport"><span></span><span></span><span></span></div><div class="qd-flow-unit"><div class="qd-vector-cache"><div><i style="opacity:0.2"></i><i style="opacity:0.45"></i><i style="opacity:0.7"></i><i style="opacity:0.2833333333333333"></i><i style="opacity:0.5333333333333333"></i><i style="opacity:0.7833333333333334"></i><i style="opacity:0.3666666666666667"></i><i style="opacity:0.6166666666666667"></i><i style="opacity:0.2"></i></div><div><i style="opacity:0.6166666666666667"></i><i style="opacity:0.2"></i><i style="opacity:0.45"></i><i style="opacity:0.7"></i><i style="opacity:0.2833333333333333"></i><i style="opacity:0.5333333333333333"></i><i style="opacity:0.7833333333333334"></i><i style="opacity:0.3666666666666667"></i><i style="opacity:0.6166666666666667"></i></div><div><i style="opacity:0.3666666666666667"></i><i style="opacity:0.6166666666666667"></i><i style="opacity:0.2"></i><i style="opacity:0.45"></i><i style="opacity:0.7"></i><i style="opacity:0.2833333333333333"></i><i style="opacity:0.5333333333333333"></i><i style="opacity:0.7833333333333334"></i><i style="opacity:0.3666666666666667"></i></div><div><i style="opacity:0.7833333333333334"></i><i style="opacity:0.3666666666666667"></i><i style="opacity:0.6166666666666667"></i><i style="opacity:0.2"></i><i style="opacity:0.45"></i><i style="opacity:0.7"></i><i style="opacity:0.2833333333333333"></i><i style="opacity:0.5333333333333333"></i><i style="opacity:0.7833333333333334"></i></div></div><span>问题表征缓存</span><span class="text-small text-muted">首次写入 · 之后直接读取</span></div></div><div class="qd-cache-read"><span class="qd-cache-line"></span><span class="text-small text-muted">每轮读取缓存</span><span class="qd-arrow">→</span><span>轻量选题 head</span></div></section><section class="qd-scene" data-scene="2" hidden=""><div class="qd-prediction-context"><span>同一个问题 q</span><span class="text-small text-muted">预测五条轨迹的答对数量</span></div><div class="qd-distribution" role="img" aria-label="示例五条轨迹答对数量的概率：5%、10%、25%、40%、15%、5%"><div class="qd-chart-label text-small text-muted">概率 P(K)</div><div class="qd-bars"><div class="qd-bar-column is-endpoint"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:11.111111111111112%" data-bar-k="0"><span class="text-small tabular-nums">5%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">0</span></div><div class="qd-bar-column"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:22.222222222222225%" data-bar-k="1"><span class="text-small tabular-nums">10%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">1</span></div><div class="qd-bar-column"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:55.55555555555556%" data-bar-k="2"><span class="text-small tabular-nums">25%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">2</span></div><div class="qd-bar-column"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:88.8888888888889%" data-bar-k="3"><span class="text-small tabular-nums">40%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">3</span></div><div class="qd-bar-column"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:33.33333333333333%" data-bar-k="4"><span class="text-small tabular-nums">15%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">4</span></div><div class="qd-bar-column is-endpoint"><div class="qd-bar-space"><div class="qd-bar-measure" style="height:11.111111111111112%" data-bar-k="5"><span class="text-small tabular-nums">5%</span><div class="qd-bar"></div></div></div><span class="text-small tabular-nums">5</span></div></div><div class="qd-chart-axis text-small text-muted">五条轨迹中答对的数量 K</div></div><div class="qd-moments"><div><span class="text-small text-muted">预测 mean</span><h2 class="tabular-nums" data-field="pred-mean">0.530</h2></div><div><span class="text-small text-muted">预测 std</span><h2 class="tabular-nums" data-field="pred-std">0.468</h2></div><span class="text-small text-muted qd-moment-note">五条 EM 的样本标准差期望</span></div></section><section class="qd-scene" data-scene="3" hidden=""><div class="qd-select-head"><div><span class="text-small text-muted">5,120 →</span><h2 class="tabular-nums">512 <span class="text-small text-muted">题</span></h2></div><div class="qd-select-setting"><label class="form-label" for="qd-canvas-explore">随机探索题数</label><select id="qd-canvas-explore" data-action="exploration" class="form-select"><option value="0">0</option><option value="64" selected="">64</option><option value="128">128</option><option value="256">256</option></select></div></div><div class="qd-selection-strip" role="img" aria-label="均匀随机64题，预测std最高448题"><div class="qd-exploration-fill" data-allocation="random" style="width:12.5%"></div><div class="qd-top-fill" data-allocation="top" style="width:87.5%"></div></div><div class="qd-selection-labels"><span><i class="qd-legend-dot is-explore"></i>均匀随机 <strong class="tabular-nums" data-field="explore-count">64</strong></span><span><i class="qd-legend-dot is-focus"></i>高预测 std <strong class="tabular-nums" data-field="focus-count">448</strong></span></div><div class="qd-pool qd-pool-selected" role="img" aria-label="64题随机探索，448题按预测差异选择，方块为示意"><span data-pool-index="0" data-question-index="0" class="qd-ticket is-explore" style="--i:0"><i></i><i></i><i></i></span><span data-pool-index="1" data-question-index="1" class="qd-ticket is-explore" style="--i:1"><i></i><i></i><i></i></span><span data-pool-index="2" data-question-index="2" class="qd-ticket is-explore" style="--i:2"><i></i><i></i><i></i></span><span data-pool-index="3" data-question-index="3" class="qd-ticket is-explore" style="--i:3"><i></i><i></i><i></i></span><span data-pool-index="4" data-question-index="4" class="qd-ticket is-explore" style="--i:4"><i></i><i></i><i></i></span><span data-pool-index="5" data-question-index="5" class="qd-ticket is-explore" style="--i:5"><i></i><i></i><i></i></span><span data-pool-index="6" data-question-index="6" class="qd-ticket is-explore" style="--i:6"><i></i><i></i><i></i></span><span data-pool-index="7" data-question-index="7" class="qd-ticket is-explore" style="--i:7"><i></i><i></i><i></i></span><span data-pool-index="8" data-question-index="8" class="qd-ticket is-focus" style="--i:8"><i></i><i></i><i></i></span><span data-pool-index="9" data-question-index="9" class="qd-ticket is-focus" style="--i:9"><i></i><i></i><i></i></span><span data-pool-index="10" data-question-index="10" class="qd-ticket is-focus" style="--i:10"><i></i><i></i><i></i></span><span data-pool-index="11" data-question-index="11" class="qd-ticket is-focus" style="--i:11"><i></i><i></i><i></i></span><span data-pool-index="12" data-question-index="12" class="qd-ticket is-focus" style="--i:12"><i></i><i></i><i></i></span><span data-pool-index="13" data-question-index="13" class="qd-ticket is-focus" style="--i:13"><i></i><i></i><i></i></span><span data-pool-index="14" data-question-index="14" class="qd-ticket is-focus" style="--i:14"><i></i><i></i><i></i></span><span data-pool-index="15" data-question-index="15" class="qd-ticket is-focus" style="--i:15"><i></i><i></i><i></i></span><span data-pool-index="16" data-question-index="16" class="qd-ticket is-focus" style="--i:16"><i></i><i></i><i></i></span><span data-pool-index="17" data-question-index="17" class="qd-ticket is-focus" style="--i:17"><i></i><i></i><i></i></span><span data-pool-index="18" data-question-index="18" class="qd-ticket is-focus" style="--i:18"><i></i><i></i><i></i></span><span data-pool-index="19" data-question-index="19" class="qd-ticket is-focus" style="--i:19"><i></i><i></i><i></i></span><span data-pool-index="20" data-question-index="20" class="qd-ticket is-focus" style="--i:20"><i></i><i></i><i></i></span><span data-pool-index="21" data-question-index="21" class="qd-ticket is-focus" style="--i:21"><i></i><i></i><i></i></span><span data-pool-index="22" data-question-index="22" class="qd-ticket is-focus" style="--i:22"><i></i><i></i><i></i></span><span data-pool-index="23" data-question-index="23" class="qd-ticket is-focus" style="--i:23"><i></i><i></i><i></i></span><span data-pool-index="24" data-question-index="24" class="qd-ticket is-focus" style="--i:24"><i></i><i></i><i></i></span><span data-pool-index="25" data-question-index="25" class="qd-ticket is-focus" style="--i:25"><i></i><i></i><i></i></span><span data-pool-index="26" data-question-index="26" class="qd-ticket is-focus" style="--i:26"><i></i><i></i><i></i></span><span data-pool-index="27" data-question-index="27" class="qd-ticket is-focus" style="--i:27"><i></i><i></i><i></i></span><span data-pool-index="28" data-question-index="28" class="qd-ticket is-focus" style="--i:28"><i></i><i></i><i></i></span><span data-pool-index="29" data-question-index="29" class="qd-ticket is-focus" style="--i:29"><i></i><i></i><i></i></span><span data-pool-index="30" data-question-index="30" class="qd-ticket is-focus" style="--i:30"><i></i><i></i><i></i></span><span data-pool-index="31" data-question-index="31" class="qd-ticket is-focus" style="--i:31"><i></i><i></i><i></i></span><span data-pool-index="32" data-question-index="32" class="qd-ticket is-focus" style="--i:32"><i></i><i></i><i></i></span><span data-pool-index="33" data-question-index="33" class="qd-ticket is-focus" style="--i:33"><i></i><i></i><i></i></span><span data-pool-index="34" data-question-index="34" class="qd-ticket is-focus" style="--i:34"><i></i><i></i><i></i></span><span data-pool-index="35" data-question-index="35" class="qd-ticket is-focus" style="--i:35"><i></i><i></i><i></i></span><span data-pool-index="36" data-question-index="36" class="qd-ticket is-focus" style="--i:36"><i></i><i></i><i></i></span><span data-pool-index="37" data-question-index="37" class="qd-ticket is-focus" style="--i:37"><i></i><i></i><i></i></span><span data-pool-index="38" data-question-index="38" class="qd-ticket is-focus" style="--i:38"><i></i><i></i><i></i></span><span data-pool-index="39" data-question-index="39" class="qd-ticket is-focus" style="--i:39"><i></i><i></i><i></i></span><span data-pool-index="40" data-question-index="40" class="qd-ticket is-focus" style="--i:40"><i></i><i></i><i></i></span><span data-pool-index="41" data-question-index="41" class="qd-ticket is-focus" style="--i:41"><i></i><i></i><i></i></span><span data-pool-index="42" data-question-index="42" class="qd-ticket is-focus" style="--i:42"><i></i><i></i><i></i></span><span data-pool-index="43" data-question-index="43" class="qd-ticket is-focus" style="--i:43"><i></i><i></i><i></i></span><span data-pool-index="44" data-question-index="44" class="qd-ticket is-focus" style="--i:44"><i></i><i></i><i></i></span><span data-pool-index="45" data-question-index="45" class="qd-ticket is-focus" style="--i:45"><i></i><i></i><i></i></span><span data-pool-index="46" data-question-index="46" class="qd-ticket is-focus" style="--i:46"><i></i><i></i><i></i></span><span data-pool-index="47" data-question-index="47" class="qd-ticket is-focus" style="--i:47"><i></i><i></i><i></i></span><span data-pool-index="48" data-question-index="48" class="qd-ticket is-focus" style="--i:48"><i></i><i></i><i></i></span><span data-pool-index="49" data-question-index="49" class="qd-ticket is-focus" style="--i:49"><i></i><i></i><i></i></span><span data-pool-index="50" data-question-index="50" class="qd-ticket is-focus" style="--i:50"><i></i><i></i><i></i></span><span data-pool-index="51" data-question-index="51" class="qd-ticket is-focus" style="--i:51"><i></i><i></i><i></i></span><span data-pool-index="52" data-question-index="52" class="qd-ticket is-focus" style="--i:52"><i></i><i></i><i></i></span><span data-pool-index="53" data-question-index="53" class="qd-ticket is-focus" style="--i:53"><i></i><i></i><i></i></span><span data-pool-index="54" data-question-index="54" class="qd-ticket is-focus" style="--i:54"><i></i><i></i><i></i></span><span data-pool-index="55" data-question-index="55" class="qd-ticket is-focus" style="--i:55"><i></i><i></i><i></i></span><span data-pool-index="56" data-question-index="56" class="qd-ticket is-focus" style="--i:56"><i></i><i></i><i></i></span><span data-pool-index="57" data-question-index="57" class="qd-ticket is-focus" style="--i:57"><i></i><i></i><i></i></span><span data-pool-index="58" data-question-index="58" class="qd-ticket is-focus" style="--i:58"><i></i><i></i><i></i></span><span data-pool-index="59" data-question-index="59" class="qd-ticket is-focus" style="--i:59"><i></i><i></i><i></i></span><span data-pool-index="60" data-question-index="60" class="qd-ticket is-focus" style="--i:60"><i></i><i></i><i></i></span><span data-pool-index="61" data-question-index="61" class="qd-ticket is-focus" style="--i:61"><i></i><i></i><i></i></span><span data-pool-index="62" data-question-index="62" class="qd-ticket is-focus" style="--i:62"><i></i><i></i><i></i></span><span data-pool-index="63" data-question-index="63" class="qd-ticket is-focus" style="--i:63"><i></i><i></i><i></i></span></div><div class="qd-selection-order text-small text-muted"><span>01 先随机</span><span>→</span><span>02 再取剩余 Top</span><span>→</span><span>03 合计 512</span></div></section><section class="qd-scene" data-scene="4" hidden=""><div class="qd-rollout-heading"><span>512 题 × 5 条 <span class="qd-arrow">→</span> <strong class="tabular-nums">2,560 条真实轨迹</strong></span><div class="qd-rollout-setting"><label class="form-label" for="qd-canvas-correct">示例答对数</label><select id="qd-canvas-correct" class="form-select" data-action="correct"><option value="0">0 / 5</option><option value="1">1 / 5</option><option value="2" selected="">2 / 5</option><option value="3">3 / 5</option><option value="4">4 / 5</option><option value="5">5 / 5</option></select></div></div><div class="qd-rollout" aria-label="同一个问题分叉成五条思考、检索、答案轨迹"><div class="qd-q-origin"><span class="text-small text-muted">同一个问题</span><h2>q</h2></div><div class="qd-traces"><div class="qd-trace-labels text-small text-muted"><span>思考</span><span>检索</span><span>答案</span><span>EM</span></div><div class="qd-trace-row" data-trace-index="0" data-trajectory="0" data-correct="true" style="--i:0"><div class="qd-trace-thought"><i></i><i style="width:38%"></i></div><div class="qd-trace-search"><span></span><i></i></div><div class="qd-trace-answer"><i style="width:62%"></i></div><span class="qd-em is-correct" data-em-index="0" data-em="0" aria-label="轨迹1，EM 1">1</span></div><div class="qd-trace-row" data-trace-index="1" data-trajectory="1" data-correct="true" style="--i:1"><div class="qd-trace-thought"><i></i><i style="width:47%"></i></div><div class="qd-trace-search"><span></span><i></i></div><div class="qd-trace-answer"><i style="width:55%"></i></div><span class="qd-em is-correct" data-em-index="1" data-em="1" aria-label="轨迹2，EM 1">1</span></div><div class="qd-trace-row" data-trace-index="2" data-trajectory="2" data-correct="false" style="--i:2"><div class="qd-trace-thought"><i></i><i style="width:56%"></i></div><div class="qd-trace-search"><span></span><i></i></div><div class="qd-trace-answer"><i style="width:48%"></i></div><span class="qd-em" data-em-index="2" data-em="2" aria-label="轨迹3，EM 0">0</span></div><div class="qd-trace-row" data-trace-index="3" data-trajectory="3" data-correct="false" style="--i:3"><div class="qd-trace-thought"><i></i><i style="width:65%"></i></div><div class="qd-trace-search"><span></span><i></i></div><div class="qd-trace-answer"><i style="width:41%"></i></div><span class="qd-em" data-em-index="3" data-em="3" aria-label="轨迹4，EM 0">0</span></div><div class="qd-trace-row" data-trace-index="4" data-trajectory="4" data-correct="false" style="--i:4"><div class="qd-trace-thought"><i></i><i style="width:74%"></i></div><div class="qd-trace-search"><span></span><i></i></div><div class="qd-trace-answer"><i style="width:34%"></i></div><span class="qd-em" data-em-index="4" data-em="4" aria-label="轨迹5，EM 0">0</span></div></div></div><div class="qd-moments"><div><span class="text-small text-muted">实测 mean</span><h2 class="tabular-nums" data-field="true-mean">0.400</h2></div><div><span class="text-small text-muted">实测 std</span><h2 class="tabular-nums" data-field="true-std">0.548</h2></div><span class="text-small text-muted qd-moment-note">严格 EM · 样本 std · ddof = 1</span></div></section><section class="qd-scene" data-scene="5" hidden=""><div class="qd-update-source"><div class="qd-mini-traces"><i></i><i></i><i></i><i></i><i></i></div><span>同一批真实轨迹</span></div><div class="qd-fork"><span></span><span></span></div><div class="qd-learning-lanes"><div class="qd-learning-lane"><span class="text-small text-muted">原 Search-G1 奖励</span><div class="qd-actor-art"><i></i><i></i><i></i><i></i></div><h3>Actor / PPO</h3><span class="text-small text-muted">原奖励与三项防护</span></div><div class="qd-learning-lane"><span class="text-small text-muted">严格 EM → K / mean / std</span><div class="qd-probe-art"><i></i><i></i><i></i><i></i></div><h3>选题 head</h3><span class="text-small text-muted">每个成功 iteration 更新</span></div></div><div class="qd-return-flow"><span>新 actor</span><span>+</span><span>新 head</span><span class="qd-arrow">→</span><span>下一轮选题</span></div><div class="qd-old-probe-note text-small text-muted">原奖励 probe 独立保留 50 轮刷新周期</div></section></main><div class="qd-detail text-small text-muted" data-field="stage-detail" aria-live="polite">5,120 个候选，此时没有 CoT、检索或答案生成。</div><footer class="qd-footer"><span class="text-small text-muted">完整轨迹生成预算</span><span class="text-small">原上限 <span class="tabular-nums">10,240</span> <span class="qd-arrow">→</span> 本方案 <strong class="tabular-nums">2,560</strong></span><span class="text-small text-muted">不等同于总耗时缩短 4 倍</span></footer></div>
 <script>
+/* Local interaction only. Markup, SVG and CSS come directly from the Canvas SSR. */
 (() => {
-  const root=document.getElementById('qd-probe-20261013');
-  if(!root || root.dataset.initialized) return;
-  root.dataset.initialized='true';
-  const field=name=>root.querySelector('[data-field="'+name+'"]');
-  const probabilities=[.05,.10,.25,.40,.15,.05];
-  const spread=k=>Math.sqrt(k*(5-k)/20);
-  const titles=['大候选池，只读问题','编码问题，复用缓存','预测五条轨迹会有多大差异','随机探索 + 高差异选题','只给选中的问题生成轨迹','同一批轨迹，更新两条学习链'];
-  const details=['5,120 个候选问题，此时尚未生成任何训练轨迹。','固定 encoder 不随 actor 更新；新的选题 head 每轮更新。','概率分布同时给出 mean 与 std；准确率接近 0.5 不等于组内差异大。','随机题先入选，再从剩余候选按预测 std 排序，合计始终为 512 题。','预测和实测分开记录；全对、全错组也保留，不补采。','标签来自更新前的 actor；新 head 和新 actor 在下一轮共同使用。'];
-  const saved=window.openai?.widgetState;
-  let state={step:0,exploration:64,correct:2,playing:false};
-  let timer=null;
-  function restore(v){ const m=v?.modelContent||{}; const p=v?.privateContent||{}; if([0,64,128,256].includes(m.exploration_questions)) state.exploration=m.exploration_questions; if(Number.isInteger(p.step)&&p.step>=0&&p.step<6) state.step=p.step; if(Number.isInteger(p.correct)&&p.correct>=0&&p.correct<=5) state.correct=p.correct; }
-  restore(saved);
-  function save(){ window.openai?.setWidgetState?.({modelContent:{exploration_questions:state.exploration,focus_questions:512-state.exploration,selection_score:'expected_sample_std',illustrative:true},privateContent:{step:state.step,correct:state.correct}})?.catch(()=>{}); }
-  function tile(i,color){ const el=document.createElement('div'); el.className='qd-question'; el.style.setProperty('--i',i); if(color)el.style.background=color; return el; }
-  for(let i=0;i<80;i++)field('candidate-grid').append(tile(i));
-  root.querySelectorAll('.qd-vector').forEach((v,j)=>{for(let i=0;i<8;i++){const bar=document.createElement('i');bar.style.height=(6+(i*7+j*3)%17)+'px';v.append(bar);}});
-  field('pred-mean').textContent=probabilities.reduce((a,p,k)=>a+p*k/5,0).toFixed(3);
-  field('pred-std').textContent=probabilities.reduce((a,p,k)=>a+p*spread(k),0).toFixed(3);
-  function drawDistribution(){ const host=field('distribution');const width=Math.max(280,Math.round(host.getBoundingClientRect().width)); const height=170;const left=30,right=12,top=22,bottom=36;const inner=width-left-right;const dx=inner/6;const barWidth=Math.min(48,dx*.58);const baseline=height-bottom; const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.setAttribute('height',height);svg.setAttribute('role','img');svg.setAttribute('aria-label','预测五条轨迹答对 0 至 5 条的概率，依次为 5%、10%、25%、40%、15%、5%');let content='<title>示例预测：五条轨迹的答对条数</title><desc>预测 mean 0.530，预测样本 std 0.468。</desc>';content+='<line x1="'+left+'" y1="'+baseline+'" x2="'+(width-right)+'" y2="'+baseline+'" stroke="var(--border)"/>';probabilities.forEach((p,k)=>{ const x=left+dx*(k+.5);const h=p/.45*(baseline-top);content+='<rect x="'+(x-barWidth/2)+'" y="'+(baseline-h)+'" width="'+barWidth+'" height="'+h+'" fill="var(--viz-series-1)" opacity="'+(k===0||k===5?.25:.8)+'"/><text x="'+x+'" y="'+(baseline-h-7)+'" text-anchor="middle">'+Math.round(p*100)+'%</text><text x="'+x+'" y="'+(baseline+19)+'" text-anchor="middle">'+k+'</text>';});content+='<text x="'+(width-right)+'" y="'+(height-1)+'" text-anchor="end">答对条数 K</text>';svg.innerHTML=content;host.replaceChildren(svg); }
-  new ResizeObserver(()=>{if(state.step===2)drawDistribution();}).observe(field('distribution'));
-  function renderTrajectories(){ const list=field('trajectories');list.replaceChildren();for(let i=0;i<5;i++){const row=document.createElement('div');row.className='qd-trajectory';row.style.setProperty('--i',i);row.innerHTML='<div class="qd-trace" aria-label="思考、搜索和答案"><i></i><i></i><i></i><i></i><i></i></div><div class="qd-em '+(i<state.correct?'is-correct':'')+'">'+(i<state.correct?'✓':'×')+'</div><span class="text-small tabular-nums">EM '+(i<state.correct?1:0)+'</span>';list.append(row);}field('true-mean').textContent=(state.correct/5).toFixed(3);field('true-std').textContent=spread(state.correct).toFixed(3); }
-  function stop(){state.playing=false;clearTimeout(timer);timer=null;}
-  function schedule(){clearTimeout(timer);if(state.playing&&state.step<5)timer=setTimeout(()=>{state.step++;if(state.step===5)stop();render(true);save();schedule();},3200);}
-  function render(animate){root.querySelector('[data-action="play"]').textContent=state.playing?'暂停':state.step===5?'重新播放':'播放流程';root.querySelector('[data-action="next"]').disabled=state.step===5;root.querySelector('#qd-explore').value=String(state.exploration);root.querySelector('#qd-correct').value=String(state.correct);field('stage-title').textContent=titles[state.step];field('stage-count').textContent=(state.step+1)+' / 6';field('detail').textContent=details[state.step];root.querySelectorAll('[data-step]').forEach((b)=>b.setAttribute('aria-pressed',String(Number(b.dataset.step)===state.step)));root.querySelectorAll('[data-scene]').forEach(scene=>{scene.hidden=Number(scene.dataset.scene)!==state.step;scene.classList.remove('qd-enter');});const scene=root.querySelector('[data-scene="'+state.step+'"]');if(animate){void scene.offsetHeight;scene.classList.add('qd-enter');}root.querySelector('.qd-main').dataset.phase=state.step;field('explore-count').textContent=state.exploration;field('focus-count').textContent=512-state.exploration;root.querySelector('.qd-exploration-fill').style.width=100*state.exploration/512+'%';root.querySelector('.qd-top-fill').style.width=100*(512-state.exploration)/512+'%';root.querySelector('.qd-selection-strip').setAttribute('aria-label','随机 '+state.exploration+' 题，预测差异最高 '+(512-state.exploration)+' 题');field('selected-grid').replaceChildren();for(let i=0;i<64;i++)field('selected-grid').append(tile(i,i<state.exploration/8?'color-mix(in srgb,var(--viz-series-2) 65%,transparent)':'color-mix(in srgb,var(--viz-series-1) 65%,transparent)'));renderTrajectories();if(state.step===2)drawDistribution();}
-  root.querySelector('[data-action="play"]').addEventListener('click',()=>{if(state.playing)stop();else{if(state.step===5)state.step=0;state.playing=true;}render(true);save();schedule();});
-  root.querySelector('[data-action="next"]').addEventListener('click',()=>{stop();state.step=Math.min(5,state.step+1);render(true);save();});
-  root.querySelector('[data-action="reset"]').addEventListener('click',()=>{stop();state.step=0;render(true);save();});
-  root.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{stop();state.step=Number(b.dataset.step);render(true);save();}));
-  root.querySelector('#qd-explore').addEventListener('change',event=>{state.exploration=Number(event.target.value);stop();state.step=3;render(true);save();});
-  root.querySelector('#qd-correct').addEventListener('change',event=>{state.correct=Number(event.target.value);render(false);save();});
-  window.addEventListener('openai:set_globals',event=>{if(event.detail?.globals?.widgetState){const previous=[state.step,state.exploration,state.correct].join(':');restore(event.detail.globals.widgetState);if(previous!==[state.step,state.exploration,state.correct].join(':')){stop();render(false);}}});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();render(false);}});
+  const root = document.getElementById('qd-probe-20261013');
+  if (!root || root.dataset.initialized) return;
+  root.dataset.initialized = 'true';
+  const model = JSON.parse(root.dataset.model || '{}');
+  const phases = model.titles || [];
+  const details = model.details || [];
+  const probabilities = model.probabilities || [.05, .10, .25, .40, .15, .05];
+  const sampleStd = k => Math.sqrt(k * (5 - k) / 20);
+  const fields = name => [...root.querySelectorAll('[data-field="' + name + '"]')];
+  const put = (name, value) => fields(name).forEach(el => { el.textContent = String(value); });
+  const action = name => root.querySelector('[data-action="' + name + '"]');
+  let state = { step: 0, exploration: 64, correct: 2, playing: false };
+  let timer = null;
+  function restore(saved) {
+    const meaningful = saved?.modelContent || {};
+    const privateState = saved?.privateContent || {};
+    if ([0, 64, 128, 256].includes(meaningful.exploration_questions)) state.exploration = meaningful.exploration_questions;
+    if (Number.isInteger(privateState.step) && privateState.step >= 0 && privateState.step < 6) state.step = privateState.step;
+    if (Number.isInteger(privateState.correct) && privateState.correct >= 0 && privateState.correct <= 5) state.correct = privateState.correct;
+  }
+  restore(window.openai?.widgetState);
+  function save() {
+    window.openai?.setWidgetState?.({
+      modelContent: { exploration_questions: state.exploration, focus_questions: 512 - state.exploration, selection_score: 'expected_sample_std', illustrative: true },
+      privateContent: { step: state.step, correct: state.correct },
+    })?.catch(() => {});
+  }
+  function stop() { state.playing = false; clearTimeout(timer); timer = null; }
+  function render(animate = false) {
+    const playLabel = state.playing ? '暂停' : state.step === 5 ? '重新播放' : '播放流程';
+    if (fields('play-label').length) put('play-label', playLabel);
+    else action('play').textContent = playLabel;
+    action('play').setAttribute('aria-pressed', String(state.playing));
+    action('next').disabled = state.step === 5;
+    action('exploration').value = String(state.exploration);
+    action('correct').value = String(state.correct);
+    put('stage-count', `${state.step + 1} / 6`);
+    put('stage-title', phases[state.step] || '');
+    put('stage-detail', details[state.step] || '');
+    put('detail', details[state.step] || '');
+    put('explore-count', state.exploration);
+    put('focus-count', 512 - state.exploration);
+    put('pred-mean', probabilities.reduce((sum, p, k) => sum + p * k / 5, 0).toFixed(3));
+    put('pred-std', probabilities.reduce((sum, p, k) => sum + p * sampleStd(k), 0).toFixed(3));
+    put('true-mean', (state.correct / 5).toFixed(3));
+    put('true-std', sampleStd(state.correct).toFixed(3));
+    root.dataset.phase = String(state.step);
+    root.dataset.animated = String(animate);
+    root.dataset.playing = String(state.playing);
+    root.querySelectorAll('[data-step]').forEach(button => {
+      const index = Number(button.dataset.step);
+      button.setAttribute('aria-pressed', String(index === state.step));
+      button.dataset.state = index < state.step ? 'complete' : index === state.step ? 'active' : 'upcoming';
+    });
+    root.querySelectorAll('[data-scene]').forEach(scene => {
+      scene.hidden = Number(scene.dataset.scene) !== state.step;
+      scene.classList.remove('qd-enter');
+    });
+    const scene = root.querySelector('[data-scene="' + state.step + '"]');
+    if (animate && scene) { void scene.offsetHeight; scene.classList.add('qd-enter'); }
+    root.querySelectorAll('[data-allocation]').forEach(el => {
+      const amount = el.dataset.allocation === 'random' ? state.exploration : 512 - state.exploration;
+      el.style.width = amount / 512 * 100 + '%';
+      el.dataset.empty = String(amount === 0);
+    });
+    root.querySelectorAll('[data-nav-index]').forEach(el => {
+      const index = Number(el.dataset.navIndex);
+      el.classList.toggle('is-active', index === state.step);
+      el.classList.toggle('is-done', index < state.step);
+    });
+    root.querySelectorAll('.qd-pool-selected [data-question-index]').forEach(el => {
+      const isRandom = Number(el.dataset.questionIndex) < state.exploration / 8;
+      el.dataset.kind = isRandom ? 'random' : 'top';
+      el.classList.toggle('is-explore', isRandom);
+      el.classList.toggle('is-focus', !isRandom);
+    });
+    root.querySelectorAll('[data-trajectory]').forEach(el => {
+      const correct = Number(el.dataset.trajectory) < state.correct;
+      el.dataset.correct = String(correct);
+      el.classList.toggle('is-correct', correct);
+      el.querySelectorAll('[data-em]').forEach(em => {
+        em.textContent = String(Number(correct));
+        em.classList.toggle('is-correct', correct);
+        em.setAttribute('aria-label', `轨迹${Number(el.dataset.trajectory) + 1}，EM ${Number(correct)}`);
+      });
+      el.querySelectorAll('[data-em-mark]').forEach(mark => { mark.textContent = correct ? '✓' : '×'; mark.classList.toggle('is-correct', correct); });
+    });
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (!state.playing || state.step >= 5) return;
+    timer = setTimeout(() => {
+      state.step += 1;
+      if (state.step === 5) stop();
+      render(true); save(); schedule();
+    }, model.phaseMs?.[state.step] || Number(model.durationMs) || 3200);
+  }
+  action('play').addEventListener('click', () => {
+    if (state.playing) stop();
+    else { if (state.step === 5) state.step = 0; state.playing = true; }
+    render(true); save(); schedule();
+  });
+  action('next').addEventListener('click', () => { stop(); state.step = Math.min(5, state.step + 1); render(true); save(); });
+  action('reset')?.addEventListener('click', () => { stop(); state.step = 0; render(true); save(); });
+  root.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => { stop(); state.step = Number(button.dataset.step); render(true); save(); }));
+  action('exploration').addEventListener('change', event => { stop(); state.exploration = Number(event.target.value); state.step = 3; render(true); save(); });
+  action('correct').addEventListener('change', event => { stop(); state.correct = Number(event.target.value); render(false); save(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { stop(); render(false); } });
+  window.addEventListener('openai:set_globals', event => {
+    const saved = event.detail?.globals?.widgetState;
+    if (!saved) return;
+    const previous = [state.step, state.exploration, state.correct].join(':');
+    restore(saved);
+    if (previous !== [state.step, state.exploration, state.correct].join(':')) { stop(); render(false); }
+  });
   render(false);
 })();
+
 </script>

@@ -1,0 +1,21 @@
+{
+  "compiler": "TypeScript 5.8.3 / React 18.3.1 SSR",
+  "diagnostics": [],
+  "source": [
+    {
+      "file": "question-diversity-probe.canvas.tsx",
+      "sha256": "e6b081c3a0011e124d3b48b8576030d50cf3b7046756897a34df8414fd4c56b1"
+    },
+    {
+      "file": "question-diversity-probe.styles.ts",
+      "sha256": "078593a6d234e8af2e41bbe098d5da5700b9e568b659616901ea1fb3e142f86f"
+    },
+    {
+      "file": "question-diversity-probe.controls.js",
+      "sha256": "2401546eec8f6d3fc5b41b5624c31d127bddfb4655de705c270022d0222e911d"
+    }
+  ],
+  "fragmentBytes": 56727,
+  "fragmentSha256": "8efa159d7dcd8aed132a630099cb7e80e01441b0109cd76d1552e97cd7a14589",
+  "rendered": "question-diversity-probe-demo.html"
+}

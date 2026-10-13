@@ -1,0 +1,21 @@
+{
+  "titleSpans": [
+    {
+      "text": "先选好问题，",
+      "display": "block"
+    },
+    {
+      "text": "再生成轨迹。",
+      "display": "block"
+    }
+  ],
+  "particles": [
+    "qd-vertical-vector-pass",
+    "qd-vertical-vector-pass",
+    "qd-vertical-vector-pass",
+    "qd-vertical-vector-pass",
+    "qd-vertical-vector-pass",
+    "qd-vertical-vector-pass"
+  ],
+  "passed": true
+}

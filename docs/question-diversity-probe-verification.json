@@ -30,29 +30,41 @@
   },
   "visualization": {
     "illustrative": true,
-    "layout_cases": 24,
+    "inline_layout_cases": 48,
+    "native_layout_cases": 48,
     "overflow_cases": 0,
-    "math_k_values": [
-      "0",
-      "1",
-      "2",
-      "3",
-      "4",
-      "5"
+    "themes": [
+      "light",
+      "dark"
     ],
-    "controls": {
-      "predictedMean": "0.530",
-      "predictedStd": "0.468",
-      "playPause": true,
-      "autoStopsAtEnd": true
-    },
-    "canvas": {
-      "illustrative": true,
-      "compiler": "TypeScript 5.8.3 / React 18.3.1",
-      "syntaxDiagnostics": [],
-      "runtimeErrors": [],
-      "passed": true
-    }
+    "widths": [
+      320,
+      360,
+      736,
+      1024
+    ],
+    "phases": 6,
+    "graphics_readback_pass": true,
+    "exploratory_budgets": [
+      0,
+      64,
+      128,
+      256
+    ],
+    "correct_counts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "finite_animation": true,
+    "actual_motion": true,
+    "auto_stop": true,
+    "fragment_sha256": "8efa159d7dcd8aed132a630099cb7e80e01441b0109cd76d1552e97cd7a14589",
+    "native_syntax_errors": [],
+    "checked_utc": "2026-10-13T10:06:14.203856+00:00"
   },
   "source_sha256": {
     "reproduction/a800/probe_admission.py": "48577c93ebacf55ebc84b94aa958dbb636119710e13f7e457979a12b900f2422",
