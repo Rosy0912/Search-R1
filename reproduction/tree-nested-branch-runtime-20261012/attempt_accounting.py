@@ -32,8 +32,21 @@ def attempt_results(run,package,config_hash,last):
         config_sha256=config_hash,data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
     complete=0;refused=0;totals={str(r):0 for r in range(8)};completed_totals=totals.copy();partial_totals=totals.copy()
     bindings={};credited=[];skipped=[];opportunities=0
+    child_expected=expected.copy()
     files=sorted((run/'checkpoints/training_state/attempt-results').glob('attempt-*.json'))
+    parent_run=None;parent_expected=None
+    if package.get('nested_native_continuation') is not None:
+        from calibration_contract import validate_native_start
+        from search_r1.baselines.tree_nested_chain_resume import PARENT_ROOT,parent_manifest
+        validate_native_start(run,package,config_hash)
+        parent_run=PARENT_ROOT;mother=parent_manifest()['identity']
+        parent_expected={key:mother[key] for key in expected}
+        require(not (run/'checkpoints/training_state/attempt-results/attempt-000001.json').exists(),
+                'Continuation cannot silently fresh-train/rewrite credited native1')
+        files=[parent_run/'checkpoints/training_state/attempt-results/attempt-000001.json',*files]
     for attempt,path in enumerate(files,1):
+        source_run=parent_run if parent_run is not None and attempt==1 else run
+        expected=parent_expected if source_run==parent_run else child_expected
         value,sha,_=read_bound(path);require(path.name==f'attempt-{attempt:06d}.json','Attempt result sequence has a gap/duplicate')
         bindings[str(path)]=sha
         if value['status']=='COMPLETED_OPPORTUNITIES_OUTER_CREDITED':
@@ -53,7 +66,7 @@ def attempt_results(run,package,config_hash,last):
                         and record['opportunities_skipped']==20-actual and record['scheduler_before']==complete
                         and record['scheduler_after']==complete+1 and record['attempt_id']==attempt
                         and record['accepted_outer']==complete+1 and record['completed_outer_before']==complete,'Credited rank opportunity/write/scheduler mismatch')
-                direct=record['direct_rank_record'];direct_path=run/'output/fresh-state'/f'outer-{complete+1:06d}-attempt-{attempt:06d}-rank{rank:02d}.json'
+                direct=record['direct_rank_record'];direct_path=source_run/'output/fresh-state'/f'outer-{complete+1:06d}-attempt-{attempt:06d}-rank{rank:02d}.json'
                 require(Path(direct['path']).resolve()==direct_path.resolve() and direct['rank']==rank
                         and direct['actual_optimizer_calls']==actual and direct['scheduler_step_before']==complete
                         and direct['scheduler_step_after']==complete+1,'Gathered actual direct-rank descriptor differs')
@@ -66,7 +79,8 @@ def attempt_results(run,package,config_hash,last):
                 writes[str(rank)]=actual;totals[str(rank)]+=actual;completed_totals[str(rank)]+=actual
                 require(record['total_optimizer_calls']==totals[str(rank)],'Actual cumulative Adam count omits history')
             require(len(set(writes.values()))==1 and value['actual_completed_optimizer_calls_per_rank']==completed_totals,'Matched complete accounting differs across ranks')
-            complete+=1;credited.append(dict(outer=complete,attempt=attempt,actual_writes_per_rank=writes,result_sha256=sha))
+            complete+=1;credited.append(dict(outer=complete,attempt=attempt,actual_writes_per_rank=writes,result_sha256=sha,
+                source_run=str(source_run),expected_identity=expected.copy(),inherited_native1=source_run==parent_run))
         elif value['status']=='ALL_OPPORTUNITIES_SKIPPED_NO_OUTER_CREDIT':
             require(value['protocol']=='tree_partial_state_v1','Unknown no-credit protocol')
             ids=value['identity'];require_identity(ids,expected)
@@ -90,7 +104,8 @@ def attempt_results(run,package,config_hash,last):
             require(value['actual_optimizer_calls_per_rank']=={str(r):0 for r in range(8)},'No-credit allskip write totals inconsistent')
             epoch,cursor=sampler_position(attempt)
             require(value['consumed_cursor']==cursor and value['consumed_epoch']==epoch,'Allskip consumed sampler does not include the fetched attempt')
-            refused+=1;skipped.append(dict(attempt=attempt,candidate_outer=complete+1,partial_manifest_sha256=psha))
+            refused+=1;skipped.append(dict(attempt=attempt,candidate_outer=complete+1,partial_manifest_sha256=psha,
+                source_run=str(source_run),expected_identity=expected.copy(),inherited_native1=False))
         else:raise ValueError('Fault/unrecognized attempt cannot become completed outer credit')
         opportunities+=20
         if complete==last:break
@@ -99,7 +114,9 @@ def attempt_results(run,package,config_hash,last):
         opportunities_per_rank=opportunities,successful_writes_per_rank=totals,completed_optimizer_calls_per_rank=completed_totals,
         partial_optimizer_calls_per_rank=partial_totals,total_optimizer_calls_per_rank=totals,
         skipped_opportunities_per_rank={str(r):opportunities-totals[str(r)] for r in range(8)},credited=credited,all_skipped=skipped,
-        record_sha256=bindings,uncredited_partial_writes_not_inferred=True,automatic_rollback=False)
+        record_sha256=bindings,uncredited_partial_writes_not_inferred=True,automatic_rollback=False,
+        inherited_completed_outers=1 if parent_run is not None else 0,
+        failed_parent_outer2_in_effective_history=False,failed_parent_outer2_recomputed=parent_run is not None and last>=2)
 
 
 def checkpoint_accounting(value,observed,outer,run=None):

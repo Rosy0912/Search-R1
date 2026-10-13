@@ -1,4 +1,4 @@
-from production_contract import run_job_id
+from production_contract import run_job_id,read_bound
 """Fresh200 wrapper contract aligned to the actual fresh source/RPC schema.
 
 No model forwards or optimizer calls. Missing actual evidence refuses; official
@@ -147,6 +147,8 @@ def final_gpu_process_observation(snapshot,own_relative,background):
 def forbid_recovery_environment(environ):
     present = [name for name in environ if name.startswith(('TREE_RECOVERY_','TREE_CURRENT_CHAIN_RESUME_'))]
     require(not present, 'Fresh200 forbids inherited recovery environment: '+str(present))
+    from search_r1.baselines.tree_nested_chain_resume import validate_entry
+    validate_entry(environ=environ)
 
 
 def expected_runtime(run, package, config_hash):
@@ -168,7 +170,10 @@ def expected_mu_provenance(receipt):
 def validate_fresh_start(run, package, config_hash):
     value, digest = held_json(Path(run)/'output/fresh-initialization.json')
     expected = expected_runtime(run,package,config_hash)
-    require(value['status'] == 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED', 'Missing fresh actual startup evidence')
+    native = package.get('nested_native_continuation') is not None
+    expected_status = ('COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE1_CONTINUATION'
+                       if native else 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED')
+    require(value['status'] == expected_status, 'Missing actual official cold initialization evidence')
     require(value['training_protocol'] == PROFILE and value['calibration_profile'] == 'fresh_base_zero_v1'
             and value['initialized_global_steps'] == 0 and value['parent_completed_step'] == 0
             and value['parent_cursor'] == 0 and value['driver_completed_outer'] == 0
@@ -180,7 +185,8 @@ def validate_fresh_start(run, package, config_hash):
     for rank, record in enumerate(workers):
         require(record['rank'] == rank and record['world_size'] == 8
                 and record['training_protocol'] == PROFILE and record['calibration_profile'] == 'fresh_base_zero_v1'
-                and record['checkpoint_recovery_environment_absent'] is True
+                and record['checkpoint_recovery_environment_absent'] is (not native)
+                and record.get('native_nested_continuation_requested',False) is native
                 and record['optimizer_state_entries'] == 0 and record['optimizer_step_values'] == []
                 and record['scheduler_step'] == 0 and record['optimizer_committed'] == 0
                 and record['scheduler_advanced'] is False,
@@ -190,7 +196,9 @@ def validate_fresh_start(run, package, config_hash):
         require(record['complete_model_parameter_bytes_verified'] is False,
                 'Configured-path startup proof must not claim exhaustive weight-byte verification')
         require(all(record.get(key) == val for key,val in expected.items()), 'Fresh rank provenance changed')
-    return dict(status='FRESH_START_CONTRACT_VALIDATED', evidence_sha256=digest, workers=8)
+    return dict(status=('COLD_OFFICIAL_BOOTSTRAP_BEFORE_NESTED_NATIVE_CONTINUATION_VALIDATED'
+                        if native else 'FRESH_START_CONTRACT_VALIDATED'),
+                evidence_sha256=digest, workers=8, native_continuation_loaded=False)
 
 
 def validate_ready_boundary(value,expected):
@@ -327,3 +335,46 @@ def validate_calibration_ready(path, run, package, config_hash):
                 ready_sha256=ready_sha, all_leaf_binding=mu_receipt, workers=8,
                 decision=common_decision, original_sampler_actor_gate_accepted=False,
                 actual_optimizer_writes=0, production_thresholds_accepted=False)
+
+
+def validate_native_start(run, package, config_hash):
+    from search_r1.baselines.tree_nested_chain_resume import (PROTOCOL, PARENT_MANIFEST,
+        PARENT_MANIFEST_SHA256, parent_manifest, failed_save_evidence)
+    require(package.get('nested_native_continuation') is not None, 'Explicit native package credential required')
+    cold = validate_fresh_start(run, package, config_hash)
+    value, receipt_sha, _ = read_bound(Path(run)/'output/nested-native1-loaded.json')
+    parent = parent_manifest(); provenance = value['provenance']; expected = expected_runtime(run, package, config_hash)
+    require(value['status'] == 'COLD_NESTED_NATIVE1_STATE_LOADED' and value['protocol'] == PROTOCOL
+            and provenance['protocol'] == PROTOCOL and provenance['same_fresh_nested_chain'] is True
+            and provenance['parent_identity'] == parent['identity']
+            and provenance['parent_manifest_path'] == str(PARENT_MANIFEST)
+            and provenance['parent_manifest_sha256'] == PARENT_MANIFEST_SHA256
+            and provenance['parent_completed_step'] == 1 and provenance['parent_cursor'] == 512
+            and provenance['parent_epoch'] == 0 and provenance['new_batch_size'] == 512
+            and provenance['failed_parent_outer2'] == failed_save_evidence(parent)
+            and all(provenance['child_'+key] == expected[key] for key in ('code_commit','config_sha256','job_id','run_id'))
+            and provenance['exact_executor_resume'] is False and value['executor_equivalence'] is False,
+            'Actual native continuation mother/child/failure binding differs')
+    driver = value['driver']
+    require(driver['state_path'] == parent['driver']['path'] and driver['state_file_sha256'] == parent['driver']['sha256']
+            and driver['actual_file_sha256_verified'] is True and driver['actual_cold_driver_state_equal'] is True
+            and driver['completed_outer_updates'] == 1 and driver['next_outer_update'] == 2
+            and driver['sampler_cursor'] == 512 and driver['sampler_epoch'] == 0 and driver['training_attempts'] == 1
+            and driver['completed_optimizer_calls_per_rank'] == {str(r):20 for r in range(8)},
+            'Actual loaded driver effective native1 boundary differs')
+    workers = sorted(value['workers'], key=lambda r:r['rank'])
+    require(len(workers) == 8 and [r['rank'] for r in workers] == list(range(8)), 'Loaded native rank coverage differs')
+    for record in workers:
+        mother = next(r for r in parent['worker_states'] if r['identity']['rank'] == record['rank'])
+        require(record['status'] == 'COLD_NESTED_NATIVE1_WORKER_LOADED' and record['protocol'] == PROTOCOL
+                and record['world_size'] == 8 and record['parent_identity'] == mother['identity']
+                and record['actual_cold_native_state_equal'] is True and record['actual_file_sha256_verified'] is True
+                and record['serialized_logical_state_sha256'] == record['actual_loaded_logical_state_sha256'] == mother['logical_state_sha256']
+                and record['state_file_sha256'] == mother['sha256'] and record['state_file_bytes'] == mother['bytes']
+                and record['scheduler_step'] == 1 and record['adam_steps'] == [20]
+                and record['actual_total_optimizer_calls'] == 20 and record['child_code_commit'] == expected['code_commit']
+                and record['exact_executor_resume'] is False, 'Actual cold-loaded native rank receipt differs')
+    return dict(status='ACTUAL_NESTED_NATIVE1_CONTINUATION_START_VALIDATED', receipt_sha256=receipt_sha,
+        cold_official_bootstrap=cold, loaded_completed_outer=1, loaded_adam_calls_per_rank=20,
+        loaded_scheduler_step=1, loaded_sampler_cursor=512, next_outer=2,
+        failed_parent_outer2=provenance['failed_parent_outer2'], exact_executor_resume=False)

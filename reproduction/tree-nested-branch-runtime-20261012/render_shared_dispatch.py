@@ -23,7 +23,7 @@ def render(package,manifest_sha,release_path,release_sha):
       'PYTHONPATH':str(package)+':'+str(ROOT/'tools')+':'+str(package/'source/repo'),
       'PYTHONOPTIMIZE':'0','CUDA_VISIBLE_DEVICES':','.join(value['dispatch']['expected_gpu_uuids'])}
     # Own .service has no scheduler reservation or foreign job cgroup/device policy.
-    return ['systemd-run','--unit='+unit,'--property=CPUQuota=3200%','--property=MemoryMax=256G',
+    return ['systemd-run','--unit='+unit,'--property=CPUQuota=3200%','--property=MemoryMax=384G',
             '--property=TasksMax=4096','--property=KillMode=control-group','--property=TimeoutStopSec=60',
             '--property=RuntimeMaxSec=604800','--property=Restart=no','--property=Nice=5',
             *['--setenv='+key+'='+item for key,item in sorted(environment.items())],

@@ -20,6 +20,13 @@ DIRECT_THRESHOLDS = dict(target_old_policy_kl=0.2,negative_tail_limit=0.01,initi
 THRESHOLD_FIELDS = ('target_old_policy_kl','negative_tail_limit','initial_actor_repeat_max_abs_delta')
 INPUT_NAMES = ('actual_calibration_ready','actual_calibration_acceptance','threshold_acceptance',
                'source_context_free_review')
+RECOVERY_REVIEW_POLICY = 'latest_human_launch_first_operational_recovery_no_redundant_review'
+RECOVERY_PARENT_SOURCE = '0befbaf99fc44942105831b3fbec94e4bf1b8ccb'
+UNCHANGED_ALGORITHM_FILES = (
+    'search_r1/baselines/rollout.py', 'search_r1/baselines/controller.py',
+    'search_r1/baselines/tree_audit.py', 'search_r1/baselines/advantages.py',
+    'search_r1/baselines/tree_nested_branch.py', 'search_r1/baselines/local_runtime.py',
+    'reproduction/tree-nested-branch-runtime-20261012/config/ppo_tree_nested_branch_fresh200.yaml')
 
 
 def run_job_id(run):
@@ -154,7 +161,9 @@ def direct_authority(package, trusted_root=ROOT):
     require(package['code_commit']==SOURCE and package['stage']=='fresh_mu_train200' and package['training_protocol']==PROFILE,'Source/stage/profile mismatch')
     require(not any(k in package for k in ('parent_manifest','current_chain_resume','parent_native_migration_receipt')),'Fresh package forbids migration')
     authority,digest,_=descriptor(package['human_training_authority'],trusted_root)
-    require(authority['scope']==CHAIN_SCOPE and authority['code_commit']==SOURCE and authority['status']==DIRECT_MODE and authority['same_instance_continuation'] is True and authority['completed_outer_goal']==200 and authority['final_evaluation_rows']==51713,'Fresh human authority differs')
+    continuation=package.get('nested_native_continuation')
+    continuation_authority=(authority.get('same_goal_native_continuation') is True and authority.get('same_instance_continuation') is False) if continuation else authority.get('same_instance_continuation') is True
+    require(authority['scope']==CHAIN_SCOPE and authority['code_commit']==SOURCE and authority['status']==DIRECT_MODE and continuation_authority and authority['completed_outer_goal']==200 and authority['final_evaluation_rows']==51713,'Fresh-origin chain human authority differs')
     require(authority['human_instruction'].strip() and authority['configured_prospective_thresholds']==package['configured_prospective_thresholds']==DIRECT_THRESHOLDS,'Missing instruction/threshold pin')
     for record in (authority,package):
         require(all(record.get(k) is False for k in ('production_thresholds_accepted','independent_acceptance','training_accepted','original_sampler_actor_gate_accepted')),'Authority cannot invent acceptance')
@@ -170,7 +179,20 @@ def human_direct_inputs(package, *, manifest_sha256, release_descriptor, trusted
     release,release_sha,_=descriptor(release_descriptor,trusted_root)
     require(release['scope']==CHAIN_SCOPE and release['manifest_sha256']==manifest_sha256 and release['code_commit']==SOURCE and release['human_training_authority_sha256']==authority_sha,'Release source/package/authority binding differs')
     require(release['cluster_name']=='wuhan-h100' and release['node_list']=='h100-10' and release['dispatch_intent_path']==package['dispatch']['once_intent'],'Release allocation/intent differs')
-    require(release['independent_source_review_complete'] is True and release['independent_runtime_review_complete'] is True,'Independent source and runtime reviews required')
+    if release.get('review_policy') == RECOVERY_REVIEW_POLICY:
+        require(package.get('nested_native_continuation') and release.get('operational_changes_independently_reviewed') is False
+                and release['independent_source_review_complete'] is False and release['independent_runtime_review_complete'] is False,
+                'Operational recovery must not fabricate new independent review')
+        prior,_,_=descriptor(release['prior_reviewed_release'],trusted_root)
+        require(prior['code_commit']==RECOVERY_PARENT_SOURCE and prior['independent_source_review_complete'] is True
+                and prior['independent_runtime_review_complete'] is True,
+                'Actual prior accepted algorithm release must remain bound')
+        required={name:prior['reviewed_files_sha256'][name] for name in UNCHANGED_ALGORITHM_FILES}
+        require(release['unchanged_algorithm_files_sha256']==required
+                and all(package['files']['source/repo/'+name]==expected for name,expected in required.items()),
+                'Operational resume must preserve reviewed algorithm and training configuration bytes')
+    else:
+        require(release['independent_source_review_complete'] is True and release['independent_runtime_review_complete'] is True,'Independent source and runtime reviews required')
     renderer='render_shared_dispatch.py' if package['dispatch'].get('kind')=='shared_systemd' else 'render_dispatch.py'
     submitter='submit_shared_once.py' if package['dispatch'].get('kind')=='shared_systemd' else 'submit_once.py'
     require(release['dispatch_renderer_sha256']==package['files'][renderer] and release['dispatch_submitter_sha256']==package['files'][submitter],'Dispatcher source differs')
@@ -200,11 +222,12 @@ def direct_rank_records(run, package, config_hash, last):
                   data_identity=package['common_data_identity'],model_identity=package['model_identity']['sha256'])
     bindings=observed['record_sha256'].copy()
     for credited in observed['credited']:
+        source_run=Path(credited['source_run']);event_expected=credited['expected_identity']
         outer,attempt=credited['outer'],credited['attempt']
         for rank in range(8):
             writes=credited['actual_writes_per_rank'][str(rank)]
-            path=Path(run)/'output/fresh-state'/f'outer-{outer:06d}-attempt-{attempt:06d}-rank{rank:02d}.json'
-            record,digest,_=read_bound(path);require_identity(record,expected)
+            path=source_run/'output/fresh-state'/f'outer-{outer:06d}-attempt-{attempt:06d}-rank{rank:02d}.json'
+            record,digest,_=read_bound(path);require_identity(record,event_expected)
             require(record['status']=='DIRECT_RANK_COMPLETE_OUTER_OBSERVED' and record['training_protocol']==PROFILE
                     and record['rank']==rank and record['world_size']==8 and record['observed_outer']==outer and record['attempt_id']==attempt
                     and record['actual_optimizer_calls']==record['returned_optimizer_calls']==writes
@@ -217,12 +240,13 @@ def direct_rank_records(run, package, config_hash, last):
             require(record['learning_rates_before']==[1e-6*min((outer-1)/57,1)] and record['learning_rates_after']==[1e-6*min(outer/57,1)],'Warmup advances on completed credit only')
             bindings[str(path)]=digest
     for event in observed['credited']+observed['all_skipped']:
+        source_run=Path(event['source_run']);event_expected=event['expected_identity']
         outer=event.get('outer',event.get('candidate_outer'));attempt=event['attempt']
         for rank in range(8):
             writes=event.get('actual_writes_per_rank',{}).get(str(rank),0)
-            path=Path(run)/'output/tree-rank-audit'/f'step-{outer:06d}-attempt-{attempt:06d}-rank-{rank:02d}.json'
+            path=source_run/'output/tree-rank-audit'/f'step-{outer:06d}-attempt-{attempt:06d}-rank-{rank:02d}.json'
             audit,digest,_=read_bound(path)
-            require(all(audit[k]==expected[k] for k in ('job_id','run_id','code_commit','config_sha256','data_identity')), 'Tree rank source/run differs')
+            require(all(audit[k]==event_expected[k] for k in ('job_id','run_id','code_commit','config_sha256','data_identity')), 'Tree rank source/run differs')
             require(audit['outer_step']==outer and audit['attempt_id']==attempt and audit['rank']==rank and audit['world_size']==8
                     and audit['local_rows']==320 and audit['local_minibatch']==16 and audit['local_microbatch']==2 and audit['epochs']==1
                     and audit['successful_optimizer_calls']==writes and audit['skipped_empty_minibatches']==20-writes
@@ -240,9 +264,10 @@ def tree_and_safety_records(run,last,package,config_hash):
     observed=attempt_results(run,package,config_hash,last);bindings={};brakes=0
     events=sorted(observed['credited']+observed['all_skipped'],key=lambda x:x['attempt'])
     for event in events:
+        source_run=Path(event['source_run'])
         outer=event.get('outer',event.get('candidate_outer'));attempt=event['attempt']
         candidates=[]
-        for path in (Path(run)/'output/tree-audit').glob(f'step_{outer}_rollout_*.json'):
+        for path in (source_run/'output/tree-audit').glob(f'step_{outer}_rollout_*.json'):
             if path.name.endswith('_policy_batch.json'):continue
             value,sha,_=read_bound(path)
             if value.get('attempt_id')==attempt:candidates.append((path,value,sha))
@@ -256,7 +281,7 @@ def tree_and_safety_records(run,last,package,config_hash):
         require(policy['status']=='POLICY_BATCH_DIAGNOSTIC_COMPLETE' and policy['rollout_file_sha256']==digest and policy['leaf_count']==2560 and len(policy['rows'])==2560,'Tree policy-weight evidence incomplete')
         for rank in range(8):
             writes=event.get('actual_writes_per_rank',{}).get(str(rank),0);records=[]
-            for path in sorted((Path(run)/'output/tree-rank-audit/policy-safety').glob(f'step-{outer:06d}-attempt-{attempt:06d}-rank-{rank:02d}-event-*.json')):
+            for path in sorted((source_run/'output/tree-rank-audit/policy-safety').glob(f'step-{outer:06d}-attempt-{attempt:06d}-rank-{rank:02d}-event-*.json')):
                 value,sha,_=read_bound(path);bindings[str(path)]=sha;records.append(value)
                 require(value['outer_step']==outer and value['attempt_id']==attempt and value['rank']==rank and value['local_outer_rows']==320
                         and value['monitor_rows']==32 and value['probability_denominator']=='actual_behavior_mu'

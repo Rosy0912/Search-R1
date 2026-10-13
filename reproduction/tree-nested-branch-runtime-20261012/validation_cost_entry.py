@@ -14,7 +14,8 @@ def install_human_direct_continuation():
  authority,authority_sha,_=descriptor(package['human_training_authority'])
  require(authority['status']=='HUMAN_AUTHORIZED_DIRECT_TRAIN200'
          and authority['code_commit']==package['code_commit']
-         and authority['same_instance_continuation'] is True
+         and (authority['same_instance_continuation'] is True or (package.get('nested_native_continuation') is not None
+              and authority.get('same_goal_native_continuation') is True))
          and authority['completed_outer_goal']==200 and authority['final_evaluation_rows']==51713,
          'Direct same-instance human training authority differs')
  require(package['production_thresholds_accepted'] is False

@@ -42,7 +42,34 @@ def same_path(actual, expected):
             'Evidence path differs: '+str(expected))
 
 
+def verify_reused_predecessor(package):
+    """Same-goal fault repair reuses accepted origin; does not re-audit old tensors."""
+    reuse=package['predecessor_acceptance_reuse']
+    require(package.get('nested_native_continuation') and reuse['scope']=='accepted_origin_same_goal_native_fault_recovery',
+            'Predecessor reuse is only for this same-goal native continuation')
+    from production_contract import descriptor
+    admission,_,_=descriptor(reuse['origin_admission'])
+    origin,origin_sha,_=descriptor(reuse['origin_package_manifest'])
+    require(origin['code_commit']=='0befbaf99fc44942105831b3fbec94e4bf1b8ccb'
+            and origin['predecessor_gate']==package['predecessor_gate']
+            and admission['code_commit']==origin['code_commit'] and admission['manifest_sha256']==origin_sha
+            and admission['status']=='ACTUAL_PRELAUNCH_ADMISSION_COMPLETE_PENDING_EXEC'
+            and admission['opened_lease_count']==8,'Actual accepted origin admission/package differs')
+    accepted,accepted_sha,_=descriptor(reuse['independent_acceptance'])
+    require(accepted_sha=='11330f3b73d34d837b2a986d8d877e09f9af65d17415260268365e72e82aad1e'
+            and accepted['status']==INDEPENDENT_STATUS and accepted['training_source_commit']==package['predecessor_gate']['source_commit']
+            and accepted['actual_completed_outer']==200 and accepted['original_training_normal_exit_claimed'] is False
+            and accepted['original_slurm_exit_code']=='0:15'
+            and all(accepted[key] is True for key in ('training200_accepted','final51713_accepted','full_hf_accepted','tokenizer_accepted','cost_accepted','cleanup_accepted')),
+            'Previous actual complete predecessor acceptance changed')
+    return dict(job_id='3360',completed_outer=200,final_rows=51713,predecessor_mutations=False,
+                independent_acceptance_sha256=accepted_sha,actual_scope_cost_accepted=True,
+                reused_actual_origin_admission=True,prior_bulk_files_rehashed_this_launch=False)
+
+
 def verify_predecessor(package):
+    if package.get('nested_native_continuation') and package.get('predecessor_acceptance_reuse'):
+        return verify_reused_predecessor(package)
     spec=package['predecessor_gate']; run=ROOT/'runs/tree-branpo-fresh200-3360'
     require(spec['job_id']=='3360' and spec['run_id']==run.name and spec['run_root']==str(run)
             and spec['mutations_allowed'] is False and spec['required_completed_outer']==200

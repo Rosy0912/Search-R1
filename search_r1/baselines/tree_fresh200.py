@@ -88,6 +88,8 @@ def refuse_recovery_environment(environ=None):
         raise ValueError('Fresh200 forbids historical recovery environment: '+', '.join(sorted(keys)))
     from .tree_current_chain_resume import validate_entry
     validate_entry(environ=environ)
+    from .tree_nested_chain_resume import validate_entry as validate_nested_entry
+    validate_nested_entry(environ=environ)
 
 
 def validate_fresh_sampler(sampler):

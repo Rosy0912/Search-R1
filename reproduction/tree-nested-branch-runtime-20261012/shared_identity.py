@@ -78,10 +78,10 @@ def verify_runtime(environment=None,hostname=None,run=subprocess.run):
     require(fields.get('ActiveState')=='active' and fields.get('SubState')=='running'
             and fields.get('MainPID')==str(os.getpid())
             and fields.get('ControlGroup')==identity['relative']
-            and fields.get('MemoryMax')==str(256*1024**3)
+            and fields.get('MemoryMax')==str(384*1024**3)
             and fields.get('CPUQuotaPerSecUSec')=='32s' and fields.get('Restart')=='no', 'Own unit is not actual active training scope')
     return dict(identity,cluster_name='wuhan-h100',node_list='h100-10',gpus=8,requested_cpus=32,
-                allocated_cpus=0,memory_gib=256,wall_hours=168,no_requeue=True,
+                allocated_cpus=0,memory_gib=384,wall_hours=168,no_requeue=True,
                 allocation_stdout=result.stdout,slurm_reserved_cpus=0,systemd_cpu_quota_cores=32)
 
 def selected_hardware():
@@ -151,10 +151,10 @@ def observe_host_admission():
     meminfo=Path('/proc/meminfo').read_text()
     available=int(next(line.split()[1] for line in meminfo.splitlines() if line.startswith('MemAvailable:')))*1024
     capacity=len(os.sched_getaffinity(0));load=list(os.getloadavg())
-    require(available>=320*1024**3,'Host shared admission needs256GiB own ceiling+64GiB headroom (320GiB MemAvailable)')
+    require(available>=448*1024**3,'Host shared admission needs384GiB own ceiling+64GiB headroom (448GiB MemAvailable)')
     require(capacity>=32,'Actual host CPU affinity capacity below unchanged32 requested cores')
-    return dict(observed_epoch=time.time(),mem_available_bytes=available,required_mem_available_gib=320,
-                own_memory_ceiling_gib=256,system_headroom_gib=64,cpu_affinity_capacity=capacity,
+    return dict(observed_epoch=time.time(),mem_available_bytes=available,required_mem_available_gib=448,
+                own_memory_ceiling_gib=384,system_headroom_gib=64,cpu_affinity_capacity=capacity,
                 requested_cpu_quota_cores=32,load_average_1_5_15=load,
                 load_warning=load[0]>capacity-32,load_is_blocking=False,
                 scope='Actual read-only host capacity before own load; MemoryMax is a ceiling, not a reservation')

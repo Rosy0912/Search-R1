@@ -140,7 +140,7 @@
     "gpus": 8,
     "cpus_per_task": 32,
     "expected_allocated_cpus": 0,
-    "memory_gib": 256,
+    "memory_gib": 384,
     "exclusive": false,
     "no_requeue": true,
     "train_wall_hours": 168,
@@ -168,7 +168,7 @@
       "sha256": "f39bcfa27ed30007931ce07be74248075154e3b465c9f750f4cd7bf2c8f3a2e3"
     },
     "gpu_sharing_authority": "2026-10-13 latest explicit human authorization: share available memory across four H100 nodes; do not wait for exclusive/empty cards; preserve current training configuration and all other jobs",
-    "initial_required_host_mem_available_gib": 320,
+    "initial_required_host_mem_available_gib": 448,
     "minimum_host_cpu_capacity": 32
   },
   "production_thresholds_accepted": false,
@@ -208,6 +208,21 @@
     "reward_difference_tolerance": 0.0,
     "continuation_budget_semantics": "three_retained_children_not_total_candidate_cap"
   },
+  "predecessor_acceptance_reuse": {
+    "scope": "accepted_origin_same_goal_native_fault_recovery",
+    "origin_admission": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/startup-audits/nested-branch-fresh200-0befbaf99fc44942105831b3fbec94e4bf1b8ccb.admission.json",
+      "sha256": "7ecee0ad25d5fe9690fd6a2c4a5d1e812d5e4562c4cbcb756ceb95a3b3ab4734"
+    },
+    "origin_package_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-0befbaf99fc44942105831b3fbec94e4bf1b8ccb/manifest.json",
+      "sha256": "27648c153a7377a901d57e174bc091ec765226e4dcd6e5e8e37ec1efd8c0dd83"
+    },
+    "independent_acceptance": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-handoff-hf-acceptance/independent-composite-acceptance.json",
+      "sha256": "11330f3b73d34d837b2a986d8d877e09f9af65d17415260268365e72e82aad1e"
+    }
+  },
   "predecessor_gate": {
     "job_id": "3360",
     "run_id": "tree-branpo-fresh200-3360",
@@ -232,5 +247,28 @@
     "evaluation_dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
     "original_job_observation_sha256": "732e971af9260bff7afc3fabc18de6a7736a8d8e49f9fa3ba5892640cdf12221",
     "original_scontrol_observation_sha256": "af0762ee0af4a94a03138480d03d9e7ec5c2eb8fe7a795a537e72cf8b7cdcef0"
+  },
+  "nested_native_continuation": {
+    "protocol": "tree_nested_fresh200_native1_oom_continuation_v1",
+    "parent_manifest": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/checkpoints/training_state/rolling-completed/global_step_1/manifest.json",
+      "sha256": "90f0420ccdc30a3e15245861a73b405f3f760d333722314d08b96b95765f9a1f"
+    },
+    "parent_config": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/resolved.yaml",
+      "sha256": "2a317628c497bba932698bf6d7bf64ca3503233d32080a389a36e1f69b362243"
+    },
+    "failed_attempt": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/checkpoints/training_state/attempt-results/attempt-000002.json",
+      "sha256": "6913b708245d63311b0e6931b057023e610f979fd7c0bd72ca45089797a673c4"
+    },
+    "failed_terminal": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/run-result.json",
+      "sha256": "1a9ebd2a3edebce70ed1717cced93ec30823205b4a7d7cbbcded695af05f8194"
+    },
+    "fault_snapshot": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/output/recovery-fault-20261014.json",
+      "sha256": "39594f1bdd8c9604663388eda03c310a7cb091f09774c8b04a2577dec9651ed1"
+    }
   }
 }

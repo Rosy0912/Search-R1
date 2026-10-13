@@ -8,11 +8,11 @@ def verify_shared_release(package,release):
     require(release['dispatch_kind']=='shared_systemd' and release['resource_protocol']==PROTOCOL
             and release['physical_gpus']==8 and release['slurm_reserved_gpus']==0
             and release['shared_memory_contract']=={key:spec[key] for key in
-                 ('initial_required_free_gib','runtime_required_headroom_gib','own_memory_cap_gib','measured_training_budget_gib','expected_gpu_uuids','initial_required_host_mem_available_gib','minimum_host_cpu_capacity')},
+                 ('initial_required_free_gib','runtime_required_headroom_gib','own_memory_cap_gib','measured_training_budget_gib','expected_gpu_uuids','initial_required_host_mem_available_gib','minimum_host_cpu_capacity','memory_gib')},
             'Shared release exact physical/memory protocol differs')
     require(spec['initial_required_free_gib']==68 and spec['runtime_required_headroom_gib']==8
             and spec['own_memory_cap_gib']==72 and spec['measured_training_budget_gib']==60
-            and spec['initial_required_host_mem_available_gib']==320 and spec['minimum_host_cpu_capacity']==32
+            and spec['initial_required_host_mem_available_gib']==448 and spec['memory_gib']==384 and spec['minimum_host_cpu_capacity']==32
             and spec['exclusive'] is False and spec['physical_gpus']==8 and spec['slurm_reserved_gpus']==0,
             'Shared training admission/headroom/cap differs')
     require(release['completed200_memory_peak_report']==spec['completed200_memory_peak_report'], 'Final memory audit descriptor differs from reviewed source/package')
@@ -27,7 +27,11 @@ def verify_shared_release(package,release):
     evidence=report.get('evidence_sha256',report.get('input_sha256'))
     require(type(evidence) is dict and evidence,'Final200 cost report underlying evidence bindings missing')
     from predecessor_gate import hash_bound
-    for path,expected in evidence.items():hash_bound(dict(path=path,sha256=expected))
+    if package.get('nested_native_continuation') and package.get('predecessor_acceptance_reuse'):
+        from predecessor_gate import verify_reused_predecessor
+        verify_reused_predecessor(package)
+    else:
+        for path,expected in evidence.items():hash_bound(dict(path=path,sha256=expected))
     maximum=max(row['total_used_memory_bytes'] for row in report['whole_card_peaks'].values())
     require(type(maximum) is int and 0<maximum<=60*1024**3,
             'Final sampled peak needs more than60GiB budget; raise reviewed admission without shrinking training')

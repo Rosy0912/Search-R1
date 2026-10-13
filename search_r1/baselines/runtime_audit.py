@@ -24,6 +24,10 @@ def runtime_env_vars():
                  'TREE_COMMON_DATA', 'TREE_INSTRUCT_MODEL'):
         if name in os.environ:
             result[name] = os.environ[name]
+    # Bind dedicated continuation fields explicitly across driver Ray options.
+    for name, value in os.environ.items():
+        if name.startswith('TREE_NESTED_CHAIN_RESUME_'):
+            result[name] = value
     resource = 'SEARCH_R1_BASELINE_TEACHER_CPU_THREADS'
     if resource in os.environ:
         result[resource] = str(teacher_cpu_threads())

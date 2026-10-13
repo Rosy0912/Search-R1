@@ -49,6 +49,7 @@ def inspect_fresh_worker_state(worker, expected_model_path):
     from pathlib import Path
     from search_r1.baselines.sampling_consistency import collective_device, sync_prepare, check_signature
     from search_r1.baselines.tree_fresh200 import refuse_recovery_environment
+    from search_r1.baselines.tree_nested_chain_resume import enabled as nested_chain_enabled
     device = collective_device()
     error = None
     try:
@@ -70,7 +71,8 @@ def inspect_fresh_worker_state(worker, expected_model_path):
                       configured_model_path=str(configured.resolve()), expected_model_path=str(expected.resolve()),
                       optimizer_state_entries=len(worker.actor_optimizer.state), optimizer_step_values=[],
                       scheduler_step=scheduler, optimizer_committed=0, scheduler_advanced=False,
-                      checkpoint_recovery_environment_absent=True,
+                      checkpoint_recovery_environment_absent=not nested_chain_enabled(),
+                      native_nested_continuation_requested=nested_chain_enabled(),
                       complete_model_parameter_bytes_verified=False,
                       scope='Actual empty worker Adam and scheduler; configured load path bound to driver official source, no complete model value comparison',
                       code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
@@ -816,6 +818,11 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def load_current_chain_training_state(self):
         from search_r1.baselines.tree_current_chain_resume import load_worker
+        return load_worker(self)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def load_nested_chain_training_state(self):
+        from search_r1.baselines.tree_nested_chain_resume import load_worker
         return load_worker(self)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)

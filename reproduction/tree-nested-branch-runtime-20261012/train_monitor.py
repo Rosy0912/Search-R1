@@ -13,6 +13,16 @@ def guard_health(run,job):
 def progress_evidence(run):
     """Direct persisted decisions only; unmatched/unrecorded writes stay unknown."""
     root=Path(run)/'checkpoints/training_state';completed=0;attempts=0;totals={str(r):0 for r in range(8)};partial=[];errors=[];refused=0
+    native_start=Path(run)/'output/nested-native1-loaded.json'
+    inherited=None
+    if native_start.is_file():
+        value,receipt_sha,_=read_bound(native_start)
+        require(value['status']=='COLD_NESTED_NATIVE1_STATE_LOADED' and value['driver']['completed_outer_updates']==1
+                and value['driver']['training_attempts']==1 and value['driver']['sampler_cursor']==512
+                and value['driver']['completed_optimizer_calls_per_rank']=={str(r):20 for r in range(8)},
+                'Progress mother boundary differs')
+        completed=attempts=1;totals={str(r):20 for r in range(8)}
+        inherited=dict(completed_outer=1,receipt_sha256=receipt_sha,failed_parent_outer2=value['provenance']['failed_parent_outer2'])
     for path in sorted((root/'attempt-results').glob('attempt-*.json')):
         try:
             value,sha,_=read_bound(path);attempts+=1
@@ -31,6 +41,7 @@ def progress_evidence(run):
         except Exception as exc:errors.append(dict(path=str(path),error=repr(exc)))
     return dict(actual_completed_outer_from_attempt_results=completed,training_attempts_seen=attempts,all_skipped_attempts=refused,
         completed_actual_optimizer_calls_per_rank=totals,partial_attempt_evidence=partial,errors=errors,
+        inherited_native1=inherited,failed_parent_outer2_in_effective_history=False,
         exact_resume_supported=False,automatic_rollback=False,unrecorded_partial_optimizer_calls=None,
         metadata_only_progress_not_independent_acceptance=True,partial_writes_not_credited_as_completed=True)
 
@@ -39,6 +50,10 @@ def verify_terminal(run,package,config_hash):
     from production_contract import direct_rank_records,tree_and_safety_records,validation_reports,checkpoint_manifest
     from calibration_contract import validate_fresh_start
     fresh=validate_fresh_start(run,package,config_hash)
+    native=None
+    if package.get('nested_native_continuation') is not None:
+        from calibration_contract import validate_native_start
+        native=validate_native_start(run,package,config_hash)
     ranks=direct_rank_records(run,package,config_hash,200)
     safety=tree_and_safety_records(run,200,package,config_hash)
     development={str(step):validation_reports(run,step,package=package,config_hash=config_hash) for step in range(5,201,5)}
@@ -48,5 +63,7 @@ def verify_terminal(run,package,config_hash):
     return dict(status='FRESH_NESTED_BRANCH200_JSON_ACCOUNTING_COMPLETE_PENDING_INDEPENDENT_ACCEPTANCE',
         actual_rank_optimizer_returns=ranks['actual_optimizer_returns'],opportunities_processed=ranks['opportunities_processed'],
         actual_calls_per_rank=ranks['actual_writes_per_rank'],training_attempts=ranks['training_attempts'],
-        fresh_initialization=fresh,rank_accounting=ranks,safety=safety,development=development,final=final,milestones=milestones,
+        fresh_initialization=fresh,native_continuation=native,
+        inherited_completed_outers=1 if native is not None else 0,child_completed_outers=199 if native is not None else 200,
+        failed_parent_outer2_in_effective_history=False,rank_accounting=ranks,safety=safety,development=development,final=final,milestones=milestones,
         independent_acceptance=False,full_hf_reload_independently_verified=False)

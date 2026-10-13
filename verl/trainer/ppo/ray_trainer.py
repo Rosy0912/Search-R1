@@ -845,6 +845,9 @@ class RayPPOTrainer(object):
         fresh200 = self.config.get('baselines') is not None and is_fresh200(self.config)
         from search_r1.baselines.tree_current_chain_resume import enabled as current_chain_enabled
         current_chain_resume = fresh200 and current_chain_enabled()
+        from search_r1.baselines.tree_nested_chain_resume import enabled as nested_chain_enabled
+        nested_chain_resume = fresh200 and nested_chain_enabled()
+        native_chain_resume = current_chain_resume or nested_chain_resume
         if fresh200:
             from search_r1.baselines.tree_fresh200 import (validate_fresh200_config, refuse_recovery_environment,
                                                           validate_fresh_sampler)
@@ -860,8 +863,9 @@ class RayPPOTrainer(object):
                 raise RuntimeError('Fresh200 actual worker initialization proof incomplete')
             self.actual_outer_updates = 0
             self.fresh_initialization_provenance = dict(status=(
-                'COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_CURRENT_CHAIN_MIGRATION'
-                if current_chain_resume else 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED'),
+                'COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_NESTED_NATIVE1_CONTINUATION'
+                if nested_chain_resume else ('COLD_OFFICIAL_INITIAL_STATE_OBSERVED_BEFORE_CURRENT_CHAIN_MIGRATION'
+                if current_chain_resume else 'FRESH_OFFICIAL_INITIAL_STATE_OBSERVED')),
                 calibration_profile='fresh_base_zero_v1', training_protocol='tree_fresh200_five_leaf_v1',
                 initialized_global_steps=self.global_steps, driver_completed_outer=self.actual_outer_updates,
                 parent_completed_step=self.actual_outer_updates, parent_cursor=self.checkpoint_sampler.cursor,
@@ -875,6 +879,9 @@ class RayPPOTrainer(object):
                 os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'fresh-initialization.json'), json_format=True)
             if current_chain_resume:
                 from search_r1.baselines.tree_current_chain_resume import migrate_trainer
+                migrate_trainer(self)
+            elif nested_chain_resume:
+                from search_r1.baselines.tree_nested_chain_resume import migrate_trainer
                 migrate_trainer(self)
         if os.environ.get('TREE_RECOVERY_MANIFEST'):
             from search_r1.baselines.training_state import recovery_manifest,restore_recovery_driver,atomic_save
@@ -890,7 +897,7 @@ class RayPPOTrainer(object):
                 os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'],'recovery-loaded.json'),json_format=True)
         # perform validation before training
         # currently, we only support validation using the reward_function.
-        if (not current_chain_resume and self.val_reward_fn is not None
+        if (not native_chain_resume and self.val_reward_fn is not None
                 and self.config.trainer.get('val_before_train', True)):
             val_metrics = self._validate()
             pprint(f'Initial validation metrics: {val_metrics}')

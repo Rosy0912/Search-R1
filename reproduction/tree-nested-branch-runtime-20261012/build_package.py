@@ -28,6 +28,9 @@ def main():
  remote=ROOT+'/instruct300/candidates/nested-branch-fresh200-'+commit
  intent=ROOT+'/instruct300/SUBMISSION_ONCE-nested-branch-fresh200-'+commit+'.json';m['dispatch']['once_intent']=intent
  authority=dict(status=m['execution_mode'],scope=m['scope'],code_commit=commit,human_instruction=a.instruction,same_instance_continuation=True,completed_outer_goal=200,final_evaluation_rows=51713,configured_prospective_thresholds=m['configured_prospective_thresholds'])
+ if m.get('nested_native_continuation'):
+  authority.update(same_instance_continuation=False,same_goal_native_continuation=True,
+                   recovery_boundary=m['nested_native_continuation'],additional_review_requested=False)
  for k in ('production_thresholds_accepted','independent_acceptance','training_accepted','original_sampler_actor_gate_accepted'):authority[k]=False
  (output/'human-authority.json').write_text(json.dumps(authority,indent=2)+'\n')
  m['human_training_authority']=dict(path=remote+'/human-authority.json',sha256=sha(output/'human-authority.json'))

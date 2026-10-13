@@ -5,7 +5,7 @@ if sys.flags.optimize:
 os.environ['PYTHONOPTIMIZE']='0'
 from pathlib import Path
 from types import SimpleNamespace
-from calibration_contract import validate_fresh_start,protected_processes,forbid_recovery_environment,final_gpu_process_observation
+from calibration_contract import validate_fresh_start,validate_native_start,protected_processes,forbid_recovery_environment,final_gpu_process_observation
 from production_contract import production_inputs,read_bound,DIRECT_MODE,CHAIN_SCOPE
 from slurm_identity import verify_runtime,install_local_environment,submitted_lineage,verify_runtime_cgroup,guarded_gpu_query,install_gpu_query_guard
 from train_monitor import guard_health,verify_terminal,progress_evidence
@@ -78,6 +78,8 @@ def main():
     a=SimpleNamespace(stage=PACKAGE['stage'])
     global PRODUCTION_THRESHOLDS
     require(PACKAGE['scope']==CHAIN_SCOPE and PACKAGE['execution_mode']==DIRECT_MODE and PACKAGE['packet_revision']==1,'Explicit human-authorized direct200 branch required')
+    from search_r1.baselines.tree_nested_chain_resume import install_package_environment
+    native_resume=install_package_environment(PACKAGE)
     forbid_recovery_environment(os.environ)
     require(PACKAGE['stage']=='fresh_mu_train200','Production stage differs')
     require(not any(name in os.environ for name in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Production forbids all calibration-only environment')
@@ -99,7 +101,7 @@ def main():
     validate_inherited_gpu_leases(8)
     from search_r1.baselines.select_teacher import model_manifest
     require(model_manifest(MODEL)==PACKAGE['model_identity'],'Official model changed')
-    require(PACKAGE['official_model_path']==str(MODEL) and not any(k in PACKAGE for k in ('parent_manifest','healthy110_metadata')),'Fresh package must not include recovery state')
+    require(PACKAGE['official_model_path']==str(MODEL) and not any(k in PACKAGE for k in ('parent_manifest','healthy110_metadata')),'Official bootstrap forbids generic/historical recovery state')
     lock=(ROOT/'shared-gpu-job.lock').open('w'); fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     verify_runtime_cgroup()
     if shared:
@@ -138,13 +140,17 @@ def main():
     os.environ.pop('WANDB_API_KEY',None)
     os.environ.update(TREE_VALIDATION_TRAINER_SHA256=PACKAGE['files']['source/repo/verl/trainer/ppo/ray_trainer.py'],TREE_FRESH_MAIN_PPO_SHA256=PACKAGE['files']['source/repo/verl/trainer/main_ppo.py'],TREE_INSTRUCT_TOOLS=str(TOOLS),TREE_INSTRUCT_MODEL=str(MODEL),TREE_COMMON_DATA=str(ROOT/'instruct300/common-data'),SEARCH_R1_MODEL_IDENTITY=PACKAGE['model_identity']['sha256'],SEARCH_R1_BASELINE_CHECKPOINTS=str(run/'checkpoints'))
     require(not any(name in os.environ for name in ('TREE_PPO_CALIBRATION_ONLY','TREE_FRESH_INITIALIZATION_ONLY')),'Calibration environment appeared before training')
-    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':0,'planned_new_completed_outer':200,'resumed_current_chain':False,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
+    start=supervisor_started; result={'status':'FAILED','stage':a.stage,'execution_mode':DIRECT_MODE,'scope':CHAIN_SCOPE,'parent_completed_outer':1 if native_resume else 0,'planned_new_completed_outer':199 if native_resume else 200,'resumed_current_chain':native_resume,'exact_executor_resume':False,'job_id':job,'code_commit':COMMIT,'actual_training_accepted':False,'independent_acceptance':False,'training_accepted':False,'optimizer_committed':None,'scheduler_advanced':None,'allocated_gpus':0 if shared else 8,'physical_gpus':8,'slurm_reserved_gpus':0 if shared else 8,'requested_cpus':32,'allocated_cpus':allocated_cpus,'production_input_pins':input_pins,'bootstrap_thresholds_accepted':False,'actual_zero_ready':False,'actual_calibration_accepted':False,'production_thresholds_accepted':False,'configured_prospective_thresholds':PRODUCTION_THRESHOLDS,'cluster_name':allocation_identity['cluster_name'],'allocation_identity_sha256':sha(identity_path),'original_sampler_actor_probability_gate_accepted':False}
     if shared:
         result.update(allocation_kind=allocation_identity['allocation_kind'],resource_protocol=allocation_identity['resource_protocol'],physical_gpus=8,slurm_reserved_gpus=0,slurm_reserved_cpus=0,allocated_gpus=0,systemd_unit=allocation_identity['unit'])
     try:
         value,steps=configuration(run,a.stage); config_hash=sha(run/'resolved.yaml')
         os.environ.update(SEARCH_R1_BASELINE_AUDIT_DIR=str(run/'output/entry-audit'),SEARCH_R1_BASELINE_RUN_ID=run.name,
           SEARCH_R1_BASELINE_COMMIT=COMMIT,SEARCH_R1_BASELINE_CONFIG_SHA256=config_hash,SEARCH_R1_BASELINE_DATA_IDENTITY=CONTENT)
+        if native_resume:
+            from search_r1.baselines.tree_nested_chain_resume import validate_semantic_config,parent_manifest,failed_save_evidence
+            result['native_continuation_semantic_config']=validate_semantic_config(value)
+            result['failed_parent_outer2']=failed_save_evidence(parent_manifest())
         (run/'launch-manifest.json').write_text(json.dumps(dict(result,config_sha256=config_hash,split_content_identity=CONTENT,
           cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],gpu_leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES']),cgroup=str(scope),
           runtime=('own shared-systemd physical8/reserved0' if shared else 'own exclusive Slurm8')+': GPU E5/sharded FP16 index, trainer, Ray; loopback only',
@@ -193,11 +199,13 @@ def main():
                 with socket.create_connection(('127.0.0.1',16382),timeout=1): break
             except OSError: time.sleep(1)
         training=owned.spawn(['bash',str(TOOLS/'run_tree.sh'),'tree_grpo','--config-path',str(run),'--config-name','input-config'],run/'stage.log',pass_fds=fds)
-        fresh_start_checked=False
+        fresh_start_checked=False; native_start_checked=False
         with (run/'process-resources.jsonl').open('a') as stream:
             while training.poll() is None:
                 if not fresh_start_checked and (run/'output/fresh-initialization.json').is_file():
                     result['fresh_official_initialization']=validate_fresh_start(run,PACKAGE,config_hash); fresh_start_checked=True
+                if native_resume and not native_start_checked and (run/'output/nested-native1-loaded.json').is_file():
+                    result['native_continuation_start']=validate_native_start(run,PACKAGE,config_hash); native_start_checked=True
                 from storage_guard import observe_storage
                 observe_storage(run, PACKAGE['storage_guard'])
                 validate_owned_gpu_leases(8); protected_processes(); guard_health(run,job)
@@ -207,6 +215,7 @@ def main():
                 stream.write(json.dumps({'epoch':time.time(),'retriever':process_sample(retriever.pid),'processes':[process_sample(pid) for pid in sorted(cgroup_pids(scope)-owned.baseline)]})+'\n'); stream.flush(); time.sleep(5)
         require(training.returncode==0,'Actual Tree training failed')
         result['fresh_official_initialization']=validate_fresh_start(run,PACKAGE,config_hash)
+        if native_resume:result['native_continuation_start']=validate_native_start(run,PACKAGE,config_hash)
         terminal=verify_terminal(run,PACKAGE,config_hash)
         with (run/'output/train200-terminal.json').open('x') as terminal_stream:json.dump(terminal,terminal_stream,indent=2,allow_nan=False)
         require(guard.poll() is None,'Guard died before training completion')
@@ -214,7 +223,7 @@ def main():
         require(samples and all(not x.get('event') for x in samples) and time.time()-samples[-1]['epoch']<15,'Final guard missing/stale/STOP')
         result['final_guard_healthy']=True
         require(sha(run/'output/entry-audit/entry-config.yaml')==config_hash,'Actual entry config differs')
-        result.update(status='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE',training_body_exit_code=training.returncode,entry_config_verified=True,parent_completed_outer=0,new_completed_outer=200,actual_completed_outer=200,
+        result.update(status='ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE',training_body_exit_code=training.returncode,entry_config_verified=True,parent_completed_outer=1 if native_resume else 0,new_completed_outer=199 if native_resume else 200,actual_completed_outer=200,
             actual_rank_optimizer_returns=terminal['actual_rank_optimizer_returns'],opportunities_processed=terminal['opportunities_processed'],
             actual_calls_per_rank=terminal['actual_calls_per_rank'],training_attempts=terminal['training_attempts'],scheduler_steps_each_rank=200,
             exact_executor_resume=False,
