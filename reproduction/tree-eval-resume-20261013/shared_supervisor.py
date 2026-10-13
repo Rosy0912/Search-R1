@@ -35,7 +35,7 @@ def main():
     require(sha(a.prefix)==release['prefix_sha256'] and sha(a.manifest)==release['manifest_sha256'],'Preserved scores/asset manifest changed')
     done=json.loads(Path(a.prefix+'.done.json').read_text())
     require(done['sha256']==release['prefix_sha256'] and done['actual_trained_outer']==200 and done['identity']['model_sha256']==release['model_sha256'],'Actual trained200 HF binding absent')
-    scores=Path(a.score_output).resolve();require(scores.is_relative_to((OLD/'output/eval-resume').resolve()) and str(scores)==release['score_output'],'Own persistent score path differs')
+    scores=Path(a.score_output).resolve();require(scores.is_relative_to((OLD/'output/eval-resume').resolve()) and scores==Path(release['score_output']).resolve(),'Own persistent score path differs')
     scores.mkdir(parents=True,exist_ok=True)
     sys.path.insert(0,str(ROOT/'tools'))
     from tree_shared_owned_runtime_fixed import OwnedProcesses,available,gpu_sample

@@ -26,10 +26,11 @@ def main():
     env={k:v for k,v in os.environ.items() if not k.startswith(('SLURM_','SBATCH_','SQUEUE_','SCANCEL_','SACCT_','SCONTROL_'))}
     active_ids=set(subprocess.check_output(['squeue','--local','-h','-o','%i'],text=True,env=env).split())
     if a.repair_predecessor_unit:
-        if a.repair_predecessor_unit != 'sst-tree-eval-shared-1c15c49.service' or not a.repair_predecessor_journal:
+        if a.repair_predecessor_unit not in ('sst-tree-eval-shared-1c15c49.service','sst-tree-eval-shared-b316a77.service') or not a.repair_predecessor_journal:
             raise RuntimeError('Only identified failed own predecessor may be repaired')
         prior=json.loads(Path(a.repair_predecessor_journal).read_text())
-        if prior['unit']!=a.repair_predecessor_unit or prior['cancel_own_queued_returncode']!=0 or prior['prefix_sha256']!=release['prefix_sha256']:
+        original=json.loads((root/'runs/tree-branpo-fresh200-3360/output/eval-resume/shared-dispatch-once.json').read_text())
+        if prior['unit']!=a.repair_predecessor_unit or original['unit']!='sst-tree-eval-shared-1c15c49.service' or original['cancel_own_queued_returncode']!=0 or prior['prefix_sha256']!=release['prefix_sha256'] or original['prefix_sha256']!=release['prefix_sha256']:
             raise RuntimeError('Durable prior cancellation/score identity absent')
         terminal=subprocess.check_output(['systemctl','show',a.repair_predecessor_unit,'--property=ActiveState,MainPID,ExecMainStatus'],text=True,env=env)
         if 'ActiveState=failed' not in terminal or 'MainPID=0' not in terminal or 'ExecMainStatus=1' not in terminal:
