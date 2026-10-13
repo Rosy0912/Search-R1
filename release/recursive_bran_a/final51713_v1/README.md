@@ -1,0 +1,11 @@
+# H100 八卡 final51713 独立入口候选
+
+当前训练71d4e69保持原样；本目录尚未GPU部署或验收。目标仍是200完整训练和51713完整最终评分。该入口只执行固定最终模型推理，不调用fit或更新Adam。
+
+现有终态路径已是八卡DP/TP1，但全局batch32（约4题/卡），且worker以do_sample=False禁止策略缓存，导致每个生成调用同步和卸载权重。候选入口保留原SearchRollout、greedy、token/检索预算、BF16模型、原answer EM/F1评分；仅最终全局batch512（约64题/卡）和固定最终权重缓存。每rank实时打印调用开始、结束、token吞吐；每批落盘问题序号与原指标、小进度文件，全部存远端。最后尾批只1题，不能承诺任何时候八卡满载。
+
+不得热改正跑，不得在200之前抢占训练GPU。终态自动原生final会启动，必须先读真实200训练/计划内dev512/最终完整HF和8rank状态。若原生final已完整则直接验收，不重复51713。若切换独立入口，只在200已完成后按原owner身份安全结束其终态评测并保存partial及实际退出/释放证据；不能将这次操作称自然exit0。锁及资源终态切换supervisor尚待实现，当前入口不能自动接管资源。
+
+执行plan必须绑定原config SHA、200 manifest SHA、原train-start/run、真实200完成、原owner及后代释放、八UUID/directfree/资源租约和当前检索source。admission_receipts必须来自实际边界检查；本入口只核引用字节，不能单独证明资源已释放。未来执行还需传递当前已授权runtime/compiler/retriever环境，并使本目录及原71d4e69在Ray PYTHONPATH中可导入。独立run/output不得复用训练目录。
+
+模型路径取manifest.hf_checkpoint，不能用初始权重或历史cache。filtered final长度必须51713，顺序dataloader/drop_last=False；SearchRollout去padding后每题只计一次，输出final_index覆盖0–51712。需最终核原数据身份/索引映射、八rank实际调用与GPU观察、全部唯一覆盖、summary、实际进程退出和GPU释放；CPU测试不代表数值/速度或最终效果已验收。扩大批量可能引入浮点批量差异，不声称逐题bitwise相同。若真实OOM，保留失败，使用显存可容纳的八卡批量恢复，不能单卡fallback。
