@@ -23,6 +23,10 @@ for p in (run/'output/validation-cost').glob('validation-*.json'):
  if d:dev.append(dict(path=p.name,outer=d.get('actual_completed_outer'),phase=d.get('phase'),status=d.get('status'),rows=d.get('evaluated_rows'),metrics=d.get('metrics')))
 startup=[dict(path=str(p),value=read(p)) for p in (r/'instruct300/startup-audits').glob('*'+source+'*') if p.is_file()]
 d=dict(epoch=time.time(),node='h100-10',source_commit=source,unit=unit,job_id=job,run=str(run),systemd=subprocess.check_output(['systemctl','show',unit,'--property=LoadState,ActiveState,SubState,MainPID,ExecMainStatus,MemoryCurrent,CPUUsageNSec'],text=True),progress=progress_evidence(run),direct_rank_records=len(rankpaths),last_rank_summaries=rank_summary,latest_guard=guard,logs={n:tail(run/n) for n in ('stage.log','retriever.log','guard.log','ray.log')},run_result=read(run/'run-result.json'),development=sorted(dev,key=lambda x:x['outer'] or 0)[-1:] if dev else [],startup=startup,journal=subprocess.check_output(['journalctl','-u',unit,'-n','12','--no-pager','-o','cat'],text=True),gpu=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,memory.free,utilization.gpu','--format=csv,noheader'],text=True),native_manifests=[str(p) for p in (run/'checkpoints/training_state').glob('*/manifest.json')],own_output_files={p.name:p.stat().st_size for p in run.glob('*') if p.is_file()})
+d['output_metadata']=[dict(path=str(p.relative_to(run)),bytes=p.stat().st_size,mtime=p.stat().st_mtime) for p in (run/'output').glob('*/*') if p.is_file()]
+d['rollout_cost']=[read(p) for p in sorted((run/'output/training-rollout-cost').glob('attempt-*.json'))[-1:]]
+with (run/'stage.log').open(errors='replace') as stream:
+ d['first_rollout_entered']=any('epoch 0, step 1' in line for line in stream)
 print(json.dumps(d))
 '''
 r=ssh.run('env CUDA_VISIBLE_DEVICES= python3 -c '+shlex.quote(code),timeout=60)
