@@ -1,0 +1,221 @@
+{
+  "created_at": "2026-10-13T10:52:20.975Z",
+  "source": "question-diversity-probe-demo.html",
+  "source_sha256": "109a4a987cb183b78bf53531f904035a264098f1ac8735984319bddfdf3242f7",
+  "output": "question-diversity-probe-brisk-music.mp4 (delivered separately)",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "frames": 900,
+  "durations": [
+    3.5,
+    4,
+    5.5,
+    5.5,
+    5.5,
+    6
+  ],
+  "total_seconds": 30,
+  "pace": "brisk",
+  "motion_rate": 2,
+  "transition_ms": 250,
+  "sceneProofs": [
+    {
+      "phase": 0,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        0
+      ],
+      "animations": 80,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 1,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        1
+      ],
+      "animations": 6,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 2,
+      "height": 649.484375,
+      "width": 1120,
+      "scenes": [
+        2
+      ],
+      "animations": 6,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 3,
+      "height": 619.484375,
+      "width": 1120,
+      "scenes": [
+        3
+      ],
+      "animations": 64,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 4,
+      "height": 651.484375,
+      "width": 1120,
+      "scenes": [
+        4
+      ],
+      "animations": 15,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    },
+    {
+      "phase": 5,
+      "height": 615.734375,
+      "width": 1120,
+      "scenes": [
+        5
+      ],
+      "animations": 8,
+      "selected": [
+        "64",
+        "448"
+      ],
+      "actual": [
+        "0.400",
+        "0.548"
+      ]
+    }
+  ],
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuvj420p",
+        "avg_frame_rate": "30/1",
+        "duration": "30.000000",
+        "nb_read_frames": "900",
+        "side_data_list": [
+          {}
+        ]
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2,
+        "avg_frame_rate": "0/0",
+        "duration": "30.000000",
+        "nb_read_frames": "1407"
+      }
+    ],
+    "format": {
+      "duration": "30.000000",
+      "size": "1676181"
+    }
+  },
+  "sha256": "0b086cdd70fc5e6d499935a0c6583aed3b32b0445a7889c3ce49c7f242281504",
+  "synthetic": true,
+  "audio": true,
+  "music": {
+    "input_sha256": "b36abaac3fd27587e15f892ec1354b1707d82e21e499c4d07fe550928c48e131",
+    "target_lufs": -24
+  },
+  "page_errors": [],
+  "audio_qa": {
+    "full_decode_exit_code": 0,
+    "decoded_audio_loudness": {
+      "input_i": "-23.99",
+      "input_tp": "-12.94",
+      "input_lra": "1.10",
+      "input_thresh": "-34.17",
+      "output_i": "-24.07",
+      "output_tp": "-12.88",
+      "output_lra": "0.90",
+      "output_thresh": "-34.17",
+      "normalization_type": "dynamic",
+      "target_offset": "0.07"
+    }
+  },
+  "music_composition": {
+    "original_composition": true,
+    "sample_rate": 48000,
+    "channels": 2,
+    "sample_width_bytes": 2,
+    "frames": 1440000,
+    "duration_seconds": 30.0,
+    "peak_dbfs": -12.30493443885649,
+    "rms_dbfs": -25.000265135634976,
+    "dc_offset": [
+      -3.4268697102864584e-07,
+      -3.6716461181640626e-07
+    ],
+    "clipped_sample_count": 0,
+    "stereo_correlation": 0.9814677760251569,
+    "energy_above_4000hz_fraction": 1.8171725890147699e-06,
+    "energy_above_8000hz_fraction": 8.288515585214884e-09,
+    "first_sample": [
+      0.0,
+      0.0
+    ],
+    "last_sample": [
+      0.0,
+      0.0
+    ],
+    "maximum_adjacent_sample_change": 0.021759033203125,
+    "fade_in_seconds": 0.6,
+    "fade_out_seconds": 1.5,
+    "bpm": 72.0,
+    "bars": 9,
+    "seed": 20261013,
+    "bytes": 5760044,
+    "sha256": "b36abaac3fd27587e15f892ec1354b1707d82e21e499c4d07fe550928c48e131",
+    "recommended_video_audio_filter": "loudnorm=I=-24:TP=-2:LRA=7",
+    "notes": "Original soft piano arpeggio and melody, very quiet warm pad; no voice or percussion."
+  },
+  "visual_review": {
+    "decoded_frame_seconds": 10,
+    "passed": true
+  }
+}

@@ -225,3 +225,15 @@ Appending `--preview` writes six scene previews instead of a video. A successful
 export writes a sidecar `*-video-verification.json` with source/output SHA256,
 scene checks, dimensions, duration and decoded frame count. Verify the exported
 video visually as well; this receipt is not evidence of training performance.
+
+The `--pace brisk` profile runs for 30 seconds, doubles the in-scene animation
+speed, shortens transitions to 250 ms and uses concise captions. An optional
+`--music` file is mixed as quiet AAC stereo at 48 kHz, targeting -24 LUFS.
+The included composer creates an original soft piano melody/arpeggio with a
+subtle warm pad, without downloaded samples, voices or percussion (Python and
+NumPy required). Its 30-second score has smooth fades at both ends.
+
+```sh
+python3 docs/visualizations/compose-question-probe-music.py --output /your/output/music.wav
+node docs/visualizations/export-question-diversity-video.mjs /your/output/question-probe-brisk-music.mp4 --pace brisk --music /your/output/music.wav
+```
