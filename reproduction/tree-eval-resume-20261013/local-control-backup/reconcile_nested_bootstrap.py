@@ -23,5 +23,7 @@ try:
  with Path(PACKAGE+'/bootstrap-predecessor-reconciled.json').open('x') as f:json.dump(receipt,f,indent=2)
  print(json.dumps(receipt))
 finally:fcntl.flock(fd,fcntl.LOCK_UN);os.close(fd)
-'''.replace('FAULT',repr(fault)).replace('PACKAGE',repr(a.package))
-x=ssh.run('env CUDA_VISIBLE_DEVICES= python3 -c '+shlex.quote(code),timeout=60);x.check_returncode();o=json.loads(x.stdout);a.output.write_text(json.dumps(o,indent=2)+'\n');print(json.dumps(o))
+'''.replace('PACKAGE',repr(a.package)).replace('FAULT',repr({k:fault[k] for k in ('source_commit','status','child_run_created','native_load_attempted','systemd','snapshot_path','snapshot_sha256')}))
+x=ssh.run('env CUDA_VISIBLE_DEVICES= python3 -c '+shlex.quote(code),timeout=60);a.output.with_suffix('.command.json').write_text(json.dumps(dict(returncode=x.returncode,stdout=x.stdout,stderr=x.stderr),indent=2)+'\n');
+if x.returncode:raise RuntimeError(x.stderr[-2500:]+x.stdout[-1000:])
+o=json.loads(x.stdout);a.output.write_text(json.dumps(o,indent=2)+'\n');print(json.dumps(o))
