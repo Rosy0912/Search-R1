@@ -3,14 +3,15 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
 
-SOURCE = 'ba9f6627ec9a4e9749830d7b6acca53f6feec6b4'
-UNIT = 'sst-tree-nested-branch-fresh200-' + SOURCE[:8] + '.service'
-RUN = Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:' + SOURCE)
-SCHEMA = 'native_manifest_history_watch_v1'
+RUN_ROOT = '/dataset/shaoshitong/search-r1-rl/tree-grpo/runs'
+SOURCE = UNIT = RUN = None
+FIRST_OUTER, LAST_OUTER = 6, 200
+SCHEMA = 'native5_manifest_history_watch_v1'
 PROPERTIES = ('Id', 'LoadState', 'ActiveState', 'SubState', 'MainPID', 'ExecMainPID',
               'ExecMainCode', 'ExecMainStatus', 'ExecMainExitTimestampMonotonic',
               'InvocationID', 'Result')
@@ -82,15 +83,15 @@ def pinned_collector(release):
     directory = Path(__file__).resolve().parent
     require(release['schema'] == SCHEMA and release['training_source_commit'] == SOURCE and
             release['training_unit'] == UNIT and release['run_directory'] == str(RUN) and
-            release['interval_seconds'] == 60, 'Watcher release scope differs')
+            release['interval_seconds'] == 60 and release['first_child_outer'] == FIRST_OUTER and
+            release['last_child_outer'] == LAST_OUTER, 'Watcher release scope differs')
     for name in ('watch_native_history.py', 'native_manifest_history_collector.py'):
         raw = read_small(directory / name, 200000)
         require(digest(raw) == release['files'][name], 'Pinned code SHA differs: ' + name)
     raw = read_small(directory / 'native_manifest_history_collector.py', 200000)
     module = {'__name__': 'pinned_native_history_collector', '__file__': str(directory / 'native_manifest_history_collector.py')}
     exec(compile(raw, module['__file__'], 'exec'), module)
-    require(module['CHILD_SOURCE'] == SOURCE and module['RUN_ROOT'] == str(RUN.parent),
-            'Collector source/run binding differs')
+    require(module['RUN_ROOT'] == str(RUN.parent), 'Collector run-root binding differs')
     # Reuse the byte-identical collector validators and atomic immutable publisher.
     # Do not execute its default two-run collector or its SSH CLI.
     marker = '\ntry:\n native_manifest_history_receipt='
@@ -105,14 +106,14 @@ def collect(collector, history):
     rolling = RUN / 'checkpoints/training_state/rolling-completed'
     for path in sorted(rolling.glob('global_step_*/manifest.json')):
         suffix = path.parent.name.removeprefix('global_step_')
-        if not suffix.isdecimal() or int(suffix) < 2:
+        if not suffix.isdecimal() or not FIRST_OUTER <= int(suffix) <= LAST_OUTER:
             continue
         try:
             _, value, _ = collector['_native_read'](path)
             if value.get('status') != 'COMPLETE_NATIVE_ROLLING_STATE_SAVED':
                 skipped.append({'step': int(suffix), 'reason': 'incomplete snapshot'})
                 continue
-            results.append(collector['_native_capture'](path, SOURCE, 'child_native1_continuation', history))
+            results.append(collector['_native_capture'](path, SOURCE, 'child_native5_continuation', history))
         except FileNotFoundError:
             skipped.append({'step': int(suffix), 'reason': 'pruned/saving race'})
         except Exception as exc:
@@ -122,7 +123,7 @@ def collect(collector, history):
         try:
             _, receipt, _ = collector['_native_read'](path)
             step = receipt.get('completed_outer')
-            require(receipt.get('source_commit') == SOURCE and type(step) is int and step >= 2,
+            require(receipt.get('source_commit') == SOURCE and type(step) is int and FIRST_OUTER <= step <= LAST_OUTER,
                     'History receipt scope differs')
             steps.append(step)
         except Exception as exc:
@@ -138,12 +139,23 @@ def main():
     raw = read_small(args.release, 16000)
     require(digest(raw) == args.release_sha256, 'Release SHA differs')
     release = json.loads(raw)
+    global SOURCE, UNIT, RUN
+    SOURCE, UNIT = release['training_source_commit'], release['training_unit']
+    require(re.fullmatch('[0-9a-f]{40}', SOURCE) is not None, 'Exact training source required')
+    require(re.fullmatch('sst-tree-nested-branch-[A-Za-z0-9-]+\.service', UNIT) is not None
+            and SOURCE[:8] in UNIT, 'Exact owned training unit/source binding required')
+    RUN = Path(release['run_directory'])
+    require(str(RUN) == RUN_ROOT + '/tree-nested-branch-fresh200-not-slurm;systemd:' + SOURCE,
+            'Only the new owned same-node native5 child run is allowed')
+    expected_invocation = release['training_invocation_id']
+    require(re.fullmatch('[0-9a-f]{32}', expected_invocation) is not None,
+            'Actual training InvocationID must be pinned')
     collector = pinned_collector(release)
     history = RUN / 'output/native-manifest-history'
     history.mkdir(parents=True, exist_ok=True)
     require(not history.is_symlink() and history.resolve() == RUN.resolve() / 'output/native-manifest-history',
             'History destination escapes owned run')
-    state_dir = history / 'watcher-ba9f6627'
+    state_dir = history / ('watcher-native5-' + SOURCE[:8])
     state_dir.mkdir(exist_ok=True)
     require(not state_dir.is_symlink(), 'Watcher state directory symlink forbidden')
     # Audit-only singleton; compatible with the Mac collector's per-manifest locks.
@@ -156,24 +168,25 @@ def main():
                      watcher_sha256=release['files']['watch_native_history.py'],
                      started_epoch=time.time(), polls=0, manifest_new_count=0, manifest_json_bytes_checked=0, audit_error_count=0,
                      cpu_seconds=0., collection_wall_seconds=0., unit_query_wall_seconds=0.,
-                     indexed_completed_outers=[], missing_outers_since2=[], last_errors=[],
+                     indexed_completed_outers=[], missing_child_outers=[], last_errors=[],
+                     expected_training_invocation_id=expected_invocation,
+                     first_child_outer=FIRST_OUTER, last_child_outer=LAST_OUTER,
+                     inherited_history=release['inherited_history'],
                      tensor_contents_read=False, PT_file_sha256_recomputed=False,
                      training_signals_sent=False, frozen_source_modified=False,
                      independent_cold_reload_performed=False)
-        invocation = None
         while True:
             tick = time.monotonic()
             cpu = time.process_time()
-            fields, errors = {}, []
+            fields, errors, scope_valid = {}, [], False
             state['polls'] += 1
             try:
                 query = time.monotonic()
                 fields = training_observation()
                 state['unit_query_wall_seconds'] += time.monotonic() - query
-                current = fields.get('InvocationID')
-                if current:
-                    require(invocation is None or current == invocation, 'Training unit invocation changed; audit scope frozen')
-                    invocation = current
+                require(fields.get('InvocationID') == expected_invocation,
+                        'Training InvocationID differs from immutable release; audit scope frozen')
+                scope_valid = True
                 state['training_unit_observation'] = fields
                 begun = time.monotonic()
                 results, steps, skipped, errors = collect(collector, history)
@@ -182,7 +195,7 @@ def main():
                 state['manifest_json_bytes_checked'] += sum(r['source_manifest_bytes'] for r in results)
                 state['last_collected_outers'] = [r['completed_outer'] for r in results]
                 state['indexed_completed_outers'] = steps
-                state['missing_outers_since2'] = sorted(set(range(2, max(steps, default=1) + 1)) - set(steps))
+                state['missing_child_outers'] = sorted(set(range(FIRST_OUTER, max(steps, default=FIRST_OUTER-1) + 1)) - set(steps))
                 state['last_skipped'] = skipped[-10:]
             except Exception as exc:
                 errors.append({'error': repr(exc)[:2000]})
@@ -191,7 +204,7 @@ def main():
             state['last_errors'] = (state['last_errors'] + errors)[-20:]
             state['observed_epoch'] = time.time()
             state['last_poll_wall_seconds'] = time.monotonic() - tick
-            terminal = bool(fields and is_terminal(fields))
+            terminal = bool(scope_valid and is_terminal(fields))
             state['status'] = ('TRAINING_TERMINAL_OBSERVED_METADATA_ONLY' if terminal else
                                'WATCHING_WITH_AUDIT_ERROR' if errors else 'WATCHING')
             try:

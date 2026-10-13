@@ -1,24 +1,35 @@
-# Native manifest history watcher
+# Native5 child native-manifest metadata watcher
 
-This packet audits only `sst-tree-nested-branch-fresh200-ba9f6627.service` and its owned ba9f6627 run on H10018. It does not control or modify training. The frozen training source remains ba9f6627ec9a4e9749830d7b6acca53f6feec6b4. This watcher has its own Git identity and is published separately.
+This small extension of published watcher60f0954 is prepared separately from training. It audits the same H10018 node and **one actual new native5 recovery child**, with immutable source/run/unit/InvocationID binding supplied only after those identities exist. Training does not wait for this watcher. No source identity is guessed from a date, branch HEAD or previous unit.
 
-Every 60 seconds it discovers retained complete rolling manifest JSON, runs the existing collector's hash-bound validation and atomic no-replace publisher, and indexes archived receipts. The original manifest bytes and SHA are retained. Eight-rank finite/Adam/scheduler fields remain **the original native writer's evidence**, not independent recomputation. PT files are only stat'ed at capture time; no PT/tensor bytes, hashes or Torch loading. Pruning races retry on the next poll. Existing same-SHA entries are idempotent; conflicts are audit errors and never overwritten.
+The packet builder requires `--training-source` (actual40hex recoverycommit), `--training-unit` (actual own unit name), `--run-directory` (actual own systemd run), and `--training-invocation-id` (actual32hex systemd InvocationID). The release descriptor pins these, interval60 seconds, first child outer6, last outer200, plus collector and watcher byte hashes. ExecStart pins the release SHA. Source/run paths use the existing same-node nested-branch namespace, and the owned unit name must contain the actual source's short SHA.
 
-History is inside the same run at `output/native-manifest-history`. Watcher state is a bounded 100KB `watcher-ba9f6627/state.json`, including archive coverage/gaps, errors, costs, training unit observations, code/collector/release hashes, and explicit evidence limits. It keeps no raw rollout/log stream. Errors do not send training signals. A valid terminated unit (inactive/failed, no live main PID, recorded main exit) triggers the last collection, a small immutable `final.json`, then normal exit; failure of training is recorded without claiming successful acceptance. Unit-query errors/missing unit do not count as terminal. A different nonempty training InvocationID is an audit scope error, never permission to follow a new training execution.
+Each poll reads only the exact bound unit with `systemctl show`, requires its actual InvocationID, and scans only that child's retained complete `global_step_6..200/manifest.json`. The byte-identical original collector's manifest validator, PT stat checks and atomic no-replace publisher are reused; its SSH CLI and default multi-run collector are never called. Raw manifest JSON bytes and SHA remain immutable, same-SHA retries are idempotent, conflicts record audit errors without overwriting. No tensor/PT contents, Torch, GPU queries or training signals.
 
-The service has MemoryMax=256M, CPUQuota=25%, TasksMax=16, RuntimeMaxSec=7d, Restart=no, a read-only filesystem except its owned history, and AF_UNIX-only access for local systemd queries. A service resource failure can stop the audit alone; training is unaffected. It cannot recover manifests already pruned before any collector observed them; `missing_outers_since2` exposes gaps instead of claiming 200-round coverage. Parent outer1 remains the existing separate receipt; this watcher scans only the child run's outer>=2 snapshots.
+Original0bef outer1 and ba9 outer2..5 metadata histories remain in the existing **ba9 run's** `output/native-manifest-history` (the original collector saved both source identities there). The new descriptor lists these two inherited source/range entries. They are not moved, copied, rewritten or counted as new-child captures; their original source-qualified names remain intact. New-child6..200 archives live under the new run's own history. This is lineage metadata preservation, not independent native/HF cold reload or proof of unread pruned tensor bytes.
 
-## Prepare code only on the Mac
+The bounded state at `output/native-manifest-history/watcher-native5-SHORT/state.json` records code/release hashes, expected InvocationID, child coverage/missing steps, inherited locations, errors and cumulative CPU/wall/JSON costs. State is at most100KB; there is no accumulating raw log. Training terminal is recognized only when the exact pinned InvocationID's unit is inactive/failed, main PID zero, and main exit recorded. That matching final poll performs the last collection, writes immutable `final.json`, and exits normally. Missing/changed identity or audit errors never send a signal or create permission to follow another execution.
 
-After commit/push verification, run `prepare_release.py --repo ISOLATED_REPO --output NEW_PACKET_OUTSIDE_REPO` using local Python. This copies only the two small committed Python files, release descriptor, systemd unit and packet receipt. It does not SSH, upload, read PT/model assets or start anything. The descriptor pins collector and watcher SHA; ExecStart also pins release SHA. The deployment directory contains the separate watcher Git commit, so it cannot overwrite frozen training code.
+The separate audit service retains MemoryMax256M, CPUQuota25%, TasksMax16, RuntimeMaxSec7d, Restart=no, AF_UNIX-only systemd access, and read-only filesystem except its own history. Runtime/resource failure affects the audit alone. A60s poll cannot recover a manifest pruned before any collector observed it; gaps remain explicit.
 
-## Mainline deployment and one start on H10018
+## Prepare code only, after the new training unit starts
 
-Only the mainline executes these steps; implementation does not execute remote commands.
+Run the committed `prepare_release.py` locally with:
 
-1. Transfer the code-only packet to its receipt's `remote_code_directory` using the existing retained18 route. Reject an existing destination. Read back SHA for each packet file and compare with `packet-receipt.json`; record actual pushed remote Git SHA separately.
-2. Create only the ba9f run's `output/native-manifest-history` directory, if absent. It must belong to this exact run. The training source, PT files, optimizer, environment and unit are untouched.
-3. Confirm `sst-tree-native-history-watch-ba9f6627.service` has not previously been installed/started. Install **only** that packet's audit unit under `/etc/systemd/system/sst-tree-native-history-watch-ba9f6627.service`. Run `systemctl daemon-reload`, then **once** `systemctl start sst-tree-native-history-watch-ba9f6627.service`. Do not enable/restart it or run training stop/start/restart operations.
-4. Mainline performs two actual measurements separated by at least one polling interval: read its small state and archived receipt counts; confirm `polls` and costs/observed timestamps advance, and new completed native manifests are archived if training finishes another outer. Check the watcher journal/errors and service exit state. Process existence alone is insufficient. Preserve both measurements as small local JSON.
+```
+--repo ISOLATED_WATCHER_REPO --output NEW_PACKET_OUTSIDE_REPO
+--training-source ACTUAL_NEW_RECOVERY_COMMIT
+--training-unit ACTUAL_NEW_TRAINING_UNIT
+--run-directory ACTUAL_NEW_RUN
+--training-invocation-id ACTUAL_SYSTEMD_INVOCATION_ID
+```
 
-This implementation performs minimal syntax validation only, with no new review/test or training gate. Training continues toward 200 outers and final 51713-row evaluation; full native/HF cold reload remains an independent final acceptance step, not supplied by this watcher.
+The builder copies only two small committed Python files, release.json, the separate watcher service and a packet receipt. It does not inspect remote state or start anything. The new actual training identities come from mainline's normal unit observations; this adds no training review/test/hold gate.
+
+## Mainline deployment and one start only
+
+1. Transfer the code-only packet via the existing retained18 route to its commit/source-qualified `remote_code_directory`, rejecting an existing destination; compare all packet file SHA readbacks with its receipt. No credentials, training environments, checkpoints, weights or raw rollout are transferred.
+2. Create only the new bound run's `output/native-manifest-history`, if absent. Install only the new `sst-tree-native5-history-watch-SHORT.service`. Confirm this audit unit has not previously been installed/started; run `systemctl daemon-reload`, then **once** `systemctl start sst-tree-native5-history-watch-SHORT.service`. No enable/restart or training stop/start/restart operation is part of these instructions.
+3. Mainline observes two actual cycles at least60 seconds apart: verify state polls/timestamps/cost advance and a newly completed manifest is captured when available. Check audit errors/service exit. Record small measured receipts. Process liveness alone is not progress.
+
+Implementation performs minimal syntax parsing only, no tests, review or remote deployment. The mainline remains responsible for actual startup/measurements and completing200 outers plus51713-row final evaluation and independent cold-reload acceptance.
