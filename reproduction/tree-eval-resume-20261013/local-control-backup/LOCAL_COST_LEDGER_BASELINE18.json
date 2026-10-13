@@ -1,0 +1,38 @@
+{
+  "schema": "local_cost_tool_initial_history_binding_v1",
+  "created_utc": "2026-10-13T22:30:33.931648+00:00",
+  "base": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013",
+  "latest_actual_effective_outer": 18,
+  "input_files": {
+    "PER_OUTER_METRICS_COMPACT.json": {
+      "sha256": "5b9990ea0bdb50ea4aa82a160e7d0bd584fdedf34d80cd20b5b0d6cdfc01ba06",
+      "bytes": 36270
+    },
+    "PER_OUTER_METRICS_COMPACT.md": {
+      "sha256": "01ff29ddd2afc766146b8fa71845e6dbf3474687e0da370a3ddbae810c72a83b",
+      "bytes": 12721
+    },
+    "CUMULATIVE_COST_THROUGH18.json": {
+      "sha256": "eec1d944500c5176ea2c172ad92036b27d434042d7153008128a655f43a9f1df",
+      "bytes": 51966
+    },
+    "CUMULATIVE_COST_THROUGH18.md": {
+      "sha256": "f75956a33340852ff038ed363410749a9e998d85d6ca5696bd242c199675c4d9",
+      "bytes": 3865
+    },
+    "per_outer_metrics_blocks/PER_OUTER_METRICS_OUTER0001_0010.json": {
+      "sha256": "488ec3a664cef98ffe9bf840448862634be3a746e43fba6714d0242c465fc4fa",
+      "bytes": 81517
+    },
+    "per_outer_metrics_blocks/PER_OUTER_METRICS_OUTER0011_0020.json": {
+      "sha256": "dbfb7a4f9e5b66da4e9ac94e012c56e576e7424be4f4f1e8a69e1aa7ceffeabe",
+      "bytes": 85057
+    }
+  },
+  "helper_sha256": "36141d5b6f541011dc703766660d2c32a8f4f356a8622b238be3dd6a6e6212b9",
+  "validation": "AST_PARSE_ONLY",
+  "helper_not_executed_before_publication": true,
+  "training_or_STATUS_REPORT_modified": false,
+  "new_target_receipt": "FULL_OUTER19_PROGRESS_RECEIPT.json",
+  "first_real_call_requires_actual_immutable_receipt": true
+}
