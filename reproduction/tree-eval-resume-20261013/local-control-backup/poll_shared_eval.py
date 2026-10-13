@@ -12,6 +12,10 @@ b=list((s/'batches').glob('*.done.json'));done=[read(p) for p in b]
 x=dict(epoch=time.time(),unit=unit,systemd=subprocess.run(['systemctl','show',unit,'--property=ActiveState,SubState,ExecMainStatus,MainPID,MemoryCurrent'],capture_output=True,text=True).stdout,queue=subprocess.run(['squeue','--local','-h','-j','3391,3392','-o','%i %j %T %N'],capture_output=True,text=True).stdout,done_batches=len(b),completed_new_rows=sum(v['count'] for v in done),done_receipts=done[-2:],rank_provenance=[p.name for p in s.glob('*rank*')],gpu=subprocess.run(['nvidia-smi','--query-gpu=memory.used,memory.free,utilization.gpu','--format=csv,noheader'],capture_output=True,text=True).stdout,logs={n:tail(run/n) for n in ['guard.log','retriever.log','eval.log','resource-samples.jsonl']},run_result=read(run/'run-result.json'),final_metrics=read(s/'final-metrics.json'),journal=subprocess.run(['journalctl','-u',unit,'-n','15','--no-pager','-o','cat'],capture_output=True,text=True).stdout)
 eval_tail=tail(run/'eval.log',1024*1024) or ''
 x['current_ready_ranks']=sorted(set(json.loads(m.group(1))['rank'] for m in re.finditer(r'EVAL_RESIDENT_READY (\{[^\\n]*?\})',eval_tail)))
+x['latest_batch_costs']=[]
+for receipt in sorted(b,key=lambda p:p.stat().st_mtime)[-8:]:
+ payload=read(receipt.with_name(receipt.name.replace('.done.json','.json')))
+ x['latest_batch_costs'].append(dict(rank=payload['rank'],start=payload['rows'][0]['index'],count=len(payload['rows']),cost=payload['cost']))
 sample=tail(run/'resource-samples.jsonl',32768)
 x['latest_guard']=json.loads(sample.splitlines()[-1]) if sample else None
 x['logs'].pop('resource-samples.jsonl',None)
