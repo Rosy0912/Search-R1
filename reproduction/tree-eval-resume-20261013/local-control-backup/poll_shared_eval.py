@@ -3,7 +3,7 @@ from pathlib import Path
 spec=importlib.util.spec_from_file_location('ssh',Path(__file__).with_name('ssh_retained18.py'));ssh=importlib.util.module_from_spec(spec);spec.loader.exec_module(ssh)
 code='''import json,time,subprocess
 from pathlib import Path
-r=Path('/dataset/shaoshitong/search-r1-rl/tree-grpo');unit='sst-tree-eval-shared-993109d.service';run=r/'runs'/unit.removesuffix('.service');s=r/'runs/tree-branpo-fresh200-3360/output/eval-resume/scores'
+r=Path('/dataset/shaoshitong/search-r1-rl/tree-grpo');unit='sst-tree-eval-shared-13a5388.service';run=r/'runs'/unit.removesuffix('.service');s=r/'runs/tree-branpo-fresh200-3360/output/eval-resume/scores'
 def tail(p,n=4500):
  if not p.exists():return None
  with p.open('rb') as f:f.seek(0,2);f.seek(max(0,f.tell()-n));return f.read().decode(errors='replace')

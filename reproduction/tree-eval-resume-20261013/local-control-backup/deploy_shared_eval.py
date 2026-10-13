@@ -1,7 +1,7 @@
 import importlib.util,json,base64,hashlib,shlex
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('ssh',Path(__file__).with_name('ssh_retained18.py'));ssh=importlib.util.module_from_spec(spec);spec.loader.exec_module(ssh)
-commit='993109df8d614f7d0e0e76f3aa67bdccdff18706'
+commit='13a5388f8f4e7d4fbf47341489c58ec782b81377'
 root='/dataset/shaoshitong/search-r1-rl/tree-grpo';dest=root+'/instruct300/eval-shared-'+commit
 src=Path(__file__).parent/'branpo-source/reproduction/tree-eval-resume-20261013'
 old=json.loads(Path('outputs/tree-eval-resume-20261013/DEPLOYMENT.txt').read_text().split('\n\nexit')[0])['release']
