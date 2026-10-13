@@ -1,0 +1,29 @@
+{
+  "review_status": "ACCEPTED",
+  "review_scope": "Minimal independent static review of deployment and once-only CPU launch helpers; no remote/GPU actions or wrapper changes",
+  "reviewed_at_utc": "2026-10-13T14:50:45.875828+00:00",
+  "files": {
+    "work/tree-speed-repair-20261008/deploy_handoff_acceptance.py": "f633a42df1348847ed14be6174a053616464b5a29015d9986e382342c9c9f6ba",
+    "work/tree-speed-repair-20261008/start_handoff_acceptance.py": "0acbd9e66889256ba103f47fbdc5261211f768fc233f0b1640dfb529a373d84a",
+    "work/tree-speed-repair-20261008/ssh_retained18.py": "498b50447f37f136ca49cde0cb27ecdcc99db99a425f1b8964de3ac0a231576c"
+  },
+  "blocking_findings": [],
+  "positive_checks": [
+    "Deployment verifies origin branch SHA equals local commit and checks exact reviewed wrapper SHA8cc378 before transferring only wrapper/reviews/README; source working tree was clean during local review.",
+    "SSH routing defaults to exact retained h100-10 management route with pinned target identity; no model/data transfer, training or foreign-task action.",
+    "Remote Python template token substitution yields syntactically valid code; outer shell quoting roundtrips exact Python source and inner shell uses shlex.join/quote for arguments/log destination.",
+    "Launcher gates owned evaluation unit inactive/MainPID0/ExecMainStatus0, actual COMPLETE/workerexit0/cleanup{} and full51713 metrics before creating CPU submission intent. Wrapper retains stronger identity/evidence gates before model load.",
+    "cpu-dispatch-once.json uses exclusive create and fsync before one systemd-run; prior intent or existing acceptance namespace refuses duplicates. Ambiguous/failure outcomes retain intent; launch stdout/stderr/returncode are saved separately.",
+    "Own CPU service uses8CPU quota/96G memory bound/7200s maximum, explicitly hiddenCUDA and unoptimized offline isolated Python. No GPU allocation, original evaluator modifications or cancellation.",
+    "CPU wrapper log remains in retained run inputs; failed wrapper preserves its namespace/log and helpers do not automatically retry or overwrite."
+  ],
+  "checks": {
+    "helpers_ast_parse": "PASS",
+    "rendered_template_ast_parse": "PASS",
+    "outer_shell_quote_roundtrip": "PASS"
+  },
+  "limits": [
+    "Acceptance is helper source scope only. Mainline must inspect actual deployment result and service progression/exit; submission result is not actual full-HF acceptance.",
+    "Any deployment or launch timeout/partial failure requires inspection of persistent path/intent/service evidence, never blind retry."
+  ]
+}
