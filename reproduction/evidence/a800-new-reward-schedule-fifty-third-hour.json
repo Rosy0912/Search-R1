@@ -1,0 +1,184 @@
+{
+  "change_from_previous_window_mean": -0.00657551983992255,
+  "checked_unix": 1791901394.6437237,
+  "complete_outers": 196,
+  "complete_successful_adam": 3913,
+  "complete_update_chain_scalar": {
+    "ledger_sha256": "b6989c71de4660b0939b32accce303c706f0767d67c5a3a631a68e4cb56fd688",
+    "opportunities": 3920,
+    "steps": 196,
+    "successful_adam": 3913
+  },
+  "cumulative_peak_scope": "carried verified same-run overlapping bounded history; not full-history reread",
+  "cumulative_sampled_peak_mib": {
+    "0": 61257,
+    "1": 60035,
+    "2": 60035,
+    "3": 60989,
+    "5": 36719,
+    "6": 38090
+  },
+  "dev512": {
+    "correct": 223.0,
+    "count": 512,
+    "counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "em": 0.435546875,
+    "f1": 0.515336681547619,
+    "receipt_sha256": "918de1bbf092d638283d5f6ceea2c679a198fa5f49ee0bcb66cbb7119ed73cd8",
+    "step": 150
+  },
+  "errors": [],
+  "execution_id": "4099fdc586b5467bb138e0ec7b35ca8a",
+  "final_identity_exists": false,
+  "formal_delivery_not_before_unix": 1791902025.7112498,
+  "four_rank_copies_counted_once": true,
+  "gpu_counter_window": {
+    "bounded_read_covers_start": true,
+    "end_unix": 1791901394.6437237,
+    "first_sample_unix": 1791897786.6867635,
+    "last_sample_unix": 1791901393.5319269,
+    "maximum_sampling_gap_seconds": 2.5816681385040283,
+    "sample_count": 1690,
+    "sampled_peak_mib": {
+      "0": 51299,
+      "1": 51395,
+      "2": 51395,
+      "3": 53567,
+      "5": 36719,
+      "6": 35534
+    },
+    "scope": "actual same-run counter timestamps; one bounded32MiB read; no extra generation/evaluation",
+    "start_unix": 1791897786.2753348
+  },
+  "gpu_samples": {
+    "first_scanned_sample_unix": 1791852377.7501607,
+    "latest_devices": [
+      {
+        "assignment": "training",
+        "physical_index": 0,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 35313,
+        "util_percent": 100
+      },
+      {
+        "assignment": "training",
+        "physical_index": 1,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 35409,
+        "util_percent": 100
+      },
+      {
+        "assignment": "training",
+        "physical_index": 2,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 35409,
+        "util_percent": 100
+      },
+      {
+        "assignment": "training",
+        "physical_index": 3,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 53567,
+        "util_percent": 100
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 5,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 6,
+        "sampled_run_peak_mib": null,
+        "total_mib": 81920,
+        "used_mib": 25962,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_age_seconds": 2.5517797470092773,
+    "latest_sample_unix": 1791901393.5319269,
+    "matching_sample_count": 22950,
+    "maximum_scanned_sampling_gap_seconds": 2.938096523284912,
+    "scope": "pipeline lifetime including service startup/calibration; sampled occupancy only"
+  },
+  "latest_scores_unchanged": true,
+  "new_algorithm_deployed": false,
+  "new_algorithm_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "new_complete_outers": 3,
+  "new_complete_reward_window": [
+    {
+      "reward": 0.39335936307907104,
+      "step": 194
+    },
+    {
+      "reward": 0.47773438692092896,
+      "step": 195
+    },
+    {
+      "reward": 0.4320312440395355,
+      "step": 196
+    }
+  ],
+  "new_complete_window_mean": 0.4343749980131785,
+  "new_complete_window_range": [
+    0.39335936307907104,
+    0.47773438692092896
+  ],
+  "new_complete_window_steps": [
+    194,
+    195,
+    196
+  ],
+  "new_skips": 0,
+  "new_successful_adam": 72,
+  "new_trainer_started": false,
+  "old_report_counter_snapshot_unix": 1791897786.2753348,
+  "old_report_delivered_unix": 1791898425.7112498,
+  "opportunities": 3936,
+  "partial_logical_update": 197,
+  "partial_processed_opportunities": 16,
+  "partial_successful_adam": 16,
+  "provable_inflight_opportunities": null,
+  "report_type": "formal_hourly_scalar_ready_before_delivery",
+  "reward_latest": 0.4320312440395355,
+  "reward_mode": "binary_em",
+  "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+  "sanitized_scalar_hash_only": true,
+  "skips": 7,
+  "source_commit": "34e63b7b12f4056503803905c1b3dd1be95f0adc",
+  "stage64": {
+    "correct": 11.0,
+    "count": 64,
+    "counts": {
+      "hotpotqa": 32,
+      "nq": 32
+    },
+    "em": 0.171875,
+    "f1": 0.2429738082116004,
+    "receipt_sha256": "1487f5613ec8c65e47bfc527edc651774afb8dfd25280313d8f7f3d3ad40712a",
+    "step": 5
+  },
+  "successful_adam": 3929,
+  "trainer": {
+    "pid": 1358996,
+    "sid": 1358996,
+    "start_ticks": 575207394,
+    "state": "S",
+    "uid": 0
+  },
+  "trainer_birth_verified": true,
+  "trainer_identity_checked_unix": 1791901473.286615,
+  "trainer_recorded_birth_matched": true,
+  "training_log_bytes": 9660925,
+  "training_log_mtime": 1791901380.9809136
+}
