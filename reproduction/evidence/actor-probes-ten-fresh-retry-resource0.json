@@ -1,0 +1,109 @@
+{
+  "actual_independent_review_sha256": "882f9907a8bfee0b6b11e2f4e763460be5f45f9c08c48d2a0d5f8bdd56016f35",
+  "anchor_advanced": false,
+  "assigned_others_untouched": true,
+  "complete_outers": 0,
+  "dev512": null,
+  "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+  "final51713": null,
+  "foreign_auxiliary": [],
+  "formal_report_delivered": false,
+  "independent_actual_prepared_source_deployment_review_accepted": true,
+  "inherited_training_state": false,
+  "initial_probe_fit0_exercised": false,
+  "known_control_bootstrap_failure": {
+    "adaptation_to_reviewed_runtime_consistency_reviewed": true,
+    "new_guard_rejected_foreign_before_signal": true,
+    "occurred_before_any_signal": true,
+    "type": "AttributeError os.pidfd_open unavailable"
+  },
+  "latest_reward": null,
+  "lost_updates": 0,
+  "native_algorithm_accepted": false,
+  "new_complete_reward_window": {
+    "change": null,
+    "count": 0,
+    "mean": null,
+    "range": null
+  },
+  "new_pipeline_Popen_issued": false,
+  "new_scoring_available": false,
+  "next_single_bounded_resource_observation_not_before_unix": 1791933703.1466918,
+  "old_ff_failure_preserved": true,
+  "owned_capacity_only": {
+    "NONEXCLUSIVE": true,
+    "NVML_mib_each": [
+      61856,
+      61856,
+      61856
+    ],
+    "counts_as_training_peak": false,
+    "identity": {
+      "alive": true,
+      "birth_matches": true,
+      "euid": 0,
+      "pgid": 2340358,
+      "pid": 2340358,
+      "sid": 2340358,
+      "start_ticks": 601041566,
+      "state": "S",
+      "uid": 0
+    },
+    "indices": [
+      1,
+      2,
+      3
+    ],
+    "post_READY_retention_verified": true,
+    "torch_bytes_each": 64424509440,
+    "two_real_readings_previously_accepted": true
+  },
+  "owned_capacity_signal_sent": false,
+  "parent_checkpoint": null,
+  "predecessor": {
+    "complete_outers": 200,
+    "counts_scores_not_inherited": true,
+    "em": 0.42242762941620093,
+    "f1": 0.48704778769330365,
+    "final51713_correct": 21845,
+    "final51713_count": 51713,
+    "owned_cleanup_accepted": true,
+    "processed_opportunities": 4000,
+    "run_id": "1db662001a0f4d998928bcf6f5f33c9d",
+    "skips": 7,
+    "successful_adam": 3993
+  },
+  "prepared_receipt_sha256": "ef6efa01f665fd8f660a893b43f26d486fe80972a86c97f75838a8b8d17c432e",
+  "probe_parameter_ownership": "two independent binary Heads only",
+  "probe_refresh_completed_outer_interval": 10,
+  "probe_representation_source": "current actor detached",
+  "processed_opportunities": 0,
+  "record_sha256": "132563b47ce5f34713a4dfdb769d1ca30ecb60c8e5dde0d6ef0575d346cd0500",
+  "resource_admission_refused_before_signal": true,
+  "resource_blocker": [
+    {
+      "cwd_sha256": "225a353eeaf767d7b2fc350256d655857f1fc2ffd0b2e3dac3d4473271e79f51",
+      "gpu_index": 2,
+      "gpu_uuid": "gpu-19f588c3-3f42-a910-5f9a-21687befed5b",
+      "pid": 2361311,
+      "sid": 2361311,
+      "start_ticks": 601148976,
+      "state": "R",
+      "uid": 0,
+      "used_mib": 1518
+    }
+  ],
+  "reward_schedule": "G1 complete1..100; binaryEM1or0 complete101..200",
+  "role": "fresh_actor_probe_reviewed_resource_wait_actual_zero_report",
+  "run_id": "a9be0ee91ff942349a26caf372e22a27",
+  "skips": 0,
+  "snapshot_unix": 1791931903.1466918,
+  "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+  "stage64": null,
+  "successful_adam": 0,
+  "train_GPU_cumulative_peak": null,
+  "train_GPU_instant": null,
+  "train_GPU_window_peak": null,
+  "trainer_started": false
+}

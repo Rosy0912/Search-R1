@@ -1,0 +1,12 @@
+{
+  "accepted": true,
+  "checked_unix": 1791932053.407234,
+  "independent_initialization_without_parent_context": true,
+  "new_training_started": false,
+  "not_before_unix": 1791933703.1466918,
+  "resource_scalar_sha256": "fbf6e13c98801be7bcb2f442972b29d4880da9eec2f8215810a6078e5afaa5cf",
+  "reviewer_task": "/root/owned_release_runtime_adaptation_review",
+  "role": "independent_saved_timer_and_resource_scalar_review",
+  "scope": "Exactthreechangedbindings vs publishedoriginaltimer; waits locally thenONEboundedread/timeoutunknown/noauto retry/no signal/newlaunch. Resource scalar matchesactual foreignGPU2 guard/noSIGTERM/zero newupdates/nativefalse/capacitynottrainingpeak; noQAcredentials",
+  "timer_sha256": "b193535852db3285aa098f346e550865ca16034979024c3d728e2d35d6bcfbea"
+}
