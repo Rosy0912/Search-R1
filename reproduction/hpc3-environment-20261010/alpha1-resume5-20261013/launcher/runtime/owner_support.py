@@ -1,0 +1,876 @@
+#!/usr/bin/env python3
+"""TOP-D short-run supervisor: explicit dependencies, Slurm only, no submission."""
+import argparse
+import copy
+import fcntl
+import hashlib
+import importlib.util
+import json
+import math
+import os
+from pathlib import Path
+import re
+import signal
+import socket
+import subprocess
+import sys
+import time
+
+ROOT = Path('/data/user/jxu957/experiments/topd-20261008/runtime')
+PUBLIC_GPU_SOURCE='4bda3078b255b5a4d9cf90bf9a443ba3102c1e35'
+ORIGINAL_SEARCH_R1='0328f941547fa8b41f4fe5a7f84499c7c67a7bee'
+CONTENT = 'fac19c74fe28df2016bdff12f74f035fe272bed0d65d37e9740071e674195524'
+NATIVE_SOURCE_FIXTURES=205
+NATIVE_TOOL_FIXTURES=128
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def frozen_json(path, expected):
+    require(re.fullmatch('[0-9a-f]{64}', expected or '') is not None, 'Require frozen record SHA256')
+    require(sha(path) == expected, 'Record changed: ' + str(path))
+    return json.loads(Path(path).read_text())
+
+
+def git(*args):
+    return subprocess.check_output(['git', '-C', str(ROOT / 'repo'), *args], text=True).strip()
+
+
+def artifact(item):
+    require(sha(item['path']) == item['sha256'], 'Reviewed evidence changed: ' + item['path'])
+
+
+
+def protocol_binding(binding):
+    item=binding['common_gpu_protocol_fix']
+    require(item['source_commit']==PUBLIC_GPU_SOURCE and binding['original_search_r1_commit']==ORIGINAL_SEARCH_R1,
+            'Unreviewed public GPU/micro64/original source')
+    require(re.fullmatch('[0-9a-f]{40}',item.get('integrated_commit','')) is not None,'Missing own integrated GPU source')
+    subprocess.run(['git','-C',str(ROOT/'repo'),'merge-base','--is-ancestor',item['integrated_commit'],binding['code_commit']],check=True)
+    patch=subprocess.check_output(['git','-C',str(ROOT/'repo'),'show','--format=','--no-ext-diff',item['integrated_commit']])
+    require(subprocess.check_output(['git','patch-id','--stable'],input=patch).decode().split()[0]==item['stable_patch_id'],
+            'Integrated GPU protocol differs from frozen public patch')
+    artifact(item['independent_review'])
+    artifact(binding['micro64_validation64_review'])
+    artifact(binding['local_gpu_retrieval_review'])
+
+
+def validate_gpu_overlay(binding):
+    """Exact isolated wheel installation inventory, excluding bytecode caches."""
+    record=binding['retriever_gpu_overlay_manifest']
+    manifest=frozen_json(record['path'],record['sha256'])
+    overlay=ROOT/'retriever-gpu-lib'
+    require(overlay.is_dir() and overlay.resolve().is_relative_to(ROOT.resolve()),'Need own isolated GPU FAISS overlay')
+    actual={str(p.relative_to(overlay)):p for p in overlay.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc'}
+    require(manifest['files'] and set(actual)==set(manifest['files']),'GPU overlay inventory changed')
+    for relative,digest in manifest['files'].items():
+        path=actual[relative]
+        require(path.resolve().is_relative_to(overlay.resolve()) and sha(path)==digest,'GPU overlay file changed/nonlocal')
+    require('faiss/__init__.py' in actual,'Overlay must provide real FAISS')
+    return overlay
+
+
+def own_repo_imports():
+    # File execution from tools/ otherwise does not put own repo on sys.path.
+    path=str(ROOT/'repo')
+    if path not in sys.path:
+        sys.path.insert(0,path)
+
+
+def inherited_lease_fds():
+    own_repo_imports()
+    from search_r1.baselines.preflight import validate_inherited_gpu_leases
+    validate_inherited_gpu_leases(4)  # Actual FD/file/UUID/flock ownership + absolute dual15%.
+    rows=json.loads(os.environ['SEARCH_R1_GPU_LEASES'])
+    fds=tuple(int(row['fd']) for row in rows)
+    require(len(fds)==4 and len(set(fds))==4 and all(fd>=3 for fd in fds),'Need eight distinct real lease descriptors')
+    return fds
+
+
+def gpu_retriever_spec():
+    """Only the service imports the isolated FAISS GPU overlay, after torch."""
+    inherited_lease_fds()  # Before any service CUDA allocation, not an env-marker shortcut.
+    local_assets()
+    environment=local_runtime_env(os.environ)
+    environment.update(PYTHONPATH=str(ROOT/'retriever-gpu-lib')+os.pathsep+str(ROOT/'repo'),
+                       OMP_NUM_THREADS='8',MKL_NUM_THREADS='8',OPENBLAS_NUM_THREADS='8')
+    # Do not pass lease FDs to service; supervisor retains ownership throughout.
+    environment.pop('SEARCH_R1_GPU_LEASES',None)
+    environment.pop('SEARCH_R1_GPU_PREFLIGHT',None)
+    server=ROOT/'repo/search_r1/search/retrieval_server.py'
+    command=[sys.executable,'-c',"import torch,runpy,sys; server=sys.argv.pop(1); sys.argv[0]=server; runpy.run_path(server,run_name='__main__')",
+             str(server),'--index_path',str(ROOT/'assets-root/assets/wiki/e5_Flat.index'),
+             '--corpus_path',str(ROOT/'assets-root/assets/wiki/wiki-18.jsonl'),
+             '--retriever_model',str(ROOT/'assets-root/assets/e5-base-v2'),'--retriever_name','e5','--topk','3',
+             '--device','cuda','--faiss_gpu','--threads','8','--host','127.0.0.1','--port','18085']
+    return command,environment
+
+
+def wait_for_gpu_idle(service,log,timeout=120):
+    """Own service has no occupancy exemption: preserve the public absolute15%."""
+    deadline=time.monotonic()+timeout
+    with Path(log).open('a') as stream:
+        while True:
+            require(service.poll() is None,'Own GPU retrieval service exited')
+            try:
+                fds=inherited_lease_fds()
+            except RuntimeError as error:
+                if 'exceeds the 15% idle thresholds' not in str(error):
+                    raise  # Unknown hardware/invalid lease is never retryable occupancy.
+                stream.write(json.dumps(dict(kind='idle_wait',gpu=gpu_sample(),error=str(error)))+'\n');stream.flush()
+                require(time.monotonic()<deadline,'GPU retrieval residency cannot meet public absolute dual15% guard')
+                time.sleep(2)
+            else:
+                stream.write(json.dumps(dict(kind='idle_guard_pass',gpu=gpu_sample(),lease_fds=list(fds)))+'\n');stream.flush()
+                return fds
+
+
+def dependency_gate(args):
+    binding = frozen_json(args.binding, args.binding_sha)
+    require(binding.get('status') == 'REVIEWED', 'No independent reviewed deployment binding')
+    require(binding['code_commit'] == git('rev-parse', 'HEAD') and not git('status', '--porcelain'), 'Unfrozen/dirty own repo')
+    fix = binding['common_teacher_path_fix']
+    for key in ('source_commit', 'integrated_commit'):
+        require(re.fullmatch('[0-9a-f]{40}', fix.get(key, '')) is not None, 'Unknown public/integrated path-fix SHA')
+    subprocess.run(['git', '-C', str(ROOT / 'repo'), 'merge-base', '--is-ancestor', fix['integrated_commit'], binding['code_commit']], check=True)
+    patch = subprocess.check_output(['git', '-C', str(ROOT / 'repo'), 'show', '--format=', '--no-ext-diff', fix['integrated_commit']])
+    patch_id = subprocess.check_output(['git', 'patch-id', '--stable'], input=patch).decode().split()[0]
+    require(patch_id == fix['stable_patch_id'], 'Integrated public fix patch differs')
+    artifact(fix['independent_review'])
+    artifact(fix['real_savepath_test'])
+    require(binding['teacher_cpu_threads'] == 16, 'Need reviewed driver-only16-thread CPU teacher setting')
+    artifact(binding['teacher_thread_review'])
+    artifact(binding['actual_config_review'])
+    protocol_binding(binding)
+    validate_gpu_overlay(binding)
+    require(binding['split_content_identity'] == CONTENT, 'Wrong public split identity')
+    require(binding['reviewed_evidence'], 'Missing native/asset/general gates')
+    for item in binding['reviewed_evidence']:
+        artifact(item)
+    teacher = Path((ROOT / 'teacher-path.txt').read_text().strip())
+    require(teacher.is_absolute() and teacher.is_dir() and teacher.resolve().is_relative_to(ROOT.resolve()), 'Need fully copied local frozen teacher under own root')
+    require(Path(binding['split_manifest_path']).resolve().is_relative_to(ROOT.resolve()), 'Split manifest must be local own-root')
+    require(sha(teacher / 'teacher-manifest.json') == binding['teacher_receipt_sha256'], 'Frozen teacher receipt changed')
+    for name, key in [('verify-topd-teacher.py', 'teacher_verifier_sha256'),
+                      ('verify-topd-checkpoint.py', 'checkpoint_verifier_sha256'),
+                      ('topd-short-run.py', 'launcher_sha256')]:
+        require(sha(ROOT / 'tools' / name) == binding[key], 'Unreviewed tool: ' + name)
+    result = frozen_json(binding['teacher_cpu_gate']['path'], binding['teacher_cpu_gate']['sha256'])
+    require(result.get('status') == 'PASS' and result['teacher_path'] == str(teacher.resolve())
+            and result['teacher_receipt_sha256'] == binding['teacher_receipt_sha256']
+            and result['split_content_identity'] == CONTENT, 'No real teacher CPU gate')
+    if args.stage == 'accept5':
+        review = frozen_json(args.smoke_review, args.smoke_review_sha)
+        require(review['status'] == 'PASS' and review['stage'] == 'smoke2'
+                and review['code_commit'] == binding['code_commit']
+                and review['teacher_receipt_sha256'] == binding['teacher_receipt_sha256'], 'No compatible independent smoke2 review')
+        artifact(review['independent_report'])
+        # Freeze ALL evidence consumed by the independent reviewer, not just its prose.
+        require(review['evidence_files'], 'Smoke review lacks frozen evidence files')
+        for item in review['evidence_files']:
+            artifact(item)
+        audit_gate(Path(review['run_root']), 2, binding)
+    return binding, teacher
+
+
+
+def parallel_scorer_audit(run,steps,launch,binding):
+    own_repo_imports()
+    from search_r1.baselines.topd_local_gpu import implementation_fingerprint
+    manifest=json.loads((run/'teacher-ipc/manifest.json').read_text())
+    require(manifest['kind']=='TRAINED_TEACHER_FROZEN' and manifest['source_sha256']==implementation_fingerprint()
+            and manifest['outer_updates']==steps and manifest['rows_per_service']==320,'Scorer source/production shape differs')
+    services=manifest['services'];require(len(services)==4 and len({service['uuid'] for service in services})==4
+                                        and len({service['pid'] for service in services})==4,'Scorers not eight actual distinct processes/devices')
+    expected=dict(run_id=launch['run_id'],code_commit=binding['code_commit'],config_sha256=launch['config_sha256'],
+                  data_identity=CONTENT,teacher_receipt_sha256=binding['teacher_receipt_sha256'],source_sha256=manifest['source_sha256'])
+    reconciles=[json.loads(line) for line in (run/'audit/driver.jsonl').read_text().splitlines() if json.loads(line)['kind']=='teacher_ipc_reconcile']
+    require(sorted(record['outer_step'] for record in reconciles)==list(range(1,steps+1)),'Missing/duplicate driver scorer reconciliation')
+    snapshots=[]
+    for rank,service in enumerate(services):
+        ready=json.loads((run/'teacher-ipc'/f'scorer-ready-{rank}.json').read_text())
+        require(all(ready[key]==value for key,value in expected.items()) and ready['pid']==service['pid']
+                and ready['uuid']==service['uuid'] and ready['cgroup']==manifest['cgroup'],'Actual scorer startup identity differs')
+        rows=[json.loads(line) for line in (run/'teacher-ipc'/f'scorer-{rank}.jsonl').read_text().splitlines()]
+        require([record['outer_step'] for record in rows]==list(range(1,steps+1)),'Scorer missing/duplicate outer receipts')
+        initial=ready['loaded_cpu'];snapshots.append(initial['parameter_sha256'])
+        for row in rows:
+            require(all(row[key]==value for key,value in expected.items()) and row['pid']==service['pid']
+                    and row['uuid']==service['uuid'] and row['rank']==rank and row['cgroup']==manifest['cgroup']
+                    and row['slurm_job']==manifest['slurm_job'] and row['rows']==320 and row['targets_none']
+                    and row['dtype']=='float32' and row['attention']=='eager' and row['tf32'] is False,'Scorer actual ownership/math/privacy differs')
+            require(row['status']=='RELEASED' and row['allocator_released']==dict(allocated_bytes=0,reserved_bytes=0),'Scorer did not release workspace before actor')
+            for field in ('released_cpu','gpu_before','gpu_after'):
+                state=row[field]
+                if state is not None:
+                    require(state['parameter_sha256']==initial['parameter_sha256'] and state['dtypes']==['torch.float32']
+                            and not state['training'] and state['training_modules_count']==state['requires_grad_parameters']==state['grad_parameters']==0,'Teacher actual frozen/eval/FP32 changed')
+            require(row['released_cpu']['devices']==['cpu'] and all(device=='cpu' for device in row['released_cpu']['buffer_devices']),'Teacher not back on CPU')
+            if row['outer_step']==1:require(row['gpu_before'] and row['gpu_before']['devices']==['cuda:0'],'Missing first GPU in-use hash')
+            if row['outer_step']==steps:require(row['gpu_after'] and row['gpu_after']['devices']==['cuda:0'],'Missing last GPU in-use hash')
+            matching=next(record for record in reconciles if record['outer_step']==row['outer_step'])
+            require(matching['scorer_receipts'][rank]==row,'Driver/server actual receipt mismatch')
+    require(len(set(snapshots))==1,'Eight teacher replicas differ')
+    for row in reconciles:
+        require(row['run_id']==launch['run_id'] and row['commit']==binding['code_commit'] and row['config_sha256']==launch['config_sha256'] and row['data_identity']==CONTENT,'Driver reconcile identity differs')
+        require(sum(receipt['scored_tokens_delta'] for receipt in row['scorer_receipts'])==row['scored_tokens_delta']>0,'Driver/scorer token accounting differs')
+
+
+def finite_stats(record):
+    require(record['finite'] == record['count'], 'Nonfinite tensor evidence')
+
+
+def audit_gate(run, steps, binding):
+    manifest = json.loads((run / 'launch-manifest.json').read_text())
+    require(manifest['stage'] == ('smoke2' if steps == 2 else 'accept5') and manifest['code_commit'] == binding['code_commit']
+            and manifest['teacher_receipt_sha256'] == binding['teacher_receipt_sha256'], 'Run identity mismatch')
+    require(sha(run / 'resolved-config.yaml') == manifest['config_sha256'], 'Resolved config changed')
+    require(sha(run/'audit/entry-config.yaml') == manifest['config_sha256'], 'Actual entry config differs')
+    from omegaconf import OmegaConf
+    actual_config=OmegaConf.load(run/'audit/entry-config.yaml')
+    require(actual_config.actor_rollout_ref.actor.ppo_micro_batch_size==64
+            and actual_config.actor_rollout_ref.actor.ppo_mini_batch_size==256
+            and not actual_config.actor_rollout_ref.actor.use_dynamic_bsz
+            and actual_config.trainer.n_gpus_per_node==4 and actual_config.trainer.nnodes==1
+            and actual_config.data.val_data_num==64 and actual_config.baselines.method=='topd'
+            and actual_config.baselines.local_runtime_only and actual_config.baselines.local_runtime_host=='h100-11'
+            and actual_config.retriever.url=='http://127.0.0.1:18085/retrieve', 'Actual micro64/mini256/rank8/validation64 protocol differs')
+    validation_sizes=re.findall(r'filtered validation dataset size:\s*(\d+)',(run/'training.log').read_text())
+    require(validation_sizes and all(int(size)==64 for size in validation_sizes), 'Actual filtered training validation must contain exactly64 questions')
+    entry = [json.loads(line) for line in (run/'audit/entry.jsonl').read_text().splitlines()]
+    require(len(entry)==1 and entry[0]['kind']=='config_boundary', 'Missing/duplicate actual entry boundary')
+    boundary=entry[0]
+    require(boundary['actual_config_sha256']==manifest['config_sha256'] and boundary['actual_data_identity']==CONTENT
+            and boundary['config_sha256']==manifest['config_sha256'] and boundary['run_id']==manifest['run_id']
+            and boundary['commit']==binding['code_commit'] and boundary['data_identity']==CONTENT
+            and boundary['entry_total_training_steps']==steps+1
+            and boundary['config_scope']=='resolved Hydra + common holdout before trainer optim.total_training_steps injection', 'Actual entry identity/scope differs')
+    backend=actual_config.baselines.get('topd',{}).get('teacher_backend','cpu')
+    parallel=backend=='local_gpu_fp32_parallel'
+    if parallel:
+        require(manifest['teacher_scoring_backend']==backend,'Launch/actual teacher backend differs')
+        parallel_scorer_audit(run,steps,manifest,binding)
+    for who in ['driver'] + list(map(str, range(4))):
+        records = [json.loads(line) for line in (run / 'audit' / (who + '.jsonl')).read_text().splitlines()]
+        rows = [r for r in records if r['kind'] == ('driver_outer' if who == 'driver' else 'actor_outer')]
+        require(sorted(r['outer_step'] for r in rows) == list(range(1, steps + 1)), 'Missing/duplicate outer evidence: ' + who)
+        require(all(r['run_id'] == manifest['run_id'] and r['commit'] == binding['code_commit']
+                    and r['config_sha256'] == manifest['config_sha256'] and r['data_identity'] == CONTENT for r in rows), 'Audit identity mismatch')
+        for row in rows:
+            required_keys={'old_log_probs','advantages','policy_weights'}
+            if who=='driver':
+                required_keys |= {'teacher_log_probs','token_level_rewards','returns'}
+            require(required_keys.issubset(row['tensors']), 'Missing required tensor evidence')
+            for stats in row['tensors'].values():
+                finite_stats(stats)
+            require(row['tensors']['advantages']['nonzero'] > 0, 'No effective advantage')
+            if who != 'driver':
+                require(row['rank'] == int(who) and row['epochs'] == 2 and row['optimizer_steps'] == 20
+                        and row['grad_finite'] == row['grad_nonzero'] == 20
+                        and row['skipped_empty_minibatches'] == 0 and row['fixed_unchanged']
+                        and row['shard_layout_unchanged'], 'Actor update/fixed snapshot evidence failed')
+                require(row['rows']==320 and len(row['grad_norms'])==20 and len(row['micro_stats'])==80,
+                        'Need rank320 rows,20 optimizer steps,80 micro-forwards (local mini32/micro8/two epochs)')
+                for micro in row['micro_stats']:
+                    require({'current_log_probs','ratios','policy_loss'}.issubset(micro), 'Missing current logp/ratio/loss')
+                    for stats in micro.values():
+                        finite_stats(stats)
+                require(all(value is not None and math.isfinite(value) and value > 0 for value in row['grad_norms']), 'Bad policy gradients')
+            else:
+                require(row['torch_threads'] == 16, 'CPU teacher driver thread setting not applied')
+                require(row['teacher_targets_none'] and row['teacher_scored_tokens_delta'] > 0, 'Bad teacher target/scoring evidence')
+        if who != 'driver':
+            require(any(r['shard_delta']['nonzero'] > 0 for r in rows if r['outer_step'] > 1), 'No parameter change after zero-LR first outer')
+        else:
+            require(any(r['observation_tokens'] > 0 for r in rows), 'No actual search observations')
+            if not parallel:
+                boundaries = [r for r in records if r['kind'] == 'teacher_boundary']
+                require(boundaries and boundaries[0]['outer_step'] == 0, 'Missing loaded-teacher boundary')
+                for r in boundaries:
+                    require(r['run_id']==manifest['run_id'] and r['commit']==binding['code_commit']
+                            and r['config_sha256']==manifest['config_sha256'] and r['data_identity']==CONTENT, 'Teacher boundary identity mismatch')
+                    require(not r['training'] and r['training_modules_count'] == r['requires_grad_parameters'] == r['grad_parameters'] == 0
+                            and r['devices'] == ['cpu'], 'Teacher not frozen/eval/CPU')
+                if steps == 5:
+                    require(len(boundaries) == 2 and boundaries[-1]['outer_step'] == 5
+                            and boundaries[0]['parameter_sha256'] == boundaries[-1]['parameter_sha256'], 'Teacher runtime hash changed/missing')
+    checkpoint = run / 'checkpoints' / 'actor' / f'global_step_{steps}'
+    require((checkpoint / 'config.json').is_file(), 'Missing final HF checkpoint')
+    state_path = run/'checkpoints'/'algorithm'/f'global_step_{steps}'/'state.json'
+    state = json.loads(state_path.read_text())
+    require(state['method']=='topd' and state['global_step']==steps and state['resume_supported'] is False, 'Missing/incompatible TOP-D algorithm state')
+    require(Path(state['teacher_path']).resolve()==Path(manifest['teacher_path']).resolve(), 'Checkpoint teacher provenance mismatch')
+    return checkpoint
+
+
+
+def training_validation_inputs(config):
+    """TOP-D training only; never used by the independent3393 teacher selector."""
+    from pyarrow.parquet import ParquetFile
+    require(config.baselines.method=='topd' and not config.baselines.holdout_eval_only,
+            'Training64 limit cannot apply to teacher holdout selector')
+    require(config.data.val_data_num==64, 'Need explicit training validation64 cap')
+    files=[config.data.val_files] if isinstance(config.data.val_files,str) else list(config.data.val_files)
+    expected=(ROOT/'assets-root/data/paper-grpo/validation-64.parquet').resolve()
+    require(len(files)==1 and Path(files[0]).resolve()==expected and expected.is_relative_to(ROOT.resolve()),
+            'Training validation must use own original validation-64.parquet')
+    require(ParquetFile(expected).metadata.num_rows==64, 'Training validation input must contain exactly64 rows')
+    return dict(scope='training/periodic validation only; teacher selection remains3393',
+                path=str(expected),sha256=sha(expected),input_rows=64,requested_rows=64,
+                actual_filtered_rows_required=64,actual_filtered_rows_status='PENDING_TRAINING_LOG')
+
+
+def canonical_sha(value):
+    return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+
+
+def current_scoring_fingerprint():
+    own_repo_imports()
+    from search_r1.baselines.topd_local_gpu import implementation_fingerprint
+    return implementation_fingerprint()
+
+
+def proof_artifact(item,json_record=False):
+    path=Path(item['path']).resolve()
+    require(path.is_relative_to(ROOT.resolve()),'Execution proof must be copied under own local root')
+    artifact(item)
+    return json.loads(path.read_text()) if json_record else path
+
+
+def current_native_runtime():
+    import torch,tensordict
+    return dict(python=f'{sys.version_info.major}.{sys.version_info.minor}',torch=torch.__version__,tensordict=tensordict.__version__)
+
+
+def recompute_hardware_evidence(evidence):
+    """CPU-only raw receipt/tensor verification, shared with the normalizer."""
+    import importlib.util
+    path=ROOT/'tools/build_topd_execution_evidence.py'
+    spec=importlib.util.spec_from_file_location('topd_readonly_hardware_normalizer',path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    directory=Path(evidence['original_gpu_oracle']['ready']['path']).parent.parent
+    actual=module.normalize(directory,ROOT,Path(evidence['probe_script']['path']))
+    require(canonical_sha(actual)==canonical_sha(evidence),'Canonical hardware evidence differs from independently recomputed raw inputs')
+
+
+def execution_proof_gate(binding):
+    """Read-only hardware readiness; never substitutes for the trained teacher."""
+    require(binding.get('execution_proof'),'EXECUTION_PROOF_MISSING: native8IPC and independent hardware review required')
+    proof=proof_artifact(binding['execution_proof'],True)
+    require(proof['status']=='REVIEWED' and proof['scope']=='HARDWARE_SCORER_READY_NO_TRAINING'
+            and proof['host']=='h100-11' and proof['code_commit']==binding['code_commit']
+            and proof['source_fingerprint']==current_scoring_fingerprint(),'Execution proof source/host/scope differs')
+    payload={key:value for key,value in proof.items() if key!='independent_review'}
+    review=proof_artifact(proof['independent_review'],True)
+    require(review['status']=='PASS' and review['approval_scope']=='HARDWARE_ONLY_NOT_ALGORITHM_ACCEPTANCE'
+            and review['reviewed_payload_sha256']==canonical_sha(payload),'No compatible independent hardware review')
+    proof_artifact(review['report'])
+    expected_runtime=dict(python='3.10',torch='2.4.0+cu121',tensordict='0.5.0')
+    require(proof['runtime']==expected_runtime and current_native_runtime()==expected_runtime,'Unreviewed native runtime')
+    expected_counts=binding['native_fixture_counts']
+    require(expected_counts['source']==NATIVE_SOURCE_FIXTURES and expected_counts['tools']==NATIVE_TOOL_FIXTURES,'Incomplete native suite counts')
+    require(set(proof['cpu_suites'])=={'source','tools'},'Missing native source/tool suite')
+    suite_logs={}
+    for name,item in proof['cpu_suites'].items():
+        log_path=proof_artifact(item)
+        if item.get('provenance'):
+            origin=item['provenance'];parent=proof_artifact(origin['parent'])
+            start,length=origin['byte_offset'],origin['byte_length']
+            require(type(start) is int and type(length) is int and start>=0 and length>0,'Invalid raw pytest log byte range')
+            require(parent.read_bytes()[start:start+length]==log_path.read_bytes(),'Native pytest split is not an exact raw-parent slice')
+        log=log_path.read_text();suite_logs[name]=log
+        summaries=re.findall(r'^([^\n]*\b\d+ passed[^\n]*)$',log,re.MULTILINE)
+        require(len(summaries)==1,'No unique actual native pytest completion')
+        line=summaries[0];passed=re.search(r'\b(\d+) passed\b',line)
+        require(int(passed.group(1))==expected_counts[name] and not re.search(r'\b\d+ (?:failed|skipped|errors?|xfailed|xpassed)\b',line),'Native suite did not pass every expected fixture')
+    require(re.search(r'^'+re.escape(proof['code_commit'])+r'$',suite_logs['source'],re.MULTILINE) and
+            re.search(r'^ACTUAL_GPU_SCORER_SOURCE '+proof['source_fingerprint']+r'$',suite_logs['source'],re.MULTILINE),'Native source log lacks actual commit/fingerprint')
+    tools=proof['tool_files']
+    required={'topd-short-run.py','test_topd_launch_gate.py','test_topd_local_gpu_ipc.py',
+              'verify-topd-teacher.py','verify-topd-checkpoint.py','topd-five-step.sbatch','build_topd_execution_evidence.py','test_build_topd_execution_evidence.py'}
+    require(set(tools)==required,'Missing frozen execution tools')
+    for name,item in tools.items():
+        require(Path(item['path']).resolve()==(ROOT/'tools'/name).resolve(),'Foreign execution tool path')
+        proof_artifact(item)
+    printed=re.findall(r'^([0-9a-f]{64})[ \t]+(\S+)[ \t]*$',suite_logs['tools'],re.MULTILINE)
+    for item in tools.values():
+        matches=[value for value,path in printed if Path(path.lstrip('*')).resolve()==Path(item['path']).resolve()]
+        require(matches==[item['sha256']],'Native tool log does not bind exact current tested bytes')
+    require(tools['topd-short-run.py']['sha256']==sha(Path(__file__)),'Actual supervisor differs from native-tested tool')
+    evidence=proof_artifact(proof['hardware_evidence'],True)
+    require(evidence['numerical_reference']=='ORIGINAL_GPU_FUNCTION_ORACLE','Hardware reference contract is not independent original GPU function')
+    require(evidence['status']=='PASS_NO_TRAINING' and evidence['kind']=='HARDWARE_SURROGATE_NO_TRAINING'
+            and evidence['host']==proof['host'] and evidence['source_fingerprint']==proof['source_fingerprint']
+            and evidence['code_commit']==proof['code_commit'] and evidence['runtime']==proof['runtime']
+            and evidence['offline'] is True,'Native GPU evidence provenance differs')
+    recompute_hardware_evidence(evidence)
+    services=evidence['services'];require(len(services)==4 and len({s['pid'] for s in services})==4
+            and len({s['uuid'] for s in services})==4 and all(s['pid']>0 and re.fullmatch('GPU-[0-9a-fA-F-]+',s['uuid']) for s in services),'Need eight actual distinct GPU service processes')
+    require(evidence['cgroup'].startswith('/') and evidence['slurm_job'] and evidence['initial_lease_idle_verified'] is True,'Missing native allocation/lease scope')
+    source_hashes=[];identities=[]
+    for rank,service in enumerate(services):
+        ready=proof_artifact(service['ready'],True)
+        require(ready['rank']==rank and ready['pid']==service['pid'] and ready['uuid']==service['uuid']
+                and ready['cgroup']==evidence['cgroup'] and ready['source_sha256']==proof['source_fingerprint'] and ready['code_commit']==proof['code_commit'],'Scorer actual startup identity differs')
+        identities.append(canonical_sha({key:ready[key] for key in ('run_id','code_commit','config_sha256','data_identity','teacher_receipt_sha256','source_sha256')}))
+        state=ready['loaded_cpu'];source_hashes.append(state['parameter_sha256'])
+        require(state['devices']==['cpu'] and state['parameter_bytes']>10*1024**3,'Need actual full3B FP32 CPU teacher, not tiny fixture')
+        records=[json.loads(line) for line in proof_artifact(service['receipts']).read_text().splitlines()]
+        require([row['outer_step'] for row in records]==[1,2,3],'Need three complete native score/release phases')
+        for row in records:
+            require(row['rank']==rank and row['pid']==service['pid'] and row['uuid']==service['uuid']
+                    and row['cgroup']==evidence['cgroup'] and row['slurm_job']==evidence['slurm_job']
+                    and row['source_sha256']==proof['source_fingerprint'] and row['loaded_cpu']==state
+                    and row['targets_none'] is True and row['dtype']=='float32' and row['attention']=='eager'
+                    and row['tf32'] is False and row['status']=='RELEASED'
+                    and row['allocator_released']==dict(allocated_bytes=0,reserved_bytes=0),'Native scorer ownership/math/release differs')
+            for field in ('gpu_pid_before','gpu_pid_phase_sample','gpu_pid_released'):
+                sample=row[field]
+                require(sample['pid']==service['pid'] and sample['uuid']==service['uuid'] and math.isfinite(sample['used_mib']) and sample['used_mib']>=0,'Missing actual scorer PID-to-GPU evidence')
+            require(row['allocator_peak']['allocated_bytes']>=state['parameter_bytes'],'Missing actual full teacher GPU allocation peak')
+            for key in ('run_id','code_commit','config_sha256','data_identity','teacher_receipt_sha256','source_sha256'):
+                require(row[key]==ready[key],'Native scorer receipt provenance drift')
+            for field in ('input_sha256','output_sha256','row_indices_sha256'):
+                require(re.fullmatch('[0-9a-f]{64}',row[field]) is not None,'Missing actual tensor hash')
+            require(row['rows']==2 and row['scored_tokens_delta']>0,'Missing native row/token accounting')
+            if rank==7 and row['outer_step']==3:
+                require(row['scored_tokens_delta']==6432,'6144 long context was not fully scored with short companion')
+            for field in ('loaded_cpu','released_cpu','gpu_before','gpu_after'):
+                value=row[field]
+                if value is not None:
+                    require(value['parameter_sha256']==state['parameter_sha256'] and value['dtypes']==['torch.float32']
+                            and value['training'] is False and value['training_modules_count']==value['requires_grad_parameters']==value['grad_parameters']==0,'Native teacher not frozen/FP32/eval')
+            require(row['released_cpu']['devices']==['cpu'] and all(device=='cpu' for device in row['released_cpu']['buffer_devices']),'Native teacher retained GPU model/buffers')
+            if row['outer_step']==1:require(row['gpu_before'] and row['gpu_before']['devices']==['cuda:0'],'Missing actual first GPU hash')
+            if row['outer_step']==3:require(row['gpu_after'] and row['gpu_after']['devices']==['cuda:0'],'Missing actual last GPU hash')
+    require(len(set(source_hashes))==len(set(identities))==1,'Native eight teacher copies/run identities differ')
+    phases=evidence['phases'];require([phase['outer_step'] for phase in phases]==[1,2,3],'Missing ordered native phases')
+    for phase in phases:
+        require(phase['rows']==16 and phase['row_order_verified'] is True and phase['masked_zero_verified'] is True
+                and phase['finite'] is True and phase['all_eight_released_before_return'] is True
+                and phase['actual_peer_pid_cgroup_verified'] is True and phase['lease_uuid_ownership_verified'] is True,
+                'Native IPC row/privacy/peer/finite/release proof incomplete')
+        parity=phase['gpu_parity']
+        require(parity['passed'] is True and parity['reference']=='ORIGINAL_GPU_FUNCTION_ORACLE'
+                and parity['atol']==parity['rtol']==1e-4 and math.isfinite(parity['max_abs_delta'])
+                and math.isfinite(parity['mean_abs_delta']),'Missing fixed-tolerance independent original GPU-function parity')
+        if phase['outer_step']<=2:
+            diagnostic=phase['cpu_cross_backend_diagnostic']
+            require(diagnostic['scope']=='NON_BLOCKING_CROSS_BACKEND_DIAGNOSTIC' and type(diagnostic['numeric_close']) is bool
+                    and diagnostic['atol']==diagnostic['rtol']==1e-4 and math.isfinite(diagnostic['max_absolute_delta'])
+                    and math.isfinite(diagnostic['mean_absolute_delta']) and type(diagnostic['violation_count']) is int and diagnostic['violation_count']>=0
+                    and len(diagnostic['per_row_violation_counts'])==16 and sum(diagnostic['per_row_violation_counts'])==diagnostic['violation_count'],'Missing honest CPU cross-backend diagnostic')
+        else:
+            require(phase['prompt_width']==2048 and phase['response_width']==4096
+                    and phase['cpu_parity_scope']=='NOT_MEASURED_LONG_CASE','Missing honest6144-token window')
+    coexist=evidence['coexistence'];require(coexist['local_gpu_e5'] is True and coexist['gpu_fp16_faiss_all8'] is True
+            and coexist['full_wiki18'] is True and coexist['vllm_count']==4 and coexist['vllm_memory_utilization']==.6
+            and coexist['same_host'] is True and coexist['actual_retrieval_topk']==3
+            and set(coexist['uuids'])=={s['uuid'] for s in services},'Missing own8GPU retrieval/vLLM/scorer coexistence')
+    peers=coexist['vllm_services'];retriever_pid=coexist['retriever_pid']
+    require(len(peers)==4 and len({p['pid'] for p in peers})==4 and {p['uuid'] for p in peers}=={s['uuid'] for s in services}
+            and retriever_pid>0 and len({s['pid'] for s in services}|{p['pid'] for p in peers}|{retriever_pid})==17,'Missing distinct actual co-resident process mapping')
+    samples=[json.loads(line) for line in proof_artifact(coexist['gpu_samples']).read_text().splitlines()]
+    simultaneous=False
+    for sample in samples:
+        actual={}
+        for line in sample['processes']:
+            uuid,pid,memory=[field.strip() for field in line.split(',')]
+            value=float(memory);require(math.isfinite(value) and value>=0,'Invalid actual NVML memory sample')
+            actual[(uuid,int(pid))]=value
+        if (all(actual.get((s['uuid'],s['pid']),0)>=11000 for s in services)
+                and all(actual.get((p['uuid'],p['pid']),0)>=10000 for p in peers)
+                and all((s['uuid'],retriever_pid) in actual for s in services)):
+            simultaneous=True;break
+    require(simultaneous,'No single actual NVML sample with all8 scorers/vLLM/retriever co-resident')
+    require(evidence['cleanup']['passed'] is True and evidence['cleanup']['baseline_preserved'] is True
+            and evidence['cleanup']['own_children_remaining']==0 and evidence['cleanup']['owned_model_process_count']==18
+            and evidence['cleanup']['parent_driver_cuda_initialized'] is False,'Missing native own-process cleanup')
+    # Linked raw phase measurements are independent evidence, not the normalized readiness receipt.
+    proof_artifact(evidence['probe_script'])
+    require(evidence['raw_evidence'],'Missing raw native hardware evidence')
+    for item in evidence['raw_evidence']:proof_artifact(item)
+    return dict(status='HARDWARE_PROOF_CHECKED_NOT_ALGORITHM_ACCEPTED',receipt_sha256=binding['execution_proof']['sha256'],
+                source_fingerprint=proof['source_fingerprint'],approved_gpu_uuids=[s['uuid'] for s in services],independent_review_sha256=proof['independent_review']['sha256'])
+
+
+def build_config(run, teacher, stage):
+    """Keep original inputs for main; hash its deterministic post-holdout config."""
+    own_repo_imports()
+    from hydra import compose, initialize_config_dir
+    from omegaconf import OmegaConf
+    from search_r1.baselines.holdout import prepare_common_holdout
+    budget = 3 if stage == 'smoke2' else 6
+    overrides = ['baselines.method=topd', 'baselines.topd.teacher_backend=local_gpu_fp32_parallel',
+        f'baselines.topd.socket_manifest={run}/teacher-ipc/manifest.json', 'baselines.local_runtime_only=true', 'baselines.local_runtime_host=h100-11', 'actor_rollout_ref.actor.ppo_micro_batch_size=64',
+        'actor_rollout_ref.actor.ppo_epochs=2', 'actor_rollout_ref.actor.use_kl_loss=false',
+        'actor_rollout_ref.actor.entropy_coeff=0', 'algorithm.kl_ctrl.kl_coef=0',
+        'baselines.distillation.privileged_answers=false', f'baselines.distillation.teacher_path={teacher}',
+        f'trainer.total_training_steps={budget}', 'trainer.smoke_only=true', 'trainer.val_before_train=false', 'data.val_data_num=64',
+        'trainer.n_gpus_per_node=8', 'trainer.nnodes=1', f'trainer.default_local_dir={run}/checkpoints',
+        f'baselines.holdout.output_dir={ROOT}/assets-root/common-data', 'retriever.url=http://127.0.0.1:18085/retrieve']
+    with initialize_config_dir(config_dir=str(ROOT / 'repo/verl/trainer/config'), version_base=None):
+        config = compose(config_name='ppo_baselines', overrides=overrides)
+    require(config.retriever.url=='http://127.0.0.1:18085/retrieve', 'Remote retriever/RPC forbidden')
+    require(Path(config.actor_rollout_ref.model.path).resolve()==(ROOT/'assets-root/assets/qwen2.5-3b').resolve(), 'Unexpected local base model')
+    validation_inputs=training_validation_inputs(config)
+    (run/'training-validation-inputs.json').write_text(json.dumps(validation_inputs,indent=2)+'\n')
+    original = OmegaConf.create(OmegaConf.to_container(config, resolve=True))
+    OmegaConf.save(original, run / 'input-config.yaml')
+    split = prepare_common_holdout(config)
+    require(split['content_identity']['sha256'] == CONTENT and split['holdout_rows'] == 3393, 'Public holdout drift')
+    OmegaConf.save(OmegaConf.create(OmegaConf.to_container(config, resolve=True)), run / 'resolved-config.yaml')
+    expected = OmegaConf.create(OmegaConf.to_container(config, resolve=True))
+    expected.actor_rollout_ref.actor.optim.total_training_steps = budget
+    expected.critic.optim.total_training_steps = budget
+    OmegaConf.save(expected, run / 'expected-after-trainer-config.yaml')
+    # Actual scheduler max(1,warmup) keeps first used LR0 even when floor(.285*3)=0.
+    warmup = int(float(config.actor_rollout_ref.actor.optim.lr_warmup_steps_ratio) * budget)
+    lr = float(config.actor_rollout_ref.actor.optim.lr)
+    schedule = dict(warmup_steps=warmup, used_lr_by_outer=[lr * min(1, (step-1)/max(1, warmup)) for step in range(1,budget)],
+                    reported_post_scheduler_lr_by_outer=[lr * min(1, step/max(1,warmup)) for step in range(1,budget)],
+                    formula_source_sha256=sha(ROOT / 'repo/verl/utils/torch_functional.py'),
+                    scope='source-derived existing scheduler; actor/lr metric is AFTER scheduler.step, not used LR')
+    return config, split, schedule
+
+
+def cgroup_scope(job):
+    """Find ONLY the current Slurm step cgroup; never walk another job."""
+    rows = [line.split(':', 2) for line in Path('/proc/self/cgroup').read_text().splitlines()]
+    for _, controllers, relative in rows:
+        if controllers == '' or 'freezer' in controllers.split(','):
+            require(re.search(r'(^|/)job_' + re.escape(job) + r'(/|$)', relative), 'Current cgroup does not identify this Slurm job')
+            root = Path('/sys/fs/cgroup') if controllers == '' else Path('/sys/fs/cgroup/freezer')
+            path = root / relative.lstrip('/')
+            require((path / 'cgroup.procs').is_file(), 'Slurm cgroup process list unavailable')
+            return path, relative
+    raise RuntimeError('Cannot verify own Slurm cgroup; refusing service launch')
+
+
+def cgroup_pids(scope):
+    return {int(line) for file in scope.rglob('cgroup.procs') for line in file.read_text().splitlines()}
+
+
+from hpc3_owned_processes import OwnedProcesses as HPC3OwnedProcesses
+class OwnedProcesses(HPC3OwnedProcesses):
+    def __init__(self, scope, relative):
+        super().__init__(scope, relative, cwd=ROOT/"repo")
+
+
+
+def process_identity(pid):
+    """Actual procfs identity/state for diagnostics; never classify unknown PIDs by guess."""
+    record=dict(pid=pid)
+    try:
+        root=Path('/proc')/str(pid);raw=(root/'stat').read_text()
+        tail=raw.rsplit(')',1)[1].split()
+        record.update(comm=raw.split('(',1)[1].rsplit(')',1)[0],state=tail[0],ppid=int(tail[1]),starttime_ticks=int(tail[19]),
+                      cgroup=(root/'cgroup').read_text().splitlines())
+    except (OSError,IndexError,ValueError) as exc:
+        record.update(identity_unavailable=True,error_type=type(exc).__name__)
+    return record
+
+
+def stop_monitor(event,thread,timeout=30.):
+    """Drain our own sampler before cleanup can rescan/signal its temporary children."""
+    event.set();started=time.monotonic()
+    if thread is not None:thread.join(timeout=timeout)
+    stopped=thread is None or not thread.is_alive()
+    record=dict(stopped=stopped,join_timeout_seconds=timeout,elapsed_seconds=time.monotonic()-started)
+    require(stopped,'Own sampler thread did not stop before cleanup')
+    return record
+
+
+def process_sample(pid):
+    try:
+        fields = Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()
+        return dict(pid=pid, user_cpu_ticks=int(fields[11]), system_cpu_ticks=int(fields[12]),
+                    hz=os.sysconf('SC_CLK_TCK'),
+                    memory=[line for line in Path(f'/proc/{pid}/status').read_text().splitlines() if line.startswith(('VmRSS:','VmHWM:'))])
+    except (OSError, IndexError):
+        return dict(pid=pid, exited=True)
+
+
+def gpu_sample():
+    query = ['nvidia-smi','--format=csv,noheader,nounits']
+    return dict(gpus=subprocess.check_output(query+['--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu'],text=True).splitlines(),
+                processes=subprocess.check_output(query+['--query-compute-apps=gpu_uuid,pid,used_gpu_memory'],text=True).splitlines())
+
+
+def available(port):
+    with socket.socket() as sock:
+        sock.bind(('127.0.0.1',port))
+
+
+def teacher_gate(binding, teacher, output):
+    require(sha(teacher/'teacher-manifest.json') == binding['teacher_receipt_sha256'], 'Teacher receipt drift')
+    subprocess.run([sys.executable,str(ROOT/'tools/verify-topd-teacher.py'),
+        '--base',str(ROOT/'assets-root/assets/qwen2.5-3b'),'--teacher',str(teacher),
+        '--split-manifest',binding['split_manifest_path'],'--expected-content-identity',CONTENT,'--output',str(output)],check=True,env=dict(os.environ,CUDA_VISIBLE_DEVICES=''))
+    result=json.loads(output.read_text())
+    require(result['status']=='PASS' and result['teacher_receipt_sha256']==binding['teacher_receipt_sha256'], 'Fresh teacher gate failed')
+
+
+PROXY_KEYS=('http_proxy','https_proxy','all_proxy','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY')
+RETRIEVAL_ASSETS=('assets-root/assets/wiki/e5_Flat.index','assets-root/assets/wiki/wiki-18.jsonl','assets-root/assets/e5-base-v2')
+
+
+def local_runtime_env(environment):
+    """Own backend only: sanitize proxy/Ray routing, preserve allocated devices."""
+    output=dict(environment)
+    for key in PROXY_KEYS:
+        output.pop(key,None)
+    output.pop('PYTHONPATH',None)
+    # Avoid public and TOP-D exclusive config writers sharing audit/entry-config.
+    for name in ('AUDIT_DIR','RUN_ID','COMMIT','CONFIG_SHA256','DATA_IDENTITY','TEACHER_CPU_THREADS'):
+        output.pop('SEARCH_R1_BASELINE_'+name,None)
+    output.update(NO_PROXY='127.0.0.1,localhost,::1',no_proxy='127.0.0.1,localhost,::1',
+                  RAY_ADDRESS='127.0.0.1:16385',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',
+                  PATH=str(ROOT/'env/bin')+os.pathsep+output.get('PATH',''))
+    return output
+
+
+def local_assets():
+    for asset in RETRIEVAL_ASSETS:
+        path=ROOT/asset
+        require(path.exists() and path.resolve().is_relative_to(ROOT.resolve()), 'Nonlocal runtime retrieval asset')
+    return {asset:str((ROOT/asset).resolve()) for asset in RETRIEVAL_ASSETS}
+
+
+
+def start_parallel_scorers(directory,alias,owned,binding,teacher,launch,config,relative,kind='TRAINED_TEACHER_FROZEN',rows_per_service=320):
+    """Prepared only: execution gate remains blocked until target proof and review."""
+    import secrets
+    own_repo_imports()
+    from search_r1.baselines.topd_local_gpu import implementation_fingerprint,tokenizer_identity,verify_teacher_files
+    from verl.utils import hf_tokenizer
+    student_tokenizer=hf_tokenizer(str(ROOT/'assets-root/assets/qwen2.5-3b'),local_files_only=True,trust_remote_code=False)
+    inherited_lease_fds()  # Absolute idle15% initial, before any teacher CUDA residency.
+    records=json.loads(os.environ['SEARCH_R1_GPU_LEASES'])
+    services=[dict(rank=rank,uuid=item['uuid'],socket=str(alias/'teacher-ipc'/f's{rank}'),
+                   capability=secrets.token_hex(32),fd=int(item['fd']),pid=None) for rank,item in enumerate(records)]
+    require(kind in ('TRAINED_TEACHER_FROZEN','HARDWARE_SURROGATE_NO_TRAINING'),'Unknown scorer deployment kind')
+    require(kind!='TRAINED_TEACHER_FROZEN' or rows_per_service==320,'Production scorer requires320rows')
+    record=dict(kind=kind,backend='local_gpu_fp32_parallel',execution_device='cuda:0',
+                teacher_path=str(teacher.resolve()),student_path=str(ROOT/'assets-root/assets/qwen2.5-3b'),student_tokenizer=tokenizer_identity(student_tokenizer),
+                run_id=launch['run_id'],code_commit=binding['code_commit'],config_sha256=launch['config_sha256'],data_identity=CONTENT,
+                teacher_receipt_sha256=binding['teacher_receipt_sha256'],source_sha256=implementation_fingerprint(),
+                cgroup=relative,slurm_job=os.environ['SLURM_JOB_ID'],outer_updates=int(config.trainer.total_training_steps)-1,
+                rows_per_service=rows_per_service,temperature=float(config.actor_rollout_ref.rollout.temperature),chunk=int(config.baselines.distillation.chunk_size),
+                timeout_seconds=1800,services=services)
+    if kind=='HARDWARE_SURROGATE_NO_TRAINING':
+        record['hardware_model_files']={str(path.relative_to(teacher)):sha(path) for path in teacher.rglob('*') if path.is_file()}
+    record['frozen_hf_files_sha256']=verify_teacher_files(teacher,record)
+    path=directory/'teacher-ipc/manifest.json'
+    def write():
+        temporary=path.with_suffix('.tmp')
+        fd=os.open(temporary,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(fd,'w') as stream:stream.write(json.dumps(record,indent=2)+'\n')
+        os.replace(temporary,path)
+    write();children=[]
+    for rank,item in enumerate(records):
+        environment=local_runtime_env(os.environ)
+        environment.update(CUDA_VISIBLE_DEVICES=item['uuid'],SEARCH_R1_GPU_PREFLIGHT='1',
+                           SEARCH_R1_GPU_LEASES=json.dumps([item]),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
+        child=owned.spawn([sys.executable,'-m','search_r1.baselines.topd_local_gpu','--manifest',str(path),'--rank',str(rank)],
+                          directory/f'scorer-{rank}.log',environment,pass_fds=(int(item['fd']),))
+        services[rank]['pid']=child.pid;children.append(child)
+    write()
+    deadline=time.monotonic()+600
+    while True:
+        require(all(child.poll() is None for child in children),'Own scorer failed during CPU teacher loading')
+        ready=[]
+        for rank in range(4):
+            file=directory/'teacher-ipc'/f'scorer-ready-{rank}.json'
+            if file.is_file() and Path(services[rank]['socket']).is_socket():
+                value=json.loads(file.read_text())
+                require(value['pid']==services[rank]['pid'] and value['uuid']==services[rank]['uuid']
+                        and value['cgroup']==relative and value['actual_hf_files_sha256']==record['frozen_hf_files_sha256'] and all(value[key]==record[key] for key in ('run_id','code_commit','config_sha256','data_identity','teacher_receipt_sha256','source_sha256')),'Scorer startup identity differs')
+                ready.append(value)
+        if len(ready)==4:
+            require(len({value['loaded_cpu']['parameter_sha256'] for value in ready})==1,'Teacher replicas differ at CPU load')
+            return children,record
+        require(time.monotonic()<deadline,'Own eight scorer CPU startup timeout')
+        time.sleep(1)
+
+
+def run(args,binding,teacher):
+    execution_proof=execution_proof_gate(binding)  # Read-only, before any resource mutation.
+    job=os.environ.get('SLURM_JOB_ID','')
+    require(job and os.environ.get('SLURM_JOB_GPUS'), 'Need actual Slurm GPU allocation')
+    require(socket.gethostname().split('.')[0]==os.environ.get('SLURMD_NODENAME',os.environ.get('SLURM_JOB_NODELIST')), 'Unexpected Slurm node')
+    require(len(os.environ.get('CUDA_VISIBLE_DEVICES','').split(','))==4,'Need eight scheduler-selected devices')
+    require(int(os.environ.get('SLURM_CPUS_PER_TASK','0'))>=48 and int(os.environ.get('SLURM_MEM_PER_NODE','0'))>=384*1024,'Need allocated128CPU/384GiB')
+    require(os.environ.get('SLURM_JOB_ID'), 'Need actual Slurm allocation before launch')
+    lease_fds=inherited_lease_fds()  # Must already be held by outer public preflight.
+    require({item['uuid'] for item in json.loads(os.environ['SEARCH_R1_GPU_LEASES'])}==set(execution_proof['approved_gpu_uuids']),'Current leased GPUs differ from proven own-node hardware')
+    scope,relative=cgroup_scope(job)
+    require(cgroup_pids(scope)=={int(line) for line in (scope/'cgroup.procs').read_text().splitlines()}, 'Unexpected preexisting nested step: use a new sbatch job')
+    for port in (18085,16385):
+        available(port)
+    runtime_assets=local_assets()  # Before creating any alias/services.
+    clean_environment=local_runtime_env(os.environ)
+    os.environ.clear()
+    os.environ.update(clean_environment)
+    run_id=f'{args.stage}-job{job}-{time.time_ns()}'
+    directory=ROOT/'runs'/run_id
+    directory.mkdir(parents=True,exist_ok=False)
+    for name in ('audit','tmp','ray','cache','teacher-ipc'):
+        (directory/name).mkdir()
+    alias=Path('/tmp')/f'topd-r{job}'
+    require(not alias.exists() and not alias.is_symlink(),'Do not overwrite an existing Ray alias')
+    owned=OwnedProcesses(scope,relative)
+    alias.symlink_to(directory,target_is_directory=True)
+    os.environ.update(AGENT_ROOT=str(ROOT),SEARCH_R1_ASSETS=str(ROOT/'assets-root'),SEARCH_R1_BASELINE_OUTPUT=str(directory),
+        SEARCH_R1_BASELINE_RUN_ROOT=str(alias),TOPD_TEACHER=str(teacher),RAY_ADDRESS='127.0.0.1:16385',
+        TMPDIR=str(alias/'tmp'),RAY_TMPDIR=str(alias/'ray'),XDG_CACHE_HOME=str(alias/'cache'),HF_HOME=str(alias/'cache/hf'),
+        OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',
+        VLLM_NO_USAGE_STATS='1',WANDB_MODE='offline',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',
+        SEARCH_R1_TOPD_TEACHER_CPU_THREADS='16')
+    started=time.monotonic()
+    result={'status':'FAILED','stage':args.stage,'run_id':run_id,'slurm_job':job}
+    try:
+        with (directory/'environment-before.json').open('w') as stream:
+            subprocess.run([sys.executable,str(ROOT/'repo/reproduction/h20/check_environment.py')],check=True,stdout=stream)
+        teacher_gate(binding,teacher,directory/'teacher-before.json')
+        config,split,schedule=build_config(directory,teacher,args.stage)
+        config_hash=sha(directory/'resolved-config.yaml')
+        os.environ.update(SEARCH_R1_TOPD_AUDIT_DIR=str(directory/'audit'),SEARCH_R1_TOPD_RUN_ID=run_id,
+            SEARCH_R1_TOPD_COMMIT=binding['code_commit'],SEARCH_R1_TOPD_CONFIG_SHA256=config_hash,SEARCH_R1_TOPD_DATA_IDENTITY=CONTENT)
+        manifest=dict(stage=args.stage,run_id=run_id,code_commit=binding['code_commit'],teacher_receipt_sha256=binding['teacher_receipt_sha256'],teacher_path=str(teacher.resolve()),
+            config_sha256=config_hash,config_scope='resolved Hydra + common holdout BEFORE trainer optim.total_training_steps injection',
+            expected_after_trainer_sha256=sha(directory/'expected-after-trainer-config.yaml'),
+            trainer_later_actor_and_critic_optim_total_training_steps=int(config.trainer.total_training_steps),
+            slurm_job=job,cgroup=str(scope),cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],
+            allocation_cpu=128,allocation_mem_gib=384,ray_logical_cpu=24,torch_threads_per_actor=1,torch_threads_teacher_driver=16,retriever_threads=8,
+            runtime_constraint='ALL_LOCAL h100-11; no A800/cross-cluster FAISS/encoder/retrieval/scoring RPC',
+            retriever_url='http://127.0.0.1:18085/retrieve',ray_address='127.0.0.1:16385',
+            retrieval_backend='GPU E5 physical-first-visible / GPU FP16 all-eight sharded FAISS / full wiki18',
+            gpu_leases=json.loads(os.environ['SEARCH_R1_GPU_LEASES']),
+            public_gpu_protocol=binding['common_gpu_protocol_fix'],original_search_r1_commit=ORIGINAL_SEARCH_R1,
+            gpu_overlay_manifest=binding['retriever_gpu_overlay_manifest'],teacher_scoring_backend='local_gpu_fp32_parallel',execution_readiness=execution_proof,
+            runtime_assets=runtime_assets,
+            proxies_disabled=True,learning_rate=schedule,initial_gpu_snapshot=gpu_sample())
+        (directory/'launch-manifest.json').write_text(json.dumps(manifest,indent=2))
+        scorer_children,scorer_manifest=start_parallel_scorers(directory,alias,owned,binding,teacher,manifest,config,relative)
+        retriever_command,retriever_environment=gpu_retriever_spec()
+        retriever=owned.spawn(retriever_command,directory/'retriever.log',retriever_environment)
+        import requests
+        session=requests.Session()
+        session.trust_env=False
+        deadline=time.monotonic()+900
+        while True:
+            require(retriever.poll() is None and time.monotonic()<deadline,'Own retriever startup failed/timed out')
+            try:
+                if session.get('http://127.0.0.1:18085/openapi.json',timeout=2).ok:
+                    break
+            except requests.RequestException:
+                pass
+            time.sleep(2)
+        # Health includes an actual E5/FAISS/document query, not just openapi.
+        tick=time.monotonic()
+        probe=session.post('http://127.0.0.1:18085/retrieve',json={'queries':['What is the capital of France?'],'topk':3,'return_scores':True},timeout=120)
+        probe.raise_for_status()
+        require(len(probe.json()['result'][0])==3,'Retriever probe wrong top3')
+        (directory/'retrieval-health.json').write_text(json.dumps(dict(wall_seconds=time.monotonic()-tick,response=probe.json()),indent=2))
+        wait_for_gpu_idle(retriever,directory/'retrieval-residency-idle.jsonl')
+        ray=owned.spawn([str(ROOT/'env/bin/ray'),'start','--head','--node-ip-address=127.0.0.1','--port=16385',
+            '--num-cpus=24','--num-gpus=8','--include-dashboard=false','--object-store-memory=10000000000',
+            '--temp-dir='+str(alias/'ray'),'--disable-usage-stats','--block'],directory/'ray.log')
+        deadline=time.monotonic()+120
+        while True:
+            require(ray.poll() is None and time.monotonic()<deadline,'Own Ray startup failed/timed out')
+            try:
+                with socket.create_connection(('127.0.0.1',16385),timeout=1):
+                    break
+            except OSError:
+                time.sleep(2)
+        # Ray registers8GPU resources but does not allocate model memory; the
+        # existing run.sh remains the sole UUID lease/double15% guard launcher.
+        training=owned.spawn(['bash','reproduction/baselines/run.sh','topd','--config-dir',str(directory),'--config-name','input-config'],directory/'training.log',pass_fds=lease_fds)
+        with (directory/'resources.jsonl').open('a') as resources:
+            while training.poll() is None:
+                require(retriever.poll() is None and ray.poll() is None and all(child.poll() is None for child in scorer_children),'Own dependent service died')
+                resources.write(json.dumps(dict(elapsed_seconds=time.monotonic()-started,gpu=gpu_sample(),
+                    retriever=process_sample(retriever.pid),processes=[process_sample(pid) for pid in sorted(cgroup_pids(scope)-owned.baseline)]))+'\n')
+                resources.flush()
+                time.sleep(10)
+            resources.write(json.dumps(dict(elapsed_seconds=time.monotonic()-started,gpu=gpu_sample(),retriever=process_sample(retriever.pid)))+'\n')
+        require(training.returncode==0,'Training failed')
+        checkpoint=audit_gate(directory,int(config.trainer.total_training_steps)-1,binding)
+        (directory/'checkpoint-files.json').write_text(json.dumps({str(p.relative_to(directory/'checkpoints')):sha(p) for p in sorted((directory/'checkpoints').rglob('*')) if p.is_file()},indent=2))
+        result.update(status='TRAINING_COMPLETED_UNREVIEWED',checkpoint=str(checkpoint),wall_seconds=time.monotonic()-started)
+    except BaseException as error:
+        result.update(error_type=type(error).__name__,error=str(error))
+        raise
+    finally:
+        signal.signal(signal.SIGTERM,signal.SIG_IGN)
+        signal.signal(signal.SIGINT,signal.SIG_IGN)
+        try:
+            owned.cleanup()
+        except Exception as error:
+            result.update(status='CLEANUP_FAILED',cleanup_error=str(error))
+            raise
+        finally:
+            alias.unlink(missing_ok=True)
+            result['final_gpu_snapshot']=gpu_sample()
+            (directory/'run-result.json').write_text(json.dumps(result,indent=2))
+    signal.signal(signal.SIGTERM,interrupted)
+    signal.signal(signal.SIGINT,interrupted)
+    # Independent CPU process after actor/Ray memory is released; no extra update.
+    try:
+        teacher_gate(binding,teacher,directory/'teacher-after.json')
+        subprocess.run([sys.executable,str(ROOT/'tools/verify-topd-checkpoint.py'),'--base',str(ROOT/'assets-root/assets/qwen2.5-3b'),
+            '--checkpoint',str(checkpoint),'--output',str(directory/'checkpoint-cpu-verification.json')],env=dict(os.environ,CUDA_VISIBLE_DEVICES=''),check=True)
+        result.update(status='COMPLETED_UNREVIEWED',independent_real_search_inference_pending=True)
+    except Exception as error:
+        result.update(status='POSTCHECK_FAILED',error_type=type(error).__name__,error=str(error))
+        raise
+    finally:
+        (directory/'run-result.json').write_text(json.dumps(result,indent=2))
+    print('TOPD_RUN_COMPLETED_UNREVIEWED',str(directory),flush=True)
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--stage',required=True,choices=['smoke2','accept5'])
+    parser.add_argument('--binding',required=True)
+    parser.add_argument('--binding-sha',required=True)
+    parser.add_argument('--smoke-review')
+    parser.add_argument('--smoke-review-sha')
+    parser.add_argument('--run',action='store_true')
+    parser.add_argument('--check-execution-proof',action='store_true',help='Check frozen hardware proof plus dependencies, without lease/GPU/service startup')
+    args=parser.parse_args()
+    if args.run or args.check_execution_proof:
+        execution_proof_gate(frozen_json(args.binding,args.binding_sha))  # Before dependency subprocesses or resources.
+    binding,teacher=dependency_gate(args)
+    if args.check_execution_proof:
+        print('READ_ONLY_EXECUTION_PROOF_AND_DEPENDENCIES_CHECKED; no lease/GPU/service startup')
+        return
+    if args.run:
+        with (ROOT/'gpu-job.lock').open('a') as lock:
+            fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            run(args,binding,teacher)
+    else:
+        print('DEPENDENCIES_CHECKED_ONLY; --run additionally requires verified native execution proof; no Slurm submission or GPU/service launch')
+
+
+def interrupted(sig,frame):
+    raise RuntimeError('Received termination signal; cleaning only own Slurm processes')
+
+
+if __name__=='__main__':
+    signal.signal(signal.SIGTERM,interrupted)
+    signal.signal(signal.SIGINT,interrupted)
+    main()

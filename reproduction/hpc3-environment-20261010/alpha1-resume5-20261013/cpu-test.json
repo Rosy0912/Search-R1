@@ -1,0 +1,8 @@
+{
+  "status": "CPU_RESTORE_WRAPPER_AND_NEXT_ADAM_UPDATE_EQUALITY_PASS",
+  "driver_next_outer": 6,
+  "driver_next_batch": 5,
+  "restored_optimizer_step_before_next": 100,
+  "GPU_restore_tested": false,
+  "epoch": 1791854678.7935739
+}
