@@ -240,7 +240,9 @@ class BehaviorRuntimeTests(unittest.TestCase):
             self.assertEqual(result, dict(proof_sha256=record['behavior_probability_gate_sha256'],
                                           private_trace_sha256=record['behavior_trace_sha256'],
                                           included_actor_token_count=5120,
-                                          max_abs_discrepancy=proof['max_abs_discrepancy']))
+                                          max_abs_discrepancy=proof['max_abs_discrepancy'],
+                                          hf_recomputation_performed=True,hf_parity_accepted=True,
+                                          behavior_probability_policy=None))
             self.assertIs(proof['physical_execution_authenticated'], False)
             path = Path(data.meta_info['behavior_probability_gate']['path'])
             original = path.read_bytes()

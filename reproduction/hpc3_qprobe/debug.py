@@ -29,15 +29,24 @@ def main():
     indices=re.search(r'GRES=gpu:1\(IDX:(\d+)\)',line)
     if not indices:raise ValueError('DEBUG_ACTUAL_PHYSICAL_GPU_INDEX_MISSING')
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','')
-    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True)
-    physical={x.split(',')[0].strip():x.split(',')[1].strip() for x in rows.splitlines()}
-    expected=physical[indices.group(1)]
-    if (physical.get(visible,visible))!=expected:raise ValueError('DEBUG_VISIBLE_ALLOCATION_MAPPING_DIFFERS')
+    rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,minor_number','--format=csv,noheader,nounits'],text=True)
+    write_once(root/'allocation-observation.json',dict(actual_job=actual,allocation_detail=detail,
+        nvidia_inventory=rows,cuda_visible_devices=visible,slurm_job_gpus=os.environ.get('SLURM_JOB_GPUS'),
+        slurm_step_gpus=os.environ.get('SLURM_STEP_GPUS'),checked_unix=time.time()))
+    inventory=[list(map(str.strip,x.split(','))) for x in rows.splitlines()]
+    # Slurm cgroups can reindex NVML/CUDA ordinal2 to process-local ordinal0.
+    # Preserve both namespaces and bind the real /dev/nvidia minor number.
+    matched=[x for x in inventory if x[2]==indices.group(1)]
+    if len(matched)!=1:raise ValueError('DEBUG_SLURM_DEVICE_MINOR_MAPPING_MISSING')
+    selected=matched[0];expected=selected[1]
+    if visible not in (selected[0],expected):raise ValueError('DEBUG_VISIBLE_ALLOCATION_MAPPING_DIFFERS')
     import torch
     if torch.cuda.device_count()!=1:raise ValueError('DEBUG_CUDA_VISIBILITY_DIFFERS')
     actual_uuids=cuda_uuids(1)
     if actual_uuids!=[expected]:raise ValueError('DEBUG_ACTUAL_CUDA_UUID_DIFFERS')
     proof=dict(slurm_job_id=job,node=node,allocation_detail=detail,cuda_uuids=actual_uuids,
+        actual_slurm_device_index=indices.group(1),nvidia_minor_number=selected[2],
+        process_local_nvidia_index=selected[0],cuda_visible_devices=visible,
         formal_completed_outers=0,teacher_search_trajectories=0,checked_unix=time.time())
     def phase(name,**value):
         write_once(root/(name+'.json'),dict(proof,phase=name,**value))

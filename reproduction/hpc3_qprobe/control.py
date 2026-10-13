@@ -151,20 +151,40 @@ def submit_training(base,commit):
     return value
 
 
-def submit_debug(base,commit):
+def submit_debug(base,commit,recover_failed_job=None):
     base=own_base(base);prepare(base);source=base/'source'/commit
     proof=json.loads((base/'preparation'/('source-'+commit+'-verification.json')).read_text())
     if proof['commit']!=commit or proof['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS':
         raise ValueError('Debug source not published and verified')
-    intent=base/'preparation/debug-submit-claim.json';receipt=base/'preparation/debug-submission.json'
+    stem='debug'
+    prior=None
+    if recover_failed_job is not None:
+        if not recover_failed_job.isdecimal():raise ValueError('Invalid failed debug job ID')
+        receipts=[json.loads(p.read_text()) for p in (base/'preparation').glob('debug*-submission.json')]
+        prior=next((v for v in receipts if v.get('job')==recover_failed_job),None)
+        if prior is None:raise ValueError('Failed job is not this task\'s submitted debug job')
+        from reproduction.common8.native_allocation import fields
+        detail=subprocess.check_output(['scontrol','show','job','-d',recover_failed_job],text=True,timeout=30)
+        actual=fields(detail)
+        if actual['JobState'] not in ('FAILED','OUT_OF_MEMORY','TIMEOUT','NODE_FAIL') or actual['JobName']!='qprobe-runtime-debug' or actual['Command']!=str(base/'source'/prior['commit']/'reproduction/hpc3_qprobe/debug.sh'):
+            raise ValueError('Only an actually failed own debug job may be recovered')
+        evidence=base/'preparation'/('failed-debug-'+recover_failed_job);evidence.mkdir(exist_ok=True)
+        old=base/'logs'/('debug-'+recover_failed_job+'.log')
+        if old.is_file() and not (evidence/'debug.log').exists():
+            with (evidence/'debug.log').open('xb') as f:f.write(old.read_bytes());f.flush();os.fsync(f.fileno())
+        preserved=evidence/'terminal.json'
+        if not preserved.exists():publish(preserved,dict(prior=prior,actual=actual,detail=detail,
+            failure_log_sha256=hashlib.sha256(old.read_bytes()).hexdigest() if old.is_file() else None))
+        stem='debug-recovery-'+recover_failed_job
+    intent=base/'preparation'/(stem+'-submit-claim.json');receipt=base/'preparation'/(stem+'-submission.json')
     if intent.exists() or receipt.exists():raise ValueError('Debug submission already attempted; inspect actual job')
     command=['sbatch','--parsable','--partition=debug','--nodes=1','--ntasks=1','--gres=gpu:1',
         '--cpus-per-task=8','--mem=64G','--time=00:20:00','--job-name=qprobe-runtime-debug','--export=NONE',
         '--output='+str(base/'logs/debug-%j.log'),'--error='+str(base/'logs/debug-%j.log'),
         str(source/'reproduction/hpc3_qprobe/debug.sh'),str(base),str(source)]
-    publish(intent,dict(commit=commit,command=command,epoch=time.time()))
+    publish(intent,dict(commit=commit,command=command,epoch=time.time(),recovery_of_failed_job=recover_failed_job))
     r=subprocess.run(command,capture_output=True,text=True,timeout=30)
-    value=dict(commit=commit,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,epoch=time.time())
+    value=dict(commit=commit,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,epoch=time.time(),recovery_of_failed_job=recover_failed_job)
     if r.returncode==0:
         value['job']=r.stdout.strip().split(';')[0]
         if not value['job'].isdecimal():raise ValueError('Invalid actual debug job ID')
@@ -175,10 +195,11 @@ def submit_debug(base,commit):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('mode',choices=('prepare','submit-features','submit-training','submit-debug'))
-    p.add_argument('--base',required=True);p.add_argument('--commit')
+    p.add_argument('--base',required=True);p.add_argument('--commit');p.add_argument('--recover-failed-job')
     a=p.parse_args()
-    result=prepare(a.base) if a.mode=='prepare' else {'submit-features':submit_features,
-        'submit-training':submit_training,'submit-debug':submit_debug}[a.mode](a.base,a.commit)
+    if a.recover_failed_job and a.mode!='submit-debug':raise ValueError('Only the debug recovery route is supported here')
+    result=prepare(a.base) if a.mode=='prepare' else (submit_debug(a.base,a.commit,a.recover_failed_job) if a.mode=='submit-debug'
+        else {'submit-features':submit_features,'submit-training':submit_training}[a.mode](a.base,a.commit))
     print(json.dumps(result),flush=True)
 
 
