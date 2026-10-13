@@ -2,7 +2,7 @@
 """Append one immutable completed outer to the local nested-tree v3 cost book.
 
 No SSH, subprocess, model/tensor imports, training controls, or STATUS/REPORT writes.
-Existing history through19 is preserved byte-for-byte. Missing current metrics
+Existing history through20 is preserved byte-for-byte. Missing current metrics
 remain pending/null, including final outer200 without a complete metric line.
 """
 import argparse
@@ -16,7 +16,7 @@ from pathlib import Path
 
 BOOK = "PER_OUTER_METRICS_COMPACT.json"
 BOOK_MD = "PER_OUTER_METRICS_COMPACT.md"
-PROTECTED_THROUGH = 19
+PROTECTED_THROUGH = 20
 BACKFILL_INDEX = "CANDIDATE_COST_BACKFILL_THROUGH19.json"
 BACKFILL_SHA256 = "d219a4f1af593d6dc304154e115aab218168113974109ce032d0b8402c568699"
 MAX_BYTES = 100000
@@ -474,57 +474,110 @@ def bounded_cumulative(result, through, max_bytes):
 
 
 def join_candidate_backfill(args, index, rows):
-    """Join immutable candidate scalars into cumulative copies, never old blocks."""
+    """SHA-join immutable candidate scalars into cumulative copies only."""
     base = args.base
+    by_outer = {r["outer"]: r for r in rows}
     selected = args.candidate_backfill_index
     path = selected if selected.is_absolute() else base / selected
     if path.resolve().parent != base:
         raise ValueError("Backfill index must be a named file in the local audit dir")
-    if not path.exists():
-        return {"status": "NO_LOCAL_BACKFILL_INDEX", "applied_outers": []}
-    raw = path.read_bytes()
-    if len(raw) > MAX_BYTES or sha(raw) != args.candidate_backfill_sha256:
-        raise ValueError("Fixed candidate backfill index SHA/size differs")
-    data = json.loads(raw)
-    if data.get("summary_schema") != "tree_candidate_cost_backfill_index_v1":
-        raise ValueError("Unexpected candidate backfill schema")
-    by_outer = {r["outer"]: r for r in rows}
-    applied, seen = [], set()
-    for info in data["parts"]:
-        outer = info["outer"]
-        if outer in seen or outer not in range(3, 20):
-            raise ValueError("Backfill may only join unique3..19; original1/2 stay separate")
-        seen.add(outer)
-        if outer not in by_outer:
-            continue
-        partpath = (base / info["file"]).resolve()
-        if not partpath.is_relative_to(base) or partpath.parent != base / "candidate_cost_backfill":
-            raise ValueError("Backfill part is outside its local scalar directory")
-        part_raw = partpath.read_bytes()
-        if len(part_raw) != info["bytes"] or len(part_raw) > MAX_BYTES or sha(part_raw) != info["sha256"]:
-            raise ValueError("Backfill part immutable SHA/bytes differs")
-        part = json.loads(part_raw)
-        if part.get("status") != "ACTUAL_COMPLETED_CANDIDATE_SCALARS_AGGREGATED":
-            continue
-        row = by_outer[outer]
-        config = index["source_identity_by_commit"][row["source_commit"]]["identity"]["config_sha256"]
-        if info["source_commit"] != row["source_commit"] or part.get("source_commit") != row["source_commit"] or info["config_sha256"] != config or part.get("config_sha256") != config or part.get("requested_outer") != outer:
-            raise ValueError("Backfill outer/source/config join differs")
-        if len(part.get("rollouts", [])) != 1:
-            raise ValueError("Expected exactly one captured completed candidate rollout")
-        value = part["rollouts"][0]
-        if value.get("global_step") != outer or value.get("runtime_source_commit") != row["source_commit"] or value.get("config_sha256") != config:
-            raise ValueError("Original candidate rollout identity differs")
-        source = part["source_files"]
-        audit, controller = source["audit"], value["rollout_controller_cost"]
-        if not audit.get("stable_read") or audit["sha256"] != value["audit_file_sha256"] or audit["bytes"] != value["audit_file_bytes"] or source["resolved_config"]["sha256"] != config:
-            raise ValueError("Original candidate/config file identity differs")
-        if controller.get("code_commit") != row["source_commit"] or controller.get("config_sha256") != config or controller.get("candidate_outer") != outer:
-            raise ValueError("Original candidate controller identity differs")
-        for field in ("candidate_outcomes", "candidate_round_controller_ledger"):
-            row["candidate_cost_detail"][field] = {"source_file": info["file"], "source_sha256": info["sha256"], "json_selector": "rollouts[0]." + field}
-        applied.append({"outer": outer, "source_commit": row["source_commit"], "config_sha256": config, "file": info["file"], "sha256": info["sha256"], "audit_file_sha256": audit["sha256"], "audit_file_bytes": audit["bytes"]})
-    return {"status": "APPLIED_FIXED_LOCAL_BACKFILL", "index_file": path.name, "index_bytes": len(raw), "index_sha256": sha(raw), "applied_outers": [v["outer"] for v in applied], "inputs": applied, "original1_and2_refs_unchanged": True, "old_blocks_or_cumulative_files_modified": False, "scope": "Each original1/2 source and each joined3..19 row once. Candidate sums and native branch ledger keep original timing/padding boundaries; no inferred outcome padding or independent wall."}
+    sources = []
+    if path.exists():
+        raw = path.read_bytes()
+        if len(raw) > MAX_BYTES or sha(raw) != args.candidate_backfill_sha256:
+            raise ValueError("Fixed candidate backfill index SHA/size differs")
+        sources.append(("legacy3_19", path.name, raw, json.loads(raw)))
+    registry_path = base / args.candidate_extension_inputs.name
+    registry_binding = None
+    if args.candidate_extension_inputs.is_absolute() and args.candidate_extension_inputs.resolve().parent != base:
+        raise ValueError("Candidate extension input list must stay in local audit dir")
+    if registry_path.exists():
+        registry_raw = registry_path.read_bytes()
+        if len(registry_raw) > MAX_BYTES:
+            raise ValueError("Candidate input list exceeds scalar size budget")
+        registry = json.loads(registry_raw)
+        if registry.get("summary_schema") != "tree_candidate_cost_extension_inputs_v1":
+            raise ValueError("Unexpected candidate extension input list schema")
+        registry_binding = {"file": registry_path.name, "bytes": len(registry_raw), "sha256": sha(registry_raw),
+                            "scope": "Derived input list snapshot; each original index/part is independently SHA bound."}
+        registered = set()
+        for ref in registry["indexes"]:
+            outer = ref["outer"]
+            if not isinstance(outer, int) or not 20 <= outer <= 200 or outer in registered:
+                raise ValueError("Extension input list requires unique20..200 outers")
+            registered.add(outer)
+            if outer not in by_outer:
+                continue
+            name = ref["file"]
+            if Path(name).name != name or name != "CANDIDATE_COST_EXTENSION_OUTER" + format(outer, "04d") + ".json":
+                raise ValueError("Unexpected immutable candidate extension index filename")
+            raw = (base / name).read_bytes()
+            if len(raw) != ref["bytes"] or len(raw) > MAX_BYTES or sha(raw) != ref["sha256"]:
+                raise ValueError("Candidate extension index immutable SHA/bytes differs")
+            data = json.loads(raw)
+            if data.get("requested_completed_outers") != [outer] or [v.get("outer") for v in data.get("parts", [])] != [outer]:
+                raise ValueError("Candidate extension index does not bind its single completed outer")
+            sources.append(("extension20_200", name, raw, data))
+    applied, seen, index_bindings = [], {}, []
+    for kind, name, raw, data in sources:
+        if data.get("summary_schema") != "tree_candidate_cost_backfill_index_v1":
+            raise ValueError("Unexpected candidate backfill schema")
+        index_bindings.append({"kind": kind, "file": name, "bytes": len(raw), "sha256": sha(raw)})
+        for info in data["parts"]:
+            outer = info["outer"]
+            allowed = range(3, 20) if kind == "legacy3_19" else range(20, 201)
+            if outer not in allowed:
+                raise ValueError("Candidate supplement outer outside its source scope; original1/2 stay separate")
+            if outer in seen:
+                if seen[outer] != info["sha256"]:
+                    raise ValueError("Conflicting candidate summaries for one outer")
+                continue
+            seen[outer] = info["sha256"]
+            if outer not in by_outer:
+                continue
+            partpath = (base / info["file"]).resolve()
+            if not partpath.is_relative_to(base) or partpath.parent != base / "candidate_cost_backfill":
+                raise ValueError("Candidate part is outside its local scalar directory")
+            part_raw = partpath.read_bytes()
+            if len(part_raw) != info["bytes"] or len(part_raw) > MAX_BYTES or sha(part_raw) != info["sha256"]:
+                raise ValueError("Candidate part immutable SHA/bytes differs")
+            part = json.loads(part_raw)
+            if part.get("status") != "ACTUAL_COMPLETED_CANDIDATE_SCALARS_AGGREGATED":
+                continue
+            row = by_outer[outer]
+            config = index["source_identity_by_commit"][row["source_commit"]]["identity"]["config_sha256"]
+            if info["source_commit"] != row["source_commit"] or part.get("source_commit") != row["source_commit"] or info["config_sha256"] != config or part.get("config_sha256") != config or part.get("requested_outer") != outer:
+                raise ValueError("Candidate outer/source/config join differs")
+            if len(part.get("rollouts", [])) != 1:
+                raise ValueError("Expected exactly one captured completed candidate rollout")
+            value = part["rollouts"][0]
+            if value.get("global_step") != outer or value.get("runtime_source_commit") != row["source_commit"] or value.get("config_sha256") != config:
+                raise ValueError("Original candidate rollout identity differs")
+            source = part["source_files"]
+            audit, controller = source["audit"], value["rollout_controller_cost"]
+            if not audit.get("stable_read") or audit["sha256"] != value["audit_file_sha256"] or audit["bytes"] != value["audit_file_bytes"] or source["resolved_config"]["sha256"] != config or not source["resolved_config"].get("stable_read") or not source["controller"].get("stable_read"):
+                raise ValueError("Original candidate/config/controller file identity differs")
+            if controller.get("status") != "TRAINING_ROLLOUT_COST_COMPLETE" or controller.get("code_commit") != row["source_commit"] or controller.get("config_sha256") != config or controller.get("candidate_outer") != outer:
+                raise ValueError("Original candidate controller identity differs")
+            if kind == "extension20_200":
+                if row["source_commit"] != "778b2b43dad90fc0c1c5d95d77c2326286011b73" or config != "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3":
+                    raise ValueError("Candidate extension must use fixed778/config355")
+                pin = part["source_pin"]
+                if pin.get("experiment_origin") != "fresh" or pin.get("full_outer_receipt") != row.get("full_outer_evidence"):
+                    raise ValueError("Candidate extension origin/credited receipt differs")
+                evidence = actual_inputs(base, base / pin["full_outer_receipt"])
+                if pin.get("immutable_local_inputs") != evidence["bindings"] or pin.get("native_manifest_sha256") != evidence["full"].get("native_manifest_sha256") or pin.get("source_poll") != evidence["poll_name"] or pin.get("source_poll_sha256") != evidence["bindings"][evidence["poll_name"]]["sha256"]:
+                    raise ValueError("Candidate extension immutable receipt/poll/native SHA join differs")
+                if pin.get("full_outer_receipt_sha256") != evidence["bindings"][evidence["full_name"]]["sha256"] or pin.get("native_metadata_readback_sha256") != evidence["bindings"][evidence["native_name"]]["sha256"]:
+                    raise ValueError("Candidate extension FULL/native SHA differs")
+            for field in ("candidate_outcomes", "candidate_round_controller_ledger"):
+                row["candidate_cost_detail"][field] = {"source_file": info["file"], "source_sha256": info["sha256"], "json_selector": "rollouts[0]." + field}
+            applied.append({"outer": outer, "source_commit": row["source_commit"], "config_sha256": config, "file": info["file"], "sha256": info["sha256"], "audit_file_sha256": audit["sha256"], "audit_file_bytes": audit["bytes"]})
+    return {"status": "APPLIED_FIXED_LOCAL_BACKFILL" if sources else "NO_LOCAL_BACKFILL_INDEX", "index_file": path.name,
+            "index_sha256": args.candidate_backfill_sha256 if path.exists() else None, "bound_indexes": index_bindings,
+            "extension_input_list_snapshot": registry_binding, "applied_outers": [v["outer"] for v in applied], "inputs": applied,
+            "original1_and2_refs_unchanged": True, "old_blocks_or_cumulative_files_modified": False,
+            "scope": "Each original1/2 and each joined3..200 outer once. Missing next-outer candidate evidence stays null; no guessed padding or independent outcome wall."}
 
 
 def cumulative(args):
@@ -710,6 +763,7 @@ def main():
     parser.add_argument("--max-block-bytes", type=int, default=MAX_BYTES)
     parser.add_argument("--candidate-backfill-index", type=Path, default=Path(BACKFILL_INDEX))
     parser.add_argument("--candidate-backfill-sha256", default=BACKFILL_SHA256)
+    parser.add_argument("--candidate-extension-inputs", type=Path, default=Path("CANDIDATE_COST_EXTENSION_INPUTS.json"))
     args = parser.parse_args()
     args.base = args.base.resolve(strict=True)
     if args.receipt.is_absolute() and args.receipt.resolve().parent != args.base:
@@ -729,7 +783,7 @@ def main():
     cost = cumulative(args) if not cumulative_path.exists() else {"status": "EXISTING_CUMULATIVE_PRESERVED"}
     for name, raw in protected.items():
         if (args.base / name).read_bytes() != raw:
-            raise RuntimeError("Protected1..18 history bytes changed")
+            raise RuntimeError("Protected1..20 history bytes changed")
     print(json.dumps({"status": "APPENDED" if appended else "ALREADY_RECORDED",
                       "outer": args.outer, "source_receipt": args.receipt.name,
                       "index_sha256": sha((args.base / BOOK).read_bytes()),

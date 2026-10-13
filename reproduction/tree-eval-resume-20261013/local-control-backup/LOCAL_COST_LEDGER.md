@@ -10,7 +10,7 @@
 
 后续只替换receipt轮次。缺少receipt时返回PENDING且不写账本。输入仅为base内明确命名的小型JSON；它核对FULL绑定的immutable poll、native readback和resource SHA/bytes，再从本轮step/candidate_outer读取事实。不会用latest metric替代本轮。
 
-已完成的1–19轮块文件保持原字节；后续追加从20开始新块。后续工具创建的active块可追加，接近100000字节则开新块，不丢标量。保留v3索引、原字段名、完整scalar、来源/config/data/model身份、真实有效ancestry和历史失败成本分栏。新块使用原字段名映射，旧vector仍按其原fieldsets解码。既有两个小型本地镜像沿用账本mirrors配置。
+已完成的1–20轮块文件保持原字节；后续追加从21开始新块。后续工具创建的active块可追加，接近100000字节则开新块，不丢标量。保留v3索引、原字段名、完整scalar、来源/config/data/model身份、真实有效ancestry和历史失败成本分栏。新块使用原字段名映射，旧vector仍按其原fieldsets解码。既有两个小型本地镜像沿用账本mirrors配置。
 
 输出为PER_OUTER_METRICS_COMPACT.json/md、新scalar块，以及CUMULATIVE_COST_THROUGHN.json/md（实际文件名例如CUMULATIVE_COST_THROUGH19.json）。历史累计文件不覆盖。累计若超过100000字节，会把完整证据字段存入cumulative_cost_blocks的小型分片，主JSON保留每片SHA、字节、字段名和顺序，字段不被删除。每个JSON块限100000字节，单条异常超限会报错，不静默截断。
 
@@ -26,3 +26,10 @@
 
 
 固定补账接入：累计生成默认读取base/CANDIDATE_COST_BACKFILL_THROUGH19.json，固定SHA d219a4f1af593d6dc304154e115aab218168113974109ce032d0b8402c568699；可显式传--candidate-backfill-index及--candidate-backfill-sha256。逐份核对part SHA/bytes、outer、运行source/config、原audit稳定SHA与controller身份，仅向本次累计的内存副本加入原schema引用，不改旧块。原1/2来源与新3..19每轮只计一次。引用来源及匹配证明保存在candidate_cost_backfill_join与resolved_fixed_cost_inputs。缺少20的逐条补账时，20对应outcome/branch评分覆盖仍未知，保留known_sum/known_outers/missing_outers，不填0、不猜padding或独占wall；也不会读取远端补齐。
+
+
+20–200轮候选补账：backfill_nested_candidate_costs.py接受--first-outer与--last-outer，仅接受显式20..200范围，默认3..19保持旧接口/已存历史。先从本地v3已计轮次与immutable FULL/poll/native/resource SHA构建固定pin，未计轮次跳过且不SSH；只读取指定778/config355本任务路径的audit、controller及resolved config，status均COMPLETE且稳定才返回小scalar。原始逐条账本留H10018；同一轮既有源pin不同则报错不覆盖。
+
+    python3 -B backfill_nested_candidate_costs.py --base /绝对路径/outputs/tree-nested-branch-handoff-20261013 --ssh-helper /绝对路径/work/tree-speed-repair-20261008/ssh_retained18.py --first-outer 20 --last-outer 20
+
+每个实际轮产生immutable CANDIDATE_COST_EXTENSION_OUTER0020.json/md及candidate_cost_backfill/CANDIDATE_OUTER0020.json；后续替换轮次。每个JSON<=100000字节。CANDIDATE_COST_EXTENSION_INPUTS.json是本地派生输入列表，记录每份immutable index SHA/bytes。append的后续累计默认读取此列表，逐份验证index/part/outer/source/config及原FULL/poll/native SHA，只在内存累计副本中引用每轮一次；列表本身仅按本次读取SHA记录，不冒充原始证据。可用--candidate-extension-inputs显式指定列表。未完成/尚无候选part的21等轮仍unknown，不借上轮成本。旧through20/块及3..19补账保持原字节。origin沿fresh母链，非从基座清零；padding结果分摊、独立结果wall和实际GPU计费不推算。
