@@ -1,9 +1,9 @@
 """CPU-only final-boundary checks; no GPU, Ray, model or training imports."""
 import ast
-import copy
 from pathlib import Path
 import unittest
 from final_eval import validate_checkpoint
+from boundary_supervisor import terminal_condition, matches
 
 
 class Boundary(unittest.TestCase):
@@ -32,8 +32,28 @@ class Boundary(unittest.TestCase):
         with self.assertRaises(AssertionError): validate_checkpoint(self.fixture(), 'other')
 
     def test_payload_syntax(self):
-        for name in ('final_eval.py', 'final_worker.py'):
+        for name in ('final_eval.py', 'final_worker.py', 'boundary_supervisor.py'):
             ast.parse(Path(__file__).with_name(name).read_text())
+
+    def test_no_early_training_handoff(self):
+        self.assertEqual(terminal_condition(None,'fixed',False,None),'WAIT_TRAINING')
+        self.assertEqual(terminal_condition(self.fixture(),'fixed',False,None),'WAIT_TRAINING')
+        with self.assertRaises(AssertionError): terminal_condition(self.fixture(),'fixed',True,None)
+        manifest=self.fixture();manifest['boundary_phase']='post-evaluation'
+        self.assertEqual(terminal_condition(manifest,'fixed',True,None),'HANDOFF_FINAL_ONLY')
+
+    def test_do_not_duplicate_native_final(self):
+        metrics={'val/qa_count/all':51713}
+        self.assertEqual(terminal_condition(None,'fixed',False,metrics),'NATIVE_FINAL_COMPLETE')
+        with self.assertRaises(AssertionError):
+            terminal_condition(None,'fixed',False,{'val/qa_count/all':512})
+
+    def test_signal_identity_checks_all_fields(self):
+        owner=dict(pid=1,uid=0,tick=12)
+        self.assertTrue(matches(owner,owner))
+        self.assertFalse(matches(None,owner))
+        for key in owner:
+            self.assertFalse(matches(dict(owner,**{key:owner[key]+1}),owner))
 
 
 if __name__ == '__main__': unittest.main()

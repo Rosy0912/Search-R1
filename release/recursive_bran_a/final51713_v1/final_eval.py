@@ -44,6 +44,10 @@ def run_final(config, output_dir, expected_count=51713):
     trainer._prepare_final_validation()
     assert trainer.actor_rollout_wg.world_size == 8
     assert len(trainer.val_dataset) == expected_count, 'No dropped final questions allowed'
+    from search_r1.baselines.holdout import _validate_prebuilt, frame_identity, ordered_question_ids_hash
+    record = _validate_prebuilt(config)['manifest']['splits']['final']
+    assert frame_identity(trainer.val_dataset.dataframe, config.data.prompt_key) == record['content_identity']
+    assert ordered_question_ids_hash(trainer.val_dataset.dataframe) == record['question_ids_sha256']
     trainer.global_steps = 200
     original_score = scoring.batch_answer_metrics
     completed = 0
@@ -113,6 +117,9 @@ def main():
     assert len(plan['admission_receipts']) >= 3
     config = OmegaConf.load(plan['config'])
     config.actor_rollout_ref.model.path = model
+    # Native Tree config requires the actor/reference path identities to agree.
+    # No RefPolicy worker is instantiated during this scoring-only process.
+    config.actor_rollout_ref.ref.model_path = model
     config.data.val_batch_size = 512
     assert config.trainer.n_gpus_per_node == 8 and config.trainer.nnodes == 1
     assert config.actor_rollout_ref.rollout.tensor_model_parallel_size == 1
@@ -122,6 +129,15 @@ def main():
     os.environ['SEARCH_R1_BASELINE_OUTPUT'] = plan['output']
     os.environ['SEARCH_R1_BASELINE_AUDIT_DIR'] = plan['output'] + '/audit'
     os.environ['SEARCH_R1_TREE_RANK_AUDIT_DIR'] = plan['output'] + '/rank-audit'
+    configuration = json.loads(Path(plan['configuration_receipt']).read_text())
+    os.environ.update(SEARCH_R1_BASELINE_DATA_IDENTITY=configuration['data_identity'],
+        SEARCH_R1_BASELINE_COMMIT=configuration['source_commit'],
+        SEARCH_R1_BASELINE_CONFIG_SHA256=plan['config_sha256'],
+        SEARCH_R1_EXECUTION_BACKEND='slurm_h100',
+        SEARCH_R1_MODEL_IDENTITY='final200@' + plan['checkpoint_manifest_sha256'],
+        TREE_COMMON_DATA=configuration['data'], TREE_INSTRUCT_MODEL=model)
+    from ray_cli_compat import prepare_click
+    prepare_click()
     import ray
     ray.init(address='local', num_gpus=8, include_dashboard=False,
         runtime_env={'env_vars': {k: v for k, v in os.environ.items()

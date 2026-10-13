@@ -11,6 +11,13 @@ class FrozenFinalWorker(ActorRolloutRefWorker):
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def init_model(self):
         result = super().init_model()
+        import subprocess
+        gpu_rows = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid,gpu_uuid',
+            '--format=csv,noheader,nounits'], text=True).splitlines()
+        gpu_uuids = [row.split(',')[1].strip() for row in gpu_rows
+            if row.split(',')[0].strip() == str(os.getpid())]
+        assert len(set(gpu_uuids)) == 1, 'Final DP worker must have one actual GPU UUID'
+        self._final_gpu_uuid = gpu_uuids[0]
         manager = self.rollout_sharding_manager
         prepare = manager.prepare_policy_cache
         version = os.environ['RBA_FINAL_CHECKPOINT_SHA']
@@ -35,6 +42,7 @@ class FrozenFinalWorker(ActorRolloutRefWorker):
             print('FINAL51713_GPU=' + json.dumps(dict(event='start', rank=rank,
                 pid=os.getpid(), call=self._final_calls, rows=len(prompts),
                 cuda_visible=os.environ.get('CUDA_VISIBLE_DEVICES'),
+                gpu_uuid=self._final_gpu_uuid,
                 checkpoint_sha=version, time=time.time())), flush=True)
             output = generate(prompts)
             width = output.batch['responses'].shape[-1]
@@ -42,6 +50,7 @@ class FrozenFinalWorker(ActorRolloutRefWorker):
             seconds = time.monotonic() - started
             print('FINAL51713_GPU=' + json.dumps(dict(event='complete', rank=rank,
                 pid=os.getpid(), call=self._final_calls, rows=len(prompts),
+                gpu_uuid=self._final_gpu_uuid,
                 generated_tokens=tokens, seconds=seconds,
                 tokens_per_second=tokens / max(seconds, 1e-9), time=time.time())), flush=True)
             return output
