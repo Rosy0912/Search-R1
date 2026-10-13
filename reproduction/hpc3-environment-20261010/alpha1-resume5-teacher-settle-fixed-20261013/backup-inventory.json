@@ -1,0 +1,50 @@
+{
+  "prepare_alpha1_teacher_idle_settle.py": {
+    "bytes": 4402,
+    "sha256": "5256495070264017f518763a4237426b93ffda0f49cb06bfd41b89f8b3d91c6d"
+  },
+  "alpha1-teacher-idle-settle-repair.json": {
+    "bytes": 673,
+    "sha256": "83b3d45d53dd1bdfc6f1c3ffb6372ade3a3362e097c2eb6a0835b5bc158790fd"
+  },
+  "hpc3-topd200-alpha1-resume5-teacher-settle-fixed-20261013.json": {
+    "bytes": 22218,
+    "sha256": "de8ccf76e3bd52f12cdf8a3ccf9ff8fa3f5d759a12b5caa3377f439945e2226b"
+  },
+  "teacher/files.json": {
+    "bytes": 1862,
+    "sha256": "269defe3e6f09492902eb2234d8d5f6f8b7c43001af95eae7bf1dc0c7964f8f9"
+  },
+  "teacher/topd_vllm_teacher/worker.py": {
+    "bytes": 1603,
+    "sha256": "3eb8c3179416785a47f0d9abbdda8debc9666fca2621709220dfc7ec7f9d6b31"
+  },
+  "teacher/topd_vllm_teacher/alignment.py": {
+    "bytes": 1536,
+    "sha256": "45338dd00842cad06f64dfb8a2a3c0b37b7863dfeb938e4ed2523139c06066e0"
+  },
+  "teacher/topd_vllm_teacher/protocol.py": {
+    "bytes": 1514,
+    "sha256": "8a0f00ba7d0778c2566a9e94112728b97d5277d1d558e4934762c609a6b0dae2"
+  },
+  "teacher/topd_vllm_teacher/client.py": {
+    "bytes": 3119,
+    "sha256": "da9e2415c82a4c41f6b5fd750e60238743a3398a2f03b1cb6d5f921417139d37"
+  },
+  "teacher/topd_vllm_teacher/__init__.py": {
+    "bytes": 76,
+    "sha256": "b3968a0da2ff81e61e589f652ef8965079cca8579f6e3f096085dfb4370657e1"
+  },
+  "teacher/topd_vllm_teacher/lease_wait.py": {
+    "bytes": 623,
+    "sha256": "bc3fc5fdac567b80e92a82099d4c32acc84a28a275c1780c4fce63a33afb7303"
+  },
+  "teacher/topd_vllm_teacher/daemon.py": {
+    "bytes": 8375,
+    "sha256": "df7996c89453b2f09f28897a18b343b243f40ea7bf336f81306cda1720915b4b"
+  },
+  "teacher/topd_vllm_teacher/executor.py": {
+    "bytes": 485,
+    "sha256": "d193dc1af2bf467edf3817da46d02f1b57f5aa52be3028e86ae60bd702a0aea6"
+  }
+}

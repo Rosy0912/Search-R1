@@ -1,0 +1,467 @@
+{
+  "actual_common_parquet_metadata": {
+    "final": {
+      "columns": [
+        "data_source",
+        "role",
+        "content",
+        "ability",
+        "style",
+        "element",
+        "index",
+        "split"
+      ],
+      "rows": 51713
+    },
+    "stage": {
+      "columns": [
+        "data_source",
+        "role",
+        "content",
+        "ability",
+        "style",
+        "element",
+        "index",
+        "split"
+      ],
+      "rows": 64
+    },
+    "train": {
+      "columns": [
+        "data_source",
+        "role",
+        "content",
+        "ability",
+        "style",
+        "element",
+        "index",
+        "split"
+      ],
+      "rows": 169028
+    },
+    "validation": {
+      "columns": [
+        "data_source",
+        "role",
+        "content",
+        "ability",
+        "style",
+        "element",
+        "index",
+        "split"
+      ],
+      "rows": 512
+    }
+  },
+  "actual_outer_receipt_path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/actual-outer-updates.json",
+  "base64_quality_independent_review": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/qwen25-32b-quality64-3077-independent-review.json",
+    "sha256": "19d172818cc07cc46a030b70afdbeee2d7fdc6a9cce62a33b140b2919000e569"
+  },
+  "base64_result_sha256": "7f1e169a417f768f2c20bca9a8be87bfec273bb065cef5293018b7362c606c39",
+  "base_model": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725",
+  "base_model_inventory": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/g1-initial-static-cpu-3102/recipe/base-hf-inventory.json",
+    "sha256": "eedbfdd05bc06c08cb5e6f2e34022b36ebf95d6a29376514398786bb4a0f581a"
+  },
+  "base_model_inventory_sha256": "164229dc921e7fd07326ff97276dc864d97e8f00908061229e6bca7b9287fbdf",
+  "candidate": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-source-validation-repair-20261013",
+  "cgroup": "1:freezer:/slurm_h100-11/uid_0/job_3228/step_batch\n0::/system.slice/slurmd.service\n",
+  "checkpoint_root": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/checkpoints",
+  "common_data": {
+    "directory": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b",
+    "final_file": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/final.parquet",
+    "final_rows": 51713,
+    "manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "stage_rows": 64,
+    "train_rows": 169028,
+    "validation_file": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/validation.parquet",
+    "validation_rows": 512
+  },
+  "compiler_headers": {
+    "base": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/hpc3-compiler-headers",
+    "inventory_sha256": "a969d9aa8870fc4a403b843f5794f1f6e5ec5e6529a5200a70e812114f8de1dc",
+    "cpath": "/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/include/python3.10",
+    "provider": "HPC3_CONDA_PY310_NATIVE_ABI"
+  },
+  "cuda_allocator": {
+    "backend": "native",
+    "environment_variable": "PYTORCH_CUDA_ALLOC_CONF",
+    "value": "backend:native,max_split_size_mb:128"
+  },
+  "effective_cuda_allocator_environment": "backend:native,max_split_size_mb:128",
+  "evidence_root": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence",
+  "expected_outer_steps": 200,
+  "final_checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/checkpoints/actor/global_step_200",
+  "independent_gate": null,
+  "input_bindings": [
+    {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/manifest.json",
+      "sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+      "sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/validation.parquet",
+      "sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/stage.parquet",
+      "sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/final.parquet",
+      "sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1"
+    }
+  ],
+  "job": "3228",
+  "launcher_manifest": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/files.json",
+    "sha256": "4e41278ee68b87f19289108cc6952188a6acf2ca9c6e8cd5292ec9b554244b5d"
+  },
+  "mode": "topd200",
+  "preflight_source": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/repo-terminal-fixed413/search_r1/baselines/preflight.py",
+    "sha256": "cc9445265a3835e1623c0de9d95380717f0e44d4a303d45e3fe1f559431e1605"
+  },
+  "profile_resource_proof": null,
+  "retrieval_asset_binding": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/qwen25-32b-terminal-fixed413-binding.json",
+    "sha256": "ea13a3b8352699212ee83185d2c1db4f9cdd080db03444581af5d641113a6fdf"
+  },
+  "retriever_command": [
+    "/data/user/jxu957/experiments/topd-20261008/runtime/env/bin/python",
+    "-c",
+    "import torch,runpy,sys; server=sys.argv.pop(1); sys.argv[0]=server; runpy.run_path(server,run_name='__main__')",
+    "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/runtime/retrieval_server.py",
+    "--index_path",
+    "/data/user/jxu957/experiments/topd-20261008/runtime/assets-root/assets/wiki/e5_Flat.index",
+    "--corpus_path",
+    "/data/user/jxu957/experiments/topd-20261008/runtime/assets-root/assets/wiki/wiki-18.jsonl",
+    "--retriever_model",
+    "/data/user/jxu957/experiments/topd-20261008/runtime/assets-root/assets/e5-base-v2",
+    "--retriever_name",
+    "e5",
+    "--topk",
+    "3",
+    "--device",
+    "cuda",
+    "--faiss_gpu",
+    "--threads",
+    "8",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18085"
+  ],
+  "retriever_health_url": "http://127.0.0.1:18085/docs",
+  "retriever_url": "http://127.0.0.1:18085/retrieve",
+  "source_device_correctness": null,
+  "source_entropy_correctness": null,
+  "source_entropy_native_cpu_evidence": null,
+  "source_manifest": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-source-validation-repair-20261013/files.json",
+    "sha256": "e860347c0746c5b71d0156b72c615c4e9c492b0c2d77cb41535d47a77acdbdcb"
+  },
+  "source_native_cpu_evidence": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/r1-latest-source-v4-cpu-3200/result.json",
+    "sha256": "8ecb69cc6bfc5ac8970625a2e7d379b3e49201937fe117b4aa3d7e47b05377d3"
+  },
+  "source_upstream_commit": "e623724532d06e975b61f3b35ec7925dc790c939",
+  "student_model_identity": {
+    "official_files": {
+      "LICENSE": {
+        "sha256": "ef52482bb785733093dc9a2e8edd8e764c77d12d8e9d8f10a80c9b547d32d0f9",
+        "size": 7388
+      },
+      "README.md": {
+        "sha256": "2c74693e6ae36ba878124d465195b4dad0f71035b54ece1c9fd1553cc497ef8c",
+        "size": 4930
+      },
+      "config.json": {
+        "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+        "size": 661
+      },
+      "generation_config.json": {
+        "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+        "size": 242
+      },
+      "merges.txt": {
+        "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+        "size": 1671839
+      },
+      "model-00001-of-00002.safetensors": {
+        "sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "size": 3968658944
+      },
+      "model-00002-of-00002.safetensors": {
+        "sha256": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+        "size": 2203268048
+      },
+      "model.safetensors.index.json": {
+        "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+        "size": 35581
+      },
+      "tokenizer.json": {
+        "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+        "size": 7031645
+      },
+      "tokenizer_config.json": {
+        "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+        "size": 7305
+      },
+      "vocab.json": {
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+        "size": 2776833
+      }
+    },
+    "public_source_api": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725/PUBLIC-SOURCE-API.json",
+      "sha256": "2182e6ac33d1c7f1116d1c85ea0531f1e14565bcdbb14668ddc69e07a37302f3"
+    },
+    "repo": "Qwen/Qwen2.5-3B-Instruct",
+    "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "verified_manifest": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725/VERIFIED-MODEL-MANIFEST.json",
+      "sha256": "7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44"
+    }
+  },
+  "support": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/search-r1-32b-grpo100-tools-direct-v5/owner_support.py",
+    "sha256": "8da2accf8f0403a5fec1006fcf9bded578c563cb2dd0291d6e48921af6455a74"
+  },
+  "teacher_actual_result": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-instruct300-teacher85-approved-v1/teacher85-user-approval.json",
+    "sha256": "3f98a86cd4e961f0692c51f4faed0d6406b25ef64dcc3140fb21708ac4ca6145"
+  },
+  "teacher_backend": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-vllm-teacher-resume5-20261013",
+  "teacher_backend_manifest": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-vllm-teacher-resume5-20261013/files.json",
+    "sha256": "269defe3e6f09492902eb2234d8d5f6f8b7c43001af95eae7bf1dc0c7964f8f9"
+  },
+  "teacher_gpu_memory_utilization": 0.45,
+  "teacher_path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/r1-standard32b-grpo100-common-v5-r1/checkpoints/actor/global_step_85",
+  "telemetry_policy": {
+    "directory": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/qwen25-32b-window-safety-direct-own-sm-v2",
+    "guard_sha256": "82a028856176518cbd307f76352e7d6140815491e3c2febced050934e195dcac",
+    "manifest_sha256": "91473cc9fa941e805ad176eefa4ddc7dca5f3489183d222994eca7e4ecc0eacc",
+    "runtime_sha256": "c36bb83fb057cb7b2beea91cc0765b6696267763e98294689804242838db2471"
+  },
+  "tools": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/runtime",
+  "tools_manifest": {
+    "path": "/data/user/jxu957/experiments/topd-20261008/runtime/tools/topd-alpha1-launch-resume5-20261013/runtime/files.json",
+    "sha256": "f6133ee7f585fa5cf48708555d0327f239cb8cd2f2c0bb41e0fb8ab10a88e9c2"
+  },
+  "train_file": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+  "training_command": [
+    "/data/user/jxu957/experiments/topd-20261008/runtime/env/bin/python",
+    "-m",
+    "verl.trainer.main_ppo",
+    "algorithm.adv_estimator=grpo",
+    "data.train_files=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+    "data.val_files=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/stage.parquet",
+    "data.train_batch_size=512",
+    "data.val_batch_size=64",
+    "data.max_prompt_length=4096",
+    "data.max_response_length=500",
+    "data.max_start_length=2048",
+    "data.max_obs_length=500",
+    "data.shuffle_train_dataloader=true",
+    "actor_rollout_ref.model.path=/data/user/jxu957/experiments/topd-20261008/runtime/assets-root/assets/qwen2.5-32b",
+    "actor_rollout_ref.model.enable_gradient_checkpointing=true",
+    "actor_rollout_ref.model.use_remove_padding=true",
+    "actor_rollout_ref.actor.optim.lr=1e-6",
+    "actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.285",
+    "+actor_rollout_ref.actor.optim.lr_warmup_steps=57",
+    "+actor_rollout_ref.actor.loss_agg_mode=sequence_mean",
+    "actor_rollout_ref.actor.entropy_coeff=0",
+    "+actor_rollout_ref.actor.optim.foreach=false",
+    "actor_rollout_ref.actor.use_kl_loss=true",
+    "actor_rollout_ref.actor.kl_loss_coef=0.001",
+    "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+    "actor_rollout_ref.actor.ppo_mini_batch_size=128",
+    "actor_rollout_ref.actor.ppo_micro_batch_size=32",
+    "actor_rollout_ref.actor.ppo_epochs=1",
+    "actor_rollout_ref.actor.use_dynamic_bsz=false",
+    "actor_rollout_ref.actor.ulysses_sequence_parallel_size=1",
+    "actor_rollout_ref.actor.state_masking=true",
+    "actor_rollout_ref.actor.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.grad_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.optimizer_offload=true",
+    "actor_rollout_ref.ref.fsdp_config.param_offload=true",
+    "actor_rollout_ref.rollout.log_prob_micro_batch_size=32",
+    "actor_rollout_ref.ref.log_prob_micro_batch_size=32",
+    "actor_rollout_ref.rollout.tensor_model_parallel_size=8",
+    "actor_rollout_ref.rollout.name=vllm",
+    "actor_rollout_ref.rollout.gpu_memory_utilization=0.4",
+    "actor_rollout_ref.rollout.temperature=1",
+    "actor_rollout_ref.rollout.n_agent=5",
+    "actor_rollout_ref.rollout.n=1",
+    "algorithm.no_think_rl=false",
+    "trainer.critic_warmup=0",
+    "trainer.logger=[console]",
+    "trainer.project_name=Search-R1-32B-Standard",
+    "trainer.experiment_name=grpo100-train100",
+    "+trainer.val_before_train=true",
+    "trainer.default_hdfs_dir=null",
+    "trainer.default_local_dir=/data/user/jxu957/experiments/topd-20261008/runtime/logs/r1-standard32b-grpo100-common-v5-r1/checkpoints",
+    "trainer.n_gpus_per_node=8",
+    "trainer.nnodes=1",
+    "trainer.save_freq=5",
+    "trainer.test_freq=50",
+    "trainer.total_epochs=15",
+    "trainer.total_training_steps=101",
+    "+trainer.r1_actual_outer_receipt=/data/user/jxu957/experiments/topd-20261008/runtime/logs/r1-standard32b-grpo100-common-v5-r1/actual-outer.json",
+    "+trainer.weight_continuation_step=0",
+    "max_turns=4",
+    "retriever.url=http://127.0.0.1:18085/retrieve",
+    "retriever.topk=3",
+    "+actor_rollout_ref.ref.entropy_coeff=0"
+  ],
+  "training_overrides": [
+    "baselines.method=topd",
+    "baselines.topd.teacher_backend=local_gpu_bf16_tp4_prompt_logprobs",
+    "baselines.distillation.privileged_answers=false",
+    "baselines.distillation.chunk_size=16",
+    "baselines.topd.alpha=1",
+    "baselines.local_runtime_only=true",
+    "baselines.local_runtime_host=HPC3_BOUND_AT_LAUNCH",
+    "actor_rollout_ref.model.path=/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725",
+    "data.train_files=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+    "data.val_files=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/validation.parquet",
+    "data.final_val_files=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/final.parquet",
+    "data.train_batch_size=512",
+    "data.val_batch_size=512",
+    "data.val_data_num=512",
+    "+baselines.holdout.common_manifest=/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/manifest.json",
+    "+baselines.holdout.common_manifest_sha256=0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "actor_rollout_ref.model.enable_gradient_checkpointing=true",
+    "actor_rollout_ref.model.use_remove_padding=true",
+    "actor_rollout_ref.actor.ppo_mini_batch_size=128",
+    "actor_rollout_ref.actor.ppo_micro_batch_size=16",
+    "actor_rollout_ref.actor.ppo_epochs=1",
+    "+actor_rollout_ref.actor.loss_agg_mode=sequence_mean",
+    "actor_rollout_ref.actor.optim.lr=1e-6",
+    "+actor_rollout_ref.actor.optim.lr_warmup_steps=57",
+    "actor_rollout_ref.actor.use_kl_loss=false",
+    "actor_rollout_ref.actor.entropy_coeff=0",
+    "algorithm.kl_ctrl.kl_coef=0",
+    "actor_rollout_ref.actor.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.grad_offload=true",
+    "actor_rollout_ref.actor.fsdp_config.optimizer_offload=true",
+    "actor_rollout_ref.ref.fsdp_config.param_offload=true",
+    "actor_rollout_ref.actor.state_masking=true",
+    "actor_rollout_ref.rollout.n_agent=5",
+    "actor_rollout_ref.rollout.n=1",
+    "actor_rollout_ref.rollout.tensor_model_parallel_size=1",
+    "actor_rollout_ref.rollout.log_prob_micro_batch_size=32",
+    "actor_rollout_ref.ref.log_prob_micro_batch_size=32",
+    "actor_rollout_ref.rollout.gpu_memory_utilization=0.4",
+    "trainer.n_gpus_per_node=4",
+    "trainer.nnodes=1",
+    "trainer.total_training_steps=201",
+    "trainer.acceptance_step=5",
+    "trainer.smoke_only=false",
+    "trainer.val_before_train=false",
+    "trainer.save_freq=50",
+    "trainer.test_freq=0",
+    "baselines.bapo.stage_validation_num=512",
+    "max_turns=4",
+    "retriever.url=http://127.0.0.1:18085/retrieve",
+    "retriever.topk=3",
+    "force_final_answer=true",
+    "actor_rollout_ref.actor.kl_loss_coef=0",
+    "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+    "baselines.distillation.teacher_path=/data/user/jxu957/experiments/topd-20261008/runtime/logs/r1-standard32b-grpo100-common-v5-r1/checkpoints/actor/global_step_85",
+    "baselines.topd.socket_manifest=/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/teacher/client-config.json",
+    "trainer.default_local_dir=/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/checkpoints",
+    "+trainer.topd_actual_outer_receipt=/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-prepared/evidence/actual-outer-updates.json",
+    "+actor_rollout_ref.topd_resume_checkpoint=/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+    "+trainer.topd_resume_checkpoint=/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5"
+  ],
+  "uuids": [
+    "GPU-02524001-4775-0600-1310-b89506702828",
+    "GPU-1760ed5d-0687-f06a-b72b-c61393195962",
+    "GPU-18030bbd-bc34-8171-942d-f56fec178dd7",
+    "GPU-21ad233e-ce4f-de0b-f3e0-ce1fbb7a95eb",
+    "GPU-6508a185-f0d1-4100-196f-bb653d47f50f",
+    "GPU-88dcd1f6-1efc-5fb0-59e5-2d11e87f1d9d",
+    "GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e",
+    "GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b"
+  ],
+  "val_file": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/validation.parquet",
+  "required_protocol": {
+    "gpus": 4,
+    "outer_iterations": 200,
+    "rows_per_rank": 640,
+    "mini_rows_per_rank": 32,
+    "actor_micro_per_rank": 4,
+    "old_ref_micro_per_rank": 8,
+    "gradient_accumulation": 8,
+    "optimizer_steps_per_rank_per_outer": 20,
+    "micro_forwards_per_rank_per_outer": 160,
+    "scheduler_steps_per_outer": 1,
+    "checkpoint_steps": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "fresh_initialization": false
+  },
+  "preparation_status": "FOUR_GPU_RUNTIME_BINDINGS_READY_FOR_STATIC_VALIDATION_NOT_GPU_ACCEPTED",
+  "teacher_memory_adjustment": {
+    "before": 0.25,
+    "after": 0.45,
+    "reason": "TP4 actual weights15.4136GiB per rank plus retriever9.6-10.3GiB caused zero GPU KV blocks under0.25 budget",
+    "failed_job": 706357,
+    "model_precision": "bfloat16",
+    "weights_and_objective_unchanged": true,
+    "kv_released_before_student_update_required": true,
+    "gpu_validation_pending": true,
+    "epoch": 1791611152.6622512
+  },
+  "experiment_arm": "TOPD_ALPHA_1_USER_AUTHORIZED_STEP5_FULL_STATE_RESUME",
+  "resume_authorization": {
+    "human_choice": "\u4ece\u5df2\u6821\u9a8c\u7684\u7b2c5\u8f6e\u6062\u590d\uff0c\u91cd\u7b97\u7b2c6\u8f6e\u8d77\uff08\u63a8\u8350\uff09",
+    "recorded_epoch": 1791854578.9287858,
+    "prior_job": 712204,
+    "checkpoint": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5",
+    "outer_step": 5,
+    "next_outer_step": 6,
+    "prior_outer_receipt": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/actual-outer-updates.json",
+    "original_official_initialization": true,
+    "recompute_outers_6_to_50_authorized": true,
+    "fresh_sha_verified_files": [
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5/resume-rank0.pt",
+        "bytes": 9258182466,
+        "sha256": "576084feede66872328026087bb8e6b65b561e0ef858554774617f72706078a6"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5/resume-rank1.pt",
+        "bytes": 9258182466,
+        "sha256": "17c094df2f713d82e5c5fcee8a8c8caa5bb600964cd4070ea416acc1333f1ae8"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5/resume-rank2.pt",
+        "bytes": 9258182466,
+        "sha256": "7f622a74a75f38d32a6626cb16063a3ab974ed191d637c70fcf7bbf6a76161c4"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5/resume-rank3.pt",
+        "bytes": 9258182466,
+        "sha256": "f20a357b0b435fabf2f579483adec26f11b4a2043e8c591b4b8e5ea82f07d977"
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5/driver-resume.pt",
+        "bytes": 728284,
+        "sha256": "708d2049772ce9f7d178978bde3847bb0ebf38f4a157eba2c407b32fed54a093"
+      }
+    ]
+  },
+  "teacher_start_outer": 6
+}

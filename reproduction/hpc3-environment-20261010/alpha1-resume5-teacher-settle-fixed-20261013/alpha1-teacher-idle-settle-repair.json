@@ -1,0 +1,17 @@
+{
+  "status": "IDENTICAL_LEASE_CHECK_BOUNDED_IDLE_SETTLE_TEST_PASS",
+  "epoch": 1791856527.9147058,
+  "failed_job": 713681,
+  "new_optimizer_updates": 0,
+  "observed_gpu_utilization": 19,
+  "idle_threshold_unchanged": 15,
+  "bounded_wait_seconds": 30,
+  "CPU_test_cases": [
+    "transient_idle_recheck_then_pass",
+    "unrelated_error_not_swallowed",
+    "persistent_busy_timeout"
+  ],
+  "config": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/hpc3-topd200-alpha1-resume5-teacher-settle-fixed-20261013.json",
+  "configuration_sha256": "de8ccf76e3bd52f12cdf8a3ccf9ff8fa3f5d759a12b5caa3377f439945e2226b",
+  "weights_and_objective_changed": false
+}
