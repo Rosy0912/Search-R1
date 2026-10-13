@@ -6,7 +6,7 @@ import os
 import shutil
 from pathlib import Path
 
-from search_g1.actor_probe_contract import actor_probes, head_round
+from search_g1.actor_probe_contract import actor_probes, head_round, validate_checkpoint_version
 from search_g1.actor_probe_state import durable_torch_save, rng_state
 
 
@@ -35,8 +35,7 @@ def save_full_state(trainer, run, attempts, epoch, batch_index):
     assert attempts.pending is None and attempts.completed_outer == step
     live_path = base/'artifacts/live/manifest.json'
     live = json.loads(live_path.read_text())
-    next_head_round = (head_round(step + 1) if step < 200 else head_round(200))
-    assert live['round'] == next_head_round and live['run_id'] == run['run_id']
+    validate_checkpoint_version(run, live, step)
     receipt_path = directory/'full-state-complete.json'
     assert not receipt_path.exists(), 'Milestone full-state receipt already exists'
     workers = trainer.actor_rollout_wg.save_probe_training_state(str(directory), step)
@@ -157,7 +156,6 @@ def verify_full_state(base, run, step, *, load_optimizer=False, retained_prefix=
     import torch
     from reproduction.common8.verify_data import digest
     from reproduction.common8.scheduler import expected_lr
-    from search_g1.actor_probe_contract import validate_version
     base = Path(base)
     directory = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
     receipt = json.loads((directory/'full-state-complete.json').read_text())
@@ -202,7 +200,7 @@ def verify_full_state(base, run, step, *, load_optimizer=False, retained_prefix=
     probe = directory/'probe-state'
     assert digest(probe/'version-manifest.json') == receipt['probe_manifest_sha256']
     manifest = json.loads((probe/'version-manifest.json').read_text())
-    validate_version(run, manifest, min(step + 1, 200))
+    validate_checkpoint_version(run, manifest, step)
     assert manifest['version'] == receipt['probe_version'] and manifest['actor_step'] == receipt['probe_actor_step']
     assert receipt['probe_head_hashes'] == manifest['head_sha256']
     assert set(receipt['probe_head_hashes']) == {'commit_probe.pkl','boundary_probe.pkl'}

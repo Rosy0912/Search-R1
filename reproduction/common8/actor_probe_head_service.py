@@ -12,7 +12,7 @@ import os
 import threading
 from pathlib import Path
 
-from search_g1.actor_probe_contract import MODE, LAYER_CHOICES, actor_probes, validate_version
+from search_g1.actor_probe_contract import MODE, LAYER_CHOICES, actor_probes, validate_version, validate_fitted_version
 from search_g1.actor_probe_recovery import identity
 from reproduction.common8.verify_data import digest
 
@@ -21,8 +21,10 @@ ROLE = 'actor_binary_head_service_v1'
 
 def verify_manifest(run, manifest, *, logical_update=None):
     assert actor_probes(run)
-    if logical_update is None: logical_update = manifest['round'] + 1
-    validate_version(run, manifest, logical_update)
+    if logical_update is None:
+        validate_fitted_version(run, manifest)
+    else:
+        validate_version(run, manifest, logical_update)
     assert manifest['parameter_ownership'] == 'independent_binary_heads_only'
     assert set(manifest['head_sha256']) == {'commit_probe.pkl','boundary_probe.pkl'}
     report = manifest['calibration_report']; proof = manifest['label_proof']

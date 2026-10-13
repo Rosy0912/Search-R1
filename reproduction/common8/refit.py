@@ -12,7 +12,7 @@ ap=argparse.ArgumentParser();ap.add_argument('--step',type=int,required=True);ap
 base=Path(os.environ.get('SEARCH_G1_BASE','/data/search-g1'));run=json.loads((base/'logs/run-manifest.json').read_text())
 assert run['profile']=='common8' and run.get('completed_updates',0)==0
 assert_formal_run(run)
-assert args.step in probe_rounds(run), 'Terminal200 does not refit an unused reward evaluator'
+assert args.step in probe_rounds(run), 'Probe fit is not a scheduled boundary for this experiment'
 for name,sha in run['input_sha256'].items(): assert digest(base/'data'/name)==sha
 assert run['probe_visible_device'] is not None, 'Probe placement has not passed resource admission'
 if args.step:

@@ -35,7 +35,7 @@ def experiment_fields(schedule):
 
 
 def probe_rounds(run):
-    return tuple(range(0, 200, INTERVAL)) if actor_probes(run) else (0, 50, 100, 150)
+    return tuple(range(0, 201, INTERVAL)) if actor_probes(run) else (0, 50, 100, 150)
 
 
 def head_round(logical_update):
@@ -44,17 +44,39 @@ def head_round(logical_update):
     return ((logical_update - 1) // INTERVAL) * INTERVAL
 
 
-def validate_version(run, version, logical_update):
+def checkpoint_head_round(completed_outer):
+    """A saved completed boundary includes its newly fitted pair, including200."""
+    if type(completed_outer) is not int or not 0 <= completed_outer <= 200:
+        raise ValueError('Checkpoint probe binding requires completed iteration0..200')
+    return (completed_outer // INTERVAL) * INTERVAL
+
+
+def validate_fitted_version(run, version):
+    """Authenticate a fitted pair without inventing a prediction iteration201."""
     if not actor_probes(run):
         raise ValueError('Live actor prediction requires explicit admission')
     if version.get('run_id') != run['run_id'] or not version.get('version'):
         raise ValueError('Head version belongs to another run')
-    if type(version.get('round')) is not int or version['round'] != head_round(logical_update):
-        raise ValueError('Stale or future probe head for this outer iteration')
+    if type(version.get('round')) is not int or version['round'] not in probe_rounds(run):
+        raise ValueError('Head does not belong to a scheduled fitting boundary')
     if version.get('representation_source') != MODE:
         raise ValueError('Frozen encoder prediction is not permitted in actor-probe mode')
     if version.get('actor_step') != version['round']:
         raise ValueError('Head fitting actor step differs from its version')
     if version.get('calibration_data_sha256') != run['input_sha256']['calibration-300.parquet']:
         raise ValueError('Head calibration data changed')
+    return version
+
+
+def validate_version(run, version, logical_update):
+    validate_fitted_version(run, version)
+    if version['round'] != head_round(logical_update):
+        raise ValueError('Stale or future probe head for this outer iteration')
+    return version
+
+
+def validate_checkpoint_version(run, version, completed_outer):
+    validate_fitted_version(run, version)
+    if version['round'] != checkpoint_head_round(completed_outer):
+        raise ValueError('Saved Head does not match the completed checkpoint boundary')
     return version

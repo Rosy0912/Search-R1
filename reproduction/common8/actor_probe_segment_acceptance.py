@@ -97,7 +97,7 @@ def verify_refresh_isolation(base, run, records, states):
     """Bind each due refresh to the version actually used next or durably saved."""
     by_step = {row['step']:row for row in records}; origin = namespace_origin(run)['completed_outer']
     result = {}
-    for step in range(10,200,10):
+    for step in range(10,201,10):
         if not origin < step <= records[-1]['step']: continue
         raw, file = _sealed_bytes(Path(base), f'logs/actor-probe-refresh-isolation-{step}.json',limit=32*1024**2)
         proof = _strict_json(raw)

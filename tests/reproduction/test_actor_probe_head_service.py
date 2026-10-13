@@ -152,6 +152,25 @@ class HeadServiceTests(unittest.TestCase):
                     if problem in ('uuid','round'):(base/'artifacts/live/manifest.json').write_text(json.dumps(manifest,indent=2))
                     with self.assertRaises(AssertionError):service.health()
 
+    def test_actual_service_publishes_terminal_pair_without_prediction201_admission(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,run,manifest,service,heads=fixture(root)
+            live=base/'artifacts/live/manifest.json'
+            manifest.update(version='head190',round=190,actor_step=190)
+            live.write_text(json.dumps(manifest))
+            with fitted_fixture_loader(heads):
+                self.assertEqual(service.health()['round'],190)
+                service.suspend('head190')
+                terminal=dict(manifest,version='head200',round=200,actor_step=200)
+                live.write_text(json.dumps(terminal))
+                self.assertEqual(service.health()['round'],200)
+                self.assertFalse(service.health()['suspended'])
+                self.assertEqual(service.smoke('head200')['round'],200)
+                for logical in (200,201):
+                    with self.assertRaises(ValueError):verify_manifest(run,terminal,logical_update=logical)
+                live.write_text(json.dumps(dict(terminal,version='head210',round=210,actor_step=210)))
+                with self.assertRaises(ValueError):service.health()
+
     def test_endpoint_identity_origin_hash_and_false_accuracy_claims_cannot_be_admitted(self):
         with tempfile.TemporaryDirectory() as root:
             base,run,manifest,service,heads=fixture(root,100)

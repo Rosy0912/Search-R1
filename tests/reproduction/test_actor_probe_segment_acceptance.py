@@ -64,14 +64,14 @@ class SegmentAcceptanceTests(unittest.TestCase):
             hashes={}
             for name in ('commit_probe.pkl','boundary_probe.pkl'):
                 p=probe/name;p.write_text('{"fixture":"scalar fitted-head stand-in"}');hashes[name]=digest(p)
-            version=run['run_id']+':190:'+'7'*32
-            head=dict(run_id=run['run_id'],version=version,round=190,actor_step=190,representation_source=MODE,
+            version=run['run_id']+':200:'+'7'*32
+            head=dict(run_id=run['run_id'],version=version,round=200,actor_step=200,representation_source=MODE,
                 calibration_data_sha256='1'*64,head_sha256=hashes)
             sha=write(probe/'version-manifest.json',head)
             receipt=dict(role='actor_probe_full_state_checkpoint',identity=identity(run),completed_outer=200,
                 next_logical_update=201,actual_optimizer_writes=4000,workers=rows,driver=driver,
                 completed_outer_reward_head_round=190,canonical_model_receipt_sha256=complete,
-                probe_manifest_sha256=sha,probe_head_hashes=dict(hashes),probe_version=version,probe_actor_step=190)
+                probe_manifest_sha256=sha,probe_head_hashes=dict(hashes),probe_version=version,probe_actor_step=200)
             write(directory/'full-state-complete.json',receipt)
             write(base/'logs/actual-updates.jsonl',dict(run_id=run['run_id'],step=200,attempt_index=200,optimizer_writes_after=4000))
             payload=dict(identity=identity(run),completed_outer=200,probe_version=version,
@@ -143,6 +143,8 @@ class SegmentAcceptanceTests(unittest.TestCase):
             with self.assertRaises(AssertionError):read_manifest(child)
 
     def test_actual_exit_uses_birth_and_session_not_stopped_label(self):
+        import importlib
+        owned = importlib.import_module('reproduction.a800.owned_processes')
         with tempfile.TemporaryDirectory() as root:
             base=Path(root).resolve();run=manifest('a'*32)
             leader=dict(pid=123,start_ticks=456,sid=123,uid=os.getuid(),state='S')
@@ -150,15 +152,15 @@ class SegmentAcceptanceTests(unittest.TestCase):
                 leader=leader,ledger={'123':leader},state='STOPPED',exit_code=0))))
             write(base/'logs/training-launch-claim.json',dict(run_id=run['run_id'],execution_id=run['execution_id'],
                 shell_pid=123,shell_start_ticks=456))
-            with patch('reproduction.a800.owned_processes.identity',return_value=leader):
+            with patch.object(owned,'identity',return_value=leader):
                 with self.assertRaises(AssertionError):verify_trainer_exit(base,run,terminal=True)
             # A reused PID is not the recorded trainer; a same-session survivor is.
-            with patch('reproduction.a800.owned_processes.identity',return_value=dict(leader,start_ticks=789)),patch.object(Path,'iterdir',return_value=iter([])):
+            with patch.object(owned,'identity',return_value=dict(leader,start_ticks=789)),patch.object(Path,'iterdir',return_value=iter([])):
                 self.assertTrue(verify_trainer_exit(base,run,terminal=True)['actual_trainer_exit_verified'])
             def current(pid):
                 if pid==123:raise FileNotFoundError()
                 return dict(leader,pid=987,start_ticks=100)
-            with patch('reproduction.a800.owned_processes.identity',side_effect=current),patch.object(Path,'iterdir',return_value=iter([Path('/proc/987')])):
+            with patch.object(owned,'identity',side_effect=current),patch.object(Path,'iterdir',return_value=iter([Path('/proc/987')])):
                 with self.assertRaises(AssertionError):verify_trainer_exit(base,run)
 
     def test_refresh_binds_actor_reference_rng_and_actual_next_head(self):
@@ -192,6 +194,24 @@ class SegmentAcceptanceTests(unittest.TestCase):
         before=refresh_isolation_snapshot(trainer);torch.rand(2);after=refresh_isolation_snapshot(trainer)
         self.assertEqual(before['actor'],after['actor']);self.assertEqual(before['reference'],after['reference'])
         self.assertNotEqual(before['driver_rng_sha256'],after['driver_rng_sha256'])
+
+    def test_terminal_refresh_isolation_uses_saved_head200_without_row201(self):
+        with tempfile.TemporaryDirectory() as root:
+            base=Path(root).resolve();run=manifest('a'*32)
+            before=dict(driver_rng_sha256='a'*64)
+            for role in ('actor','reference'):
+                keys=['parameters_sha256','gradients_sha256','module_modes_sha256','rng_sha256']
+                if role=='actor':keys+=['optimizer_sha256','scheduler_sha256','rollout_rng_sha256']
+                before[role]=[dict(rank=r,role=role,**{key:'b'*64 for key in keys}) for r in range(4)]
+            records=[dict(step=s,probe_version=f'head{(s-1)//10*10}') for s in range(1,201)]
+            for s in range(10,201,10):
+                write(base/f'logs/actor-probe-refresh-isolation-{s}.json',dict(
+                    accepted=True,step=s,version=f'head{s}',before=before,after=before))
+            states={'200':{'probe_version':'head200'}}
+            proof=verify_refresh_isolation(base,run,records,states)
+            self.assertEqual(len(proof),20);self.assertEqual(proof['200']['version'],'head200')
+            states['200']['probe_version']='head190'
+            with self.assertRaises(AssertionError):verify_refresh_isolation(base,run,records,states)
 
 
 if __name__=='__main__':unittest.main()

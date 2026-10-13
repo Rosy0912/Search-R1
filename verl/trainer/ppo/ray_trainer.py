@@ -1076,7 +1076,8 @@ class RayPPOTrainer(object):
                 from search_g1.actor_probe_contract import probe_rounds
                 refresh_steps = (probe_rounds(actor_probe_run) if actor_probe_run is not None
                                  else (50,100,150,200,250))
-                if self.global_steps in refresh_steps and self.global_steps + 1 < self.total_training_steps:
+                if self.global_steps in refresh_steps and (
+                        actor_probe_run is not None or self.global_steps + 1 < self.total_training_steps):
                     if actor_probe_run is not None and self.global_steps % 50 != 0:
                         # An immutable fitting export is distinct from a milestone
                         # full-state checkpoint. It never changes the actor.

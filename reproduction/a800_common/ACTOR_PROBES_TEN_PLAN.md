@@ -35,7 +35,7 @@ attempt, actual Adam-write count, row order and fixed dual-Head version.
 ## Refresh and iteration ordering
 
 Fit genuine official-fresh actor Heads atstep0. Do not reuse the predecessor's
-frozen-teacher initial admission. After complete10,20,...,190, fit the new pair
+frozen-teacher initial admission. After complete10,20,...,200, fit the new pair
 from an immutable export of the actor just completed, on admitted auxiliaryGPU6.
 The export supplies calibration generation/labels/features; production readouts
 remain on the current training actor. The live actor/reference/Adam are untouched.
@@ -55,7 +55,9 @@ when at least one Adam write returned; refresh when due; save model plus full
 resumable state when a milestone is due; then enter the next outer. At100, export
 actor100, refresh Head100, save checkpoint100 bound to that pair, then enter101
 with binary EM. After100 probe outputs are observations and cannot change the
-binary reward, advantage or masking. No terminal200 refresh is needed.
+binary reward, advantage or masking. Outer200 uses the fixed Head190; after
+COMPLETE200 fit Head200, verify refresh isolation, and save checkpoint200 with
+Head200. This final fit creates no formal iteration201 or extra GRPO update.
 
 ## Recipe and exact inputs
 

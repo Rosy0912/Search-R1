@@ -39,7 +39,11 @@ def retained_chain():
             origin=dict(completed_outer=start,actual_optimizer_writes=counter['start_writes'],
                 attempt_index=counter['start_attempt_index'],aborted_attempts=0)))
         segments.append(dict(identity=identity(run),base=base,first=start+1,last=counter['retained_through'],
-            counter_segment=counter,actual_interval_accepted=True))
+            counter_segment=counter,actual_interval_accepted=True,full_states={},refresh_isolation={}))
+    version=child['run_id']+':200:'+'7'*32
+    segments[-1]['full_states']['200']=dict(identity=identity(child),completed_outer=200,
+        probe_actor_step=200,completed_outer_reward_head_round=190,probe_version=version)
+    segments[-1]['refresh_isolation']['200']={'version':version}
     return entries,segments
 
 
@@ -122,7 +126,20 @@ class CalibrationAcceptanceTests(unittest.TestCase):
         self.assertEqual(owners[50],entries[0]['run']['run_id'])
         self.assertEqual(owners[60],entries[1]['run']['run_id'])
         self.assertEqual(namespaces[(entries[1]['run']['run_id'],50)],versions[50])
-        self.assertEqual(len(versions),20);self.assertEqual((entries,segments),before)
+        self.assertEqual(owners[200],entries[-1]['run']['run_id'])
+        self.assertEqual(namespaces[(owners[200],200)],versions[200])
+        self.assertEqual(len(versions),21);self.assertEqual((entries,segments),before)
+
+    def test_terminal_pair_requires_saved200_owner_and_actual_isolation_binding(self):
+        for kind in ('missing_state','wrong_owner','old_head','wrong_isolation','missing_isolation'):
+            entries,segments=retained_chain();terminal=segments[-1]
+            if kind=='missing_state':terminal['full_states'].clear()
+            elif kind=='wrong_owner':terminal['full_states']['200']['identity']=segments[0]['identity']
+            elif kind=='old_head':terminal['full_states']['200']['probe_actor_step']=190
+            elif kind=='wrong_isolation':terminal['refresh_isolation']['200']['version']='wrong-version'
+            else:terminal['refresh_isolation'].clear()
+            with self.subTest(kind=kind),self.assertRaises((AssertionError,KeyError)):
+                select_versions(entries,segments)
 
     def test_changed_within_outer_window_and_child_refit_of_parent_boundary_rejected(self):
         for kind in ('mid_window','wrong_owner','actor_counter'):
@@ -146,6 +163,30 @@ class CalibrationAcceptanceTests(unittest.TestCase):
                 target=Path(manifest['commit']);target.write_text('{"fixture":"tampered classifier"}')
                 with self.assertRaises(Exception):verify_original(base,run,path,0,manifest['version'])
                 self.assertEqual(arrays.call_count,1)
+
+    def test_terminal_original_fit_revalidates_real_encoder_bytes_without_row201(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,run,manifest,oldpath=original_fixture(root)
+            run['checkpoint_dir']=str(base/'checkpoints')
+            encoder=base/'checkpoints/actor/global_step_200';encoder.mkdir(parents=True)
+            (encoder/'config.json').write_bytes((Path(run['initial_model'])/'config.json').read_bytes())
+            write(encoder/'complete.json',dict(run_id=run['run_id'],step=200,
+                checkpoint=str(encoder),finite_all_saved_tensors=True,files_sha256=run['initial_model_sha256']))
+            archive=base/'artifacts'/('round_200-attempt-'+'9'*32)
+            oldpath.parent.rename(archive);path=archive/'version-manifest.json'
+            manifest.update(version=run['run_id']+':200:'+'7'*32,round=200,actor_step=200,encoder=str(encoder))
+            for key in ('commit','boundary'):manifest[key]=str(archive/'heads'/Path(manifest[key]).name)
+            write(path,manifest)
+            with ExitStack() as stack:
+                stack.enter_context(patch('reproduction.common8.adopt_initial_probes._calibration_arrays'))
+                stack.enter_context(patch('reproduction.common8.adopt_initial_probes._fitted_heads'))
+                stack.enter_context(patch('reproduction.common8.actor_probe_head_service.load_heads'))
+                stack.enter_context(patch('reproduction.common8.verify_full.checkpoint_tokenizer_hashes',return_value={}))
+                actual,proof=verify_original(base,run,path,200,manifest['version'])
+                self.assertEqual(actual['actor_step'],200)
+                self.assertEqual(proof['round'],200)
+                (encoder/'config.json').write_text('{"fixture":"changed terminal export"}')
+                with self.assertRaises(AssertionError):verify_original(base,run,path,200,manifest['version'])
 
     def test_changed_encoder_namespace_or_initial_archive_hash_rejected(self):
         for kind in ('encoder','archive_sha','rebound_original'):

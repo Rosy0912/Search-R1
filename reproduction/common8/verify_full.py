@@ -183,8 +183,8 @@ def verify_full(base):
             checkpoint_state = verify_full_state(base, run, step, load_optimizer=True)
             full_states[str(step)] = checkpoint_state
             if step == 5: verify_roundtrip_receipt(base, run, checkpoint_state)
-            next_record = records[min(step, 199)]
-            assert checkpoint_state['probe_version'] == next_record['probe_version']
+            if step < 200:
+                assert checkpoint_state['probe_version'] == records[step]['probe_version']
         from reproduction.common8.actor_probe_segment_acceptance import verify_refresh_isolation
         verify_refresh_isolation(base,run,records,full_states)
     from reproduction.common8.behavior_runtime import read_gate_receipt, verify_write_receipt_links
@@ -236,14 +236,22 @@ def verify_full(base):
             archived[live['version']]=live
             archived_paths[live['version']]=path
     versions={}
-    from search_g1.actor_probe_contract import actor_probes, probe_rounds, validate_version
+    from search_g1.actor_probe_contract import actor_probes, probe_rounds, validate_fitted_version
     interval = run.get('probe_refresh_interval', 50)
     for round_id in probe_rounds(run):
-        adopted={r['probe_version'] for r in records if round_id<r['step']<=round_id+interval}
-        assert len(adopted)==1
-        live=archived[adopted.pop()];assert live['round']==round_id
+        if actor_probes(run) and round_id == 200:
+            version = full_states['200']['probe_version']
+        else:
+            adopted={r['probe_version'] for r in records if round_id<r['step']<=round_id+interval}
+            assert len(adopted)==1
+            version = adopted.pop()
+        live=archived[version];assert live['round']==round_id
         if actor_probes(run):
-            validate_version(run, live, round_id + 1)
+            validate_fitted_version(run, live)
+            if round_id == 200:
+                saved=json.loads((Path(run['checkpoint_dir'])/'actor/global_step_200/probe-state/version-manifest.json').read_text())
+                assert {k:v for k,v in saved.items() if k not in ('commit','boundary')} == \
+                    {k:v for k,v in live.items() if k not in ('commit','boundary')}
             for record in (r for r in records if round_id < r['step'] <= round_id + interval):
                 binding = record['probe_actor_binding']
                 assert binding['run_id'] == run['run_id'] and binding['execution_id'] == run['execution_id']

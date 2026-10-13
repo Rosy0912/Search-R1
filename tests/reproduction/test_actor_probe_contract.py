@@ -1,6 +1,7 @@
 import unittest
 
-from search_g1.actor_probe_contract import MODE, actor_probes, experiment_fields, head_round, probe_rounds, validate_version
+from search_g1.actor_probe_contract import (MODE, actor_probes, experiment_fields, head_round, probe_rounds,
+    validate_version, checkpoint_head_round, validate_fitted_version, validate_checkpoint_version)
 from search_g1.reward_schedule import ACTOR_PROBE_SCHEDULE, SCHEDULE, binary_phase, reward_boundary, scheduled_score
 
 
@@ -23,8 +24,24 @@ class ActorProbeContractTests(unittest.TestCase):
         run = run_binding()
         self.assertTrue(actor_probes(run))
         self.assertEqual([head_round(i) for i in (10,11,100,101,200)], [0,10,90,100,190])
-        self.assertEqual(probe_rounds(run), tuple(range(0, 200, 10)))
+        self.assertEqual(probe_rounds(run), tuple(range(0, 201, 10)))
         self.assertEqual(probe_rounds({}), (0, 50, 100, 150))
+
+    def test_post_complete200_head_is_saved_but_never_predicts_a_formal201(self):
+        run = run_binding()
+        def version(step):
+            return dict(run_id='new', version=f'v{step}', round=step, actor_step=step,
+                representation_source=MODE, calibration_data_sha256='training-only')
+        self.assertEqual(validate_version(run,version(190),200),version(190))
+        self.assertEqual(validate_fitted_version(run,version(200)),version(200))
+        self.assertEqual(validate_checkpoint_version(run,version(200),200),version(200))
+        self.assertEqual([checkpoint_head_round(i) for i in (0,5,50,100,150,200)], [0,0,50,100,150,200])
+        for head,logical in ((200,200),(200,201),(190,201)):
+            with self.subTest(head=head,logical=logical),self.assertRaises(ValueError):
+                validate_version(run,version(head),logical)
+        with self.assertRaises(ValueError):validate_checkpoint_version(run,version(190),200)
+        for step in (True,-1,201):
+            with self.assertRaises(ValueError):checkpoint_head_round(step)
 
     def test_partial_and_shared_head_contracts_fail_closed(self):
         for key in ('probe_representation_source', 'probe_refresh_interval', 'probe_parameter_ownership'):

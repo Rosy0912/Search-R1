@@ -12,7 +12,7 @@ from pathlib import Path
 from reproduction.common8.actor_probe_rank_tail import _sealed_bytes
 from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
 from reproduction.common8.verify_data import digest
-from search_g1.actor_probe_contract import head_round, validate_version
+from search_g1.actor_probe_contract import head_round, checkpoint_head_round, validate_fitted_version
 from search_g1.actor_probe_recovery import identity
 
 
@@ -24,7 +24,7 @@ def _document(base, path):
 
 
 def select_versions(entries, segments):
-    """Choose the exact versions adopted by retained driver rows, not glob order."""
+    """Retained readouts plus the genuinely saved post-COMPLETE200 pair."""
     from reproduction.common8.actor_probe_chain import assemble_counter_chain
     assert len(entries) == len(segments)
     chain = assemble_counter_chain([s['counter_segment'] for s in segments],final_outer=200)
@@ -47,6 +47,18 @@ def select_versions(entries, segments):
             assert type(binding['completed_outer']) is int and binding['completed_outer'] == step-1
             assert type(binding['optimizer_writes']) is int and binding['optimizer_writes'] == row['optimizer_writes_before']
     assert set(versions) == set(range(0,200,10))
+    # Row200 still used Head190. Its owner's final checkpoint, rather than a
+    # fictitious row201, authenticates the pair fitted after COMPLETE200.
+    terminal_owner = chain['logical_owners'][200]
+    terminal = [s for s in segments if s['identity']['run_id'] == terminal_owner]
+    assert len(terminal) == 1 and terminal[0]['last'] == 200
+    state = terminal[0]['full_states']['200']
+    assert state['identity'] == terminal[0]['identity'] and state['completed_outer'] == 200
+    assert state['probe_actor_step'] == 200 and state['completed_outer_reward_head_round'] == 190
+    version = state['probe_version']
+    assert isinstance(version,str) and re.fullmatch(terminal_owner+':200:[0-9a-f]{32}',version)
+    assert terminal[0]['refresh_isolation']['200']['version'] == version
+    versions[200] = version; namespaces[(terminal_owner,200)] = version
     root = entries[0]['run']['run_id']
     owners = {round_id:root if round_id == 0 else chain['logical_owners'][round_id] for round_id in versions}
     assert all(version.startswith(owners[round_id]+':') for round_id,version in versions.items()), \
@@ -65,7 +77,7 @@ def verify_original(base, run, path, round_id, version):
     assert re.fullmatch('round_'+str(round_id)+'-attempt-[0-9a-f]{32}',path.parent.name)
     assert manifest['run_id'] == run['run_id'] and manifest['version'] == version
     assert manifest['round'] == round_id and 'restored_from' not in manifest and 'adoption_origin' not in manifest
-    verify_manifest(run,manifest,logical_update=round_id+1)
+    verify_manifest(run,manifest)
     assert manifest['fitting_input_semantics'] == 'immutable current-actor export; production features come from current actor RPC'
     assert manifest['fitted_state_semantics'] == 'serialized sklearn classifier/scaler parameters; no GRPO optimizer ownership'
     assert type(manifest['published_unix']) in (int,float) and math.isfinite(manifest['published_unix'])
@@ -171,12 +183,12 @@ def verify_calibration_chain(entries, segments):
         local[(entry['run']['run_id'],round_id)] = actual; rebound[entry['run']['run_id']] = proof
     for (run_id,round_id), version in namespaces.items():
         manifest = local[(run_id,round_id)]
-        validate_version(by_run[run_id]['run'],manifest,round_id+1)
+        validate_fitted_version(by_run[run_id]['run'],manifest)
         assert manifest['version'] == version
     for entry,segment in zip(entries,segments):
         run = entry['run']; base = Path(entry['base'])
         for step,state in segment['full_states'].items():
-            step = int(step); round_id = head_round(min(step+1,200))
+            step = int(step); round_id = checkpoint_head_round(step)
             manifest = local[(run['run_id'],round_id)]
             path = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'/'probe-state/version-manifest.json'
             saved, file = _document(base,path)
