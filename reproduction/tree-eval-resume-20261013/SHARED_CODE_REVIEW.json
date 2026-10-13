@@ -1,19 +1,19 @@
 {
   "status": "ACCEPTED",
   "review_status": "ACCEPTED",
-  "reviewed_at_utc": "2026-10-13T14:07:28.016912+00:00",
+  "reviewed_at_utc": "2026-10-13T14:16:09.303322+00:00",
   "review_scope": "Independent local static review of shared runtime delta and prior accepted evaluation pipeline; no remote actions by reviewer.",
   "files": {
     "bind_prefix.py": "d6dfb36c5fc2584108afb47f94c63171483cbc378de7d71e7f3f4bf24ff76bc1",
     "dispatch_once.py": "7f98759a94d95c2edf597f27cf4f1c9f3564eef7a5630342db8bdeb231f498fc",
     "eval_merge.py": "9159f0b2021a97cb4aa24bcfe8e67c08c6cafc44f7d567976aae8a851e1b205a",
-    "eval_worker.py": "c0c08710b19b67763522275833dbbc0e2cc160a55a0be3b42544e56e4488f99f",
+    "eval_worker.py": "906095da3e22b4f667fdb36cc635aa52bd8b0d968d116aeb3dcc59f4fda3fcea",
     "expected-gpu-uuids-retained18.json": "609e1a657db48b39d0548dd61dcbf3bcdfaf1b64d8a968a549f6d3cc71e361db",
     "guard.py": "3880e5d002d99c9647fbeeeff271e819de97b93c0972daa616eb1af33f594d02",
     "launch.sbatch": "0e7eed08ec524859900f51546e77dbd5be25fdc280de203006798523122cc789",
     "resource_guard_retained18.py": "4e86d373beb5c62424482efb9f4e6071c5d89d051c9e04b8630db95deed798c5",
     "salvage_cpython310_qa.py": "4345faaf6c24bd30d7599f68fd5e32ab30d37386cc925b6c877a766b686081b3",
-    "shared_dispatch_once.py": "f418a17d5dec73e6d1dc21286011fa71c9c0d8d57851adb2ff7293f5a7bbc891",
+    "shared_dispatch_once.py": "1ce83f0050665ac0bbb478e7ae714a45aee1bd33bb8d26cf3c52b7b575592f7d",
     "shared_guard.py": "b750ae444454106b002138b79e188769f46562bc95066e9dcfc488acb5740086",
     "shared_supervisor.py": "7c40dc60bdcf6659d54587ba32d04e05f86fc75d9674db8e2243606f777a45c4",
     "supervisor.py": "9ed4d2626a14d36a2a5213d52018aa03fcb099fb1674477df4b361b1b40665ea"
@@ -109,6 +109,21 @@
       "Both changed files AST syntax PASS",
       "Saved CPU semantic-alias proof and exact config SHA checks PASS",
       "Saved failed-worker cleanup evidence checks PASS"
+    ]
+  },
+  "repair5_review": {
+    "status": "ACCEPTED",
+    "scope": "Only TensorDict key iteration and exact cleaned failed7d28 retry delta; no remote execution.",
+    "checks": [
+      "batch.batch.keys() explicitly iterates tensor field names before long conversion; avoids TensorDict row iteration passing a TensorDict as an index. Original validation uses explicit batch.keys() iteration.",
+      "Scoring, native rollout, tokenizer, model/config/dataset identities, metrics, batch cardinality and publication remain unchanged.",
+      "Only known failed7d28 own unit added to predecessor allowlist and failed-worker cleanup verification; prior durable prefix/cancellation/terminal/no-active-job/oncejournal gates remain.",
+      "Saved SHARED_POLL_REPAIR4_3 confirms workerexit1/FAILED/cleanup{}; no committed score batch is discarded or reused incorrectly."
+    ],
+    "tests": [
+      "Both changed files AST syntax PASS",
+      "Explicit .keys() loop source check PASS",
+      "Saved failed-worker cleanup evidence check PASS"
     ]
   }
 }

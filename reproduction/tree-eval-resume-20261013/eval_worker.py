@@ -193,7 +193,7 @@ def main():
         search=SearchRollout(manager,context_alignment='error',token_preservation=config.baselines.tree.token_preservation)
         generated,_=search.run(prompts)
         batch=batch.union(generated)
-        for key in batch.batch:
+        for key in batch.batch.keys():
             batch.batch[key]=batch.batch[key].long()
         rows=batch_answer_metrics(batch,tokenizer)
         if len(rows) != len(indices):
