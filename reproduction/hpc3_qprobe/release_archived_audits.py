@@ -29,12 +29,19 @@ def reader_scan():
     """Only matching path names, never process arguments or environment secrets."""
     roots=(str(SOURCE),str(BUILD/'tmp'))
     out=dict(host=socket.gethostname().split('.')[0],uid=os.geteuid(),epoch=time.time(),
-             roots=list(roots),own_processes_inspected=0,readers=[],unknown=[])
+             roots=list(roots),own_processes_inspected=0,readers=[],unknown=[],zombies_without_address_space=[])
     for p in Path('/proc').iterdir():
         if not p.name.isdecimal():continue
         try:
             if p.stat().st_uid!=os.geteuid():continue
             out['own_processes_inspected']+=1
+            fields=(p/'stat').read_text().rsplit(')',1)[1].split()
+            # Linux has closed the file table before entering EXIT_ZOMBIE.
+            # Check the real kernel state and empty address space; do not waive
+            # permission errors for any still-running or unverified process.
+            if fields[0]=='Z' and int(fields[20])==0 and (p/'maps').read_text()=='':
+                out['zombies_without_address_space'].append(dict(pid=int(p.name),start_ticks=int(fields[19]),kernel_state='Z',vsize=0,empty_maps=True))
+                continue
             paths=[]
             for fd in (p/'fd').iterdir():
                 try:paths.append(os.readlink(str(fd)))
