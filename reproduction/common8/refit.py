@@ -58,6 +58,10 @@ with evaluator_gpu_lock():
    fitted_state_semantics='serialized sklearn classifier/scaler parameters; no GRPO optimizer ownership')
  payload['calibration_report_sha256']=digest(heads/'calibration-report.json')
  payload['dump_sha256']={p.name:digest(p) for p in sorted(dump.iterdir()) if p.is_file()}
- with (round_dir/'version-manifest.json').open('x') as f:json.dump(payload,f,indent=2)
- live=base/'artifacts/live';live.mkdir(exist_ok=True);tmp=live/'manifest.json.tmp';tmp.write_text(json.dumps(payload,indent=2));os.replace(tmp,live/'manifest.json')
+ if actor_probes(run):
+  from reproduction.common8.actor_probe_publication import publish_fitted_pair
+  publish_fitted_pair(base,run,round_dir,payload)
+ else:
+  with (round_dir/'version-manifest.json').open('x') as f:json.dump(payload,f,indent=2)
+  live=base/'artifacts/live';live.mkdir(exist_ok=True);tmp=live/'manifest.json.tmp';tmp.write_text(json.dumps(payload,indent=2));os.replace(tmp,live/'manifest.json')
  print('SEARCH_G1_BOTH_PROBES_FITTED='+version,flush=True)

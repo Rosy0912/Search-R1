@@ -44,7 +44,14 @@ and unchanged data hashes. Require finite fitted values, both classes, grouped
 held-out folds, typed evidence-deletion labels and genuine calibration arrays.
 
 Publish each candidate under a unique attempt directory. Durably write both
-Head files and their manifest before atomically switching the live pair. Keep
+Head files, report, calibration arrays/log, immutable actor export and its
+canonical receipt/tokenizer dependencies before atomically switching the pair.
+Sync newly created directories, atomically publish the exclusive original
+archive from a complete synced temporary file, then replace and sync the live
+manifest. Pre-commit failure preserves the old live selection. Failure after
+the live rename propagates with evidence; never claim rollback or continue
+training after a failed sync. Milestone full-state completion also syncs its
+canonical model receipt and checkpoint parents, including step5. Keep
 one fixed version throughout each outer. Preserve and compare driver RNG plus
 all four actor/reference parameters, gradients, modes and RNG; actor comparison
 also covers Adam/scheduler and both rollout RNG streams. A failed refresh must

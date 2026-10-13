@@ -59,8 +59,8 @@ def save_full_state(trainer, run, attempts, epoch, batch_index):
     fd = os.open(probe_dir, os.O_RDONLY | getattr(os, 'O_DIRECTORY', 0))
     try: os.fsync(fd)
     finally: os.close(fd)
-    for name in actor['files_sha256']:
-        with (directory/name).open('rb') as f: os.fsync(f.fileno())
+    from reproduction.common8.actor_probe_publication import sync_actor_export
+    sync_actor_export(base, run, step, directory)
     identity = {k: run[k] for k in ('run_id','execution_id','source_commit','execution_backend',
                                   'training_world_size','profile','slurm_job_id')}
     driver = durable_torch_save(driver_payload(trainer, run, attempts, epoch, batch_index, live),
