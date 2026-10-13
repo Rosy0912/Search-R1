@@ -8,6 +8,7 @@ FIELDS = frozenset((
     "head_learning_rate", "head_batch_size", "head_epochs_per_outer",
     "mean_loss_weight", "std_loss_weight", "replay_window_outer",
     "replay_half_life_outer", "head_hidden_size",
+    "bootstrap_max_groups_per_outer", "teacher_warmup_cache",
 ))
 
 

@@ -64,18 +64,23 @@ def _native_run():
     return base, run, job
 
 
-def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0):
+def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0,teacher_warmup=False):
     base, run, job = _native_run()
     count = len(parent_batch)
     assert type(logical_update) is int and logical_update >= 0
     assert repeats == (1 if validation else 5) and (validation or count == 512)
-    assert validation or logical_update >= 1
+    assert type(teacher_warmup) is bool
+    if teacher_warmup:
+        assert not validation and logical_update == 0 and run.get('question_probe', {}).get('teacher_warmup_cache')
+        assert run.get('completed_updates') == 0 and not run.get('full_state_restore')
+    else:
+        assert validation or logical_update >= 1
     parent_ids = []
     for index, group in enumerate(parent_batch.non_tensor_batch['index']):
         if hasattr(group, 'item'):
             group = group.item()
         parent_ids.append(str(index + candidate_offset) + '-' + document_sha256(group))
-    inline=run.get('policy_safety_mode')=='inline_first_five' and not validation
+    inline=run.get('policy_safety_mode')=='inline_first_five' and not validation and not teacher_warmup
     if inline:
         assert isinstance(attempt_id,str) and len(attempt_id)==32 and all(char in '0123456789abcdef' for char in attempt_id)
         assert type(attempt_index) is int and attempt_index>=1
@@ -89,6 +94,8 @@ def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,
     identity=dict(run_id=run['run_id'], source_sha256=run['source_sha256'], slurm_job_id=job,
                 logical_update=logical_update, policy_snapshot_id=snapshot,
                 parent_group_ids=parent_ids, trajectory_ids=ids, validation=validation)
+    if teacher_warmup:
+        identity.update(teacher_warmup=True, completed_training_outers=0)
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         identity.update(execution_backend='ssh_local', execution_id=run['execution_id'])
     if inline:identity.update(attempt_id=attempt_id,attempt_index=attempt_index)

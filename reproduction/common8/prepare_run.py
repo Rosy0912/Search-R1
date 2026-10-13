@@ -62,6 +62,10 @@ def derive_calibration(base):
 
 
 def verify_model(model, official_path):
+    official=json.loads(Path(official_path).read_text())
+    if official.get('format') == 'hpc3-official-qwen-aa8e725-nine-files-v1':
+        from reproduction.hpc3_qprobe.model_manifest import verify as verify_hpc3_model
+        return verify_hpc3_model(model, official)
     assert digest(official_path)==OFFICIAL_MANIFEST_SHA
     official=json.loads(official_path.read_text())
     assert official['repo']=='Qwen/Qwen2.5-3B-Instruct'

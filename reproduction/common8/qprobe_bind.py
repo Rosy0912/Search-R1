@@ -11,7 +11,7 @@ from reproduction.common8.source_files import runtime_files
 
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
-         initial_head_checkpoint=None, seed=20261013):
+         initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -38,14 +38,21 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     features.verify_all()
     if features.manifest['count'] != 169028 or features.spec.get('train_parquet_sha256') != run['input_sha256']['train.parquet']:
         raise ValueError("Question feature cache does not cover the verified canonical training artifact")
-    head_config = QProbeConfig(seed=seed)
+    if teacher_warmup_cache and initial_head_checkpoint:
+        raise ValueError('Teacher warmup and historical initial head are distinct initialization routes')
+    head_config = QProbeConfig(seed=seed, bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512)
     settings = dict(cache_dir=str(cache), output_dir=str(base / "artifacts/question-probe"),
                     candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, exploration_questions=exploration_questions,
                     seed=seed)
     settings.update({("head_hidden_size" if key == "hidden_size" else key): value
                      for key,value in asdict(head_config).items()
-                     if key != "bootstrap_max_groups_per_outer"})
+                     if key != "bootstrap_max_groups_per_outer" or teacher_warmup_cache})
+    if teacher_warmup_cache:
+        path = Path(teacher_warmup_cache)
+        if not path.is_absolute() or not str(path.resolve()).startswith(('/data/', '/mnt/', '/backup/')):
+            raise ValueError('Teacher warmup cache must reside on explicit remote storage')
+        settings['teacher_warmup_cache'] = str(path.resolve())
     if initial_head_checkpoint:
         initial_path = Path(initial_head_checkpoint).resolve()
         head = OnlineQProbe.load(initial_path, expected_feature_spec_sha=features.spec_sha)
@@ -90,10 +97,12 @@ def main():
     parser.add_argument("--retriever-version", required=True)
     parser.add_argument("--initial-head-checkpoint")
     parser.add_argument("--seed", type=int, default=20261013)
+    parser.add_argument('--teacher-warmup-cache')
     args = parser.parse_args()
     run = bind(args.base, args.cache_dir, exploration_questions=args.exploration_questions,
                retriever_version=args.retriever_version,
-               initial_head_checkpoint=args.initial_head_checkpoint, seed=args.seed)
+               initial_head_checkpoint=args.initial_head_checkpoint, seed=args.seed,
+               teacher_warmup_cache=args.teacher_warmup_cache)
     print(json.dumps({"run_id": run["run_id"], "selection_mode": "question_probe",
                       "question_probe": run["question_probe"], "training_started": False}))
 

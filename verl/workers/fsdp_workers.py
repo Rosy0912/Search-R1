@@ -634,6 +634,18 @@ class ActorRolloutRefWorker(Worker):
         return capture_worker(self,directory,checkpoint=checkpoint)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def capture_frozen_teacher_boundary(self, directory):
+        assert self._is_actor and self._is_rollout
+        from search_g1.qprobe_teacher_worker import capture
+        return capture(self, directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def restore_frozen_teacher_rng(self, directory):
+        assert self._is_actor and self._is_rollout
+        from search_g1.qprobe_teacher_worker import restore_rng
+        return restore_rng(self, directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def restore_mixed_full_state(self, receipt_path):
         assert self._is_actor and self._is_rollout
         from search_g1.full_state_restore import restore_worker

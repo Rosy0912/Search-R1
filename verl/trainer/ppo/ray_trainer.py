@@ -895,6 +895,9 @@ class RayPPOTrainer(object):
                     self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
+                if continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
+                    from search_g1.qprobe_warmup import run as teacher_warmup
+                    teacher_warmup(self, generation_manager, self.qprobe_runtime, mixed_stream)
 
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):

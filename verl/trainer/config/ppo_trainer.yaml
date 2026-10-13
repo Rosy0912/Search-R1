@@ -34,6 +34,8 @@ question_probe:
   std_loss_weight: 0.1
   replay_window_outer: 16
   replay_half_life_outer: 4
+  bootstrap_max_groups_per_outer: 512
+  teacher_warmup_cache: null
 
 actor_rollout_ref:
   hybrid_engine: True
