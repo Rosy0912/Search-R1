@@ -1,0 +1,19 @@
+{
+  "epoch": 1791915458.299403,
+  "status": "OWN_BOOTSTRAP_EXIT_BEFORE_TRAINING",
+  "source_commit": "eb6a69e47163b179b20b66cf4992c0d5e152ea6c",
+  "systemd": "MainPID=0\nResult=exit-code\nExecMainStatus=1\nControlGroup=\nCPUUsageNSec=482013000\nActiveState=failed\nSubState=failed\nInvocationID=2eef4e49c45b47458dfea646ee1b5886\n",
+  "journal": "Started /dataset/shaoshitong/search-r1-rl/tree-grpo/env/bin/python /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/shared_launch.py.\nTraceback (most recent call last):\n  File \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/supervisor.py\", line 328, in <module>\n    if os.environ.get('TREE_SHARED_TRAINING_MODE')=='1':shared_accounted_entry()\n  File \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/supervisor.py\", line 283, in shared_accounted_entry\n    try:main()\n  File \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/supervisor.py\", line 84, in main\n    native_resume=install_package_environment(PACKAGE)\n  File \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/source/repo/search_r1/baselines/tree_nested_chain_resume.py\", line 121, in install_package_environment\n    failed_terminal_evidence()\n  File \"/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/source/repo/search_r1/baselines/tree_nested_chain_resume.py\", line 240, in failed_terminal_evidence\n    and terminal['code_commit'] == PARENT_COMMIT and terminal['own_cgroup_live_residual_empty'] is True\nKeyError: 'own_cgroup_live_residual_empty'\nsst-tree-nested-branch-fresh200-eb6a69e4.service: Main process exited, code=exited, status=1/FAILURE\nsst-tree-nested-branch-fresh200-eb6a69e4.service: Failed with result 'exit-code'.\n",
+  "actual_own_cgroup_exists": false,
+  "own_cgroup_populated": false,
+  "child_run_created": false,
+  "native_load_attempted": false,
+  "training_outer_started": false,
+  "last_confirmed_chain_outer": 5,
+  "last_confirmed_adam_per_rank": 100,
+  "foreign_jobs_modified": false,
+  "ports": "",
+  "gpu_compute_apps": "",
+  "snapshot_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/candidates/nested-branch-fresh200-eb6a69e47163b179b20b66cf4992c0d5e152ea6c/bootstrap-fault.json",
+  "snapshot_sha256": "bb6d682432f93802253d16fe01c9ec1d1eb990b3c24502232d2f833d1e18853d"
+}
