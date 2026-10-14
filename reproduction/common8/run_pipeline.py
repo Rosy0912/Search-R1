@@ -110,6 +110,9 @@ class Pipeline:
                       C_INCLUDE_PATH=include,
                       NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost')
         for key in ('PYTHONHOME','RAY_ADDRESS','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):self.env.pop(key,None)
+        if run.get('execution_site')=='hpc3':
+            from reproduction.hpc3_qprobe.native_jit import prepare as prepare_node_jit
+            self.env.update(prepare_node_jit(base,run))
     def stage(self,name,**extra):publish(self.base/'logs/pipeline-status.json',dict(run_id=self.run['run_id'],stage=name,unix=time.time(),**extra))
     def sample(self):
         path=self.base/'logs'/('gpu-samples-'+self.run['run_id']+'.jsonl')

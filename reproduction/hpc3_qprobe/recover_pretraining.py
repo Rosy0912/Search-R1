@@ -32,15 +32,16 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job!='717607':raise ValueError('Only the two actually observed pretraining failures are supported')
+    if job not in ('717607','717637'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717554-20261014')
-    TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014')
-    FAILED_COMMIT='1552de146c2dd44e4fd40eb94b27839ac8648ef1'
+    parent='717554' if job=='717607' else '717607'
+    FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
+    TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
+    FAILED_COMMIT='1552de146c2dd44e4fd40eb94b27839ac8648ef1' if job=='717607' else 'f30895d421e190bdb13334e9ad6f718cb394d787'
 
 
 def diagnostic_gate(commit):
-    if JOB!='717607':return None
+    if JOB not in ('717607','717637'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -98,12 +99,27 @@ def terminal():
     run=json.loads((FAILED/'logs/run-manifest.json').read_text())
     if run['source_commit']!=FAILED_COMMIT or run['completed_updates']!=0 or run['training_world_size']!=4:
         raise ValueError('Actual failed run differs or already trained')
-    for name in ('process-ledger.json','native-allocation-admission.json','training-launch-claim.json',
-                 'pipeline-status.json','search-g1-common8-training.log'):
+    forbidden=['training-launch-claim.json','search-g1-common8-training.log','model-smoke-initial.log',
+               'actual-updates.jsonl','actual-attempts.jsonl']
+    if JOB!='717637':forbidden+=['process-ledger.json','native-allocation-admission.json','pipeline-status.json']
+    for name in forbidden:
         if (FAILED/'logs'/name).exists():raise ValueError('Pipeline work already claimed; use full-state recovery instead')
+    if JOB=='717637':
+        cleanup=json.loads((FAILED/'logs/cleanup-status.json').read_text())
+        ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
+        stage=json.loads((FAILED/'logs/pipeline-status.json').read_text())
+        if cleanup['cleaned'] is not True or cleanup['run_id']!=run['run_id'] or ledger['run_id']!=run['run_id']:
+            raise ValueError('Actual own synthetic preflight cleanup not accepted')
+        if set(ledger['jobs'])!={'gpu-preflight'} or ledger['jobs']['gpu-preflight']['state']!='STOPPED':
+            raise ValueError('Other pipeline work or live owned process exists')
+        if stage['stage']!='FAILED' or stage['error']!="AssertionError('gpu-preflight failed; see project log')":
+            raise ValueError('Not the observed synthetic compilation failure')
+        preflight=(FAILED/'logs/gpu-preflight.log').read_text()
+        if 'FileNotFoundError' not in preflight or '/cache/triton/' not in preflight:
+            raise ValueError('Actual shared-cache compilation failure absent')
     log=FAILED/'logs'/('training-'+JOB+'.log')
     text=log.read_text()
-    known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text)
+    known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else ('gpu-preflight failed' in text if JOB=='717637' else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text))
     if not known:
         raise ValueError('Known actual allocation failure absent')
     for name,record in preserved['files'].items():
@@ -180,6 +196,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)
