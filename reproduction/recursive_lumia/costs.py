@@ -52,12 +52,21 @@ def collect(entries):
     if set(jobs) != set(ids): raise ValueError('Scheduler evidence does not cover all declared jobs')
     rows=[]
     for entry in entries:
-        row=dict(entry, scheduler=jobs[str(entry['job'])], tokens=action_costs(entry.get('log')))
-        state=jobs[str(entry['job'])]['state']
+        scheduler=jobs[str(entry['job'])]
+        state=scheduler['state'];log=entry.get('log')
+        # A dependent job has no stdout file until Slurm starts its batch
+        # process. This is verified zero work only for an unallocated,
+        # zero-runtime pending job; a missing running/terminal log is an error.
+        unstarted=(state=='PENDING' and scheduler['elapsed_seconds']==0
+            and scheduler['allocated_gpus']==0 and log is not None and not Path(log).exists())
+        tokens=(dict(log=log,recorded_actions=0,failed_actions=0,totals={},
+            scope='Scheduler confirms pending, zero elapsed time and no allocated GPUs; log not created yet.',
+            interrupted_or_inflight_action_may_be_unrecorded=False) if unstarted else action_costs(log))
+        row=dict(entry, scheduler=scheduler, tokens=tokens)
         if row['tokens'] is not None:
             # Exit0 is needed for an exhaustive process ledger. A live or
             # cancelled process may have emitted an unfinished action's tokens.
-            row['tokens']['interrupted_or_inflight_action_may_be_unrecorded']=(state != 'COMPLETED')
+            row['tokens']['interrupted_or_inflight_action_may_be_unrecorded']=(state != 'COMPLETED' and not unstarted)
         rows.append(row)
     return dict(at=time.time(), entries=rows,
         allocated_gpu_hours=sum(row['scheduler']['allocated_gpu_hours'] for row in rows),

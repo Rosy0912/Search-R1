@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from .costs import action_costs,scheduler_costs
+from unittest.mock import patch
+from .costs import action_costs,scheduler_costs,collect
 
 
 class CostEvidenceTest(unittest.TestCase):
@@ -23,6 +24,18 @@ class CostEvidenceTest(unittest.TestCase):
         result=scheduler_costs('1|RUNNING|3600|cpu=64,gres/gpu=8,gres/gpu:a100=8|\n2|COMPLETED|7200|cpu=48,mem=240G|\n')
         self.assertEqual(result['1']['allocated_gpu_hours'],8.)
         self.assertEqual(result['2']['allocated_gpu_hours'],0.)
+
+    def test_pending_dependency_without_stdout_is_zero_work(self):
+        with tempfile.TemporaryDirectory() as directory:
+            entries=[dict(label='queued',job='3',log=str(Path(directory)/'not-started.log'))]
+            with patch('subprocess.check_output',return_value='3|PENDING|0||\n'):
+                result=collect(entries)
+            self.assertEqual(result['allocated_gpu_hours'],0)
+            self.assertEqual(result['recorded_raw_emitted_tokens'],0)
+            self.assertFalse(result['token_total_is_lower_bound'])
+            for state in ('RUNNING','COMPLETED','FAILED'):
+                with patch('subprocess.check_output',return_value=f'3|{state}|10|gres/gpu=8|\n'):
+                    with self.assertRaises(FileNotFoundError):collect(entries)
 
 
 if __name__=='__main__':unittest.main()
