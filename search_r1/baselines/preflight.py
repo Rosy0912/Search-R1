@@ -148,9 +148,14 @@ def validate_assets_and_retriever(config):
             raise RuntimeError('Private retriever not ready or another phase still active')
         print('BASELINE_RETRIEVER_READY_GPU_ALLOCATION_DEFERRED_TO_SAMPLING',flush=True)
         return
+    # The task-owned Lumia CPU service serializes full-index batches. A
+    # concurrent run's preflight may wait behind a legitimate batch; retain
+    # every response/content check while allowing that bounded queue delay.
+    read_timeout = 600 if (os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia'
+                          and os.environ.get('RECURSIVE_A_LUMIA_FRESH_PROFILE') == '1') else 30
     response = requests.post(config.retriever.url,
                              json={'queries': ['What is the capital of France?'], 'topk': count,
-                                   'return_scores': True}, timeout=(5, 30))
+                                   'return_scores': True}, timeout=(5, read_timeout))
     response.raise_for_status()
     payload = response.json()
     results = payload.get('result') if isinstance(payload, dict) else None
