@@ -24,6 +24,11 @@ def check_local_runtime(config, ray_nodes=None):
             raise ValueError('Direct HKUST runtime identity changed')
         from .preflight import validate_inherited_gpu_leases
         validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
+    elif os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia':
+        aliases = {'node10': 'gpu-l40s-1', 'node11': 'gpu-l40s-2'}
+        if (os.getuid() != 1066 or not os.environ.get('SLURM_JOB_ID')
+                or aliases.get(os.environ.get('SLURM_JOB_NODELIST')) != expected):
+            raise ValueError('Lumia runtime does not match its allocated physical host')
     elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):
         raise ValueError('Local runtime requires the matching Slurm allocation')
     parsed = urlparse(config.retriever.url)

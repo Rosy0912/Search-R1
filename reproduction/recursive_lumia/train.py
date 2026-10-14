@@ -11,8 +11,9 @@ def main():
     from omegaconf import OmegaConf
     base=Path(sys.argv[1]).resolve();arm=sys.argv[2];run=base/'runs'/arm
     r=json.loads((run/'receipts/configuration.json').read_text())
-    assert os.environ.get('SLURM_JOB_ID') and os.environ['SLURM_JOB_NODELIST']==r['host']==socket.gethostname().split('.')[0]
-    assert r['host'] in ('node10','node11') and os.getuid()==1066
+    aliases={'node10':'gpu-l40s-1','node11':'gpu-l40s-2'}
+    assert os.environ.get('SLURM_JOB_ID') and aliases.get(os.environ['SLURM_JOB_NODELIST'])==r['host']==socket.gethostname().split('.')[0]
+    assert os.getuid()==1066
     assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']
     assert not (run/'output/fresh-initialization.json').exists()
     out=run/'output'
@@ -25,6 +26,8 @@ def main():
         TREE_COMMON_DATA=r['data'],TREE_INSTRUCT_MODEL=r['model'],RECURSIVE_A_LUMIA_FRESH_PROFILE='1',
         RECURSIVE_A_OMIT_FULL_BETA='1',RECURSIVE_A_GUARD_ROUND_PROGRESS='1',
         TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',RECURSIVE_A_SPARSE_DETAILS='1')
+    from release.recursive_bran_a.h100_migration.ray_cli_compat import prepare_click
+    prepare_click()
     import ray
     ctx=ray.init(address='local',num_gpus=8,num_cpus=64,include_dashboard=False,
         object_store_memory=8*1024**3,_node_ip_address='127.0.0.1',
