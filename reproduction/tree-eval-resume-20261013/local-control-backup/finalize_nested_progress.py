@@ -18,6 +18,63 @@ DEPENDENCY_SHA = '020bec1d2f1f06aa2149ad5cc1d1c72f41567c3b8cd10de10193b9a7d1a964
 need = core.need
 
 
+def expand_cost_fields(costs, cost_pin, bound):
+    """Rebuild only explicitly split top-level fields, retaining the root pin."""
+    decoded = copy.deepcopy(costs)
+    pins = []
+    root = Path(cost_pin['path']).parent
+    blocks = (root/'cumulative_cost_blocks').resolve()
+    need(blocks.is_relative_to(root.resolve()), 'Cost blocks resolve outside root directory', 'REJECTED_INPUT_NO_WRITE')
+
+    def unique_mapping(pairs):
+        value = {}
+        for key, item in pairs:
+            need(key not in value, 'Duplicate JSON key in cost field part', 'REJECTED_INPUT_NO_WRITE')
+            value[key] = item
+        return value
+
+    for field, descriptor in costs.items():
+        if not isinstance(descriptor, dict) or descriptor.get('storage') != 'complete_original_field_parts':
+            continue
+        kind = descriptor.get('container_type');entries = descriptor.get('original_entries')
+        parts = descriptor.get('parts')
+        need(kind in ('mapping', 'list') and type(entries) is int and entries >= 0
+             and isinstance(parts, list) and (parts or entries == 0),
+             'Invalid split cost field descriptor: ' + field, 'REJECTED_INPUT_NO_WRITE')
+        restored = {} if kind == 'mapping' else []
+        for index, part_descriptor in enumerate(parts):
+            need(isinstance(part_descriptor, dict) and isinstance(part_descriptor.get('file'), str)
+                 and core.sha64(part_descriptor.get('sha256'))
+                 and type(part_descriptor.get('bytes')) is int and part_descriptor['bytes'] > 0
+                 and part_descriptor.get('json_selector') == 'value',
+                 'Invalid cost field part descriptor: ' + field, 'REJECTED_INPUT_NO_WRITE')
+            relative = Path(part_descriptor['file'])
+            need(not relative.is_absolute() and '..' not in relative.parts
+                 and len(relative.parts) > 1 and relative.parts[0] == 'cumulative_cost_blocks',
+                 'Cost field part path outside blocks: ' + field, 'REJECTED_INPUT_NO_WRITE')
+            path = (root/relative).resolve()
+            need(path.is_relative_to(blocks) and path.suffix == '.json',
+                 'Resolved cost field part outside blocks: ' + field, 'REJECTED_INPUT_NO_WRITE')
+            _, pin = bound(dict(file=str(path), sha256=part_descriptor['sha256'], bytes=part_descriptor['bytes']))
+            need(Path(pin['path']).is_relative_to(blocks), 'Held cost field part outside blocks', 'REJECTED_INPUT_NO_WRITE')
+            raw = Path(pin['path']).read_bytes()
+            need(core.digest(raw) == pin['sha256'], 'Cost field part changed during readback', 'CONCURRENT_UPDATE_NO_WRITE')
+            part = json.loads(raw, object_pairs_hook=unique_mapping)
+            value = part.get('value')
+            need(part.get('schema') == 'cumulative_scalar_field_part_v1' and part.get('original_field') == field
+                 and isinstance(value, dict if kind == 'mapping' else list),
+                 'Cost field part schema/field/container differs: ' + field, 'REJECTED_INPUT_NO_WRITE')
+            if kind == 'mapping':
+                need(not (restored.keys() & value.keys()), 'Duplicate mapping key across cost field parts', 'REJECTED_INPUT_NO_WRITE')
+                restored.update(value)
+            else:
+                restored.extend(value)
+            pins.append(dict(pin, original_field=field, part_index=index, json_selector='value'))
+        need(len(restored) == entries, 'Split cost field entry count differs: ' + field, 'REJECTED_INPUT_NO_WRITE')
+        decoded[field] = restored
+    return decoded, pins
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workspace', type=Path, default=Path.cwd())
@@ -102,6 +159,7 @@ def main():
         next_outer, final = None, core.final_phase(second, resource2, active)
 
     costs, cost_pin = read(args.cost_through or base/f'CUMULATIVE_COST_THROUGH{n}.json')
+    costs, cost_field_part_pins = expand_cost_fields(costs, cost_pin, bound)
     candidate, candidate_pin = read(args.candidate or base/f'CANDIDATE_COST_EXTENSION_OUTER{n:04d}.json')
     rates, rates_pin = read(args.rates or base/f'BRANCH_FALLBACK_RATES_OUTER{n:04d}.json')
     registry, registry_pin = read(args.registry or base/'CANDIDATE_COST_EXTENSION_INPUTS.json')
@@ -165,7 +223,8 @@ def main():
         native_manifest_sha256=native['manifest_sha256'],successful_adam_per_rank=completed,
         current_dev512=actual_dev,latest_dev_outer=latest_scores['outer'],latest_actual_dev512_scores=latest_scores,
         current_full_outer_seconds=wall,current_dev_seconds=dev_seconds,current_training_archive_seconds_excluding_dev=ordinary,
-        current_training_variances=variances,cumulative_cost=cost_pin,candidate_index=candidate_pin,
+        current_training_variances=variances,cumulative_cost=cost_pin,cumulative_cost_field_parts=cost_field_part_pins,
+        candidate_index=candidate_pin,
         candidate_current_supplement=part_pin,current_branch_fallback_rates=rates_pin,candidate_registry=registry_pin,
         candidate_cost_join_scope=rates.get('cumulative_boundary'),attachments=attachments,final_phase_evidence=final,
         original_validator_sha256=ORIGINAL_VALIDATOR_SHA,current_validator_dependency_sha256=DEPENDENCY_SHA,
