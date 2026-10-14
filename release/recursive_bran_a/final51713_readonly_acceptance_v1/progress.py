@@ -34,6 +34,9 @@ def main():
     scoped_scoring = BASE/'final51713-scoped-scoring-v1'
     if (scoped_scoring/'evaluation-launch.json').exists():
         CONTROL = scoped_scoring
+    batch1024 = BASE/'final51713-batch1024-v1'
+    if (batch1024/'evaluation-launch.json').exists():
+        CONTROL = batch1024
     plan = load(CONTROL / 'execution-plan.json')
     launch = load(CONTROL / 'evaluation-launch.json')
     terminal = load(CONTROL / 'evaluation-actual-exit.json')

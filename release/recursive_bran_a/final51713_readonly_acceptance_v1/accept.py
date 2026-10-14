@@ -76,6 +76,9 @@ def audit(base=BASE):
     scoped_scoring = base/'final51713-scoped-scoring-v1'
     if (scoped_scoring/'evaluation-launch.json').exists():
         folder = scoped_scoring
+    batch1024 = base/'final51713-batch1024-v1'
+    if (batch1024/'evaluation-launch.json').exists():
+        folder = batch1024
     plan_path = folder / 'execution-plan.json'
     exit_path = folder / 'evaluation-actual-exit.json'
     if not plan_path.exists() or not exit_path.exists():
@@ -101,7 +104,10 @@ def audit(base=BASE):
     output = Path(plan['output'])
     summary = load(output / 'summary.json')
     assert summary['status'] == 'COMPLETE' and summary['count'] == 51713
-    assert summary['workers'] == 8 and summary['batch_size'] == 512
+    runtime_path = folder/'runtime-recovery.json'
+    runtime = load(runtime_path) if runtime_path.exists() else {}
+    expected_batch = runtime.get('global_batch',512)
+    assert summary['workers'] == 8 and summary['batch_size'] == expected_batch
     assert summary['checkpoint_sha'] == plan['checkpoint_manifest_sha256']
     rows_path = output / 'question-metrics.jsonl'
     assert sha(rows_path) == summary['question_metrics_sha']
@@ -146,7 +152,7 @@ def audit(base=BASE):
     # The worker hook measures each action RPC, including further search turns
     # and shrinking active tails. There are at least 102 initial batch RPCs;
     # exactly 102 would incorrectly reject ordinary multi-turn evaluation.
-    remaining_batches=math.ceil((51713-plan.get('resume_count',0))/512)
+    remaining_batches=math.ceil((51713-plan.get('resume_count',0))/expected_batch)
     assert all(w['calls'] >= remaining_batches for w in workers.values()), 'All eight workers must cover remaining batch starts'
     utilization = {w['gpu_uuid']: [] for w in workers.values()}
     with (folder / 'gpu-device-observer.jsonl').open() as stream:
