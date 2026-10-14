@@ -72,12 +72,13 @@ def main(base):
         gpu_lib=Path(run['retriever_gpu_lib']);encoder=Path(run['retrieval_encoder'])
         create,extract=local_create,local_extract
     else:
+        from reproduction.common8.topology import world_size
+        shard_count=world_size(run)
         assert memory_bytes(job['TRES']) >= 512 * 2**30
         assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
-        actual_gpu_uuids=cuda_uuids()
+        actual_gpu_uuids=cuda_uuids(shard_count)
         assert actual_gpu_uuids == allocation['actual_cuda_runtime_uuids']
-        from reproduction.common8.topology import world_size
-        shard_count=world_size(run);job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
+        job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
         create,extract=create_cache,extract_corpus
     assert faiss.get_num_gpus() == torch.cuda.device_count() == shard_count
     assert Path(faiss.__file__).resolve().is_relative_to(gpu_lib.resolve())
