@@ -128,6 +128,8 @@ def publish(path,value):
 
 
 def restore_worker(worker,receipt_path):
+    # In-memory diagnostics are never part of checkpoint state or restorable.
+    worker.actor._invalidate_monitor_forward_cache(model_changed=True)
     import torch,numpy as np
     from safetensors import safe_open
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP,StateDictType,FullStateDictConfig

@@ -57,6 +57,7 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/common8/worker_evidence.py',
     'search_g1/full_state_restore.py',
     'search_g1/logprob_memory.py',
+    'search_g1/monitor_forward_reuse.py',
     'search_g1/numerics.py',
     'search_g1/optimizer_transaction.py',
     'search_g1/policy_safety.py',

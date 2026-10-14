@@ -40,6 +40,11 @@ def record(step,metrics,probe_version,attempt_result=None):
         assert maximum in (1,300)
     assert type(step) is int and 1<=step<=maximum
     scalar={key:float(metrics[key]) for key in (METRICS if inline else LEGACY_METRICS)}
+    monitor_keys=('actor/actual_monitor_forward_count','actor/reused_monitor_forward_count')
+    if any(key in metrics for key in monitor_keys):
+        assert all(key in metrics for key in monitor_keys)
+        scalar.update({key:float(metrics[key]) for key in monitor_keys})
+        assert all(value>=0 and value.is_integer() for key,value in scalar.items() if key in monitor_keys)
     assert all(math.isfinite(v) for v in scalar.values())
     if inline:
         assert isinstance(attempt_result,dict) and attempt_result['status'] in ('complete','partial')
@@ -76,6 +81,10 @@ def record(step,metrics,probe_version,attempt_result=None):
              actual_optimizer_writes=successes,update_status=attempt_result['status'],
              recovery_protocol_version=attempt_result.get('recovery_protocol_version',1),
              full_budget_complete=successes==20,opportunities_unattempted=20-processed)
+        if all(key in metrics for key in monitor_keys):
+            counts={key.removeprefix('actor/'):int(metrics[key]) for key in monitor_keys}
+            assert all(attempt_result[key]==value for key,value in counts.items())
+            row.update(**counts)
     with path.open('a') as f:
         f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
         parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))

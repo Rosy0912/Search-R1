@@ -16,6 +16,7 @@ Single Process Actor
 """
 
 import itertools
+import copy
 import json
 import os
 from typing import Iterable, Optional, Tuple
@@ -54,6 +55,8 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer = actor_optimizer
         # Fresh workers must expose zero writes before any guard can skip Adam.
         self._optimizer_writes = 0
+        self._monitor_model_version = 0
+        self._monitor_forward_cache = None
         self.compute_precision = ComputePrecision.from_config(self.config)
         self.compute_precision.validate_module(self.actor_module,
                                                process_group=getattr(self.actor_module, 'process_group', None))
@@ -199,6 +202,8 @@ class DataParallelPPOActor(BasePPOActor):
         if recoverable:
             from search_g1.optimizer_transaction import LocalOptimizerTransaction
             self._pending_optimizer_transaction = LocalOptimizerTransaction(self.actor_module, self.actor_optimizer)
+        # Even a provisional write invalidates every earlier monitor result.
+        self._invalidate_monitor_forward_cache(model_changed=True)
         self.actor_optimizer.step()
         self._optimizer_calls = getattr(self, '_optimizer_calls', 0) + 1
         self._optimizer_writes = getattr(self, '_optimizer_writes', 0) + 1
@@ -234,6 +239,7 @@ class DataParallelPPOActor(BasePPOActor):
         self._pending_write_receipt = None
 
     def _rollback_optimizer_write(self, group, before):
+        self._invalidate_monitor_forward_cache(model_changed=True)
         transaction = getattr(self, '_pending_optimizer_transaction', None)
         if transaction is None:
             return False
@@ -303,39 +309,90 @@ class DataParallelPPOActor(BasePPOActor):
 
         return log_probs
 
+    def _invalidate_monitor_forward_cache(self, *, model_changed=False):
+        self._monitor_forward_cache = None
+        if model_changed:
+            self._monitor_model_version = getattr(self, '_monitor_model_version', 0) + 1
+
+    def _monitor_cache_key(self, input_sha):
+        # Local tensor versions also catch in-place writes outside Adam. FSDP
+        # view/reshard changes may cause a conservative miss, never stale reuse.
+        tensors = itertools.chain(self.actor_module.parameters(), self.actor_module.buffers())
+        return (input_sha, getattr(self, '_monitor_model_version', 0),
+                getattr(self, '_optimizer_writes', 0), getattr(self, '_optimizer_calls', 0),
+                tuple((id(value), value._version) for value in tensors))
+
     def _monitor_old_policy(self, frozen, safety, tail_limit, stage):
         from search_g1.policy_safety import monitor
         from reproduction.common8.worker_evidence import append
         from reproduction.common8.topology import monitor_scope
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
+        self.compute_precision.validate_worker(process_group=group)
         import hashlib
         current_hashes={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest() for name,value in frozen.items()}
         device=torch.device('cuda',torch.cuda.current_device()) if torch.distributed.is_initialized() and torch.distributed.get_backend(group)=='nccl' else torch.device('cpu')
         require_finite({'frozen_monitor_identity':torch.tensor(int(current_hashes==self._monitor_identity['tensor_sha256']),device=device)},
                        stage='frozen_monitor_identity',process_group=group,positive=('frozen_monitor_identity',))
-        old_mode = self.actor_module.training
-        self.actor_module.eval()
-        values = []; masks = []; advantages = []; weights = []
-        try:
-            with torch.no_grad():
-                for micro in frozen.split(self.config.ppo_micro_batch_size):
-                    micro = micro.cuda(device=torch.cuda.current_device())
-                    _, new = self._forward_micro_batch(micro, temperature=self._monitor_temperature,
-                                                      compute_entropy=False)
-                    mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
-                    valid = mask.bool()
-                    delta = torch.where(valid,new,0.).double() - torch.where(valid,micro['old_log_probs'],0.).double()
-                    values.append(delta);masks.append(mask);advantages.append(micro['advantages'])
-                    weights.append(mask.double()/mask.sum().clamp_min(1).double())
-        finally:
-            self.actor_module.train(old_mode)
-        report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
-                         c=float(safety.dual_clip),kl_log_bound=float(safety.kl_log_bound),
-                         target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group,
-                         execution_role=self._policy_execution_role)
+        context = dict(self._gradient_diagnostic_context)
+        input_identity = dict(monitor_identity=self._monitor_identity,
+            temperature=float(self._monitor_temperature), dual_clip=float(safety.dual_clip),
+            kl_log_bound=float(safety.kl_log_bound), target_old_policy_kl=float(safety.target_old_policy_kl),
+            negative_tail_limit=tail_limit, calibration_sha256=self._safety_calibration_sha,
+            execution_role=self._policy_execution_role, state_masking=bool(self.config.state_masking),
+            micro_batch_size=int(self.config.ppo_micro_batch_size),
+            use_remove_padding=bool(self.use_remove_padding),
+            compute_precision=dict(vars(self.compute_precision)),
+            context={key:value for key,value in context.items()
+                     if key not in ('minibatch_index','prior_optimizer_writes')})
+        input_sha = hashlib.sha256(json.dumps(input_identity,sort_keys=True,separators=(',', ':'),
+                                              allow_nan=False).encode()).hexdigest()
+        cache = getattr(self, '_monitor_forward_cache', None)
+        can_reuse = (stage=='before_minibatch' and cache is not None and
+                     cache['key']==self._monitor_cache_key(input_sha) and
+                     cache['report']['context']['minibatch_index']+1==context['minibatch_index'])
+        # All ranks take the same branch before any FSDP forward collective.
+        reuse = torch.tensor(int(can_reuse),device=device,dtype=torch.int32)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(reuse,op=torch.distributed.ReduceOp.MIN,group=group)
+        reused = bool(reuse.item())
+        self._invalidate_monitor_forward_cache()  # Every cached report is single-use.
+        source = None
+        if reused:
+            from search_g1.monitor_forward_reuse import source_identity
+            report = copy.deepcopy(cache['report'])
+            source = copy.deepcopy(source_identity(cache['report']))
+            self._reused_monitor_forward_count += 1
+        else:
+            old_mode = self.actor_module.training
+            self.actor_module.eval()
+            values = []; masks = []; advantages = []; weights = []
+            try:
+                with torch.no_grad():
+                    for micro in frozen.split(self.config.ppo_micro_batch_size):
+                        micro = micro.cuda(device=torch.cuda.current_device())
+                        _, new = self._forward_micro_batch(micro, temperature=self._monitor_temperature,
+                                                          compute_entropy=False)
+                        mask = micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:, -new.shape[1]:]
+                        valid = mask.bool()
+                        delta = torch.where(valid,new,0.).double() - torch.where(valid,micro['old_log_probs'],0.).double()
+                        values.append(delta);masks.append(mask);advantages.append(micro['advantages'])
+                        weights.append(mask.double()/mask.sum().clamp_min(1).double())
+            finally:
+                self.actor_module.train(old_mode)
+            report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
+                             c=float(safety.dual_clip),kl_log_bound=float(safety.kl_log_bound),
+                             target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group,
+                             execution_role=self._policy_execution_role)
+            self._actual_monitor_forward_count += 1
         report.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
-                      stage=stage,context=self._gradient_diagnostic_context,
+                      stage=stage,context=context,
                       optimizer_writes=getattr(self,'_optimizer_writes',0),
+                      monitor_model_version=getattr(self,'_monitor_model_version',0),
+                      monitor_input_sha256=input_sha,
+                      forward_reused=reused,actual_monitor_forward=not reused,forward_source=source,
+                      monitor_forward_count_unit='one frozen-monitor batch, not its micro-forward calls',
+                      actual_monitor_forward_count=self._actual_monitor_forward_count,
+                      reused_monitor_forward_count=self._reused_monitor_forward_count,
                       calibration_sha256=self._safety_calibration_sha,
                       monitor_identity=self._monitor_identity,
                       objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
@@ -343,12 +400,15 @@ class DataParallelPPOActor(BasePPOActor):
                       rejection_count=getattr(self,'_policy_rejections',0)+int(not report['allowed']))
         append('POLICY_MONITOR',report,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
         if not report['allowed']:
+            self._invalidate_monitor_forward_cache()
             self._policy_rejections=report['rejection_count']
             self.actor_optimizer.zero_grad()
             if getattr(self,'_recoverable_guard_mode',False):
                 from search_g1.policy_safety import RecoverableGuard
                 raise RecoverableGuard(stage=stage,reasons=report['reasons'],diagnostic=report)
             raise RuntimeError('Old-rollout reuse stopped collectively; already-written steps retained: '+repr(report['reasons']))
+        if stage=='after_minibatch':
+            self._monitor_forward_cache = dict(key=self._monitor_cache_key(input_sha),report=copy.deepcopy(report))
         return report
 
     def update_policy(self, data: DataProto):
@@ -401,6 +461,8 @@ class DataParallelPPOActor(BasePPOActor):
             # full_budget_complete is the separate twenty-write budget fact.
             complete_outer=progressed,retained_partial_adam_writes=progressed and not full_budget,
             no_automatic_rollback=False, current_step_rollback=True)
+        result.update(actual_monitor_forward_count=getattr(self,'_actual_monitor_forward_count',0),
+                      reused_monitor_forward_count=getattr(self,'_reused_monitor_forward_count',0))
         agree_attempt_result(result,group=group)
         if full_budget:
             self._full_budget_outers = getattr(self,'_full_budget_outers',0)+1
@@ -421,12 +483,16 @@ class DataParallelPPOActor(BasePPOActor):
                 opportunities_processed=processed,
                 recoverable_guard=True,complete_outer=False,scheduler_advances=0,
                 retained_partial_adam_writes=False,no_automatic_rollback=False,
-                current_step_rollback=True,recovery_protocol_version=2),collective=True,group=group)
+                current_step_rollback=True,recovery_protocol_version=2,
+                actual_monitor_forward_count=result['actual_monitor_forward_count'],
+                reused_monitor_forward_count=result['reused_monitor_forward_count']),collective=True,group=group)
         self._last_attempt_result = result
         return metrics
 
     def _update_policy_attempt(self, data: DataProto):
         from search_g1.policy_safety import bind_actual_config, RecoverableGuard
+        self._invalidate_monitor_forward_cache()
+        self._actual_monitor_forward_count = self._reused_monitor_forward_count = 0
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
         bind_actual_config(self.config,group=group)
         # Collective finite checks require matching microbatch counts on all ranks.
@@ -514,6 +580,7 @@ class DataParallelPPOActor(BasePPOActor):
                     safety=safety,frozen=frozen if safety_enabled else None,
                     tail_limit=tail_limit if safety_enabled else None,metrics=opportunity_metrics)
             except RecoverableGuard as rejection:
+                self._invalidate_monitor_forward_cache()
                 if not getattr(self,'_recoverable_guard_mode',False):
                     raise
                 guard = rejection
@@ -549,6 +616,10 @@ class DataParallelPPOActor(BasePPOActor):
                 # Earlier accepted writes remain; the driver obtains fresh data.
                 break
         self.actor_optimizer.zero_grad()
+        self._invalidate_monitor_forward_cache()
+        if safety_enabled:
+            metrics['actor/actual_monitor_forward_count']=self._actual_monitor_forward_count
+            metrics['actor/reused_monitor_forward_count']=self._reused_monitor_forward_count
         if common8:
             writes = self._optimizer_writes - writes_before
             if getattr(self,'_recoverable_guard_mode',False):
@@ -578,6 +649,9 @@ class DataParallelPPOActor(BasePPOActor):
                 logical_update=logical_update, local_trajectories=len(batch),
                 local_mini=self.config.ppo_mini_batch_size, local_micro=self.config.ppo_micro_batch_size, optimizer_writes=writes,
                 cumulative_writes=self._optimizer_writes)
+            if safety_enabled:
+                budget.update(actual_monitor_forward_count=self._actual_monitor_forward_count,
+                              reused_monitor_forward_count=self._reused_monitor_forward_count)
             if getattr(self,'_recoverable_guard_mode',False):
                 budget.update(**attempt_meta,opportunities_processed=len(self._last_opportunities),
                               recovery_protocol_version=2,full_budget_complete=writes==20,

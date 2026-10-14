@@ -61,7 +61,8 @@ def agree_attempt_result(result, *, group=None):
                   'optimizer_writes_this_attempt', 'opportunities_processed',
                   'opportunity_statuses', 'guard_stage', 'guard_reasons',
                   'complete_outer', 'full_budget_complete', 'recovery_protocol_version',
-                  'optimizer_calls_this_attempt', 'optimizer_rollbacks_this_attempt')
+                  'optimizer_calls_this_attempt', 'optimizer_rollbacks_this_attempt',
+                  'actual_monitor_forward_count', 'reused_monitor_forward_count')
         if any(any(peer.get(name) != result.get(name) for name in shared) for peer in results):
             raise RuntimeError('Collective attempt dispositions or actual Adam counts differ')
     return result

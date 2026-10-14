@@ -14,6 +14,7 @@ from reproduction.common8.policy_calibration_plan import _strict_json, document_
 from reproduction.common8.topology import (
     actor_local_mini, actor_local_micro, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
 )
+from search_g1.monitor_forward_reuse import summarize_monitor_execution
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
     OBJECTIVE_WEIGHT_DEFINITION, QUANTILE_METHOD,
@@ -124,11 +125,13 @@ def _monitor_statistics(row):
 
 def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Audit only actual executed opportunities; rolled-back calls are not writes."""
-    observations = {}; final_rejections = []; decisions_by_rank = []
+    observations = {}; final_rejections = []; decisions_by_rank = []; executions = []
     for rank in ranks(run):
         rows = rows_by_rank[rank]
         decisions = [row for row in rows if row['kind']=='OPPORTUNITY']
         monitors = [row for row in rows if row['kind']=='POLICY_MONITOR']
+        execution = summarize_monitor_execution(monitors)
+        executions.append(execution)
         writes = [row for row in rows if row['kind']=='OPTIMIZER_WRITE']
         _require([row['opportunity_index'] for row in decisions]==list(range(attempt['opportunities_processed'])),
                  'Transaction opportunities are missing or reordered')
@@ -195,16 +198,22 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
         _row(terminal, rank, binding, 'OUTER_BUDGET' if attempt['complete_outer'] else 'ABORTED_ATTEMPT')
         _require(terminal['opportunities_processed']==len(decisions) and terminal['optimizer_writes']==counter-attempt['optimizer_writes_before'] and
                  terminal['cumulative_writes']==counter==attempt['optimizer_writes_after'], 'Transaction terminal totals differ')
+        for name in ('actual_monitor_forward_count','reused_monitor_forward_count'):
+            if name in terminal: _require(terminal[name]==execution[name], 'Transaction monitor execution count differs')
+            if name in attempt: _require(attempt[name]==execution[name], 'Driver monitor execution count differs')
         final_rejections.append(rejections)
         decisions_by_rank.append([{key:value for key,value in row.items() if key!='rank'} for row in decisions])
     _require(all(value==decisions_by_rank[0] for value in decisions_by_rank), 'Transaction rank dispositions differ')
     _require(len(set(final_rejections))==1, 'Transaction rank rejection counts differ')
+    _require(all(value==executions[0] for value in executions), 'Rank monitor execution/reuse counts differ')
     return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
+                actual_monitor_forward_count=executions[0]['actual_monitor_forward_count'],
+                reused_monitor_forward_count=executions[0]['reused_monitor_forward_count'],
                 guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()))
 
 
 def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
-    """Require40 true pre/post monitors and20 dispositions for this real UUID."""
+    """Require40 logical pre/post monitors and20 dispositions for this real UUID."""
     if attempt.get('recovery_protocol_version',1)==2:
         return _audit_transaction_rows(rows_by_rank,binding,attempt,rejection_before,run=run)
     observations = {}; dispositions = {}; identities = {}; final_rejections = []
@@ -474,11 +483,18 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                 selected.append(rows[cursor]); cursor += 1
             worker_cursors[rank] = cursor; rows_by_rank[rank] = selected
         audit = _audit_monitor_rows(rows_by_rank, binding, attempt, rejections, run=run)
+        if 'actual_monitor_forward_count' not in audit:
+            executions=[summarize_monitor_execution([row for row in rows_by_rank[rank]
+                        if row['kind']=='POLICY_MONITOR']) for rank in ranks(run)]
+            _require(all(value==executions[0] for value in executions), 'Rank monitor execution/reuse counts differ')
+            audit.update(**{key:value for key,value in executions[0].items() if key!='logical_monitor_count'})
         if version==1: _require(audit['global_monitor_count'] == 40, 'Need40 historical monitors for every attempt')
         rejections = audit['rejection_count']
         summaries.append(dict(attempt_id=attempt['attempt_id'], attempt_index=ordinal, logical_update=outer,
             complete_outer=complete, full_budget_complete=full_budget, opportunities_processed=processed,
             actual_optimizer_writes=count, global_monitor_count=audit['global_monitor_count'],
+            actual_monitor_forward_count=audit['actual_monitor_forward_count'],
+            reused_monitor_forward_count=audit['reused_monitor_forward_count'],
             guard_triggered_monitor_count=audit['guard_triggered_monitor_count']))
         writes += count; completed += int(complete)
     _require(completed == last and attempts[-1]['complete_outer'] is True, 'Actual attempt prefix does not end at the requested COMPLETE')
@@ -495,6 +511,8 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         completed_outer_global_monitor_count=sum(row['global_monitor_count'] for row in summaries if row['complete_outer']),
         retry_global_monitor_count=sum(row['global_monitor_count'] for row in summaries if not row['complete_outer']),
         unique_global_monitor_count=sum(row['global_monitor_count'] for row in summaries), cumulative_policy_rejections=rejections,
+        actual_monitor_forward_count=sum(row['actual_monitor_forward_count'] for row in summaries),
+        reused_monitor_forward_count=sum(row['reused_monitor_forward_count'] for row in summaries),
         guard_triggered_monitor_count=sum(row['guard_triggered_monitor_count'] for row in summaries),
         attempts=summaries, selected_driver_attempts_sha256=document_sha256(attempts),
         selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes,

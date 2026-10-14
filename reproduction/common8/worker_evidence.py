@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 from reproduction.common8.topology import monitor_trajectories_per_rank, ranks
+from search_g1.monitor_forward_reuse import summarize_monitor_execution
 
 
 def append(kind, payload, *, collective=False, group=None):
@@ -78,6 +79,9 @@ def read_console_form(base, run_id):
                 selected=[x for x in monitors if x['context']['logical_update']==budget['logical_update'] and
                           (run.get('policy_safety_mode')!='inline_first_five' or
                            x['context']['attempt_id']==budget['attempt_id'])]
+                execution=summarize_monitor_execution(selected)
+                for name in ('actual_monitor_forward_count','reused_monitor_forward_count'):
+                    if name in budget: assert budget[name]==execution[name]
                 inline=run.get('policy_safety_mode')=='inline_first_five'
                 version=budget.get('recovery_protocol_version',1)
                 if version==2:

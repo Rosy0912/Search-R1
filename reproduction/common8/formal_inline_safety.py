@@ -513,6 +513,8 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
     for row in segment['global_monitors']:
         step = str(row['context']['logical_update'])
         assert row['context']['behavior_probability_gate_sha256'] == behavior_gates[step]['proof_sha256']
+    from search_g1.monitor_forward_reuse import summarize_monitor_execution
+    monitor_execution=summarize_monitor_execution(segment['global_monitors'])
     return dict(schema_version=1, role='actual_formal_first_five_safety_audit', run_id=run['run_id'],
         plan_sha256=sha, structural_accepted=True, source_map_sha256=document_sha256(run['source_sha256']),
         actual_complete_outers=5,
@@ -520,6 +522,8 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
         completed_outer_optimizer_opportunities_per_rank=sum(row['opportunities_processed'] for row in complete_attempts),
         actual_optimizer_writes_per_rank=complete_attempts[-1]['optimizer_writes_after'],
         unique_global_monitor_count=len(segment['global_monitors']),
+        actual_monitor_forward_count=monitor_execution['actual_monitor_forward_count'],
+        reused_monitor_forward_count=monitor_execution['reused_monitor_forward_count'],
         candidate_thresholds=FORMAL_SAFEGUARDS, worker_process_births=sorted(births),
         global_monitors=segment['global_monitors'], receipt_sha256=files,
         opportunity_dispositions=segment['opportunity_dispositions'],
