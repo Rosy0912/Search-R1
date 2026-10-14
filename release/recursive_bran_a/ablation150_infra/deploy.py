@@ -24,11 +24,11 @@ assert len(a.commit) == 40
 assert a.destination.startswith('/dataset/shaoshitong/recursive-ablation150-')
 digest = hashlib.sha256(blob).hexdigest()
 remote = '''import hashlib,io,json,pathlib,sys,tarfile,time
-b=pathlib.Path(DEST)
+b=pathlib.Path(DEST);manifest=json.loads(sys.stdin.buffer.readline())
 if (b/'deployment.json').exists():
  old=json.loads((b/'deployment.json').read_text())
  assert old['commit']==COMMIT
- for name,sha in MANIFEST.items():assert hashlib.sha256((b/'source'/name).read_bytes()).hexdigest()==sha
+ for name,sha in manifest.items():assert hashlib.sha256((b/'source'/name).read_bytes()).hexdigest()==sha
  print(json.dumps(old));raise SystemExit(0)
 assert not (b/'source').exists(), 'Unreceipted deployment exists; inspect it'
 raw=sys.stdin.buffer.read();assert hashlib.sha256(raw).hexdigest()==DIGEST
@@ -43,12 +43,12 @@ with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz') as tar:
   else:
    target.parent.mkdir(parents=True,exist_ok=True)
    target.write_bytes(tar.extractfile(member).read());target.chmod(member.mode & 0o777)
-for name,sha in MANIFEST.items():assert hashlib.sha256((source/name).read_bytes()).hexdigest()==sha,name
+for name,sha in manifest.items():assert hashlib.sha256((source/name).read_bytes()).hexdigest()==sha,name
 record=dict(time=time.time(),commit=COMMIT,source=str(source),archive_bytes=len(raw),archive_sha256=DIGEST,
- file_count=len(MANIFEST),all_manifest_sha_equal=True,original_runs_modified=False)
+ file_count=len(manifest),all_manifest_sha_equal=True,original_runs_modified=False)
 (b/'deployment.json').write_text(json.dumps(record,indent=2));print(json.dumps(record),flush=True)
 '''
-remote = remote.replace('DEST', repr(a.destination)).replace('COMMIT', repr(a.commit)).replace('DIGEST', repr(digest)).replace('MANIFEST', repr(manifest['files']))
+remote = remote.replace('DEST', repr(a.destination)).replace('COMMIT', repr(a.commit)).replace('DIGEST', repr(digest))
 bridge = '''import json,shlex,subprocess,sys
 from pathlib import Path
 cfg=json.loads(Path('/home/lichen/.claude/projects/-home-lichen/memory/reference_h100_retained18_route_20261008.public.json').read_text())
@@ -62,7 +62,7 @@ r=subprocess.run(args+[user+'@'+ip,COMMAND],input=sys.stdin.buffer.read(),captur
 sys.stdout.buffer.write(r.stdout);sys.stderr.buffer.write(r.stderr);raise SystemExit(r.returncode)
 '''.replace('COMMAND', repr('env -u LD_LIBRARY_PATH python3 -c ' + shlex.quote(remote)))
 args = ['ssh', '-S', a.management_socket, '-oControlMaster=no', '-T', '-oBatchMode=yes', '-oConnectTimeout=15', '-oProxyCommand=none', '-oProxyJump=none', 'mgmt-host', 'env -u LD_LIBRARY_PATH python3 -c ' + shlex.quote(bridge)]
-r = subprocess.run(args, input=blob, capture_output=True, timeout=220)
+r = subprocess.run(args, input=json.dumps(manifest['files']).encode() + b'\n' + blob, capture_output=True, timeout=220)
 Path(a.output).write_bytes(r.stdout)
 Path(a.output + '.stderr').write_bytes(r.stderr)
 print(json.dumps(dict(rc=r.returncode, archive_bytes=len(blob), stdout=r.stdout.decode(), stderr=r.stderr.decode())), flush=True)
