@@ -389,10 +389,14 @@ class OnlineQProbe:
             with open(temporary, 'rb') as f: os.fsync(f.fileno())
             sha = _sha_file(temporary)
             os.link(temporary, path)
+            directory = os.open(path.parent, os.O_RDONLY)
+            try: os.fsync(directory)
+            finally: os.close(directory)
         finally:
             if os.path.exists(temporary): os.unlink(temporary)
         self.actor_snapshot_id = actor_snapshot_id
-        return dict(path=str(path), checkpoint_sha=sha, actor_snapshot_id=actor_snapshot_id,
+        return dict(path=str(path), bytes=path.stat().st_size, sha256=sha,
+                    checkpoint_sha=sha, actor_snapshot_id=actor_snapshot_id,
                     version=self.version, completed_outer=self.completed_outer,
                     feature_spec_sha=self.feature_spec_sha, update_count=self.update_count)
 
