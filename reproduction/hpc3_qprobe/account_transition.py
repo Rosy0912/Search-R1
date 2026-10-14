@@ -23,7 +23,8 @@ TARGET = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu95
 ORIGIN_UID = 21930
 TARGET_UID = 14090
 TARGET_ACCOUNT = "jxu957"
-SLURM_ACCOUNT = "d_huiqimai_team"
+SLURM_ACCOUNT = "jxu957"
+QOS = "formal-user"
 TARGET_GROUPS = {21919, 10034}
 AUTHORIZATION = dict(
     original_request='ok，换一个账号，我记得本地还有另一个账号吧？',
@@ -178,7 +179,7 @@ def access():
 
 
 def command():
-    return ['sbatch', '--parsable', '--hold', '--account='+SLURM_ACCOUNT, '--qos=normal',
+    return ['sbatch', '--parsable', '--hold', '--account='+SLURM_ACCOUNT, '--qos='+QOS,
             '--partition=acd_ue', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
             '--cpus-per-task=48', '--mem=512G', '--time=7-00:00:00',
             '--job-name=qprobe-warmup200', '--export=NONE', '--chdir='+str(TARGET),
@@ -188,7 +189,7 @@ def command():
 
 def validate_replacement(value):
     expected=dict(JobState='PENDING',Priority='0',AllocTRES='(null)',
-        UserId=TARGET_ACCOUNT+'('+str(TARGET_UID)+')',Account=SLURM_ACCOUNT,QOS='normal',
+        UserId=TARGET_ACCOUNT+'('+str(TARGET_UID)+')',Account=SLURM_ACCOUNT,QOS=QOS,
         NumCPUs='48',NumTasks='1',MinMemoryNode='512G',TresPerNode='gres/gpu:4',
         TimeLimit='7-00:00:00',Command=str(BASE/'source'/SOURCE/'reproduction/hpc3_qprobe/train.sh'),
         WorkDir=str(TARGET),Restarts='0',RunTime='00:00:00')
@@ -239,7 +240,7 @@ def preflight():
         raise ValueError('Inspect existing target jobs before submitting any replacement')
     assoc = cli(['sacctmgr', '-nP', 'show', 'assoc', 'where', 'user='+TARGET_ACCOUNT,
                  'format=Account,User,Partition,QOS,DefaultQOS'])
-    if not any(line.startswith(SLURM_ACCOUNT+'|'+TARGET_ACCOUNT+'||normal|') for line in assoc.splitlines()):
+    if not any(line.startswith(SLURM_ACCOUNT+'|'+TARGET_ACCOUNT+'||'+QOS+'|') for line in assoc.splitlines()):
         raise ValueError('Target normal-QOS association absent')
     from search_g1.qprobe_features import FeatureCache
     features = FeatureCache(BASE/'question-features'); features.verify_all()
@@ -252,7 +253,7 @@ def preflight():
     test.insert(1, '--test-only')
     estimate = cli(test)
     out = dict(status='TARGET_PREFLIGHT_PASS', epoch=time.time(), target_uid=os.getuid(),
-               account=SLURM_ACCOUNT, qos='normal', queue=queue, association=assoc,
+               account=SLURM_ACCOUNT, qos=QOS, queue=queue, association=assoc,
                features_count=features.manifest['count'], features_spec_sha=features.spec_sha,
                scheduler_test=estimate, source_commit=SOURCE, authorization=AUTHORIZATION)
     once(BASE/'preparation/account-transition-preflight.json', out)
@@ -341,7 +342,8 @@ if __name__ == '__main__':
     OWNER_OBSERVATION=args.owner_observation
     TARGET_ACCOUNT=args.target_account
     TARGET_UID=14090 if TARGET_ACCOUNT=='jxu957' else ORIGIN_UID
-    SLURM_ACCOUNT='d_huiqimai_team' if TARGET_ACCOUNT=='jxu957' else 'mou176'
+    SLURM_ACCOUNT=TARGET_ACCOUNT
+    QOS='formal-user' if TARGET_ACCOUNT=='jxu957' else 'normal'
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-'+TARGET_ACCOUNT+'-20261014')
     if len(SOURCE)!=40 or any(c not in '0123456789abcdef' for c in SOURCE):raise ValueError('Invalid source commit')
     print(json.dumps({'access': access, 'prepare-target':prepare_target, 'preflight': preflight, 'submit': submit,
