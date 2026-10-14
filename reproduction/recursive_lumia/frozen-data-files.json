@@ -1,0 +1,68 @@
+{
+  "manifest_sha256": "7b6369e17ebd497ea159d57dc159647eed8adad852b7468cc600b7f203e80f43",
+  "dataset_revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+  "counts": {
+    "train": 169028,
+    "validation": 512,
+    "stage": 64,
+    "final": 51713
+  },
+  "files": {
+    "final.parquet": {
+      "bytes": 6475871,
+      "sha256": "491a7643170d06d7c4a25906aced2504329cb83652b2e9e53159507306141713"
+    },
+    "manifest.json": {
+      "bytes": 5447,
+      "sha256": "7b6369e17ebd497ea159d57dc159647eed8adad852b7468cc600b7f203e80f43"
+    },
+    "raw/2wikimultihopqa/dev.jsonl": {
+      "bytes": 54682944,
+      "sha256": "b4d74d73d1cb3c0632c665a85e1e5060e3411968b807721618cfd2464fc905e3"
+    },
+    "raw/bamboogle/test.jsonl": {
+      "bytes": 17031,
+      "sha256": "c9703dae6bb1ceb9e2df77be45da28cb12aa040d2f471507890a461296968f3f"
+    },
+    "raw/hotpotqa/dev.jsonl": {
+      "bytes": 48191374,
+      "sha256": "434ec155867019396312f3d466ce3406c71fe8a2917f49f63bb646ec5ad2ff52"
+    },
+    "raw/hotpotqa/train.jsonl": {
+      "bytes": 569520788,
+      "sha256": "a81274abafa899ec0ee073102edbe6bb694a8a1174201b4e43e2bc6c98964d1a"
+    },
+    "raw/musique/dev.jsonl": {
+      "bytes": 5620439,
+      "sha256": "d1cc08bcc91b060ba67c1e12881789e1315fb9f85d46f03a3413dd5e0f2ed02c"
+    },
+    "raw/nq/test.jsonl": {
+      "bytes": 487676,
+      "sha256": "843bebb083064abb6eb23751f2c8c187e5c448c23900b42ca92f91502a9b7488"
+    },
+    "raw/nq/train.jsonl": {
+      "bytes": 9960189,
+      "sha256": "572685d3f384d9c37479b1fb14232984c85ff13b58923c0c9442232bd5d5647b"
+    },
+    "raw/popqa/test.jsonl": {
+      "bytes": 8526089,
+      "sha256": "f976372fce3d7fe01b070357040391f10bd2710eeaa7c40d21c6574ffcad6cb8"
+    },
+    "raw/triviaqa/test.jsonl": {
+      "bytes": 4797585,
+      "sha256": "8f0891dece17a6a6472c87bf0e8c555c80673853d8dc7780be4d47158ec85290"
+    },
+    "stage.parquet": {
+      "bytes": 13951,
+      "sha256": "8a3e3b6e26a09311dd2588d7b44c11bcf24270db2c3bcef5537ddec94f7bccd4"
+    },
+    "train.parquet": {
+      "bytes": 17689701,
+      "sha256": "e5f487c9e61e63c48d8b9da032095b208b276b08142c5a0be7f11e40df97d7fc"
+    },
+    "validation.parquet": {
+      "bytes": 63081,
+      "sha256": "a8685b16c831ee3106c4da705abe279201bbdc2f601ba36b8d97515f729962d4"
+    }
+  }
+}
