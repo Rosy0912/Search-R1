@@ -32,3 +32,12 @@ unchanged; the failed process/intent/log remain preserved. No account switch was
 completed. Four GPUs also fit mou176's measured GPU12/16 and CPU120/192 usage
 (new request4/48). The controller supports a separately selected mou176 fresh
 native4 namespace, without ACL changes, when the human chooses that route.
+
+The subsequent human reply explicitly chose jxu957 and authorized recursive770
+on `/data/user/jxu957/experiments/`. The original owner applied that command, plus
+group execute only on its700 parent so jxu957 can traverse into the shared tree.
+Original-owner permission intent, process birth and error log are retained;
+the exact bootstrap is backed up in group_permission_bootstrap.py. No ACL retry
+or ownership change is needed. The new target and ordinary output directories
+use the shared mhq_share group and umask007. Real target reads/writes, full feature
+SHA, Slurm allocation and actual iterations still require direct verification.

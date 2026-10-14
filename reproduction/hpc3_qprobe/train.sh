@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 007
 BASE="${1:?explicit remote run base required}"
 COMMIT="${2:?immutable source commit required}"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT"

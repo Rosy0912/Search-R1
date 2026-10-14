@@ -27,6 +27,7 @@ TARGET_GROUPS = {21919, 10034}
 AUTHORIZATION = dict(
     original_request='ok，换一个账号，我记得本地还有另一个账号吧？',
     clarification='HPC3 登录账号（解决训练资源额度）',
+    group_access_authorization='chmod -R 770 /data/user/jxu957/experiments/；mou176和jxu957共同读写',
     message_timestamp='not exposed by client; explicit human messages in current turn',
     latest_hardware_request='不用8卡啊，这个4卡就行啊；每张卡处理的样本多一倍',
     scope='replace only unstarted qprobe 716883 with fresh native4 jxu957; warmup plus 200 outers; per-rank micro4, unchanged global512/G5/mini128',
@@ -183,10 +184,15 @@ def prepare_target():
         if hashlib.sha256((source/name).read_bytes()).hexdigest()!=sha:
             raise ValueError('New native4 source file differs: '+name)
     if TARGET.exists():raise ValueError('Inspect existing fresh native4 target; never recreate')
-    TARGET.mkdir()
-    # Default ACLs let the original controller read future small audit receipts.
+    os.umask(0o007)
+    TARGET.mkdir(mode=0o770)
+    # The human explicitly selected shared-group770 after this filesystem
+    # rejected per-user ACLs. Keep new ordinary output directories group-writable.
     if TARGET_UID!=ORIGIN_UID:
-        cli(['setfacl','-m','u:'+str(ORIGIN_UID)+':rwx,d:u:'+str(ORIGIN_UID)+':rwx',str(TARGET)])
+        group=(BASE.parent.stat().st_gid)
+        if group not in os.getgroups() or TARGET.stat().st_gid!=group:
+            raise ValueError('New target does not share the authorized group')
+    os.chmod(TARGET,0o770)
     from reproduction.hpc3_qprobe.control import prepare,link
     prepare(TARGET)
     link(TARGET/'repo',source)
