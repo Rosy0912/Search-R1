@@ -190,6 +190,7 @@ def main():
         second_snapshot_sha256=second_pin['sha256'],last_actual_second_snapshot_epoch=epoch,
         actual_next_outer_entered=next_outer,active_outer_in_progress=next_outer,active_outer=next_outer,
         current_outer_full_metric=metric,current_iteration_metrics=metric,
+        last_complete_full_metric_outer=n if metric is not None else old_status.get('last_complete_full_metric_outer'),
         current_outer_full_metric_pending=metric is None,current_full_outer_metric_pending=metric is None,
         full_iteration_log_pending=metric is None,current_outer_wall_seconds=wall,latest_full_outer_wall_seconds=wall,
         current_ordinary_training_seconds_excluding_dev=ordinary,latest_ordinary_training_seconds_excluding_dev=ordinary,
