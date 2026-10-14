@@ -18,7 +18,7 @@ class FailurePreservationTests(unittest.TestCase):
 
     def preserve(self, corrupt=False, alias=False):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
-        base=Path(temp.name);checkpoint=base/'checkpoints/actor/global_step_5'
+        base=Path(temp.name).resolve();checkpoint=base/'checkpoints/actor/global_step_5'
         checkpoint.mkdir(parents=True)
         payload=checkpoint/'state.bin';payload.write_bytes(b'actual-saved-state')
         sha=hashlib.sha256(payload.read_bytes()).hexdigest()
