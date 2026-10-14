@@ -21,6 +21,8 @@ SOURCE = None
 TARGET = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-20261014')
 ORIGIN_UID = 21930
 TARGET_UID = 14090
+TARGET_ACCOUNT = "jxu957"
+SLURM_ACCOUNT = "d_huiqimai_team"
 TARGET_GROUPS = {21919, 10034}
 AUTHORIZATION = dict(
     original_request='ok，换一个账号，我记得本地还有另一个账号吧？',
@@ -151,12 +153,22 @@ def access():
 
 
 def command():
-    return ['sbatch', '--parsable', '--hold', '--account=d_huiqimai_team', '--qos=normal',
+    return ['sbatch', '--parsable', '--hold', '--account='+SLURM_ACCOUNT, '--qos=normal',
             '--partition=acd_ue', '--nodes=1', '--ntasks=1', '--gres=gpu:4',
             '--cpus-per-task=48', '--mem=512G', '--time=7-00:00:00',
             '--job-name=qprobe-warmup200', '--export=NONE', '--chdir='+str(TARGET),
             '--output='+str(TARGET/'logs/training-%j.log'), '--error='+str(TARGET/'logs/training-%j.log'),
             str(BASE/'source'/SOURCE/'reproduction/hpc3_qprobe/train.sh'), str(TARGET), SOURCE]
+
+
+def validate_replacement(value):
+    expected=dict(JobState='PENDING',Priority='0',AllocTRES='(null)',
+        UserId=TARGET_ACCOUNT+'('+str(TARGET_UID)+')',Account=SLURM_ACCOUNT,QOS='normal',
+        NumCPUs='48',NumTasks='1',MinMemoryNode='512G',TresPerNode='gres/gpu:4',
+        TimeLimit='7-00:00:00',Command=str(BASE/'source'/SOURCE/'reproduction/hpc3_qprobe/train.sh'),
+        WorkDir=str(TARGET),Restarts='0',RunTime='00:00:00')
+    if any(value.get(k)!=v for k,v in expected.items()):
+        raise ValueError('Replacement is not the actual held immutable native4 request')
 
 
 def prepare_target():
@@ -173,7 +185,8 @@ def prepare_target():
     if TARGET.exists():raise ValueError('Inspect existing fresh native4 target; never recreate')
     TARGET.mkdir()
     # Default ACLs let the original controller read future small audit receipts.
-    cli(['setfacl','-m','u:'+str(ORIGIN_UID)+':rwx,d:u:'+str(ORIGIN_UID)+':rwx',str(TARGET)])
+    if TARGET_UID!=ORIGIN_UID:
+        cli(['setfacl','-m','u:'+str(ORIGIN_UID)+':rwx,d:u:'+str(ORIGIN_UID)+':rwx',str(TARGET)])
     from reproduction.hpc3_qprobe.control import prepare,link
     prepare(TARGET)
     link(TARGET/'repo',source)
@@ -191,12 +204,12 @@ def preflight():
     if os.getuid() != TARGET_UID:
         raise ValueError('Target account identity differs')
     untouched(); validate_old(job(OLD)[0])
-    queue = cli(['squeue', '-u', 'jxu957', '-h', '-o', '%i|%T|%j'])
-    if queue.strip():
+    queue = cli(['squeue', '-u', TARGET_ACCOUNT, '-h', '-o', '%i|%T|%j'])
+    if any(line.split('|')[0]!=OLD and 'qprobe' in line for line in queue.splitlines()):
         raise ValueError('Inspect existing target jobs before submitting any replacement')
-    assoc = cli(['sacctmgr', '-nP', 'show', 'assoc', 'where', 'user=jxu957',
+    assoc = cli(['sacctmgr', '-nP', 'show', 'assoc', 'where', 'user='+TARGET_ACCOUNT,
                  'format=Account,User,Partition,QOS,DefaultQOS'])
-    if not any(line.startswith('d_huiqimai_team|jxu957||normal|') for line in assoc.splitlines()):
+    if not any(line.startswith(SLURM_ACCOUNT+'|'+TARGET_ACCOUNT+'||normal|') for line in assoc.splitlines()):
         raise ValueError('Target normal-QOS association absent')
     from search_g1.qprobe_features import FeatureCache
     features = FeatureCache(BASE/'question-features'); features.verify_all()
@@ -209,7 +222,7 @@ def preflight():
     test.insert(1, '--test-only')
     estimate = cli(test)
     out = dict(status='TARGET_PREFLIGHT_PASS', epoch=time.time(), target_uid=os.getuid(),
-               account='d_huiqimai_team', qos='normal', queue=queue, association=assoc,
+               account=SLURM_ACCOUNT, qos='normal', queue=queue, association=assoc,
                features_count=features.manifest['count'], features_spec_sha=features.spec_sha,
                scheduler_test=estimate, source_commit=SOURCE, authorization=AUTHORIZATION)
     once(BASE/'preparation/account-transition-preflight.json', out)
@@ -227,15 +240,14 @@ def submit():
     receipt = BASE/'preparation/account-transition-submission.json'
     if claim.exists() or receipt.exists():
         raise ValueError('Submission already attempted; inspect saved result, never repeat')
-    if cli(['squeue', '-u', 'jxu957', '-h', '-o', '%i']).strip():
+    if any(line.split('|')[0]!=OLD and 'qprobe' in line for line in cli(['squeue','-u',TARGET_ACCOUNT,'-h','-o','%i|%j']).splitlines()):
         raise ValueError('Target queue changed')
     cmd = command(); once(claim, dict(command=cmd, epoch=time.time(), authorization=AUTHORIZATION))
     output = cli(cmd); new = output.strip().split(';')[0]
     if not new.isdecimal():
         raise ValueError('Inspect unknown submission outcome; never repeat')
     value, detail = job(new)
-    if value['UserId'] != 'jxu957('+str(TARGET_UID)+')' or value['JobState'] != 'PENDING' or value['Priority'] != '0':
-        raise ValueError('Replacement is not actually held under the target account')
+    validate_replacement(value)
     out = dict(status='REPLACEMENT_HELD', job=new, epoch=time.time(), actual=detail,
                source_commit=SOURCE, old_job=OLD)
     once(receipt, out)
@@ -248,8 +260,7 @@ def cancel_old():
     untouched(); validate_old(job(OLD)[0])
     replacement = json.loads((BASE/'preparation/account-transition-submission.json').read_text())
     value, detail = job(replacement['job'])
-    if value['JobState'] != 'PENDING' or value['Priority'] != '0' or value['UserId'] != 'jxu957('+str(TARGET_UID)+')':
-        raise ValueError('Replacement must still be held and unstarted')
+    validate_replacement(value)
     claim = BASE/'preparation/account-transition-retire-intent.json'
     if claim.exists():
         raise ValueError('Retirement already attempted; inspect actual state')
@@ -272,8 +283,7 @@ def release():
         raise ValueError('Old job was not cancelled before any native execution')
     retirement = json.loads((BASE/'preparation/account-transition-retired.json').read_text())
     new = retirement['replacement']; value, detail = job(new)
-    if value['JobState'] != 'PENDING' or value['Priority'] != '0' or value['UserId'] != 'jxu957('+str(TARGET_UID)+')':
-        raise ValueError('Inspect replacement; release only original held job')
+    validate_replacement(value)
     claim = BASE/'preparation/account-transition-release-intent.json'
     if claim.exists():
         raise ValueError('Release already attempted; inspect actual job instead')
@@ -291,7 +301,12 @@ def release():
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); p.add_argument('mode', choices=('access', 'prepare-target', 'preflight', 'submit', 'cancel-old', 'release'))
     p.add_argument('--commit',required=True)
+    p.add_argument('--target-account',choices=('jxu957','mou176'),default='jxu957')
     args = p.parse_args();SOURCE=args.commit
+    TARGET_ACCOUNT=args.target_account
+    TARGET_UID=14090 if TARGET_ACCOUNT=='jxu957' else ORIGIN_UID
+    SLURM_ACCOUNT='d_huiqimai_team' if TARGET_ACCOUNT=='jxu957' else 'mou176'
+    TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-'+TARGET_ACCOUNT+'-20261014')
     if len(SOURCE)!=40 or any(c not in '0123456789abcdef' for c in SOURCE):raise ValueError('Invalid source commit')
     print(json.dumps({'access': access, 'prepare-target':prepare_target, 'preflight': preflight, 'submit': submit,
                       'cancel-old': cancel_old, 'release': release}[args.mode]()), flush=True)

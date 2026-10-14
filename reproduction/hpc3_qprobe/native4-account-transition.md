@@ -25,3 +25,10 @@ request before submitting exactly one held replacement under the associated
 cancelled only if still PENDING with zero runtime and no native artifacts. The
 replacement is released only after actual old CANCELLED state. Exclusive intent
 and result receipts prohibit automatic resubmission after uncertain outcomes.
+
+On this filesystem setfacl returned Operation not supported at the very first
+home-traversal change. A fresh getfacl confirmed the original700 permissions were
+unchanged; the failed process/intent/log remain preserved. No account switch was
+completed. Four GPUs also fit mou176's measured GPU12/16 and CPU120/192 usage
+(new request4/48). The controller supports a separately selected mou176 fresh
+native4 namespace, without ACL changes, when the human chooses that route.
