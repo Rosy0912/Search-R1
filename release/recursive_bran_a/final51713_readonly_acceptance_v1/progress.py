@@ -63,13 +63,14 @@ def main():
     gpu = subprocess.run(['nvidia-smi', '--query-gpu=index,uuid,utilization.gpu,memory.used,memory.free',
                           '--format=csv,noheader,nounits'], capture_output=True, text=True, timeout=15)
     summary = load(Path(plan['output'])/'summary.json') if plan else None
+    progress = load(Path(plan['output'])/'progress.json') if plan else None
     log = tail(CONTROL/'evaluation.log', 16384)
     # Print structural events/errors only, never prompts, document contents, or answers.
     selected = [line for line in log.splitlines() if any(word in line for word in
                 ('FINAL51713_', 'Traceback', 'Error:', 'Exception:', 'ERROR', 'Loading', 'checkpoint'))]
     print(json.dumps(dict(time=time.time(), control=str(CONTROL), plan=plan, launch=launch, actual_exit=terminal,
                           process=process, workers=workers, gpu=dict(rc=gpu.returncode, stdout=gpu.stdout,
-                          stderr=gpu.stderr), summary=summary, structural_log_tail=selected[-15:],
+                          stderr=gpu.stderr), summary=summary, progress=progress, structural_log_tail=selected[-15:],
                           scope='Latest retained worker events and current whole-device utilization; cohost work may contribute')))
 
 
