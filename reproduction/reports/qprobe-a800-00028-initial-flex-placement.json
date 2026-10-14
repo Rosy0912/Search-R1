@@ -1,0 +1,113 @@
+{
+  "auxiliary_physical_indices": [
+    5,
+    6
+  ],
+  "complete_outers": 0,
+  "dev512": null,
+  "execution_id": "8b53bd8975264854aa520682b0512e78",
+  "extra_teacher_warmup_outers": 1,
+  "final51713": null,
+  "first_complete_iteration_verified": false,
+  "gpu_placement_binding_sha256": "234cb59c239620fadf8dd1f3af8491100c19bd154c975e0eecfdd9c6fa49b8f5",
+  "gpu_sampler": {
+    "cumulative_sample_count": 24,
+    "identity_or_scalar_rejected_rows": 0,
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "sampled_run_peak_mib": 4,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 1,
+        "sampled_run_peak_mib": 4,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 2,
+        "sampled_run_peak_mib": 4,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 3,
+        "sampled_run_peak_mib": 4,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 5,
+        "sampled_run_peak_mib": 4,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 6,
+        "sampled_run_peak_mib": 425,
+        "total_mib": 81920,
+        "used_mib": 4,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_age_seconds": 1.186286211013794,
+    "latest_sample_unix": 1791972739.0432885,
+    "matching_sample_count": 24,
+    "maximum_scanned_sampling_gap_seconds": 2.2027392387390137,
+    "pretraining_history_only": true,
+    "process": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 3063879,
+      "sid": null,
+      "start_ticks": 605227026,
+      "state": "S",
+      "uid": null
+    },
+    "training_claimed": false
+  },
+  "gpu_scope": "node sampled occupancy in this new pipeline startup only; no model peak or optimizer-window peak claimed",
+  "inflight": null,
+  "no_new_scores": true,
+  "observed_unix": 1791972740.2298682,
+  "old_run_statistics_not_mixed": true,
+  "parent_checkpoint": null,
+  "phase": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+  "pipeline_alive": true,
+  "pipeline_birth": 605227026,
+  "pipeline_pid": 3063879,
+  "prior_namespace_preserved": true,
+  "prior_run_id": "afa30a5dab184b32a6c89c155e550235",
+  "processed_opportunities": 0,
+  "reward_latest": null,
+  "reward_window_mean": null,
+  "reward_window_range": null,
+  "reward_window_steps": [],
+  "role": "qprobe_flex_fresh0_actual_initial_scalar_report",
+  "run_id": "00028e46b70b40a2ba6980b1c988f92c",
+  "runtime_acceptance": false,
+  "scalar_only": true,
+  "skipped_opportunities": 0,
+  "source_commit": "d85979d8d2af24e6468ca7565078acd8bc1ae1f7",
+  "source_map_sha256": "65300dc9ed7b217c6e243fcf7720b790c0799b66e484daec2a9499a7c64eb8cb",
+  "stage64": null,
+  "successful_actor_adam": 0,
+  "target_outers": 200,
+  "teacher_complete": false,
+  "teacher_target_questions": 5120,
+  "teacher_target_trajectories": 25600,
+  "teacher_warmup_counted_as_formal": false,
+  "training_physical_indices": [
+    0,
+    1,
+    2,
+    3
+  ]
+}
