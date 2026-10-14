@@ -100,9 +100,14 @@ def validate_native_four(job, node, visible, active_jobs, gpu_rows, applications
     assert job['JobId'] in active_jobs and len(visible)==len(set(visible))==4
     physical={int(row[0]):row[1].strip() for row in gpu_rows}
     assert len(physical)==len(gpu_rows) and len(set(physical.values()))==len(physical)
-    assert len(allocated)==len(set(allocated))==4 and set(allocated)<=set(physical)
+    # Under ConstrainDevices, NVML indices are relative to the permitted
+    # devices, while Slurm's global GRES IDs retain their device-file numbering.
+    # Keep both namespaces and authenticate their common UUIDs. Never infer the
+    # assigned physical GPUs from the cgroup-relative numeric indices alone.
+    minors={int(row[3]):row[1].strip() for row in gpu_rows} if all(len(row)>3 for row in gpu_rows) else physical
+    assert len(minors)==len(physical) and len(allocated)==len(set(allocated))==4 and set(allocated)<=set(minors), 'Assigned Slurm devices absent from actual minor-number inventory'
     expected=[physical[int(token)] if token.isdecimal() else token for token in visible]
-    assigned={physical[index] for index in allocated}
+    assigned={minors[index] for index in allocated}
     assert len(set(expected))==4 and set(expected)==assigned and actual_cuda_uuids==expected
     assert all(row[0].strip() not in assigned for row in applications), 'Assigned GPUs have foreign compute applications'
     return True
@@ -128,12 +133,21 @@ def admit(base):
     assert job['JobId']==job_id
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     active=subprocess.check_output(['squeue','-h','-w',node,'-t','RUNNING,COMPLETING','-o','%i'],text=True).split()
-    raw=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total','--format=csv,noheader,nounits'],text=True)
+    query='index,uuid,memory.total,minor_number' if size==4 and not sharing else 'index,uuid,memory.total'
+    raw=subprocess.check_output(['nvidia-smi','--query-gpu='+query,'--format=csv,noheader,nounits'],text=True)
     rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
     raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
     applications=[r for r in csv.reader(io.StringIO(raw_apps)) if r]
     assert torch.cuda.device_count()==size
     actual=cuda_uuids(size)
+    observation=dict(run_id=run['run_id'],slurm_job_id=job_id,node=node,
+        training_world_size=size,actual_allocation_detail=detail,visible_devices=visible,
+        slurm_job_gpus=os.environ.get('SLURM_JOB_GPUS'),actual_allocated_indices=allocated,
+        physical_gpu_inventory=rows,actual_cuda_runtime_uuids=actual,
+        active_node_jobs=active,foreign_compute_applications=applications,checked_unix=time.time(),
+        accepted=False,scope='raw actual resource observation before admission; not acceptance')
+    with (base/'logs/native-allocation-observation.json').open('x') as f:
+        json.dump(observation,f,indent=2);f.flush();os.fsync(f.fileno())
     cohosts = run.get('shared_gpu_cohosts')
     allowed = None
     if cohosts is not None:
@@ -164,6 +178,11 @@ def admit(base):
         foreign_compute_applications=applications,shared_gpu_policy=run.get('shared_gpu_policy'),
         bound_cohosts=cohosts,actual_memory_inventory=memory_rows,checked_unix=time.time(),
         training_world_size=size, scope='native allocation and actual UUID mapping before project GPU work; not model/GRPO acceptance')
+    if size==4 and not sharing:
+        by_uuid={row[1]:int(row[0]) for row in rows}
+        proof.update(gpu_index_mapping_policy='slurm_global_minor_to_process_nvml_uuid_v1',
+            actual_nvml_indices=[by_uuid[value] for value in actual],
+            actual_gpu_minor_inventory=rows,slurm_job_gpus=os.environ.get('SLURM_JOB_GPUS'))
     if sharing:
         proof.update(slurm_gpu_sharing_policy=SHARED_POLICY,slurm_reserved_gpu_count=0,
             actual_shared_physical_indices=list(range(8)),

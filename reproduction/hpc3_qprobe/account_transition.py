@@ -221,6 +221,8 @@ def prepare_target():
     from reproduction.hpc3_qprobe.control import prepare,link
     prepare(TARGET)
     link(TARGET/'repo',source)
+    (TARGET/'source').mkdir()
+    link(TARGET/'source'/SOURCE,source)
     link(TARGET/'question-features',BASE/'question-features')
     for name in ('features-ready.json','official-model-manifest.json'):
         link(TARGET/'preparation'/name,BASE/'preparation'/name)

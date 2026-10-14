@@ -33,6 +33,11 @@ def bind(run,base):
                shared_physical_gpu_uuids=a['physical_gpu_uuids'],shared_native_cohost_births=a['allowed_native_jobs'])
 
 def physical_indices(allocation):
+    if allocation.get('gpu_index_mapping_policy')=='slurm_global_minor_to_process_nvml_uuid_v1':
+        assert allocation['training_world_size']==4 and len(set(allocation['actual_allocated_indices']))==4
+        indices=allocation['actual_nvml_indices']
+        assert len(indices)==len(set(indices))==4 and len(set(allocation['actual_cuda_runtime_uuids']))==4
+        return indices
     if allocation.get('slurm_gpu_sharing_policy')==POLICY:
         assert allocation['actual_allocated_indices']==[] and allocation['slurm_reserved_gpu_count']==0
         indices=allocation['actual_shared_physical_indices']

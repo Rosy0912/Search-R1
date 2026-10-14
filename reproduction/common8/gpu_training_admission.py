@@ -97,6 +97,10 @@ def _coverage(rows, run, claim, allocation, scheduler_receipts, *, entered):
         assert claim['hostname'] == allocation['node']
         assert physical == run['training_physical_indices'] + run['auxiliary_physical_indices'] == [0, 1, 2, 3, 5, 6]
         assert allocation['training_physical_indices'] == run['training_physical_indices'] == [0, 1, 2, 3]
+    elif size==4:
+        assert run.get('execution_site')=='hpc3' and allocation['training_world_size']==4
+        assert allocation['gpu_index_mapping_policy']=='slurm_global_minor_to_process_nvml_uuid_v1'
+        assert len(physical)==4 and len(allocation['physical_gpu_inventory'])>=4
     else:
         assert len(physical) == 8 and len(allocation['physical_gpu_inventory']) == 8
     assert len(set(physical)) == len(physical) and all(type(i) is int for i in physical)

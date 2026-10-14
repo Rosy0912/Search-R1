@@ -58,5 +58,35 @@ class NativeFourTests(unittest.TestCase):
         bad=list(args);bad[7]=['uuid-0','uuid-5','uuid-6','uuid-7']
         with self.assertRaises(AssertionError):validate_native_four(*bad)
 
+    def test_cgroup_nvml_indices_are_bound_to_slurm_global_minors_by_uuid(self):
+        from reproduction.common8.shared_slurm import physical_indices
+        assigned=[0,1,4,5]
+        rows=[[str(i),'uuid-'+str(minor),'80000',str(minor)] for i,minor in enumerate(assigned)]
+        job=dict(JobId='123',JobState='RUNNING',NodeList='n',NumNodes='1',TresPerNode='gres/gpu:4')
+        args=(job,'n',['0','1','2','3'],['123'],rows,[],assigned,['uuid-'+str(i) for i in assigned])
+        self.assertTrue(validate_native_four(*args))
+        bad=list(args);bad[6]=[0,1,2,3]
+        with self.assertRaises(AssertionError):validate_native_four(*bad)
+        bad=list(args);bad[7]=['uuid-0','uuid-1','uuid-5','uuid-4']
+        with self.assertRaises(AssertionError):validate_native_four(*bad)
+        proof=dict(training_world_size=4,gpu_index_mapping_policy='slurm_global_minor_to_process_nvml_uuid_v1',
+                   actual_allocated_indices=assigned,actual_nvml_indices=[0,1,2,3],actual_cuda_runtime_uuids=args[7])
+        self.assertEqual(physical_indices(proof),[0,1,2,3])
+
+    def test_actual_four_rank_occupancy_coverage_uses_nvml_indices(self):
+        from reproduction.common8.test_gpu_training_admission import ActualGPUCoverageTests
+        fixture=ActualGPUCoverageTests();rows,run,claim,allocation,scheduler=fixture.fixture()
+        run.update(profile='common8',execution_site='hpc3',training_world_size=4)
+        allocation.update(training_world_size=4,gpu_index_mapping_policy='slurm_global_minor_to_process_nvml_uuid_v1',
+            actual_allocated_indices=[0,1,4,5],actual_nvml_indices=[0,1,2,3],
+            physical_gpu_inventory=allocation['physical_gpu_inventory'][:4],
+            actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'][:4])
+        for row in rows:row['gpus']=row['gpus'][:4]
+        scheduler={str(i):scheduler[str(i)] for i in range(4)}
+        proof=fixture.verify((rows,run,claim,allocation,scheduler))
+        self.assertEqual(len(proof['actual_device_inventory']),4)
+        allocation['actual_nvml_indices']=[0,1,4,5]
+        with self.assertRaises(AssertionError):fixture.verify((rows,run,claim,allocation,scheduler))
+
 
 if __name__=='__main__':unittest.main()
