@@ -1,4 +1,4 @@
-"""Prepare and admit the real eight-GPU allocation, then extra teacher warmup."""
+"""Prepare the bound native allocation, then the extra frozen teacher warmup."""
 import argparse
 import json
 import os
@@ -12,6 +12,8 @@ def storage_admission(base,model):
     from reproduction.common8.disk_admission import checkpoint_floor
     from search_g1.qprobe_warmup import write_once
     root=Path('/data/user/jxu957/experiments')
+    print(json.dumps(dict(stage='hpc3_personal_storage_measurement_started',
+        account_experiment_root=str(root),checked_unix=time.time(),slurm_job_id=os.environ.get('SLURM_JOB_ID'))),flush=True)
     result=subprocess.run(['du','-s','-B1',str(root)],capture_output=True,text=True,timeout=1800)
     if result.returncode or result.stderr.strip():raise ValueError('PERSONAL_STORAGE_USAGE_NOT_VERIFIED: '+result.stderr[-2000:])
     measured,path=result.stdout.strip().split('\t');measured=int(measured)

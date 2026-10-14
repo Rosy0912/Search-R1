@@ -83,6 +83,10 @@ def submit(commit):
     source=ROOT/'source'/commit
     if binding['source_commit']!=commit or (TARGET/'repo').resolve()!=source or (TARGET/'source'/commit).resolve()!=source:
         raise ValueError('Fresh recovery source binding differs')
+    proof=json.loads((ROOT/'preparation'/('source-'+commit+'-verification.json')).read_text())
+    if proof['commit']!=commit or proof['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS':raise ValueError('Repair publication differs')
+    for name,sha in proof['files'].items():
+        if hashlib.sha256((source/name).read_bytes()).hexdigest()!=sha:raise ValueError('Actual submitted repair bytes differ: '+name)
     claim=TARGET/'preparation/training-submit-claim.json';receipt=TARGET/'preparation/training-submission.json'
     if claim.exists() or receipt.exists():raise ValueError('Recovery submission already attempted; never duplicate')
     jobs=subprocess.check_output(['squeue','-h','-u','jxu957','-o','%i|%j|%T'],text=True,timeout=30)

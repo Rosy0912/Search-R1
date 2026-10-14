@@ -13,7 +13,7 @@ from reproduction.common8.policy_calibration_plan import canonical_bytes
 
 class ActualGPUCoverageTests(unittest.TestCase):
     def fixture(self):
-        run = dict(run_id='fresh200', started_unix=1., source_sha256={'runtime.py': 'a' * 64})
+        run = dict(profile='common8',training_world_size=8,run_id='fresh200', started_unix=1., source_sha256={'runtime.py': 'a' * 64})
         claim = dict(run_id=run['run_id'], slurm_job_id='123', claimed_unix=10., shell_pid=41, shell_start_ticks=71)
         producer = dict(pid=40, start_ticks=70, sid=40, uid=os.getuid())
         allocation = dict(accepted=True, run_id=run['run_id'], slurm_job_id='123',
