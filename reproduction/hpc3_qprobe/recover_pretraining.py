@@ -21,9 +21,33 @@ FAILED_COMMIT='300734e78705936b9b3885248ac3ffe7f8cbd3aa'
 JOB='717554'
 
 
+def read_terminal_job(preserved_detail):
+    result=subprocess.run(['scontrol','show','job','-d',JOB],capture_output=True,text=True,timeout=30)
+    if result.returncode==0:
+        return result.stdout,dict(kind='live_terminal_job',checked_unix=time.time())
+    # Completed jobs age out of slurmctld quickly. Its missing record is not
+    # terminal evidence: require fresh accounting plus the preserved actual
+    # owner's detailed job birth, rather than treating invisibility as failure.
+    accounting=subprocess.check_output(['sacct','-nP','-j',JOB,'-X',
+        '--format=JobID,State,ExitCode,User,UID,Account,QOS,Start,End,NodeList'],text=True,timeout=30)
+    rows=[line.split('|') for line in accounting.splitlines() if line.strip()]
+    selected=[row for row in rows if row[0]==JOB]
+    if len(selected)!=1:raise ValueError('Actual terminal accounting row missing or duplicated')
+    row=selected[0];old=fields(preserved_detail)
+    expected=[JOB,'FAILED',old['ExitCode'],'jxu957','14090','jxu957','formal-user',old['StartTime'],old['EndTime'],old['NodeList']]
+    if row!=expected:raise ValueError('Fresh actual terminal accounting differs from preserved own job')
+    return preserved_detail,dict(kind='fresh_accounting_and_preserved_owner_birth',
+        accounting=accounting,scontrol_exit=result.returncode,scontrol_stderr=result.stderr,checked_unix=time.time())
+
+
 def terminal():
     if os.getuid()!=14090:raise ValueError('Actual jxu957 owner required')
-    detail=subprocess.check_output(['scontrol','show','job','-d',JOB],text=True,timeout=30)
+    evidence=FAILED/('failed-job-'+JOB)
+    saved=evidence/'terminal-and-files.json'
+    if not saved.is_file() or saved.is_symlink() or saved.stat().st_uid!=14090:
+        raise ValueError('Actual owner failure evidence required before recovery')
+    preserved=json.loads(saved.read_text())
+    detail,readback=read_terminal_job(preserved['terminal']['stdout'])
     actual=fields(detail)
     expected=dict(JobId=JOB,JobState='FAILED',UserId='jxu957(14090)',Account='jxu957',
         QOS='formal-user',WorkDir=str(FAILED),Restarts='0',
@@ -40,13 +64,10 @@ def terminal():
     log=FAILED/'logs'/('training-'+JOB+'.log')
     if 'validate_native_four' not in log.read_text() or 'AssertionError' not in log.read_text():
         raise ValueError('Known actual allocation failure absent')
-    evidence=FAILED/('failed-job-'+JOB)
-    if not (evidence/'terminal-and-files.json').is_file():raise ValueError('Preserve failure evidence before recovery')
-    preserved=json.loads((evidence/'terminal-and-files.json').read_text())
     for name,record in preserved['files'].items():
         if name.startswith('logs/') and hashlib.sha256((FAILED/name).read_bytes()).hexdigest()!=record['sha256']:
             raise ValueError('Preserved terminal log changed')
-    return dict(actual=actual,detail=detail,prior=prior,failed_run_id=run['run_id'],checked_unix=time.time())
+    return dict(actual=actual,detail=detail,terminal_readback=readback,prior=prior,failed_run_id=run['run_id'],checked_unix=time.time())
 
 
 def fresh(commit):
