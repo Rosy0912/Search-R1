@@ -3,6 +3,8 @@ import argparse
 import os
 import selectors
 import socket
+import errno
+import sys
 
 p = argparse.ArgumentParser()
 p.add_argument('--source', required=True)
@@ -12,7 +14,13 @@ p.add_argument('--mss', type=int, default=1200)
 a = p.parse_args()
 assert 536 <= a.mss <= 1400
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.IPPROTO_TCP, socket.TCP_MAXSEG, a.mss)
+try:
+    s.setsockopt(socket.IPPROTO_TCP, socket.TCP_MAXSEG, a.mss)
+except OSError as e:
+    if e.errno not in (errno.EINVAL, errno.ENOPROTOOPT):
+        raise
+    print('TCP_MAXSEG override unsupported; using source-bound system TCP', file=sys.stderr)
+s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 s.bind((a.source, 0))
 s.settimeout(10)
 s.connect((a.host, a.port))
