@@ -65,12 +65,38 @@ def main():
     summary = load(Path(plan['output'])/'summary.json') if plan else None
     progress = load(Path(plan['output'])/'progress.json') if plan else None
     log = tail(CONTROL/'evaluation.log', 16384)
+    actions = []
+    for line in tail(CONTROL/'evaluation.log', 4194304).splitlines():
+        if 'TREE_ACTION_TIMING=' in line:
+            row = json.JSONDecoder().raw_decode(line.split('TREE_ACTION_TIMING=', 1)[1])[0]
+            actions.append(row)
+    utilization = {}
+    samples = []
+    for line in tail(CONTROL/'gpu-device-observer.jsonl', 524288).splitlines()[1:]:
+        try:
+            sample = json.loads(line)
+            if sample['rc']==0: samples.append(sample)
+        except ValueError:
+            pass
+    for sample in samples[-60:]:
+        for line in sample['device_sample'].strip().splitlines():
+            fields = line.split(', ')
+            utilization.setdefault(fields[1], []).append(float(fields[2]))
+    utilization = {uuid:dict(samples=len(values),mean=sum(values)/len(values),peak=max(values))
+                   for uuid,values in utilization.items()}
+    timing = dict(retained_actions=len(actions),
+                  wall_seconds=sum(row['wall_seconds'] for row in actions),
+                  driver_cpu_seconds=sum(row['driver_cpu_seconds'] for row in actions))
+    for key in ('generation_rpc_wall_seconds','retrieval_http_json_wall_seconds',
+                'semantic_prefix_scan_wall_seconds','generated_tokens'):
+        timing[key] = sum(row.get('cost_delta',{}).get(key,0) for row in actions)
     # Print structural events/errors only, never prompts, document contents, or answers.
     selected = [line for line in log.splitlines() if any(word in line for word in
                 ('FINAL51713_', 'Traceback', 'Error:', 'Exception:', 'ERROR', 'Loading', 'checkpoint'))]
     print(json.dumps(dict(time=time.time(), control=str(CONTROL), plan=plan, launch=launch, actual_exit=terminal,
                           process=process, workers=workers, gpu=dict(rc=gpu.returncode, stdout=gpu.stdout,
                           stderr=gpu.stderr), summary=summary, progress=progress, structural_log_tail=selected[-15:],
+                          recent_device_utilization=utilization, retained_action_timing=timing,
                           scope='Latest retained worker events and current whole-device utilization; cohost work may contribute')))
 
 
