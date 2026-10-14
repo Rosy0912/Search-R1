@@ -392,7 +392,8 @@ class OnlineQProbe:
         finally:
             if os.path.exists(temporary): os.unlink(temporary)
         self.actor_snapshot_id = actor_snapshot_id
-        return dict(path=str(path), checkpoint_sha=sha, actor_snapshot_id=actor_snapshot_id,
+        return dict(path=str(path), checkpoint_sha=sha, sha256=sha, bytes=path.stat().st_size,
+                    actor_snapshot_id=actor_snapshot_id,
                     version=self.version, completed_outer=self.completed_outer,
                     feature_spec_sha=self.feature_spec_sha, update_count=self.update_count)
 

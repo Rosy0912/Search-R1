@@ -78,6 +78,10 @@ def logprobs_of_labels_v2(logits: torch.FloatTensor, labels):
     A memory efficient implementation of logprobs_from_logits
     """
     assert logits.dtype == torch.float32, 'Using bf16 logits with logprobs_of_labels_v2 may lead to divergence'
+    if (os.environ.get('SEARCH_G1_PROFILE') == 'common8'
+            and torch.is_grad_enabled() and logits.requires_grad):
+        from search_g1.logprob_memory import selected_log_probs
+        return selected_log_probs(logits, labels)
     logprobs_labels = torch.gather(logits, dim=-1, index=labels.unsqueeze(-1))
     logprobs_labels = logprobs_labels - torch.logsumexp(logits, dim=-1, keepdim=True)
     return logprobs_labels.squeeze(-1)

@@ -77,6 +77,7 @@ def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_confi
         rollout_sources={name:value for name,value in manifest['source_sha256'].items()
             if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
                 'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
+                'reproduction/common8/context_budget.py',
                 'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
 
 

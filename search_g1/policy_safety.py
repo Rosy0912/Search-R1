@@ -1,4 +1,4 @@
-"""Unreduced Dual-Clip and collective old-policy monitoring; no rollback."""
+"""Unreduced Dual-Clip and collective old-policy monitoring with caller-owned rollback."""
 import math
 import torch
 import torch.distributed as dist
@@ -12,7 +12,8 @@ class RecoverableGuard(RuntimeError):
     """A collectively decided policy/numerical guard, before the next Adam write.
 
     Catching this type retains all earlier actual Adam writes. Configuration,
-    identity, transport, storage and post-write state failures never use it.
+    identity, transport and storage failures never use it. A post-write numerical
+    rejection requires an active caller-owned optimizer transaction.
     """
     def __init__(self, *, stage, reasons, diagnostic=None):
         self.stage = stage
@@ -58,8 +59,10 @@ def agree_attempt_result(result, *, group=None):
         shared = ('status', 'logical_update', 'attempt_id', 'attempt_index',
                   'optimizer_writes_before', 'optimizer_writes_after',
                   'optimizer_writes_this_attempt', 'opportunities_processed',
-                  'opportunity_statuses', 'guard_stage', 'guard_reasons')
-        if any(any(peer[name] != result[name] for name in shared) for peer in results):
+                  'opportunity_statuses', 'guard_stage', 'guard_reasons',
+                  'complete_outer', 'full_budget_complete', 'recovery_protocol_version',
+                  'optimizer_calls_this_attempt', 'optimizer_rollbacks_this_attempt')
+        if any(any(peer.get(name) != result.get(name) for name in shared) for peer in results):
             raise RuntimeError('Collective attempt dispositions or actual Adam counts differ')
     return result
 

@@ -45,11 +45,34 @@ INTEGRATION_EDITS = frozenset((
     'search_g1/test_qprobe_runtime.py',
     'search_g1/qprobe_warmup.py',
     'search_g1/test_qprobe_warmup.py',
+    # Bounded-context and recoverable-update repair. Each actual source pair
+    # remains inventoried against the pinned baseline and original receipt.
+    'reproduction/common8/context_budget.py',
+    'reproduction/common8/generation_behavior.py',
+    'reproduction/common8/formal_attempt_audit.py',
+    'reproduction/common8/recoverable_attempt.py',
+    'reproduction/common8/runtime.py',
+    'reproduction/common8/scheduler.py',
+    'reproduction/common8/update_evidence.py',
+    'reproduction/common8/worker_evidence.py',
+    'search_g1/full_state_restore.py',
+    'search_g1/logprob_memory.py',
+    'search_g1/numerics.py',
+    'search_g1/optimizer_transaction.py',
+    'search_g1/policy_safety.py',
+    'search_g1/qprobe_checkpoint.py',
+    'search_g1/qprobe_model.py',
+    'search_g1/training_state.py',
+    'verl/trainer/ppo/ray_trainer.py',
+    'verl/utils/torch_functional.py',
+    'verl/workers/actor/dp_actor.py',
 ))
 
 # These implement original G1 calibration, hidden-feature extraction, binary
 # head fitting, frozen readout and strict labels. New question-probe labels do
-# not authorize changing them. Model/data/artifact bytes are checked separately
+# not authorize changing them. Generation is versioned separately: new bounded
+# rollout contexts do not claim to reproduce the historical calibration traces.
+# Model/data/artifact bytes are checked separately
 # by adopt_initial_probes._compatible and _original_artifacts.
 FROZEN_G1_SOURCES = (
     'reproduction/common8/refit.py',
@@ -63,7 +86,6 @@ FROZEN_G1_SOURCES = (
     'reproduction/common8/adopt_initial_probes.py',
     'reproduction/common8/verify_data.py',
     'reproduction/common8/budget.json',
-    'reproduction/common8/generation_behavior.py',
 )
 SCIENTIFIC_IDENTITY = (
     'initial_model', 'reference_model', 'initial_model_sha256',

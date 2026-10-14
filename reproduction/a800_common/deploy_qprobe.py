@@ -28,7 +28,7 @@ BASELINE = '/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d1
 BASELINE_COMMIT = '34e63b7b12f4056503803905c1b3dd1be95f0adc'
 BASELINE_RUN_ID = '1db662001a0f4d998928bcf6f5f33c9d'
 INITIAL_PROBES = '/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
-TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2'
+TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-resilient4096-v3'
 FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
 FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
 FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
@@ -44,7 +44,7 @@ MAX_BUNDLE = 32 * 1024**2
 REVIEW_CHECKS = (
     'official_model_and_canonical_data', 'frozen_teacher_5120_x_5',
     'bootstrap_all_5120_groups', 'exploration_64', 'formal_200_not_201',
-    'four_rank_bf16_local4_global16_accum8_ref8', 'unchanged_guards_lr_warmup57',
+    'four_rank_bf16_local4_global16_accum8_ref8', 'recoverable_guards_lr_warmup57',
 )
 
 

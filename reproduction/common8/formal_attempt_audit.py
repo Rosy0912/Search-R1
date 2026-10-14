@@ -25,7 +25,7 @@ from reproduction.common8.safety_calibration_evidence import (
 NUMERICAL_GUARD_STAGES = frozenset((
     'before_gradient_clipping', 'before_optimizer_step', 'before_dual_clip_exp',
     'before_backward', 'before_fp64_gradient_clipping', 'before_fp64_clip_write',
-    'after_fp64_gradient_clipping', 'measured_after_gradient_clipping',
+    'after_fp64_gradient_clipping', 'measured_after_gradient_clipping', 'after_optimizer_write',
 ))
 INCOMPLETE_REASONS = frozenset((
     'nonfinite_global_totals', 'nonfinite_or_negative_effective_input',
@@ -122,8 +122,91 @@ def _monitor_statistics(row):
     return {name: copy.deepcopy(row[name]) for name in GLOBAL_FIELDS}
 
 
+def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
+    """Audit only actual executed opportunities; rolled-back calls are not writes."""
+    observations = {}; final_rejections = []; decisions_by_rank = []
+    for rank in ranks(run):
+        rows = rows_by_rank[rank]
+        decisions = [row for row in rows if row['kind']=='OPPORTUNITY']
+        monitors = [row for row in rows if row['kind']=='POLICY_MONITOR']
+        writes = [row for row in rows if row['kind']=='OPTIMIZER_WRITE']
+        _require([row['opportunity_index'] for row in decisions]==list(range(attempt['opportunities_processed'])),
+                 'Transaction opportunities are missing or reordered')
+        counter = attempt['optimizer_writes_before']; rejections = rejection_before
+        identity = None
+        for mini, decision in enumerate(decisions):
+            _row(decision, rank, binding, 'OPPORTUNITY')
+            context = dict(logical_update=attempt['logical_update'], minibatch_index=mini,
+                prior_optimizer_writes=counter, attempt_id=attempt['attempt_id'],
+                attempt_index=attempt['attempt_index'],
+                behavior_probability_gate_sha256=attempt['behavior_probability_gate_sha256'])
+            _require(decision['context']==context and decision['processed'] is True,
+                     'Transaction opportunity identity differs')
+            success = decision['status']=='written'
+            rollback = decision['status']=='rolled_back_guard'
+            _require(decision['status'] in ('written','rolled_back_guard','skipped_guard') and
+                     decision['optimizer_write_succeeded'] is success and
+                     decision['optimizer_write_rolled_back'] is rollback and
+                     decision['optimizer_call_attempted'] is (success or rollback),
+                     'Transaction call/write/rollback disposition differs')
+            _require(decision['optimizer_writes_before']==counter and
+                     decision['optimizer_writes_after']==counter+int(success), 'Transaction retained write counter differs')
+            local_monitors = [row for row in monitors if row['context']['minibatch_index']==mini]
+            stages = ['before_minibatch', 'after_minibatch'] if success or decision['guard_stage']=='after_minibatch' else ['before_minibatch']
+            _require([row['stage'] for row in local_monitors]==stages,
+                     'Transaction monitor execution differs from actual guard boundary')
+            for row in local_monitors:
+                _row(row, rank, binding, 'POLICY_MONITOR')
+                _require(row['context']==context and row['calibration_sha256']==binding['calibration_sha256'] and
+                         row['execution_role']=='production' and row['monitoring_scope']==monitor_scope(run),
+                         'Transaction monitor policy identity differs')
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
+                if identity is None: identity = row['monitor_identity']
+                _require(identity==row['monitor_identity'], 'Transaction frozen sample changed')
+                statistics = _monitor_statistics(row)
+                rejections += int(not row['allowed'])
+                _require(row['rejection_count']==rejections, 'Transaction rejection counter differs')
+                _require(row['optimizer_writes']==counter+int(row['stage']=='after_minibatch'),
+                         'Transaction monitor provisional write counter differs')
+                key=(mini,row['stage'])
+                if key in observations:
+                    _require(observations[key]==statistics, 'Transaction ranks disagree on global statistics')
+                else: observations[key]=statistics
+                if not row['allowed']:
+                    _require(decision['guard_stage']==row['stage'] and decision['guard_reasons']==row['reasons'],
+                             'Transaction rejected monitor lacks corresponding guard')
+            selected_writes=[row for row in writes if row['context']['minibatch_index']==mini]
+            _require(len(selected_writes)==int(success), 'Rolled-back physical call cannot be a retained write receipt')
+            if success:
+                row=selected_writes[0]; _row(row,rank,binding,'OPTIMIZER_WRITE')
+                _require(row['context']==context and row['write_count']==counter+1 and
+                         row['learning_rates'] and all(rate==consumed_lr(attempt['logical_update']) for rate in row['learning_rates']),
+                         'Transaction accepted Adam counter or LR differs')
+                _finite(row['gradient_norm_before'],'gradient_norm_before')
+                _require(_finite(row['gradient_norm_after'],'gradient_norm_after') <=
+                         GRADIENT_CLIP_LIMIT+GRADIENT_CLIP_FLOAT32_TOLERANCE, 'Transaction gradient clip differs')
+            else:
+                _require(mini==len(decisions)-1 and decision['guard_reasons'] and
+                         decision['guard_stage'] in NUMERICAL_GUARD_STAGES | {'before_minibatch','after_minibatch'},
+                         'Guard must end stale rollout reuse immediately')
+            _require(decision['status']==attempt['opportunity_statuses'][mini], 'Driver and transaction worker statuses differ')
+            counter += int(success)
+        terminal = rows[-1]
+        _row(terminal, rank, binding, 'OUTER_BUDGET' if attempt['complete_outer'] else 'ABORTED_ATTEMPT')
+        _require(terminal['opportunities_processed']==len(decisions) and terminal['optimizer_writes']==counter-attempt['optimizer_writes_before'] and
+                 terminal['cumulative_writes']==counter==attempt['optimizer_writes_after'], 'Transaction terminal totals differ')
+        final_rejections.append(rejections)
+        decisions_by_rank.append([{key:value for key,value in row.items() if key!='rank'} for row in decisions])
+    _require(all(value==decisions_by_rank[0] for value in decisions_by_rank), 'Transaction rank dispositions differ')
+    _require(len(set(final_rejections))==1, 'Transaction rank rejection counts differ')
+    return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
+                guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()))
+
+
 def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Require40 true pre/post monitors and20 dispositions for this real UUID."""
+    if attempt.get('recovery_protocol_version',1)==2:
+        return _audit_transaction_rows(rows_by_rank,binding,attempt,rejection_before,run=run)
     observations = {}; dispositions = {}; identities = {}; final_rejections = []
     outer = attempt['logical_update']; start = attempt['optimizer_writes_before']
     successes = attempt['optimizer_writes_this_attempt']; complete = attempt['complete_outer']
@@ -323,23 +406,29 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
             _require(job is None and attempt['execution_backend'] == 'ssh_local' and
                      attempt['execution_id'] == run['execution_id'], 'Actual driver local execution identity differs')
         count = _integer(attempt['optimizer_writes_this_attempt'], 'actual attempt writes')
-        _require(count <= 20 and attempt['optimizer_writes_before'] == writes and
-                 attempt['optimizer_writes_after'] == writes + count and
-                 type(attempt['opportunities_processed']) is int and attempt['opportunities_processed'] == 20,
-                 'Actual driver normal return is partial or has wrong retained write counters')
-        complete = count > 0
+        version=attempt.get('recovery_protocol_version',1)
+        processed=_integer(attempt['opportunities_processed'], 'opportunities_processed', minimum=1)
+        _require(count <= processed <= 20 and attempt['optimizer_writes_before'] == writes and
+                 attempt['optimizer_writes_after'] == writes + count, 'Actual retained write counters differ')
+        complete = count > 0; full_budget=count==20 and processed==20
         _require(type(attempt['complete_outer']) is bool and attempt['complete_outer'] is complete and
-                 attempt['status'] == ('complete' if complete else 'recoverable_guard') and
+                 attempt['status'] == ('complete' if full_budget or (version==1 and complete) else 'partial' if complete else 'recoverable_guard') and
                  type(attempt['scheduler_advances']) is int and attempt['scheduler_advances'] == int(complete) and
-                 attempt['completed_outer'] == completed + int(complete), 'Actual driver completion or warmup differs')
+                 attempt['completed_outer'] == completed + int(complete), 'Actual driver safe progress or warmup differs')
         statuses = attempt['opportunity_statuses']
-        _require(isinstance(statuses, list) and len(statuses) == 20 and
-                 all(status in ('written', 'written_with_post_guard', 'skipped_guard') for status in statuses) and
-                 sum(status != 'skipped_guard' for status in statuses) == count, 'Actual driver opportunity returns differ')
-        _require(attempt['guard_stage'] == (None if complete else 'all_update_opportunities_skipped') and
-                 attempt['guard_reasons'] == ([] if complete else ['no_successful_adam_write']) and
-                 attempt['retained_partial_adam_writes'] is (not complete) and attempt['no_automatic_rollback'] is True,
-                 'Actual driver skip/fatal/rollback semantics differ')
+        _require(isinstance(statuses, list) and len(statuses) == processed and
+                 all(status in ('written', 'written_with_post_guard', 'skipped_guard','rolled_back_guard') for status in statuses) and
+                 sum(status in ('written','written_with_post_guard') for status in statuses) == count,
+                 'Actual driver opportunity returns differ')
+        if version==2:
+            _require(attempt['full_budget_complete'] is full_budget and attempt['opportunities_unattempted']==20-processed and
+                     attempt['current_step_rollback'] is True and attempt['no_automatic_rollback'] is False,
+                     'Transaction driver full budget/rollback semantics differ')
+        else:
+            _require(processed==20 and attempt['guard_stage'] == (None if complete else 'all_update_opportunities_skipped') and
+                     attempt['guard_reasons'] == ([] if complete else ['no_successful_adam_write']) and
+                     attempt['retained_partial_adam_writes'] is (not complete) and attempt['no_automatic_rollback'] is True,
+                     'Historical driver semantics differ')
         aborted += int(not complete)
         _require(attempt['cumulative_aborted_attempts'] == aborted, 'Actual driver retry counter differs')
         # A paired restore supplies only the current execution's suffix rows;
@@ -349,11 +438,11 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         if record is not None:
             _require(record['run_id'] == run['run_id'] and record['attempt_id'] == attempt['attempt_id'] and
                      record['attempt_index'] == ordinal and record['optimizer_writes_before'] == writes and
-                     record['optimizer_writes_after'] == writes + count and record['opportunities_processed'] == 20,
+                     record['optimizer_writes_after'] == writes + count and record['opportunities_processed'] == processed,
                      'Actual completed update differs from the real driver attempt')
             _require(type(record['actual_optimizer_writes']) is int and record['actual_optimizer_writes'] == count and
                      record['metrics']['actor/optimizer_steps_this_update'] == count and
-                     record['metrics']['actor/update_opportunities_this_attempt'] == 20 and
+                     record['metrics']['actor/update_opportunities_this_attempt'] == processed and
                      record['metrics']['actor/skipped_update_opportunities'] == 20 - count,
                      'Actual scalar update ledger differs from retained Adam writes/opportunities')
             gate = read_gate_receipt(base, run, outer, update_record=record)
@@ -376,7 +465,7 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                 end = row['kind'] != 'BEGIN'; advanced = row['kind'] == 'COMPLETE'
                 _require(row['writes_before'] == writes and row['writes_after'] == writes + (count if end else 0) and
                          row['actual_optimizer_writes'] == (count if end else 0) and
-                         row['opportunities_processed'] == (20 if end else 0) and row['optimizer_opportunities'] == 20 and
+                         row['opportunities_processed'] == (processed if end else 0) and row['optimizer_opportunities'] == 20 and
                          row['completed_outer_before'] == completed and row['completed_outer_after'] == completed + int(advanced) and
                          row['scheduler_advances'] == int(advanced), 'Actual scheduler differs from the real driver attempt')
             scheduler_cursors[rank] += len(selected)
@@ -385,10 +474,11 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                 selected.append(rows[cursor]); cursor += 1
             worker_cursors[rank] = cursor; rows_by_rank[rank] = selected
         audit = _audit_monitor_rows(rows_by_rank, binding, attempt, rejections, run=run)
-        _require(audit['global_monitor_count'] == 40, 'Need40 actual global monitors for every attempt')
+        if version==1: _require(audit['global_monitor_count'] == 40, 'Need40 historical monitors for every attempt')
         rejections = audit['rejection_count']
         summaries.append(dict(attempt_id=attempt['attempt_id'], attempt_index=ordinal, logical_update=outer,
-            complete_outer=complete, actual_optimizer_writes=count, global_monitor_count=40,
+            complete_outer=complete, full_budget_complete=full_budget, opportunities_processed=processed,
+            actual_optimizer_writes=count, global_monitor_count=audit['global_monitor_count'],
             guard_triggered_monitor_count=audit['guard_triggered_monitor_count']))
         writes += count; completed += int(complete)
     _require(completed == last and attempts[-1]['complete_outer'] is True, 'Actual attempt prefix does not end at the requested COMPLETE')
@@ -401,9 +491,10 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         structural_accepted=True, completed_outer_count=completed, cutoff_attempt_index=cutoff,
         actual_attempt_count=len(attempts), source_completed_outer=prefix['completed_outer'],
         source_actual_optimizer_writes_per_rank=prefix['writes'], fully_skipped_attempt_count=aborted-prefix['aborted'],
-        processed_opportunities_per_rank=len(attempts) * 20, actual_optimizer_writes_per_rank=writes,
-        completed_outer_global_monitor_count=(completed-prefix['completed_outer']) * 40, retry_global_monitor_count=(aborted-prefix['aborted']) * 40,
-        unique_global_monitor_count=len(attempts) * 40, cumulative_policy_rejections=rejections,
+        processed_opportunities_per_rank=sum(row['opportunities_processed'] for row in summaries), actual_optimizer_writes_per_rank=writes,
+        completed_outer_global_monitor_count=sum(row['global_monitor_count'] for row in summaries if row['complete_outer']),
+        retry_global_monitor_count=sum(row['global_monitor_count'] for row in summaries if not row['complete_outer']),
+        unique_global_monitor_count=sum(row['global_monitor_count'] for row in summaries), cumulative_policy_rejections=rejections,
         guard_triggered_monitor_count=sum(row['guard_triggered_monitor_count'] for row in summaries),
         attempts=summaries, selected_driver_attempts_sha256=document_sha256(attempts),
         selected_rank_rows_sha256=selected_hashes, selected_scheduler_rows_sha256=scheduler_hashes,

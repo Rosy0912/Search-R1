@@ -1,4 +1,4 @@
-"""Formal attempt accounting; no rollback, optimizer mutation, or GPU claims."""
+"""Formal attempt accounting; safe progress and full twenty-write budgets are distinct."""
 import json
 import os
 import uuid
@@ -16,6 +16,7 @@ class AttemptProgress:
         self.attempt_index=0
         self.pending=None
         self.aborted_attempts=0
+        self.full_budget_outer=0
 
     def begin(self):
         assert self.pending is None and self.completed_outer<200
@@ -33,31 +34,46 @@ class AttemptProgress:
                 'optimizer_writes_after','optimizer_writes_this_attempt','opportunities_processed',
                 'opportunity_statuses','guard_stage','guard_reasons','complete_outer',
                 'scheduler_advances','completed_outer')
+        if rank_results[0].get('recovery_protocol_version')==2:
+            shared+=('recovery_protocol_version','full_budget_complete','opportunities_unattempted')
         representative=rank_results[0]
         assert all(all(row[key]==representative[key] for key in shared) for row in rank_results)
+        if representative.get('recovery_protocol_version')==2:
+            for key in ('optimizer_calls_this_attempt','optimizer_rollbacks_this_attempt'):
+                assert all(row.get(key)==representative.get(key) for row in rank_results)
         assert all(representative[key]==value for key,value in self.pending.items())
         before,after=representative['optimizer_writes_before'],representative['optimizer_writes_after']
         count=representative['optimizer_writes_this_attempt']
         processed=representative['opportunities_processed']
         assert type(before) is int and before==self.cumulative_writes and type(after) is int
         assert type(count) is int and after-before==count and 0<=count<=20
-        assert type(processed) is int and processed==20
+        assert type(processed) is int and 1<=processed<=20
+        version=representative.get('recovery_protocol_version',1)
+        if version==1: assert processed==20
         statuses=representative['opportunity_statuses']
         assert type(statuses) is list and len(statuses)==processed
-        assert all(value in ('written','written_with_post_guard','skipped_guard') for value in statuses)
-        assert sum(value!='skipped_guard' for value in statuses)==count
+        assert all(value in ('written','written_with_post_guard','skipped_guard','rolled_back_guard') for value in statuses)
+        assert sum(value in ('written','written_with_post_guard') for value in statuses)==count
         complete=count>0
         assert representative['complete_outer'] is complete
-        assert representative['status']==('complete' if complete else 'recoverable_guard')
+        full_budget=count==20 and processed==20
+        if version==2:
+            assert representative['full_budget_complete'] is full_budget
+            assert representative['opportunities_unattempted']==20-processed
+            assert representative['status']==('complete' if full_budget else 'partial' if complete else 'recoverable_guard')
+        else:
+            assert representative['status']==('complete' if complete else 'recoverable_guard')
         assert representative['scheduler_advances']==int(complete)
         assert representative['completed_outer']==self.completed_outer+int(complete)
         self.cumulative_writes=after
         if complete:self.completed_outer+=1
         else:self.aborted_attempts+=1
+        self.full_budget_outer+=int(full_budget)
         self.pending=None
         result={key:value for key,value in representative.items() if key!='rank'}
         result.update(all_ranks_agreed=True,real_rank_count=self.world_size,
-                      cumulative_aborted_attempts=self.aborted_attempts)
+                      cumulative_aborted_attempts=self.aborted_attempts,
+                      cumulative_full_budget_outers=self.full_budget_outer)
         return result
 
 

@@ -208,7 +208,8 @@ def publish_completed_pair(trainer, checkpoint):
         candidate_stream=current_stream,rng=driver_rng(),probe_version=live['version'],probe_round=live['round'],
         question_probe=manifest['question_probe'],question_probe_state_path=str(qpath),actor_snapshot_id=actor_id,
         attempt_progress=dict(completed_outer=outer,cumulative_writes=progress.cumulative_writes,
-            attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts),
+            attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts,
+            full_budget_outer=progress.full_budget_outer),
         used_attempt_ids=ranks[0]['used_attempt_ids'],policy_rejections=ranks[0]['policy_rejections']))
     _publish(directory/'reward-probe-manifest.json',live)
     boundary_record=_file_record(boundary['path'],relative_path='boundary-driver.pt')
@@ -223,7 +224,8 @@ def publish_completed_pair(trainer, checkpoint):
         feature_spec_sha=qstate['feature_spec_sha'],head_version=qstate['head_version'],
         hf_saved_tensor_count=complete['validated_tensor_count'],attempt_progress=
             dict(completed_outer=outer,cumulative_writes=progress.cumulative_writes,
-                 attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts),
+                 attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts,
+            full_budget_outer=progress.full_budget_outer),
         driver_state=dict(completed_outer=outer,source_consumed=current_stream['consumed_source_rows']),
         actual_cuda_restore_accepted=False,scope='full-file SHA and CPU saved-state checks; actual CUDA/FSDP reload pending',
         checked_unix=time.time())

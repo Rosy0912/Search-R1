@@ -172,6 +172,9 @@ def restore_worker(worker,receipt_path):
     equal_tree(cpu_tree(worker.actor_optimizer.state_dict()),saved['optimizer'])
     equal_tree(cpu_tree(worker.actor_lr_scheduler.state_dict()),saved['scheduler'])
     worker.actor._optimizer_writes=writes;worker.actor._complete_outers=outer
+    worker.actor._full_budget_outers=saved.get('full_budget_outers',outer if writes==outer*20 else 0)
+    worker.actor._optimizer_calls=saved.get('optimizer_calls',writes)
+    worker.actor._optimizer_rollbacks=saved.get('optimizer_rollbacks',0)
     worker.actor._last_attempt_index=saved['last_attempt_index'] if paired else 5
     worker.actor._inline_initial_optimizer_published=True
     if paired:

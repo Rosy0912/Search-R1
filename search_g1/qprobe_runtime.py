@@ -518,6 +518,8 @@ def _contracts(trainer, output, run):
     if not output.meta_info.get("behavior_sampling"):
         raise RuntimeError("Question-probe labels lack the actual generation sampling contract")
     sampling = dict(output.meta_info["behavior_sampling"])
+    from reproduction.common8.context_budget import protocol
+    sampling["context_budget_policy"] = output.meta_info.get("behavior_context_policy", protocol(trainer.config.data))
     config = trainer.config
     sampling.update(max_turns=config.max_turns,
         **{name: getattr(config.data, name, None) for name in

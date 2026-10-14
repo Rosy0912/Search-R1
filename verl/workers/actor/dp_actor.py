@@ -196,26 +196,59 @@ class DataParallelPPOActor(BasePPOActor):
         grad_norm = clip_global_l2(self.actor_module,self.config.grad_clip,
             context=getattr(self,"_gradient_diagnostic_context",None),recoverable=recoverable)
         require_finite({"grad_norm":grad_norm},stage="before_optimizer_step",process_group=group,recoverable=recoverable)
+        if recoverable:
+            from search_g1.optimizer_transaction import LocalOptimizerTransaction
+            self._pending_optimizer_transaction = LocalOptimizerTransaction(self.actor_module, self.actor_optimizer)
         self.actor_optimizer.step()
-        self._optimizer_writes=getattr(self,"_optimizer_writes",0)+1
-        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
-            from reproduction.common8.worker_evidence import append
-            append('OPTIMIZER_WRITE', dict(rank=torch.distributed.get_rank(),
-                context=self._gradient_diagnostic_context, write_count=self._optimizer_writes,
-                gradient_norm_before=float(grad_norm),gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
-                learning_rates=[float(part['lr']) for part in self.actor_optimizer.param_groups]),
-                collective=recoverable,group=group)
-        if (__import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8' or
-                not torch.distributed.is_initialized() or torch.distributed.get_rank()==0):
-            print("SEARCH_G1_OPTIMIZER_WRITE="+__import__("json").dumps(dict(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,context=getattr(self,"_gradient_diagnostic_context",None),write_count=self._optimizer_writes)),flush=True)
-        if __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8':
+        self._optimizer_calls = getattr(self, '_optimizer_calls', 0) + 1
+        self._optimizer_writes = getattr(self, '_optimizer_writes', 0) + 1
+        self._pending_write_receipt = dict(
+            rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
+            context=dict(getattr(self, '_gradient_diagnostic_context', {})),
+            write_count=self._optimizer_writes, optimizer_call_count=self._optimizer_calls,
+            gradient_norm_before=float(grad_norm),
+            gradient_norm_after=float(self.actor_module._last_clipped_global_l2),
+            learning_rates=[float(part['lr']) for part in self.actor_optimizer.param_groups])
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
             post = {f'parameter_{i}': p.detach() for i,p in enumerate(self.actor_module.parameters())}
             for i,state in enumerate(self.actor_optimizer.state.values()):
                 for name,value in state.items():
                     if torch.is_tensor(value):
                         post[f'optimizer_{i}_{name}'] = value
-            require_finite(post, stage='after_optimizer_write', process_group=group)
+            require_finite(post, stage='after_optimizer_write', process_group=group,
+                           recoverable=recoverable, rollback_available=recoverable)
+        if not recoverable:
+            self._commit_optimizer_write(group)
         return grad_norm
+
+    def _commit_optimizer_write(self, group):
+        receipt = self._pending_write_receipt
+        if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            from reproduction.common8.worker_evidence import append
+            append('OPTIMIZER_WRITE', receipt,
+                   collective=getattr(self, '_recoverable_guard_mode', False), group=group)
+        if (os.environ.get('SEARCH_G1_PROFILE') == 'common8' or
+                not torch.distributed.is_initialized() or torch.distributed.get_rank() == 0):
+            print('SEARCH_G1_OPTIMIZER_WRITE=' + json.dumps(receipt), flush=True)
+        self._pending_optimizer_transaction = None
+        self._pending_write_receipt = None
+
+    def _rollback_optimizer_write(self, group, before):
+        transaction = getattr(self, '_pending_optimizer_transaction', None)
+        if transaction is None:
+            return False
+        error = None
+        try:
+            transaction.rollback()
+            self._optimizer_writes = before
+        except Exception as failure:
+            error = type(failure).__name__ + ': ' + str(failure)
+        from search_g1.policy_safety import _phase_agreement
+        _phase_agreement(dict(optimizer_writes=before, rollback=True), [] if error is None else [error], group)
+        self._optimizer_rollbacks = getattr(self, '_optimizer_rollbacks', 0) + 1
+        self._pending_optimizer_transaction = None
+        self._pending_write_receipt = None
+        return True
 
     def compute_log_prob(self, data: DataProto) -> torch.Tensor:
         """Compute the log probability of the responses given input_ids, attention_mask and position_ids
@@ -333,6 +366,8 @@ class DataParallelPPOActor(BasePPOActor):
         attempt_index = data.meta_info.get('attempt_index')
         logical_update = data.meta_info.get('logical_update')
         writes_before = getattr(self,'_optimizer_writes',0)
+        calls_before = getattr(self,'_optimizer_calls',writes_before)
+        rollbacks_before = getattr(self,'_optimizer_rollbacks',0)
         errors = []
         if not (isinstance(attempt_id,str) and re.fullmatch('[0-9a-f]{32}',attempt_id) and
                 type(attempt_index) is int and attempt_index==getattr(self,'_last_attempt_index',0)+1 and
@@ -346,20 +381,31 @@ class DataParallelPPOActor(BasePPOActor):
         metrics = self._update_policy_attempt(data)
         writes_after = getattr(self,'_optimizer_writes',0)
         processed = len(self._last_opportunities)
-        complete = processed==20 and writes_after>writes_before
-        result = dict(status='complete' if complete else 'recoverable_guard',
+        progressed = writes_after > writes_before
+        full_budget = processed == 20 and writes_after - writes_before == 20
+        rejected = next((row for row in self._last_opportunities if row['guard_stage']), None)
+        result = dict(status='complete' if full_budget else 'partial' if progressed else 'recoverable_guard',
+            recovery_protocol_version=2,
             rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
             logical_update=logical_update,attempt_id=attempt_id,attempt_index=attempt_index,
             optimizer_writes_before=writes_before,optimizer_writes_after=writes_after,
             optimizer_writes_this_attempt=writes_after-writes_before,
-            opportunities_processed=processed,
+            optimizer_calls_this_attempt=getattr(self,'_optimizer_calls',writes_after)-calls_before,
+            optimizer_rollbacks_this_attempt=getattr(self,'_optimizer_rollbacks',0)-rollbacks_before,
+            opportunities_processed=processed, full_budget_complete=full_budget,
+            opportunities_unattempted=20-processed,
             opportunity_statuses=[row['status'] for row in self._last_opportunities],
-            guard_stage=None if complete else 'all_update_opportunities_skipped',
-            guard_reasons=[] if complete else ['no_successful_adam_write'],
-            complete_outer=complete,retained_partial_adam_writes=not complete,
-            no_automatic_rollback=True)
+            guard_stage=rejected['guard_stage'] if rejected else None,
+            guard_reasons=rejected['guard_reasons'] if rejected else [],
+            # complete_outer retains its scheduler/rollout-boundary meaning.
+            # full_budget_complete is the separate twenty-write budget fact.
+            complete_outer=progressed,retained_partial_adam_writes=progressed and not full_budget,
+            no_automatic_rollback=False, current_step_rollback=True)
         agree_attempt_result(result,group=group)
-        if complete:
+        if full_budget:
+            self._full_budget_outers = getattr(self,'_full_budget_outers',0)+1
+        result['full_budget_outers'] = getattr(self,'_full_budget_outers',0)
+        if progressed:
             assert 1<=result['optimizer_writes_this_attempt']<=20
             self._complete_outers = logical_update
         else:
@@ -374,7 +420,8 @@ class DataParallelPPOActor(BasePPOActor):
                 guard_stage=result['guard_stage'],guard_reasons=result['guard_reasons'],
                 opportunities_processed=processed,
                 recoverable_guard=True,complete_outer=False,scheduler_advances=0,
-                retained_partial_adam_writes=True,no_automatic_rollback=True),collective=True,group=group)
+                retained_partial_adam_writes=False,no_automatic_rollback=False,
+                current_step_rollback=True,recovery_protocol_version=2),collective=True,group=group)
         self._last_attempt_result = result
         return metrics
 
@@ -406,7 +453,7 @@ class DataParallelPPOActor(BasePPOActor):
         select_keys = ['responses', 'input_ids', 'attention_mask', 'position_ids', 'old_log_probs', 'advantages']
         if self.config.state_masking:
             select_keys.append('loss_mask')
-        if self.config.use_kl_loss:
+        if self.config.use_kl_loss and float(self.config.kl_loss_coef) != 0:
             select_keys.append('ref_log_prob')
         if 'selection_fallback' in data.batch:
             select_keys.append('selection_fallback')
@@ -459,7 +506,9 @@ class DataParallelPPOActor(BasePPOActor):
             if common8:
                 self._gradient_diagnostic_context['behavior_probability_gate_sha256'] = batch_gate_sha
             before_opportunity = getattr(self,'_optimizer_writes',0)
-            opportunity_metrics = {}; guard = None
+            self._pending_optimizer_transaction = None
+            self._pending_write_receipt = None
+            opportunity_metrics = {}; guard = None; rolled_back = False
             try:
                 self._run_minibatch(mini_batch,temperature=temperature,safety_enabled=safety_enabled,
                     safety=safety,frozen=frozen if safety_enabled else None,
@@ -468,19 +517,14 @@ class DataParallelPPOActor(BasePPOActor):
                 if not getattr(self,'_recoverable_guard_mode',False):
                     raise
                 guard = rejection
-                self.actor_optimizer.zero_grad()
+                rolled_back = self._rollback_optimizer_write(group, before_opportunity)
+                self.actor_optimizer.zero_grad(set_to_none=True)
             after_opportunity = getattr(self,'_optimizer_writes',0)
-            wrote = after_opportunity==before_opportunity+1
+            wrote = after_opportunity == before_opportunity + 1
             assert after_opportunity-before_opportunity in (0,1)
             guard_events = [dict(stage=guard.stage,reasons=guard.reasons)] if guard is not None else []
-            if guard is not None and not wrote:
-                # Every skipped opportunity still gets a real post monitor of
-                # the retained parameters, never a substituted or reused report.
-                try:
-                    self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')
-                except RecoverableGuard as post_guard:
-                    guard_events.append(dict(stage=post_guard.stage,reasons=post_guard.reasons))
             if wrote:
+                self._commit_optimizer_write(group)
                 for key,value in opportunity_metrics.items():
                     if isinstance(value,list):
                         metrics.setdefault(key,[]).extend(value)
@@ -488,10 +532,11 @@ class DataParallelPPOActor(BasePPOActor):
                         metrics[key]=value
             if getattr(self,'_recoverable_guard_mode',False):
                 row = dict(rank=torch.distributed.get_rank(),context=dict(self._gradient_diagnostic_context),
-                    opportunity_index=batch_idx,processed=True,
-                    status='written_with_post_guard' if wrote and guard is not None else 'written' if wrote else 'skipped_guard',
-                    optimizer_write_succeeded=wrote,optimizer_writes_before=before_opportunity,
-                    optimizer_writes_after=after_opportunity,
+                    recovery_protocol_version=2, opportunity_index=batch_idx,processed=True,
+                    status='written' if wrote else 'rolled_back_guard' if rolled_back else 'skipped_guard',
+                    optimizer_write_succeeded=wrote,optimizer_call_attempted=wrote or rolled_back,
+                    optimizer_write_rolled_back=rolled_back,
+                    optimizer_writes_before=before_opportunity,optimizer_writes_after=after_opportunity,
                     guard_stage=guard.stage if guard is not None else None,
                     guard_reasons=guard.reasons if guard is not None else [],guard_events=guard_events)
                 from search_g1.policy_safety import _phase_agreement
@@ -499,14 +544,20 @@ class DataParallelPPOActor(BasePPOActor):
                 from reproduction.common8.worker_evidence import append
                 append('OPPORTUNITY',row,collective=True,group=group)
                 self._last_opportunities.append(row)
+            if guard is not None:
+                # A rejected update ends reuse of this stale rollout immediately.
+                # Earlier accepted writes remain; the driver obtains fresh data.
+                break
         self.actor_optimizer.zero_grad()
         if common8:
             writes = self._optimizer_writes - writes_before
             if getattr(self,'_recoverable_guard_mode',False):
-                assert len(self._last_opportunities)==20 and 0<=writes<=20
+                assert 1<=len(self._last_opportunities)<=20 and 0<=writes<=20
                 if writes==0:
                     return {}  # Fully skipped attempt has no completed metrics/budget/proof.
-                metrics['actor/update_opportunities_this_attempt']=20
+                metrics['actor/update_opportunities_this_attempt']=len(self._last_opportunities)
+                metrics['actor/full_budget_complete']=int(writes==20)
+                metrics['actor/unattempted_update_opportunities']=20-len(self._last_opportunities)
                 metrics['actor/skipped_update_opportunities']=20-writes
             else:
                 assert writes == 20
@@ -528,7 +579,8 @@ class DataParallelPPOActor(BasePPOActor):
                 local_mini=self.config.ppo_mini_batch_size, local_micro=self.config.ppo_micro_batch_size, optimizer_writes=writes,
                 cumulative_writes=self._optimizer_writes)
             if getattr(self,'_recoverable_guard_mode',False):
-                budget.update(**attempt_meta,opportunities_processed=20,
+                budget.update(**attempt_meta,opportunities_processed=len(self._last_opportunities),
+                              recovery_protocol_version=2,full_budget_complete=writes==20,
                               optimizer_writes_before=writes_before,optimizer_writes_after=self._optimizer_writes)
             append('OUTER_BUDGET',budget,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
             print('SEARCH_G1_OUTER_BUDGET=' + __import__('json').dumps(budget), flush=True)
@@ -551,7 +603,10 @@ class DataParallelPPOActor(BasePPOActor):
             width=micro['responses'].size(1)
             mask=micro['loss_mask'] if self.config.state_masking else micro['attention_mask'][:,-width:]
             old=micro['old_log_probs'];advantages=micro['advantages']
-            entropy,new=self._forward_micro_batch(micro_batch=micro,temperature=temperature)
+            compute_entropy = self.config.entropy_coeff != 0
+            metrics['actor/entropy_diagnostic_computed'] = int(compute_entropy)
+            entropy,new=self._forward_micro_batch(micro_batch=micro,temperature=temperature,
+                                                   compute_entropy=compute_entropy)
             authored=mask.bool()
             if safety_enabled:
                 require_finite(dict(new=torch.where(authored,new,0.),old=torch.where(authored,old,0.),
@@ -565,23 +620,25 @@ class DataParallelPPOActor(BasePPOActor):
                 append_to_dict(metrics,contributions(old,new,advantages,mask,
                     micro['selection_fallback'],self.config.clip_ratio,
                     float(safety.dual_clip) if safety_enabled else None))
-            entropy_loss=verl_F.masked_mean(entropy,mask)
+            entropy_loss=verl_F.masked_mean(entropy,mask) if compute_entropy else new.new_zeros(())
             policy_loss=pg_loss-entropy_loss*self.config.entropy_coeff
             numerical_fields=dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
                 response_tokens=mask.sum(),authored_log_prob=torch.where(authored,new,0.),
                 authored_old_log_prob=torch.where(authored,old,0.),
                 authored_advantages=torch.where(authored,advantages,0.))
             if self.config.use_kl_loss:
-                masked_new=torch.where(authored,new,torch.zeros_like(new))
-                masked_ref=torch.where(authored,micro['ref_log_prob'],torch.zeros_like(micro['ref_log_prob']))
-                # Zero reference coefficient does not evaluate an unnecessary exponential.
-                if self.config.kl_loss_coef==0:
+                if float(self.config.kl_loss_coef) == 0:
+                    # Zero reference loss needs neither a reference forward nor
+                    # synthetic ref probabilities. Keep its explicit zero metric.
                     kl_loss=new.new_zeros(())
+                    numerical_fields['kl_loss']=kl_loss
                 else:
+                    masked_new=torch.where(authored,new,torch.zeros_like(new))
+                    masked_ref=torch.where(authored,micro['ref_log_prob'],torch.zeros_like(micro['ref_log_prob']))
                     kl_loss=masked_mean(core_algos.kl_penalty(logprob=masked_new,
                         ref_logprob=masked_ref,kl_penalty=self.config.kl_loss_type),mask)
                     policy_loss=policy_loss+kl_loss*self.config.kl_loss_coef
-                numerical_fields.update(kl_loss=kl_loss,authored_ref_log_prob=masked_ref)
+                    numerical_fields.update(kl_loss=kl_loss,authored_ref_log_prob=masked_ref)
                 metrics['actor/kl_loss']=kl_loss.detach().item()
                 metrics['actor/kl_coef']=self.config.kl_loss_coef
             loss=policy_loss/self.gradient_accumulation

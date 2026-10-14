@@ -105,12 +105,13 @@ def budget_rows(text, first, last,complete_records=None, run=None):
                 assert r['attempt_id']==record['attempt_id'] and r['attempt_index']==record['attempt_index']
                 before,after=record['optimizer_writes_before'],record['optimizer_writes_after']
                 assert type(before) is int and type(after) is int and before>=0 and 1<=after-before<=20
-                assert r['opportunities_processed']==record['opportunities_processed']==20
+                assert r['opportunities_processed']==record['opportunities_processed']
+                assert 1<=r['opportunities_processed']<=20
                 assert r['optimizer_writes']==after-before
                 actual_opportunities=[o for o in opportunities if o['rank']==r['rank'] and
                     o['context']['logical_update']==step and o['context']['attempt_id']==record['attempt_id'] and
                     o['context']['attempt_index']==record['attempt_index']]
-                verify_opportunity_rows(actual_opportunities,before=before,after=after,processed=20)
+                verify_opportunity_rows(actual_opportunities,before=before,after=after,processed=r['opportunities_processed'])
             assert r['cumulative_writes'] == after
             actual = [w for w in writes if w['rank'] == r['rank']
                       and w['context']['logical_update'] == step and
@@ -137,8 +138,8 @@ def verify_opportunity_rows(rows, *, before, after, processed):
         assert row['processed'] is True and row['context']['minibatch_index']==index
         assert type(row['optimizer_write_succeeded']) is bool
         success=row['optimizer_write_succeeded'];status=row['status']
-        assert status in ('written','written_with_post_guard','skipped_guard')
-        assert success==(status!='skipped_guard')
+        assert status in ('written','written_with_post_guard','skipped_guard','rolled_back_guard')
+        assert success==(status in ('written','written_with_post_guard'))
         assert row['optimizer_writes_before']==cumulative
         cumulative+=int(success)
         assert row['optimizer_writes_after']==cumulative
@@ -229,7 +230,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             processed=ending['opportunities_processed']
             assert ending['optimizer_opportunities']==20
             assert type(processed) is int and 0<=processed<=20
-            assert type(delta) is int and 0<=delta<=processed and (not complete or (processed==20 and delta>=1))
+            assert type(delta) is int and 0<=delta<=processed and (not complete or delta>=1)
             if not complete:assert processed<20 or delta==0, 'A fully processed nonzero-write attempt must complete'
             if complete:
                 record=completed[step]
@@ -240,8 +241,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
                 if first<=step<=last:assert gate==behavior_gates[str(step)]
             else:
                 gate=read_gate_receipt(base,run,step,attempt_id=attempt_id,attempt_index=ordinal)
-                assert ending['recoverable_guard'] is True and ending['retained_partial_adam_writes'] is True and \
-                    ending['no_automatic_rollback'] is True and ending['scheduler_unchanged_on_rejection'] is True
+                assert ending['recoverable_guard'] is True and ending['scheduler_unchanged_on_rejection'] is True
             scoped=[row for row in worker_rows if row.get('context',{}).get('attempt_id')==attempt_id]
             assert all(row['run_id']==run['run_id'] and row['rank']==rank and
                 row['context']['logical_update']==step and row['context']['attempt_index']==ordinal for row in scoped)
@@ -259,7 +259,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
                                         0 if row['kind']=='BEGIN' else processed))
             attempt_signatures.append((attempt_id,ordinal,step,complete,physical_writes,physical_writes+delta,processed))
             physical_writes+=delta;complete_count+=int(complete)
-        assert complete_count==last, 'Only fully processed nonzero-write attempts advance logical updates'
+        assert complete_count==last, 'Only retained safe writes advance logical rollout boundaries'
         if rank==0:canonical_attempts=attempt_signatures
         else:assert attempt_signatures==canonical_attempts, 'Rank attempt/partial-write history differs'
         process = None
@@ -314,9 +314,10 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             observed_file_sha256=hashlib.sha256(raw).hexdigest(),
             owned_process_ledger_sha256=digest(base/'logs/process-ledger.json'),
             cumulative_actual_optimizer_writes=physical_writes,
-            complete_outer_optimizer_opportunities=complete_count*20,
-            optimizer_completion_rule=FORMAL_COUNTING,
-            semantics='selected completed outer receipts bound to independently recorded trainer births; '
+            complete_outer_optimizer_opportunities=sum(row['opportunities_processed'] for row in selected if row['kind']=='COMPLETE'),
+            full_budget_outer_count=sum(row['actual_optimizer_writes']==20 for row in selected if row['kind']=='COMPLETE'),
+            optimizer_completion_rule='safe_progress_boundary_and_explicit_full20_budget',
+            semantics='selected safe-progress outer receipts bound to independently recorded trainer births; '
                       'observed files may subsequently append; historical birth binding is not a current liveness claim')
     return result
 
@@ -355,9 +356,9 @@ def accept_five_updates(checkpoint, records):
                     'actor/kl_loss','actor/ppo_kl','actor/grad_norm'):
             assert math.isfinite(r['metrics'][key])
         successes=_validate_reduced_count(r['metrics']['actor/optimizer_steps_this_update'],minimum=1,maximum=20)
-        opportunities=_validate_reduced_count(r['metrics']['actor/update_opportunities_this_attempt'],minimum=20,maximum=20)
+        opportunities=_validate_reduced_count(r['metrics']['actor/update_opportunities_this_attempt'],minimum=1,maximum=20)
         skipped=_validate_reduced_count(r['metrics']['actor/skipped_update_opportunities'],minimum=0,maximum=19)
-        assert opportunities==20 and skipped==20-successes
+        assert successes<=opportunities<=20 and skipped==20-successes
         saved_record = actual[r['step']-1]
         assert saved_record['run_id'] == run['run_id']
         assert saved_record['probe_version'] == r['probe_version']
@@ -401,8 +402,10 @@ def accept_five_updates(checkpoint, records):
         policy_safety_mode=run['policy_safety_mode'],formal_inline_plan_sha256=inline_plan_sha,
         formal_inline_first_five=inline_safety,paired_development=paired_development,
         actual_first_five_gpu_occupancy=gpu_samples,
-        optimizer_completion_rule=FORMAL_COUNTING,first_five_optimizer_opportunities=100,
-        first_outer_semantics='20 processed opportunities at consumed LR0; actual successful writes reported separately; fresh5 actual parameter delta verified',
+        optimizer_completion_rule='safe_progress_boundary_and_explicit_full20_budget',
+        first_five_optimizer_opportunities=sum(row['opportunities_processed'] for row in actual),
+        first_five_full_budget_outers=sum(row['actual_optimizer_writes']==20 for row in actual),
+        first_outer_semantics='at most20 opportunities at consumed LR0; partial and retained safe writes reported separately; fresh5 actual parameter delta verified',
         semantics='structural training gate, not accuracy reproduction success')
     with (base/'logs/five-updates-acceptance.json').open('x') as f:
         json.dump(result,f,default=lambda x:x.item(),allow_nan=False);f.flush();os.fsync(f.fileno())

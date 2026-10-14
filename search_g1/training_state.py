@@ -74,6 +74,9 @@ def capture_worker(worker,directory,checkpoint=False):
                world_size=torch.distributed.get_world_size(),process_identity=identity(os.getpid()),
                rng=worker_rng(worker),actual_optimizer_writes=getattr(worker.actor,'_optimizer_writes',0),
                completed_outer=getattr(worker.actor,'_complete_outers',0),
+               full_budget_outers=getattr(worker.actor,'_full_budget_outers',0),
+               optimizer_calls=getattr(worker.actor,'_optimizer_calls',getattr(worker.actor,'_optimizer_writes',0)),
+               optimizer_rollbacks=getattr(worker.actor,'_optimizer_rollbacks',0),
                last_attempt_index=getattr(worker.actor,'_last_attempt_index',0),
                used_attempt_ids=sorted(getattr(worker.actor,'_used_attempt_ids',set())),
                policy_rejections=getattr(worker.actor,'_policy_rejections',0))

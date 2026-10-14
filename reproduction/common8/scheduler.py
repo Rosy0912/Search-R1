@@ -295,9 +295,9 @@ class OuterSchedulerEvidence:
         self._check_state()
         before = self.pending['writes_before']
         if self.recoverable:
-            _need(type(opportunities_processed) is int and opportunities_processed==WRITES_PER_OUTER and
-                  type(optimizer_writes) is int and 1<=optimizer_writes-before<=WRITES_PER_OUTER,
-                  'All20 opportunities and at least one real Adam write required before scheduler advance')
+            _need(type(opportunities_processed) is int and 1<=opportunities_processed<=WRITES_PER_OUTER and
+                  type(optimizer_writes) is int and 1<=optimizer_writes-before<=opportunities_processed,
+                  'At least one retained safe Adam write required before scheduler boundary advance')
         else:
             _need(type(optimizer_writes) is int and optimizer_writes - before == WRITES_PER_OUTER,
                   'Exactly20 dynamically observed real optimizer writes required before scheduler advance')
@@ -306,6 +306,8 @@ class OuterSchedulerEvidence:
                    actual_optimizer_writes=optimizer_writes-before)
         if self.recoverable:
             row['opportunities_processed']=opportunities_processed
+            row['full_budget_complete']=optimizer_writes-before==WRITES_PER_OUTER
+            row['update_status']='complete' if row['full_budget_complete'] else 'partial'
         self._append(row)
         self.prepared = row
         return row
@@ -388,13 +390,14 @@ class OuterSchedulerEvidence:
         _need(type(opportunities_processed) is int and 0<=opportunities_processed<=WRITES_PER_OUTER and
               type(optimizer_writes) is int and 0<=optimizer_writes-before<=opportunities_processed and
               (opportunities_processed<WRITES_PER_OUTER or optimizer_writes==before),
-              'An all20 processed attempt with a successful write must complete')
+              'Zero-write attempts are retried without advancing the scheduler')
         self._check_state()
         row=dict(self.pending)
         row.update(kind='ABORTED_ATTEMPT',writes_after=optimizer_writes,
             actual_optimizer_writes=optimizer_writes-before,opportunities_processed=opportunities_processed,
             guard_stage=guard_stage,guard_reasons=list(guard_reasons),recoverable_guard=True,
-            retained_partial_adam_writes=True,no_automatic_rollback=True,
+            retained_partial_adam_writes=optimizer_writes>before,no_automatic_rollback=False,
+            current_step_rollback=True,recovery_protocol_version=2,
             next_learning_rates=_learning_rates(self.optimizer),scheduler_advances=0,
             scheduler_unchanged_on_rejection=True)
         self._append(row)

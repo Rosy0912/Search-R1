@@ -744,7 +744,8 @@ class RayPPOTrainer(object):
                     dict(completed_outer=self.inline_attempt_progress.completed_outer,
                          cumulative_writes=self.inline_attempt_progress.cumulative_writes,
                          attempt_index=self.inline_attempt_progress.attempt_index,
-                         aborted_attempts=self.inline_attempt_progress.aborted_attempts))))
+                         aborted_attempts=self.inline_attempt_progress.aborted_attempts,
+                         full_budget_outer=self.inline_attempt_progress.full_budget_outer))))
             import json
             with (state_dir/'manifest.json').open('x') as f:
                 json.dump(dict(completed_outer=self.global_steps,worker_files=proofs,driver_file=driver,
@@ -826,6 +827,8 @@ class RayPPOTrainer(object):
                         progress = dict(completed_outer=5,cumulative_writes=100,attempt_index=5,aborted_attempts=0)
                     for name in ('completed_outer','cumulative_writes','attempt_index','aborted_attempts'):
                         setattr(inline_attempts,name,progress[name])
+                    inline_attempts.full_budget_outer=progress.get('full_budget_outer',
+                        progress['completed_outer'] if progress['cumulative_writes']==progress['completed_outer']*20 else 0)
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
                     if run['full_state_restore'].get('kind') == 'question_probe_pair':
@@ -1031,7 +1034,12 @@ class RayPPOTrainer(object):
                             if key != 'old_log_probs':
                                 batch.batch[key] = batch.batch[key].long()
 
-                    if self.use_reference_policy:
+                    actor_config=self.config.actor_rollout_ref.actor
+                    skip_zero_reference=(os.environ.get('SEARCH_G1_PROFILE')=='common8' and
+                        actor_config.use_kl_loss and float(actor_config.kl_loss_coef)==0)
+                    if self.use_reference_policy and skip_zero_reference:
+                        metrics['infra/reference_forward_skipped']=1
+                    if self.use_reference_policy and not skip_zero_reference:
                         # compute reference log_prob
                         with _timer('ref', timing_raw):
                             ref_log_prob = self.ref_policy_wg.compute_ref_log_prob(batch)

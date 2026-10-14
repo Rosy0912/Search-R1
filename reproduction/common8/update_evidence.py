@@ -42,7 +42,7 @@ def record(step,metrics,probe_version,attempt_result=None):
     scalar={key:float(metrics[key]) for key in (METRICS if inline else LEGACY_METRICS)}
     assert all(math.isfinite(v) for v in scalar.values())
     if inline:
-        assert isinstance(attempt_result,dict) and attempt_result['status']=='complete'
+        assert isinstance(attempt_result,dict) and attempt_result['status'] in ('complete','partial')
         assert attempt_result['all_ranks_agreed'] is True
         assert type(attempt_result['real_rank_count']) is int and attempt_result['real_rank_count']==world_size(run), \
             'Completed attempt rank count differs from the actual run topology'
@@ -52,7 +52,9 @@ def record(step,metrics,probe_version,attempt_result=None):
         before,after=attempt_result['optimizer_writes_before'],attempt_result['optimizer_writes_after']
         assert type(before) is int and type(after) is int and before>=0
         assert type(successes) is int and 1<=successes<=20 and after-before==successes
-        assert attempt_result['opportunities_processed']==20 and scalar['actor/update_opportunities_this_attempt']==20
+        processed=attempt_result['opportunities_processed']
+        assert 1<=processed<=20 and scalar['actor/update_opportunities_this_attempt']==processed
+        if attempt_result.get('recovery_protocol_version',1)==1: assert processed==20
         assert scalar['actor/optimizer_steps_this_update']==successes
         assert scalar['actor/skipped_update_opportunities']==20-successes
     else:
@@ -70,8 +72,10 @@ def record(step,metrics,probe_version,attempt_result=None):
              behavior_trace_sha256=gate['private_trace_sha256'])
     if inline:
         row.update(attempt_id=attempt_result['attempt_id'],attempt_index=attempt_result['attempt_index'],
-             optimizer_writes_before=before,optimizer_writes_after=after,opportunities_processed=20,
-             actual_optimizer_writes=successes)
+             optimizer_writes_before=before,optimizer_writes_after=after,opportunities_processed=processed,
+             actual_optimizer_writes=successes,update_status=attempt_result['status'],
+             recovery_protocol_version=attempt_result.get('recovery_protocol_version',1),
+             full_budget_complete=successes==20,opportunities_unattempted=20-processed)
     with path.open('a') as f:
         f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
         parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))

@@ -498,16 +498,28 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
         run_id=run['run_id'], calibration_sha256=sha, outer_count=5, initial_optimizer_writes=0,
         candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts,
         training_world_size=world_size(run))
-    segment = verify_formal_segment(rows_by_rank, binding)
-    assert len(segment['global_monitors']) == 200
+    transactional=any(row.get('recovery_protocol_version',1)==2 for row in complete_attempts)
+    if transactional:
+        # All actual monitor/write/rollback rows were checked by the attempt
+        # auditor above; no invented 40-pass requirement after an early guard.
+        selected=rows_by_rank[0]
+        segment=dict(global_monitors=[row for row in selected if row['kind']=='POLICY_MONITOR'],
+            opportunity_dispositions=[row for row in selected if row['kind']=='OPPORTUNITY'],
+            guard_triggered_monitor_count=sum(not row['allowed'] for row in selected if row['kind']=='POLICY_MONITOR'),
+            completed_outer_actual_writes_per_rank=sum(row['actual_optimizer_writes'] for row in complete_attempts))
+    else:
+        segment = verify_formal_segment(rows_by_rank, binding)
+        assert len(segment['global_monitors']) == 200
     for row in segment['global_monitors']:
         step = str(row['context']['logical_update'])
         assert row['context']['behavior_probability_gate_sha256'] == behavior_gates[step]['proof_sha256']
     return dict(schema_version=1, role='actual_formal_first_five_safety_audit', run_id=run['run_id'],
         plan_sha256=sha, structural_accepted=True, source_map_sha256=document_sha256(run['source_sha256']),
-        actual_complete_outers=5, completed_outer_optimizer_opportunities_per_rank=100,
+        actual_complete_outers=5,
+        actual_full_budget_outers=sum(row.get('full_budget_complete',row['actual_optimizer_writes']==20) for row in complete_attempts),
+        completed_outer_optimizer_opportunities_per_rank=sum(row['opportunities_processed'] for row in complete_attempts),
         actual_optimizer_writes_per_rank=complete_attempts[-1]['optimizer_writes_after'],
-        unique_global_monitor_count=200,
+        unique_global_monitor_count=len(segment['global_monitors']),
         candidate_thresholds=FORMAL_SAFEGUARDS, worker_process_births=sorted(births),
         global_monitors=segment['global_monitors'], receipt_sha256=files,
         opportunity_dispositions=segment['opportunity_dispositions'],
