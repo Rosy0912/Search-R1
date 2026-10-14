@@ -29,6 +29,8 @@ def runtime_env_vars():
     resource = 'SEARCH_R1_BASELINE_TEACHER_CPU_THREADS'
     if resource in os.environ:
         result[resource] = str(teacher_cpu_threads())
+    if 'RECURSIVE_A_LUMIA_FRESH_PROFILE' in os.environ:
+        result['RECURSIVE_A_LUMIA_FRESH_PROFILE'] = os.environ['RECURSIVE_A_LUMIA_FRESH_PROFILE']
     return result
 
 

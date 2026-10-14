@@ -15,7 +15,12 @@ def execution_profile_bound(environ=None):
     """Recognize the authorized fresh H100 entry as well as HKUST resume."""
     import os
     environ = os.environ if environ is None else environ
-    return bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
+    lumia = (environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia'
+        and environ.get('RECURSIVE_A_LUMIA_FRESH_PROFILE') == '1'
+        and bool(environ.get('SLURM_JOB_ID'))
+        and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
+        and len(environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256', '')) == 64)
+    return lumia or bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
         environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_h100'
         and environ.get('RECURSIVE_A_H100_FRESH_PROFILE') == '1'
         and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))

@@ -490,6 +490,10 @@ class RayPPOTrainer(object):
             self.checkpoint_sampler = CheckpointBatchSampler(
                 len(self.train_dataset), self.config.data.train_batch_size, self.config.baselines.seed,
                 os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'], self.config.data.shuffle_train_dataloader)
+            from reproduction.recursive_lumia.curriculum import enabled, CurriculumSampler
+            if enabled(self.config):
+                self.checkpoint_sampler = CurriculumSampler(self.train_dataset,self.config.data.train_batch_size,
+                    self.config.baselines.seed,os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'])
             self.train_dataloader = DataLoader(dataset=self.train_dataset, batch_sampler=self.checkpoint_sampler,
                                                num_workers=0, collate_fn=collate_fn)
         else:
@@ -552,6 +556,9 @@ class RayPPOTrainer(object):
             if actual_limit is not None and int(actual_limit)+1 != total_training_steps:
                 raise ValueError('Actual update limit differs from legacy terminal counter')
             self.config.actor_rollout_ref.actor.optim.total_training_steps = total_training_steps if actual_limit is None else int(actual_limit)
+            from reproduction.recursive_lumia.curriculum import enabled
+            if enabled(self.config):
+                self.config.actor_rollout_ref.actor.optim.total_training_steps = 200
             self.config.critic.optim.total_training_steps = total_training_steps
 
     def _prepare_final_validation(self):
@@ -975,6 +982,9 @@ class RayPPOTrainer(object):
         )
 
         # start training loop
+        from reproduction.recursive_lumia.curriculum import enabled as curriculum_enabled
+        if curriculum_enabled(self.config):
+            self.checkpoint_sampler.attach(self,generation_manager)
         # Refused attempts consume real data; completed-outer target, rather
         # than a fixed number of attempts/epochs, terminates fresh training.
         for epoch in (itertools.count() if fresh200 else range(self.config.trainer.total_epochs)):
@@ -1287,6 +1297,10 @@ class RayPPOTrainer(object):
                 self.global_steps += 1
 
                 if self.global_steps >= self.total_training_steps:
+
+                    if curriculum_enabled(self.config):
+                        # The scheduled dev150 endpoint already ran; no extra full-test screening.
+                        return
 
                     # perform validation after training
                     if self.val_reward_fn is not None and not getattr(self.config.trainer, 'smoke_only', False):

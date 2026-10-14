@@ -117,6 +117,15 @@ def validate_completed_outer(metrics, outer):
 
 
 def validate_recursive_config(config):
+    from reproduction.recursive_lumia.curriculum import enabled, validate
+    if enabled(config):
+        validate(config)
+        from omegaconf import OmegaConf
+        projected=OmegaConf.create(OmegaConf.to_container(config,resolve=True))
+        del projected.baselines.question_curriculum
+        projected.trainer.actual_update_limit=200
+        projected.trainer.total_training_steps=201
+        return validate_recursive_config(projected)
     actor,rollout=config.actor_rollout_ref.actor,config.actor_rollout_ref.rollout
     tree,trainer=config.baselines.tree,config.trainer
     if ((tree.roots,tree.leaves,tree.continuation_budget_per_question)!=(1,5,10)

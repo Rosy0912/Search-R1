@@ -1,0 +1,17 @@
+{
+  "authorization": "2026-10-14 user approved preserving E1395, stopping other old experiments, and starting original recursive Tree-GRPO replication plus dynamic-question curriculum. No ablations or adaptive branching.",
+  "upstream_commit": "a1059feecae846df67c297225ab3566d54bef38f",
+  "original_scientific_reference": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
+  "seed": 42,
+  "hardware": "single node, eight NVIDIA L40S per training arm",
+  "arms": {
+    "original": {"outer_rounds": 200, "final51713": true},
+    "curriculum": {"outer_rounds": 150, "final51713": false}
+  },
+  "common": {"questions_per_round": 512, "target_trajectories": 5, "continuation_attempts_excluding_root": 10, "scheduler_scale": 200, "warmup_rounds": 57},
+  "curriculum": {"protocol": "recursive_question_curriculum_v1", "refresh_every": 25, "candidate_questions": 4096, "independent_root_samples": 5, "selected_pool": 2048, "selected_per_batch": 384, "uniform_per_batch": 128, "exposure_cap": 4, "exposure_window": 16, "score": "4*p*(1-p)", "stratify": "original TRAIN data_source proportions", "screen_optimizer_updates": 0},
+  "primary_comparison": "dev512 EM at150 versus150; original200 is separately compared with published reference",
+  "cost": "Include screening, training, retrieval, evaluation and failed attempts. Equal rounds do not imply equal compute.",
+  "preserve": {"E_job": 138418, "E_retriever": 138296, "E_gateway": 138300},
+  "no_automatic_expansion": true
+}
