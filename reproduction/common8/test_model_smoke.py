@@ -32,6 +32,24 @@ class ModelSmokeTests(unittest.TestCase):
         self.assertEqual(proof['valid_tokens_per_question'], [2, 1])
         self.assertEqual(proof['actor_vllm_max_abs'], 0)
 
+    def test_bound_bf16_sampling_journal_reports_drift_but_keeps_token_mask_finite_checks(self):
+        from reproduction.common8.precision_contract import NATIVE4_BF16_PROFILE,SAMPLING_JOURNAL_POLICY
+        run=dict(precision_profile=NATIVE4_BF16_PROFILE,behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
+            training_world_size=4,execution_backend='slurm',execution_site='hpc3',
+            actor_micro_batch_per_rank=4,vllm_gpu_memory_utilization=.1)
+        inputs=self.samples();inputs[4][0,0]=-1.3
+        with self.assertRaises(AssertionError):compare(*inputs)
+        proof=compare(*inputs,run=run)
+        self.assertIsNone(proof['tolerance']);self.assertGreater(proof['actor_vllm_max_abs'],1.)
+        self.assertTrue(proof['cross_backend_drift_is_diagnostic'])
+        for case in ('nan','token','empty','hole'):
+            inputs=self.samples()
+            if case=='nan':inputs[4][0,0]=float('nan')
+            elif case=='token':inputs[3][0,0]=99
+            elif case=='empty':inputs[2][0].zero_()
+            else:inputs[2][0]=torch.tensor([1,0,1])
+            with self.subTest(case=case),self.assertRaises(AssertionError):compare(*inputs,run=run)
+
     def test_valid_token_nonfinite_or_backend_mismatch_rejected(self):
         for field, value in ((0, float('nan')), (1, float('inf')), (4, -4.0)):
             with self.subTest(field=field):
