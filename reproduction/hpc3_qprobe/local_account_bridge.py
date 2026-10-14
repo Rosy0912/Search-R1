@@ -21,6 +21,7 @@ def run(account, command, payload, control_work):
     password = re.split(r'密码\s*[:：]?\s*', line, 1)[1].strip().strip('`')
     secret = line = None
     ssh = ['sshpass', '-e', 'ssh', '-T', '-oStrictHostKeyChecking=yes',
+           '-oControlMaster=no', '-S', 'none',
            '-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn',
            '-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts',
            '-oConnectTimeout=8', account+'@10.120.81.30', command]
