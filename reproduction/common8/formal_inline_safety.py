@@ -16,7 +16,7 @@ from reproduction.common8.formal_contract import (
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes, document_sha256
 from reproduction.common8.verify_data import digest
-from reproduction.common8.topology import (world_size, ranks, execution_job_id,
+from reproduction.common8.topology import (world_size, ranks, execution_job_id, actor_local_micro,
                                           monitor_trajectories_per_rank, monitor_scope)
 from reproduction.common8.precision_contract import sampling_journal_only
 
@@ -491,7 +491,7 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
     binding = dict(schema_version=1, role='production', policy_safety_mode=SAFETY_MODE,
         run_id=run['run_id'], calibration_sha256=sha, outer_count=5, initial_optimizer_writes=0,
         candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts,
-        training_world_size=world_size(run))
+        training_world_size=world_size(run), actor_micro_batch_per_rank=actor_local_micro(run))
     segment = verify_formal_segment(rows_by_rank, binding)
     assert len(segment['global_monitors']) == 200
     for row in segment['global_monitors']:

@@ -12,7 +12,7 @@ from pathlib import Path
 from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, consumed_lr
 from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
 from reproduction.common8.topology import (
-    actor_local_mini, actor_local_micro, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
+    actor_local_mini, actor_local_micro, formal_monitor_geometry, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
 )
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
@@ -124,6 +124,10 @@ def _monitor_statistics(row):
 
 def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Require40 true pre/post monitors and20 dispositions for this real UUID."""
+    try:
+        geometry = formal_monitor_geometry(run)
+    except (AssertionError, KeyError, TypeError) as failure:
+        raise EvidenceError('Invalid bound formal monitor geometry: ' + str(failure)) from failure
     observations = {}; dispositions = {}; identities = {}; final_rejections = []
     outer = attempt['logical_update']; start = attempt['optimizer_writes_before']
     successes = attempt['optimizer_writes_this_attempt']; complete = attempt['complete_outer']
@@ -261,11 +265,13 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
     for (mini, stage), observation in observations.items():
         _require(observation['effective_token_count'] == token_count, 'Actual global32 token count differs')
         if observation['kl_estimate_complete']:
-            _same_arithmetic(observation['effective_weight_mass'], 16., 'actual global masked-mean weight mass')
+            _same_arithmetic(observation['effective_weight_mass'], geometry['expected_complete_effective_weight_mass'],
+                             'actual global masked-mean weight mass')
         if mini and stage == 'before_minibatch':
             _adjacent(observations[(mini - 1, 'after_minibatch')], observation)
     return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
-                guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()))
+                guard_triggered_monitor_count=sum(not row['allowed'] for row in observations.values()),
+                monitor_weight_binding=geometry)
 
 
 def verify_attempt_history(base, run, complete_records, scheduler_receipts, *, last, plan_sha256):
