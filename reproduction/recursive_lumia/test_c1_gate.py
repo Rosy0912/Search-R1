@@ -99,6 +99,17 @@ class CompletionGate(unittest.TestCase):
         for state in ('RUNNING','FAILED','CANCELLED'):
             with self.assertRaises(ValueError):validate_exit(*args,'123',scheduler.replace('COMPLETED',state))
 
+    def test_c2_requires_exact_condition_and_cannot_pass_the_c1_gate(self):
+        record,entry,complete,terminal,wait=self.completion()
+        for value in (record,entry,complete,terminal,wait):
+            value['group']='C2-random-final'
+        record['condition']=condition_for('C2-random-final')
+        args=(record,entry,complete,terminal,wait,'123','123|jmzhang|COMPLETED|0:0|\n')
+        validate_exit(*args,expected_group='C2-random-final')
+        with self.assertRaises(ValueError):validate_exit(*args)
+        record['condition']=condition_for('C1-root-only')
+        with self.assertRaises(ValueError):validate_exit(*args,expected_group='C2-random-final')
+
     def test_final_native_checks_actual_bytes_not_only_manifest_claim(self):
         with tempfile.TemporaryDirectory() as temporary:
             run=Path(temporary).resolve();record,entry,complete,_,_=self.completion()

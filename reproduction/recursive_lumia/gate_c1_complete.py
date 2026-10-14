@@ -12,12 +12,15 @@ from .c1_evidence import validate_rounds, verify_events
 from .prepare_ablation import condition_for
 
 
-def validate_exit(record, entry, complete, terminal, wait, expected_job, scheduler_text):
+def validate_exit(record, entry, complete, terminal, wait, expected_job, scheduler_text,
+                  expected_group='C1-root-only'):
+    if expected_group not in ('C1-root-only', 'C2-random-final'):
+        raise ValueError('Unknown mechanism completion condition')
     rows=[line.split('|') for line in scheduler_text.splitlines() if line.strip()]
     matching=[r for r in rows if r[0]==str(expected_job)]
     if len(matching)!=1 or matching[0][1:4]!=['jmzhang','COMPLETED','0:0']:
-        raise ValueError('The exact C1 scheduler allocation has not completed successfully')
-    if (record['group']!='C1-root-only' or record['condition']!=condition_for('C1-root-only')
+        raise ValueError('The exact mechanism scheduler allocation has not completed successfully')
+    if (record['group']!=expected_group or record['condition']!=condition_for(expected_group)
             or str(entry['allocation'])!=str(expected_job)
             or complete['status']!='COMPLETE_NATIVE_150_TRAINING_AND_FOUR_SCHEDULED_DEV'
             or complete['completed_outer']!=150 or complete['evaluation_steps']!=[5,50,100,150]
@@ -26,10 +29,10 @@ def validate_exit(record, entry, complete, terminal, wait, expected_job, schedul
             or terminal['tick']!=entry['tick'] or terminal['uid']!=entry['uid']
             or str(wait['allocation'])!=str(expected_job) or wait['group']!=record['group']
             or wait['source']!=record['source_commit']):
-        raise ValueError('C1 completion/native return/actual parent wait disagree')
+        raise ValueError('Mechanism completion/native return/actual parent wait disagree')
     for key in ('run_id','group','config_sha256','source_commit'):
         if complete[key]!=record[key] or entry[key]!=record[key]:
-            raise ValueError('C1 completion belongs to a different run/configuration')
+            raise ValueError('Mechanism completion belongs to a different run/configuration')
     if terminal['run_id']!=record['run_id'] or terminal['group']!=record['group']:
         raise ValueError('Native exit record belongs to another run')
 
@@ -63,24 +66,30 @@ def verify_final_native(run, record, entry, complete, total):
     return dict(manifest=str(path),manifest_sha256=sha(path),all_nine_native_files_hash_verified=True)
 
 
-def verify(run, log, expected_job):
+def verify(run, log, expected_job, *, group='C1-root-only'):
+    if group not in ('C1-root-only', 'C2-random-final'):
+        raise ValueError('Unknown mechanism completion condition')
     run=Path(run).resolve()
     record=json.loads((run/'receipts/configuration.json').read_text())
     if sha(record['config'])!=record['config_sha256']:
-        raise ValueError('Frozen C1 configuration changed')
+        raise ValueError('Frozen mechanism configuration changed')
     entry=json.loads((run/'receipts/current-entry.json').read_text())
     output=Path(entry['output'])
     if output.parent!=run/'output' or output.resolve()!=output:
-        raise ValueError('C1 output namespace is not inside this exact run')
+        raise ValueError('Mechanism output namespace is not inside this exact run')
     complete=json.loads((output/'training-complete.json').read_text())
     terminal=json.loads((output/'entry-exit.json').read_text())
     wait=json.loads((run/'receipts/actual-parent-wait.json').read_text())
     scheduler=subprocess.check_output(['sacct','-X','-n','-P','-j',str(expected_job),
         '--format=JobIDRaw,User,State,ExitCode'],text=True)
-    validate_exit(record,entry,complete,terminal,wait,expected_job,scheduler)
+    validate_exit(record,entry,complete,terminal,wait,expected_job,scheduler,expected_group=group)
     audit=inspect(run,log,hash_native=True)
     rounds=validate_rounds(audit,complete['actual_optimizer_calls_per_rank'])
-    mechanism=verify_events(output,record,outer=5)
+    if group=='C1-root-only':
+        mechanism=verify_events(output,record,outer=5)
+    else:
+        from .c2_evidence import verify_events as verify_c2_events
+        mechanism=verify_c2_events(output,record,outer=5)
     manifest_path=Path(record['data'])/'manifest.json'
     if sha(manifest_path)!=record['data_identity']:
         raise ValueError('Frozen data manifest changed')
@@ -97,7 +106,9 @@ def verify(run, log, expected_job):
     if complete['final_dev_metrics']['val/em/all']!=evaluations[-1]['em']:
         raise ValueError('Terminal dev metric differs from actual paired150 rows')
     final_native=verify_final_native(run,record,entry,complete,rounds['actual_adam_per_rank'])
-    return dict(at=time.time(),status='C1_COMPLETE150_VERIFIED_RELEASE_C2',job=str(expected_job),
+    status=('C1_COMPLETE150_VERIFIED_RELEASE_C2' if group=='C1-root-only'
+            else 'C2_COMPLETE150_VERIFIED_RELEASE_PARAMETERS')
+    return dict(at=time.time(),status=status,group=group,job=str(expected_job),
         run_id=record['run_id'],source_commit=record['source_commit'],config_sha256=record['config_sha256'],
         rounds=rounds,mechanism=mechanism,evaluations=evaluations,final_native=final_native,
         native5=audit['native5'],sixth_real_generation_observed=True,
