@@ -189,7 +189,7 @@ def verify(base, audit_base):
         scheduler=[json.loads(x) for x in (base/'logs'/('scheduler-rank-'+str(rank)+'.jsonl')).read_text().splitlines()]
         optimizer=[json.loads(x) for x in (base/'logs'/('optimizer-rank-'+str(rank)+'.jsonl')).read_text().splitlines()]
         need(all(0<=x.get('logical_update',0)<=200 for x in scheduler) and
-             all(0<=x.get('context',{}).get('logical_update',0)<=200 for x in optimizer), 'actor/scheduler update201 exists')
+             all(0<=(x.get('context') or {}).get('logical_update',0)<=200 for x in optimizer), 'actor/scheduler update201 exists')
     from reproduction.hpc3_qprobe.final_restore_audit import verify_transport
     archive_proofs={}
     for step in (5,50,100,150,200):
@@ -218,6 +218,12 @@ def verify(base, audit_base):
     cleanup=json.loads((base/'logs/cleanup-status.json').read_text())
     need(pipeline['run_id']==run['run_id'] and pipeline['stage']=='FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP' and
          cleanup['cleaned'] is True and cleanup['run_id']==run['run_id'],'training producer/final evaluation/owned cleanup not finished')
+    recovery_path=base/'preparation/recovery-source-binding.json'
+    if recovery_path.is_file():
+        recovery=json.loads(recovery_path.read_text())
+        if recovery.get('failed_job')=='718509':
+            from reproduction.hpc3_qprobe.telemetry_failure718509 import cleanup_binding
+            cleanup_binding(require_complete=True)
     need(len(source_em)==len(source_f1)==7 and sum(full['final_counts'].values())==51713,'canonical final51713/seven sources missing')
     result=dict(status='QPROBE_FULL200_TEACHER_HEAD_FIXED_VALIDATION_ARCHIVE_NATIVE4_GOAL_PASS',run_id=run['run_id'],
         completed_outer=200,update201_performed=False,teacher=teacher,actual_attempts=len(attempts),actual_head_successful_commits=200,

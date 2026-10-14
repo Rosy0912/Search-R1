@@ -32,9 +32,9 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job not in ('717607','717637','717698','717765','717827','717938','718288','718322'):raise ValueError('Only actually observed own startup failures are supported')
+    if job not in ('717607','717637','717698','717765','717827','717938','718288','718322','718509'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765','717938':'717827','718288':'717938','718322':'718288'}[job]
+    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765','717938':'717827','718288':'717938','718322':'718288','718509':'718322'}[job]
     FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
     FAILED_COMMIT={'717607':'1552de146c2dd44e4fd40eb94b27839ac8648ef1',
@@ -44,11 +44,12 @@ def select_failed_job(job):
         '717827':'a75e0c944e2bbae284e52ce9b9f8bf909ab89564',
         '717938':'594d43b73c5a1e5159a24fb0d97880ff22fb0056',
         '718288':'e715462c55af0b836aee47432ca051cc02f5a5d9',
-        '718322':'c5961481b68d483e578f20d6786d314fcdabaa07'}[job]
+        '718322':'c5961481b68d483e578f20d6786d314fcdabaa07',
+        '718509':'6537fea1d9abf0a97a1923554a9298a37af1c69a'}[job]
 
 
 def diagnostic_gate(commit):
-    if JOB not in ('717607','717637','717698','717765','717827','717938','718288','718322'):return None
+    if JOB not in ('717607','717637','717698','717765','717827','717938','718288','718322','718509'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -136,6 +137,14 @@ def terminal_717938():
 
 def terminal():
     if os.getuid()!=14090:raise ValueError('Actual jxu957 owner required')
+    if JOB=='718509':
+        from reproduction.hpc3_qprobe.telemetry_failure718509 import preserved,cleanup_binding
+        value=preserved()
+        if value['base']!=str(FAILED) or value['source_commit']!=FAILED_COMMIT:
+            raise ValueError('Actual pre-formal telemetry failure source/base differs')
+        cleanup_retry_binding()  # Earlier private67 teardown still must be verified.
+        value.update(cleanup_binding())
+        return value
     if JOB=='718322':
         from reproduction.hpc3_qprobe.teacher_identity_failure import preserved
         value=preserved()
@@ -280,10 +289,15 @@ def fresh(commit):
     policy=json.loads((FAILED/'preparation/personal-storage-authorization.json').read_text())
     if policy['budget_bytes']!=2*10**12 or policy['scope']!='jxu957_native4_qprobe_only':raise ValueError('Actual user budget differs')
     publish(TARGET/'preparation/personal-storage-authorization.json',policy)
+    reused=None
+    if JOB=='718509':
+        from reproduction.hpc3_qprobe.telemetry_failure718509 import reuse_cache
+        reused=reuse_cache(TARGET,commit)
     publish(TARGET/'preparation/recovery-source-binding.json',dict(source_commit=commit,source=str(source),
         target=str(TARGET),failed_job=JOB,failure=actual,source_files=len(proof['files']),
         training_world_size=4,actor_micro_batch_per_rank=4,feature_cache_reused=True,actual_gpu_query_diagnostic=diagnostic,
-        optimizer_writes_before_recovery=0,teacher_labels_before_recovery=0))
+        optimizer_writes_before_recovery=0,teacher_labels_before_recovery=1024 if reused else 0,
+        teacher_cache_reuse=reused))
     return dict(status='FRESH_FAILED_PRETRAINING_RECOVERY_PREPARED',target=str(TARGET),commit=commit)
 
 
@@ -312,7 +326,8 @@ def submit(commit):
         '--job-name=qprobe-warmup200','--export=NONE','--chdir='+str(TARGET),
         '--output='+str(TARGET/'logs/training-%j.log'),'--error='+str(TARGET/'logs/training-%j.log'),
         str(source/'reproduction/hpc3_qprobe/train.sh'),str(TARGET),commit]
-    if JOB in ('717827','717938','718288','718322'):command.insert(1,'--exclude=ACD1-67')
+    if JOB in ('717827','717938','718288','718322','718509'):
+        command.insert(1,'--exclude=ACD1-31,ACD1-67' if JOB=='718509' else '--exclude=ACD1-67')
     test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)
     publish(TARGET/'preparation/training-test-only.json',dict(command=command,exit=test.returncode,stdout=test.stdout,stderr=test.stderr,epoch=time.time()))
     if test.returncode:raise ValueError('Actual recovery scheduler preflight failed')
@@ -329,6 +344,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827','717938','718288','718322'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827','717938','718288','718322','718509'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)

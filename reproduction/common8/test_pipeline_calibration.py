@@ -29,6 +29,8 @@ class PipelineCalibrationTests(unittest.TestCase):
             train_log=str(base/'logs/train.log'))
         pipeline=Pipeline.__new__(Pipeline);pipeline.base=base;pipeline.python='cpu-only-python'
         pipeline.run=run;pipeline.start=Mock(return_value=object());pipeline.wait=Mock();pipeline.stage=Mock()
+        pipeline.local=False;pipeline.training_gpus=tuple(range(8));pipeline.probe_gpus=[7]
+        pipeline.train_script='reproduction/common8/train.sh'
         return pipeline
 
     def test_inline_formal200_fits_actual_initial_probes_without_old_diagnostic_admission(self):
@@ -75,8 +77,10 @@ class PipelineCalibrationTests(unittest.TestCase):
                 base=Path(root);(base/'logs').mkdir();pipeline=Pipeline.__new__(Pipeline)
                 pipeline.base=base;pipeline.run=dict(run_id='CPU-sampler-fixture',source_sha256={'fixture.py':'a'*64})
                 pipeline.physical_indices={0};pipeline.max_used={};pipeline.sample_error=None
+                pipeline.sample_inventory={0:('constructed-uuid',81920)};pipeline.sample_gpu_uuids=['constructed-uuid']
+                pipeline.job_id='123';pipeline.local=False
                 pipeline.stop_sampling=threading.Event();pipeline.stage=Mock();seen=[];real=os.fsync
-                def rows(*args):
+                def rows(*args,**kwargs):
                     pipeline.stop_sampling.set()
                     return [['0','constructed-uuid','1','81920','0']]
                 def sync(fd):
@@ -102,9 +106,131 @@ class PipelineCalibrationTests(unittest.TestCase):
             sampler.join.assert_called_once_with(35);self.assertTrue(pipeline.stop_sampling.is_set())
             self.assertEqual(pipeline.stage.call_args.args[0],'FAILED')
 
+    def sampler_fixture(self,root):
+        base=Path(root);(base/'logs').mkdir();pipeline=Pipeline.__new__(Pipeline)
+        pipeline.base=base;pipeline.run=dict(run_id='CPU-sampler-fixture',source_sha256={'fixture.py':'a'*64})
+        pipeline.physical_indices={0};pipeline.sample_inventory={0:('GPU-fixture',81920)}
+        pipeline.sample_gpu_uuids=['GPU-fixture'];pipeline.max_used={};pipeline.sample_error=None
+        pipeline.job_id='123';pipeline.local=False;pipeline.stop_sampling=threading.Event();pipeline.stage=Mock()
+        return pipeline
+
+    def run_sampler(self,pipeline,query):
+        with patch('reproduction.common8.run_pipeline.gpu_rows',side_effect=query) as gpu_query, \
+             patch('reproduction.a800.owned_processes.identity',return_value=dict(pid=123,start_ticks=456,sid=123,uid=0)), \
+             patch.object(pipeline.stop_sampling,'wait',return_value=False):
+            pipeline.sample()
+        return gpu_query
+
+    def sampler_records(self,pipeline,name):
+        path=pipeline.base/'logs'/(name+'-'+pipeline.run['run_id']+'.jsonl')
+        return [] if not path.exists() else [json.loads(line) for line in path.read_text().splitlines()]
+
+    def test_gpu_query_scope_uses_only_admitted_uuids_and_keeps_30s_bound(self):
+        from reproduction.common8.run_pipeline import gpu_rows
+        with patch('reproduction.common8.run_pipeline.subprocess.check_output',return_value='0, GPU-fixture, 1, 81920, 0\n') as query:
+            self.assertEqual(len(gpu_rows('index,uuid,memory.used,memory.total,utilization.gpu',devices=['GPU-fixture'])),1)
+        self.assertIn('--id=GPU-fixture',query.call_args.args[0]);self.assertEqual(query.call_args.kwargs['timeout'],30)
+        with patch('reproduction.common8.run_pipeline.subprocess.check_output',return_value='') as query:
+            gpu_rows('gpu_uuid,pid','compute-apps')
+        self.assertFalse(any(value.startswith('--id=') for value in query.call_args.args[0]))
+        for devices in ([],['GPU-fixture','GPU-fixture'],['GPU-fixture\nother'],['GPU-a,GPU-b']):
+            with self.subTest(devices=devices),self.assertRaises(AssertionError):gpu_rows('uuid',devices=devices)
+
+    def test_transient_nvml_timeouts_are_durable_gaps_reset_by_real_samples(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root);calls=[]
+            def query(*args,**kwargs):
+                calls.append(kwargs['devices'])
+                if len(calls) in (1,2,4,5):raise subprocess.TimeoutExpired(['nvidia-smi'],30,stderr=b'NVML busy')
+                if len(calls)==6:pipeline.stop_sampling.set()
+                return [['0','GPU-fixture','1','81920','10']]
+            observed=self.run_sampler(pipeline,query)
+            self.assertEqual(observed.call_count,6);self.assertEqual(calls,[['GPU-fixture']]*6)
+            failed=self.sampler_records(pipeline,'gpu-sampling-failures')
+            self.assertEqual([row['consecutive_failures'] for row in failed],[1,2,1,2])
+            self.assertTrue(all(row['actual_sample_written'] is False and 'gpus' not in row for row in failed))
+            self.assertTrue(all(row['stderr']=='NVML busy' for row in failed))
+            self.assertEqual(len(self.sampler_records(pipeline,'gpu-samples')),2)
+            self.assertIsNone(pipeline.sample_error);pipeline.finish_sampling(None);pipeline.stage.assert_not_called()
+            pipeline.owned=SimpleNamespace(jobs={});pipeline.observe_all()
+
+    def test_native_four_sampler_queries_only_four_bound_uuids(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root);pipeline.physical_indices={1,3,4,6}
+            pipeline.sample_inventory={index:('GPU-fixture-'+str(index),81920) for index in pipeline.physical_indices}
+            pipeline.sample_gpu_uuids=[pipeline.sample_inventory[index][0] for index in sorted(pipeline.physical_indices)]
+            def query(*args,**kwargs):
+                self.assertEqual(kwargs['devices'],['GPU-fixture-1','GPU-fixture-3','GPU-fixture-4','GPU-fixture-6'])
+                pipeline.stop_sampling.set()
+                return [[str(index),uuid,'1',str(total),'10'] for index,(uuid,total) in pipeline.sample_inventory.items()]
+            self.run_sampler(pipeline,query)
+            self.assertIsNone(pipeline.sample_error)
+            actual=self.sampler_records(pipeline,'gpu-samples')
+            self.assertEqual(len(actual),1);self.assertEqual({row['index'] for row in actual[0]['gpus']},pipeline.physical_indices)
+            self.assertEqual(len(actual[0]['gpus']),4)
+
+    def test_three_consecutive_nvml_failures_remain_fatal_without_fake_samples(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root)
+            query=self.run_sampler(pipeline,subprocess.TimeoutExpired(['nvidia-smi'],30))
+            self.assertEqual(query.call_count,3);self.assertIn('three consecutive',pipeline.sample_error)
+            failed=self.sampler_records(pipeline,'gpu-sampling-failures')
+            self.assertEqual([row['retry_permitted'] for row in failed],[True,True,False])
+            self.assertEqual(self.sampler_records(pipeline,'gpu-samples'),[])
+            with self.assertRaisesRegex(RuntimeError,'finish durably'):pipeline.finish_sampling(None)
+
+    def test_nonzero_nvml_query_can_recover_without_forging_telemetry(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root);count=0
+            def query(*args,**kwargs):
+                nonlocal count
+                count+=1
+                if count==1:raise subprocess.CalledProcessError(1,['nvidia-smi'],stderr='NVML query failed')
+                pipeline.stop_sampling.set();return [['0','GPU-fixture','2','81920','20']]
+            self.run_sampler(pipeline,query)
+            failed=self.sampler_records(pipeline,'gpu-sampling-failures')
+            self.assertEqual(len(failed),1);self.assertEqual(failed[0]['returncode'],1)
+            self.assertEqual(len(self.sampler_records(pipeline,'gpu-samples')),1)
+            self.assertIsNone(pipeline.sample_error)
+
+    def test_sampler_identity_schema_and_device_failures_are_never_retried(self):
+        malformed=[[],[['0','GPU-foreign','1','81920','0']],
+                   [['0','GPU-fixture','1','40000','0']],
+                   [['0','GPU-fixture','1','81920','0']]*2,
+                   [['0','GPU-fixture','1','81920']],
+                   [['0','GPU-fixture','bad','81920','0']],
+                   [['0','GPU-fixture','81921','81920','0']]]
+        for rows in malformed:
+            with self.subTest(rows=rows),tempfile.TemporaryDirectory() as root:
+                pipeline=self.sampler_fixture(root);query=self.run_sampler(pipeline,lambda *a,**kw:rows)
+                self.assertEqual(query.call_count,1);self.assertIsNotNone(pipeline.sample_error)
+                self.assertEqual(self.sampler_records(pipeline,'gpu-samples'),[])
+                self.assertEqual(self.sampler_records(pipeline,'gpu-sampling-failures'),[])
+
+    def test_failure_gap_fsync_error_is_fatal_without_query_retry(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root)
+            with patch('reproduction.common8.run_pipeline.os.fsync',side_effect=OSError('gap durability failed')):
+                query=self.run_sampler(pipeline,subprocess.TimeoutExpired(['nvidia-smi'],30))
+            self.assertEqual(query.call_count,1);self.assertIn('gap durability failed',pipeline.sample_error)
+            self.assertEqual(self.sampler_records(pipeline,'gpu-samples'),[])
+
+    def test_shutdown_with_unrecovered_query_cannot_acknowledge_finished(self):
+        with tempfile.TemporaryDirectory() as root:
+            pipeline=self.sampler_fixture(root)
+            def query(*args,**kwargs):
+                pipeline.stop_sampling.set();raise subprocess.TimeoutExpired(['nvidia-smi'],30)
+            self.assertEqual(self.run_sampler(pipeline,query).call_count,1)
+            self.assertIn('stopped before',pipeline.sample_error)
+            self.assertEqual(len(self.sampler_records(pipeline,'gpu-sampling-failures')),1)
+            self.assertEqual(self.sampler_records(pipeline,'gpu-samples'),[])
+            with self.assertRaisesRegex(RuntimeError,'finish durably'):pipeline.finish_sampling(None)
+
     def pipeline(self, base, role=None, adoption_sources=True):
         pipeline=Pipeline.__new__(Pipeline)
         pipeline.base=Path(base);pipeline.python=str(Path(base)/'env/bin/python')
+        pipeline.local=False;pipeline.training_gpus=tuple(range(8));pipeline.probe_gpus=[7]
+        pipeline.train_script='reproduction/common8/train.sh'
         pipeline.run=dict(run_id='child',train_log=str(Path(base)/'logs/train.log'),initial_model='/original')
         if role is not None: pipeline.run['policy_calibration_role']=role
         if role!=CALIBRATION_ROLES[0] and adoption_sources:
@@ -219,6 +345,7 @@ class PipelineCalibrationTests(unittest.TestCase):
             write(fixture.base/'logs/run-manifest.json',run)
             pipeline=Pipeline.__new__(Pipeline)
             pipeline.base=fixture.base;pipeline.run=run;pipeline.python=sys.executable
+            pipeline.training_gpus=tuple(range(8))
             pipeline.stage=Mock();pipeline.wait=Mock();receipts=[]
             def start(name,command,gpus):
                 self.assertEqual(name,'initial-probe-adoption');self.assertEqual(tuple(gpus),tuple(range(8)))

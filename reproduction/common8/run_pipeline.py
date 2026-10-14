@@ -82,9 +82,21 @@ def verify_initial_probe_binding(run):
         assert run['initial_probe_version'] is None, 'Fresh initial probe must be unbound'
 
 
-def gpu_rows(fields,kind='gpu'):
+def gpu_rows(fields,kind='gpu',*,devices=None):
     # Operational query bound, not an occupancy/sampling-gap acceptance limit.
-    return list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits'],text=True,timeout=30))))
+    command=['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits']
+    if devices is not None:
+        assert devices and len(devices)==len(set(devices)) and all(
+            isinstance(value,str) and value and not any(c in value for c in ',\r\n\0') for value in devices), 'Invalid admitted GPU query scope'
+        command.append('--id='+','.join(devices))
+    return list(csv.reader(io.StringIO(subprocess.check_output(command,text=True,stderr=subprocess.PIPE,timeout=30))))
+
+
+def durable_gpu_row(stream,path,value):
+    stream.write(json.dumps(value,allow_nan=False)+'\n');stream.flush();os.fsync(stream.fileno())
+    parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(parent_fd)
+    finally:os.close(parent_fd)
 
 
 class Pipeline:
@@ -95,6 +107,11 @@ class Pipeline:
         self.job_id=execution_job_id(run);self.world=world_size(run)
         self.owned=OwnedProcesses(base/'logs/process-ledger.json',run['run_id'])
         allocation=json.loads((base/'logs/native-allocation-admission.json').read_text());self.physical_indices=set(physical_indices(allocation))
+        self.sample_inventory={int(row[0]):(row[1].strip(),int(row[2])) for row in allocation['physical_gpu_inventory']
+                               if int(row[0]) in self.physical_indices}
+        assert set(self.sample_inventory)==self.physical_indices and all(uuid and total>0 for uuid,total in self.sample_inventory.values())
+        self.sample_gpu_uuids=[self.sample_inventory[index][0] for index in sorted(self.physical_indices)]
+        assert len(self.sample_gpu_uuids)==len(set(self.sample_gpu_uuids))
         self.stop_sampling=threading.Event();self.max_used={};self.sample_error=None
         if self.local:
             from reproduction.common8.native_allocation import local_placement
@@ -125,19 +142,48 @@ class Pipeline:
     def stage(self,name,**extra):publish(self.base/'logs/pipeline-status.json',dict(run_id=self.run['run_id'],stage=name,unix=time.time(),**extra))
     def sample(self):
         path=self.base/'logs'/('gpu-samples-'+self.run['run_id']+'.jsonl')
+        failures=self.base/'logs'/('gpu-sampling-failures-'+self.run['run_id']+'.jsonl')
         try:
             from reproduction.a800.owned_processes import identity
             from reproduction.common8.policy_calibration_plan import canonical_bytes
             producer=identity(os.getpid())
             producer={key:producer[key] for key in ('pid','start_ticks','sid','uid')}
             source_sha=hashlib.sha256(canonical_bytes(self.run['source_sha256'])).hexdigest()
+            consecutive_failures=0
             with path.open('a') as f:
                 while not self.stop_sampling.is_set():
                     rows=[];query_started=time.time()
-                    for r in gpu_rows('index,uuid,memory.used,memory.total,utilization.gpu'):
-                        if int(r[0]) in self.physical_indices:
-                            item=dict(index=int(r[0]),uuid=r[1].strip(),used_mib=int(r[2]),total_mib=int(r[3]),util_percent=int(r[4]));rows.append(item)
-                            self.max_used[item['index']]=max(self.max_used.get(item['index'],0),item['used_mib'])
+                    try:
+                        measured=gpu_rows('index,uuid,memory.used,memory.total,utilization.gpu',devices=self.sample_gpu_uuids)
+                    except (subprocess.TimeoutExpired,subprocess.CalledProcessError) as error:
+                        # A bounded failed NVML acquisition is a disclosed gap,
+                        # never a successful/fabricated device sample. Integrity
+                        # and durable-write failures stay outside this retry.
+                        consecutive_failures+=1
+                        def excerpt(value):
+                            if isinstance(value,bytes):value=value.decode(errors='replace')
+                            return None if value is None else str(value)[:4096]
+                        failure=dict(schema_version=1,role='actual_common8_gpu_query_failure',
+                            run_id=self.run['run_id'],slurm_job_id=self.job_id,source_map_sha256=source_sha,
+                            sampler_identity=producer,query_started_unix=query_started,unix=time.time(),
+                            admitted_gpu_uuids=self.sample_gpu_uuids,error_type=type(error).__name__,
+                            command=error.cmd,timeout_seconds=getattr(error,'timeout',None),
+                            returncode=getattr(error,'returncode',None),stdout=excerpt(getattr(error,'output',None)),
+                            stderr=excerpt(getattr(error,'stderr',None)),consecutive_failures=consecutive_failures,
+                            maximum_consecutive_failures=3,retry_permitted=consecutive_failures<3,
+                            actual_sample_written=False)
+                        with failures.open('a') as error_stream:durable_gpu_row(error_stream,failures,failure)
+                        if consecutive_failures>=3:
+                            raise RuntimeError('GPU telemetry acquisition failed for three consecutive bounded queries') from error
+                        self.stop_sampling.wait(2)
+                        continue
+                    for r in measured:
+                        assert len(r)==5, 'Actual GPU sample schema differs'
+                        rows.append(dict(index=int(r[0]),uuid=r[1].strip(),used_mib=int(r[2]),total_mib=int(r[3]),util_percent=int(r[4])))
+                    assert len(rows)==len(self.physical_indices) and {row['index'] for row in rows}==self.physical_indices, 'Actual sampled device set differs'
+                    for item in rows:
+                        assert (item['uuid'],item['total_mib'])==self.sample_inventory[item['index']], 'Actual sampled GPU UUID/capacity differs'
+                        assert 0<=item['used_mib']<=item['total_mib'] and 0<=item['util_percent']<=100, 'Actual GPU sample values differ'
                     sample=dict(schema_version=1,role='actual_common8_gpu_occupancy',
                         run_id=self.run['run_id'],slurm_job_id=self.job_id,
                         source_map_sha256=source_sha,sampler_identity=producer,sampling_interval_seconds=2,
@@ -145,12 +191,12 @@ class Pipeline:
                     if self.local:sample.update(execution_backend='ssh_local',execution_id=self.run['execution_id'],
                         host=socket.gethostname(),hostname=socket.gethostname(),training_physical_indices=self.run['training_physical_indices'],
                         auxiliary_physical_indices=self.run['auxiliary_physical_indices'])
-                    f.write(json.dumps(sample)+'\n');f.flush()
-                    os.fsync(f.fileno())
-                    parent_fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
-                    try:os.fsync(parent_fd)
-                    finally:os.close(parent_fd)
+                    durable_gpu_row(f,path,sample)
+                    for item in rows:self.max_used[item['index']]=max(self.max_used.get(item['index'],0),item['used_mib'])
+                    consecutive_failures=0
                     self.stop_sampling.wait(2)
+            if consecutive_failures:
+                raise RuntimeError('GPU sampler stopped before a failed query recovered with an actual sample')
         except Exception as e:self.sample_error=repr(e)
     def finish_sampling(self,sampler):
         self.stop_sampling.set()
