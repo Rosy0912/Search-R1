@@ -1,0 +1,75 @@
+{
+  "GPU_claimed": false,
+  "actual_inspect_receipt_sha256": "9a6a3b3a5a76a65c0daba9d2c1d796c0b45e5d861d6382ed6775c7c1aaf29102",
+  "auxiliary_physical_indices": [
+    5,
+    6
+  ],
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-6047f7f9674b49fdad718a256ab3db95",
+  "checked_unix": 1791947664.291837,
+  "complete_outers": 0,
+  "current_admission_still_required": true,
+  "identity": {
+    "execution_backend": "ssh_local",
+    "execution_id": "140e43d2243d49a99d88f77399f263b8",
+    "profile": "common8",
+    "run_id": "6a26247f538b4145a24b156e79fb04d1",
+    "slurm_job_id": null,
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "training_world_size": 4
+  },
+  "inherited_training_state": false,
+  "input_hashes": {
+    "audit.json": "699554d16b10b8d4166790776d4269f03be2d6242cc68f1ccb812564ed6aa275",
+    "calibration-300.parquet": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+    "exclusions-audit.json": "bf22b531d9aef49a3f66ee7f3f89b795821d104807ebf9bfd5f845bd1c7ba65e",
+    "final.parquet": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+    "manifest.json": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "stage.parquet": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+    "train.parquet": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+    "validation.parquet": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+  },
+  "last_assigned_resource_clear_unix": 1791947230.2876902,
+  "lost_A9_Adam": 60,
+  "lost_A9_outers": 3,
+  "native_algorithm_accepted": false,
+  "official_model_hashes": {
+    "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+    "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+    "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+    "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+    "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "parent_checkpoint": null,
+  "prepared_receipt_sha256": "a93e88d8d416e4574d70cea5d5397b343c5247aea692f06264cccb2c08015cbd",
+  "prior3ecc_actual_pretrainer_exit_complete0": true,
+  "prior3ecc_lost_updates": 0,
+  "probe_features": "current_actor_detached_two_independent_binary_heads",
+  "probe_refresh_interval": 10,
+  "processed_opportunities": 0,
+  "protected_physical_indices": [
+    4,
+    7
+  ],
+  "retained_A9_updates": 0,
+  "review_sha256": "36e3865aedfeb024e8f2ebd5a402085551bcdc5de339672650b9c1d840926e3e",
+  "reward_schedule": "g1_through100_then_binary",
+  "role": "new_officialfresh6a262_actual_prepared_independent_review_accepted_zero",
+  "services_started": false,
+  "skips": 0,
+  "source_files_count": 455,
+  "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+  "successful_adam": 0,
+  "trainer_started": false,
+  "training_physical_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "training_world_size": 4
+}
