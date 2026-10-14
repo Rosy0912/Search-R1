@@ -1,7 +1,7 @@
 import copy
 import unittest
 
-from .restore_probe import CONFIG, RUNTIME, PARENT_JOB, validate_parent
+from .restore_probe import CONFIG, RUNTIME, PARENT_JOB, validate_parent, isolate_rank_device
 
 
 class ParentBoundaryTests(unittest.TestCase):
@@ -48,6 +48,26 @@ class ParentBoundaryTests(unittest.TestCase):
         manifest['worker_states'][7]['identity']['config_sha256'] = 'changed'
         with self.assertRaises(ValueError):
             validate_parent(self.record, manifest)
+
+
+class DeviceMappingTests(unittest.TestCase):
+    def test_each_worker_gets_distinct_physical_gpu_with_local_index_zero(self):
+        seen = []
+        for rank in range(8):
+            env = dict(RANK=str(rank), LOCAL_RANK=str(rank), WORLD_SIZE='8',
+                       CUDA_VISIBLE_DEVICES='0,1,2,3,4,5,6,7')
+            self.assertEqual(isolate_rank_device(env), (rank, str(rank)))
+            self.assertEqual(env['CUDA_VISIBLE_DEVICES'], str(rank))
+            seen.append(env['CUDA_VISIBLE_DEVICES'])
+        self.assertEqual(len(set(seen)), 8)
+
+    def test_invalid_allocation_or_rank_refused(self):
+        base = dict(RANK='1', LOCAL_RANK='1', WORLD_SIZE='8', CUDA_VISIBLE_DEVICES='0,1,2,3,4,5,6,7')
+        for changes in (dict(LOCAL_RANK='0'), dict(RANK='8', LOCAL_RANK='8'),
+                        dict(WORLD_SIZE='4'), dict(CUDA_VISIBLE_DEVICES='0'),
+                        dict(CUDA_VISIBLE_DEVICES='0,0,2,3,4,5,6,7')):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                isolate_rank_device(dict(base, **changes))
 
 
 if __name__ == '__main__':

@@ -23,6 +23,18 @@ def sha(path):
     return h.hexdigest()
 
 
+def isolate_rank_device(environ):
+    """Match Ray: one distinct visible physical GPU, process-local CUDA index0."""
+    rank = int(environ['RANK'])
+    devices = environ.get('CUDA_VISIBLE_DEVICES', '').split(',')
+    if (int(environ['WORLD_SIZE']) != 8 or rank != int(environ['LOCAL_RANK'])
+            or not 0 <= rank < 8 or len(devices) != 8 or len(set(devices)) != 8
+            or any(not x.strip() for x in devices)):
+        raise ValueError('Require eight distinct allocated GPUs before per-rank isolation')
+    environ['CUDA_VISIBLE_DEVICES'] = devices[rank]
+    return rank, devices[rank]
+
+
 def validate_parent(record, manifest):
     identity = manifest['identity']
     workers = manifest['worker_states']
@@ -99,6 +111,7 @@ def run_probe(directory, inputs_sha):
     # Import actual frozen training implementations, not an approximated model layout.
     runtime = BASE / 'sources' / RUNTIME
     sys.path.insert(0, str(runtime))
+    rank, physical_device = isolate_rank_device(os.environ)
     import torch
     import torch.distributed as dist
     from torch.distributed.device_mesh import init_device_mesh
@@ -111,13 +124,11 @@ def run_probe(directory, inputs_sha):
     for module in (sys.modules[ActorRolloutRefWorker.__module__], state):
         if not Path(module.__file__).resolve().is_relative_to(runtime):
             raise ValueError('The model/state implementation is not the frozen training source')
-    rank = int(os.environ['RANK'])
-    if (int(os.environ['WORLD_SIZE']) != 8 or rank != int(os.environ['LOCAL_RANK'])
-            or torch.cuda.device_count() != 8):
-        raise ValueError('Require eight distinct local CUDA ranks')
-    torch.cuda.set_device(rank)
+    if torch.cuda.device_count() != 1:
+        raise ValueError('Each rank must see its one allocated GPU, as in the Ray training worker')
+    torch.cuda.set_device(0)
     torch.set_num_threads(4)
-    if torch.cuda.get_device_name(rank) != 'NVIDIA GeForce RTX 3090':
+    if torch.cuda.get_device_name(0) != 'NVIDIA GeForce RTX 3090':
         raise ValueError('Unexpected diagnostic hardware')
     dist.init_process_group('nccl', timeout=timedelta(minutes=10))
     started = time.time()
@@ -164,7 +175,7 @@ def run_probe(directory, inputs_sha):
         del actual
         local = dict(rank=rank, parent_sha256=expected['sha256'], live_logical_sha256=observed,
             actual_state_equal=True, observed_adam_steps=steps, scheduler_step=scheduler.last_epoch,
-            training_updates_executed=0, cuda_device=rank)
+            training_updates_executed=0, cuda_device=0, allocated_visible_device=physical_device)
         results = [None] * 8
         dist.all_gather_object(results, local)
         if rank == 0:
@@ -181,7 +192,8 @@ def run_probe(directory, inputs_sha):
             driver_digest = state.digest(state.driver_snapshot(trainer, manifest['identity']))
             if driver_digest != manifest['driver']['logical_state_sha256']:
                 raise ValueError('Live restored driver RNG/cursor/accounting differs')
-            if len(results) != 8 or {x['rank'] for x in results} != set(range(8)):
+            if (len(results) != 8 or {x['rank'] for x in results} != set(range(8))
+                    or len({x['allocated_visible_device'] for x in results}) != 8):
                 raise ValueError('Incomplete live restored rank coverage')
             value = dict(at=time.time(), started=started, job=os.environ['SLURM_JOB_ID'],
                 probe_source=os.environ['RECURSIVE_SOURCE_COMMIT'], frozen_runtime_source=RUNTIME,
