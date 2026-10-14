@@ -21,6 +21,11 @@ FAILED_COMMIT='300734e78705936b9b3885248ac3ffe7f8cbd3aa'
 JOB='717554'
 
 
+def validate_original_submission(prior):
+    if prior.get('job')!=JOB or prior.get('status')!='REPLACEMENT_HELD' or prior.get('source_commit')!=FAILED_COMMIT:
+        raise ValueError('Missing original actual held submission binding')
+
+
 def read_terminal_job(preserved_detail):
     result=subprocess.run(['scontrol','show','job','-d',JOB],capture_output=True,text=True,timeout=30)
     if result.returncode==0:
@@ -54,7 +59,7 @@ def terminal():
         Command=str(ROOT/'source'/FAILED_COMMIT/'reproduction/hpc3_qprobe/train.sh'))
     if any(actual.get(k)!=v for k,v in expected.items()):raise ValueError('Not the actual failed own pretraining job')
     prior=json.loads((ROOT/'preparation/account-transition-submission.json').read_text())
-    if prior['job']!=JOB or prior['returncode']!=0:raise ValueError('Missing original submission binding')
+    validate_original_submission(prior)
     run=json.loads((FAILED/'logs/run-manifest.json').read_text())
     if run['source_commit']!=FAILED_COMMIT or run['completed_updates']!=0 or run['training_world_size']!=4:
         raise ValueError('Actual failed run differs or already trained')
