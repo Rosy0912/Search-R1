@@ -32,20 +32,21 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job not in ('717607','717637','717698','717765','717827'):raise ValueError('Only actually observed own startup failures are supported')
+    if job not in ('717607','717637','717698','717765','717827','717938'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765'}[job]
+    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765','717938':'717827'}[job]
     FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
     FAILED_COMMIT={'717607':'1552de146c2dd44e4fd40eb94b27839ac8648ef1',
         '717637':'f30895d421e190bdb13334e9ad6f718cb394d787',
         '717698':'7bf7a30fd530f0741c4deadf7d89788ca0070c0f',
         '717765':'1e0ac4e588faa7811f0aeabb1c9b3a9e28f0012e',
-        '717827':'a75e0c944e2bbae284e52ce9b9f8bf909ab89564'}[job]
+        '717827':'a75e0c944e2bbae284e52ce9b9f8bf909ab89564',
+        '717938':'594d43b73c5a1e5159a24fb0d97880ff22fb0056'}[job]
 
 
 def diagnostic_gate(commit):
-    if JOB not in ('717607','717637','717698','717765','717827'):return None
+    if JOB not in ('717607','717637','717698','717765','717827','717938'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -84,8 +85,56 @@ def read_terminal_job(preserved_detail):
         accounting=accounting,scontrol_exit=result.returncode,scontrol_stderr=result.stderr,checked_unix=time.time())
 
 
+def cleanup_retry_binding():
+    """Only the actual, owner-bound retry of failed934 is a queue exception."""
+    from reproduction.hpc3_qprobe.cleanup_failed_717827 import FAILED as prior,RETRY_SHADOW,RETRY_STEM
+    from reproduction.hpc3_qprobe.observed_startup_failures import owner_verified
+    owner_verified('717934')
+    receipt=json.loads((prior/'preparation'/(RETRY_STEM+'-submission.json')).read_text())
+    claim=json.loads((prior/'preparation'/(RETRY_STEM+'-submit-claim.json')).read_text())
+    job=receipt.get('job');commit=receipt['commit'];source=ROOT/'source'/commit
+    known=receipt.get('returncode')==0 or (receipt.get('status')=='ACTUAL_SLURM_RECONCILED' and receipt.get('returncode') is None and receipt.get('submission_repeated') is False)
+    if not known or not isinstance(job,str) or not job.isdecimal() or receipt.get('retry_of')!='717934' or claim.get('retry_of')!='717934' or claim['commit']!=commit:
+        raise ValueError('Actual owner cleanup retry binding missing')
+    expected=[str(source/'reproduction/hpc3_qprobe/cleanup_failed_717827.sh'),str(source),'--retry-of','717934']
+    if claim['command'][-4:]!=expected or '--nodelist=ACD1-67' not in claim['command'] or '--job-name=qprobe-cleanup717934' not in claim['command']:
+        raise ValueError('Cleanup retry source/node/name differs')
+    verification=json.loads((ROOT/'preparation'/('source-'+commit+'-verification.json')).read_text())
+    if verification['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS' or verification['commit']!=commit:raise ValueError('Cleanup source not published')
+    for name,sha in verification['files'].items():
+        if hashlib.sha256((source/name).read_bytes()).hexdigest()!=sha:raise ValueError('Actual cleanup source bytes changed')
+    state=subprocess.check_output(['sacct','-nP','-j',job,'-X','--format=JobID,State,ExitCode,UID,NodeList'],text=True,timeout=30).strip()
+    complete=state==job+'|COMPLETED|0:0|14090|ACD1-67'
+    if complete:
+        proof=json.loads((RETRY_SHADOW/'complete.json').read_text())
+        run=json.loads((prior/'logs/run-manifest.json').read_text())
+        if proof['cleaned'] is not True or proof['retry_of']!='717934' or proof['cleanup_job']!=job or proof['failed_job']!='717827' or proof['run_id']!=run['run_id'] or proof['shadow']!=str(RETRY_SHADOW) or proof['corpus']['cleaned'] is not True or proof['stage']['cleaned'] is not True:
+            raise ValueError('Actual private cleanup completion differs')
+        ledger=json.loads((RETRY_SHADOW/'logs/process-ledger.json').read_text())
+        if ledger['run_id']!=run['run_id'] or any(j['state']!='STOPPED' for j in ledger['jobs'].values()):raise ValueError('Cleanup ledger not quiescent')
+    else:
+        actual=fields(subprocess.check_output(['scontrol','show','job','-d',job],text=True,timeout=30))
+        if actual['JobState'] not in ('PENDING','RUNNING') or actual['UserId']!='jxu957(14090)' or actual['Account']!='jxu957' or actual['QOS']!='formal-user' or actual['ReqNodeList']!='ACD1-67' or actual['JobName']!='qprobe-cleanup717934' or actual['Command']!=expected[0] or actual['WorkDir']!=str(prior):
+            raise ValueError('Cleanup retry is not actual own bound pending/running job')
+        if actual['JobState']=='RUNNING' and actual['NodeList']!='ACD1-67':raise ValueError('Cleanup on wrong node')
+    return dict(private_cleanup_job=job,private_cleanup_job_name='qprobe-cleanup717934',
+        private_cleanup_complete=complete,excluded_node='ACD1-67',cleanup_required_before_goal_complete=True)
+
+
+def terminal_717938():
+    from reproduction.hpc3_qprobe.observed_startup_failures import owner_verified
+    actual=owner_verified('717938')
+    if actual['base']!=str(FAILED) or actual['source_commit']!=FAILED_COMMIT:raise ValueError('Observed failed938 source/base differs')
+    value=dict(actual_accounting=actual['actual'],terminal_readback_kind=actual['kind'],
+        original_source_command=actual['source_command'],prior=actual['original_submission'],
+        failed_run_id=actual['run_id'],owner_verification=actual,checked_unix=time.time())
+    value.update(cleanup_retry_binding())
+    return value
+
+
 def terminal():
     if os.getuid()!=14090:raise ValueError('Actual jxu957 owner required')
+    if JOB=='717938':return terminal_717938()
     evidence=FAILED/('failed-job-'+JOB)
     saved=evidence/'terminal-and-files.json'
     if not saved.is_file() or saved.is_symlink() or saved.stat().st_uid!=14090:
@@ -237,7 +286,8 @@ def submit(commit):
     if claim.exists() or receipt.exists():raise ValueError('Recovery submission already attempted; never duplicate')
     jobs=subprocess.check_output(['squeue','-h','-u','jxu957','-o','%i|%j|%T'],text=True,timeout=30)
     cleanup_job=actual.get('private_cleanup_job')
-    if any('qprobe' in line and (cleanup_job is None or not line.startswith(cleanup_job+'|qprobe-cleanup717827|')) for line in jobs.splitlines()):raise ValueError('Existing own qprobe job requires inspection')
+    cleanup_name=actual.get('private_cleanup_job_name','qprobe-cleanup717827')
+    if any('qprobe' in line and (cleanup_job is None or not line.startswith(cleanup_job+'|'+cleanup_name+'|')) for line in jobs.splitlines()):raise ValueError('Existing own qprobe job requires inspection')
     from search_g1.qprobe_features import FeatureCache
     features=FeatureCache(TARGET/'question-features');features.verify_all()
     if features.manifest['count']!=169028:raise ValueError('Actual feature cache incomplete')
@@ -246,7 +296,7 @@ def submit(commit):
         '--job-name=qprobe-warmup200','--export=NONE','--chdir='+str(TARGET),
         '--output='+str(TARGET/'logs/training-%j.log'),'--error='+str(TARGET/'logs/training-%j.log'),
         str(source/'reproduction/hpc3_qprobe/train.sh'),str(TARGET),commit]
-    if JOB=='717827':command.insert(1,'--exclude=ACD1-67')
+    if JOB in ('717827','717938'):command.insert(1,'--exclude=ACD1-67')
     test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)
     publish(TARGET/'preparation/training-test-only.json',dict(command=command,exit=test.returncode,stdout=test.stdout,stderr=test.stderr,epoch=time.time()))
     if test.returncode:raise ValueError('Actual recovery scheduler preflight failed')
@@ -263,6 +313,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827','717938'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)
