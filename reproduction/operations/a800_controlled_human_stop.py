@@ -11,6 +11,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shlex
 import subprocess
 import time
 
@@ -25,6 +26,8 @@ REMOTE = r'''
 import hashlib,json,os,signal,socket,sys,time
 from pathlib import Path
 p=json.load(sys.stdin);intent=p['intent'];base=Path(intent['base']);repo=base/'repo'
+assert sys.executable=='/data/search-g1/env/bin/python'
+assert hasattr(os,'pidfd_open') and hasattr(signal,'pidfd_send_signal')
 assert base==base.resolve() and base.stat().st_uid==os.getuid()
 assert p['human_reply']=='停止当前实验，切换新算法'
 def sha(path):
@@ -62,6 +65,13 @@ if p.get('known_pre_signal_schema_failure'):
  assert not (base/'preparation/human-qprobe-switch-stop-intent.json').exists()
  assert not (base/'logs/human-qprobe-switch-stop-signal.json').exists()
  assert same(producer) and identity(producer['pid'])['state'] not in ('Z','X')
+if p.get('known_no_pidfd_failure'):
+ previous=read('preparation/human-qprobe-switch-stop-intent.json')
+ assert previous['run_id']==run['run_id'] and previous['execution_id']==run['execution_id']
+ assert previous['source_commit']==run['source_commit'] and previous['pipeline_identity']==producer
+ assert previous['human_instruction_sha256']==p['human_instruction_sha256']
+ assert not (base/'logs/human-qprobe-switch-stop-signal.json').exists()
+ assert same(producer) and identity(producer['pid'])['state'] not in ('Z','X')
 births={name:dict(leader=job['leader'],ledger=job['ledger']) for name,job in ledger['jobs'].items()}
 updates=[];path=base/'logs/actual-updates.jsonl';partial_update_tail=False
 if path.exists():
@@ -82,7 +92,8 @@ snapshot=dict(role='explicit_human_current_pipeline_stop_intent',run_id=run['run
  human_reply_recorded_unix=p['human_reply_recorded_unix'],pipeline_identity=producer,owned_births=births,
  completed_update_rows=updates,partial_update_tail=partial_update_tail,checkpoint_directories=checkpoints,checkpoints_preserved=True,
  scope='exact current pipeline only; original pipeline owns component cleanup; new algorithm fresh200',checked_unix=time.time())
-once('preparation/human-qprobe-switch-stop-intent.json',snapshot)
+intent_name='preparation/human-qprobe-switch-stop-after-known-no-pidfd-intent.json' if p.get('known_no_pidfd_failure') else 'preparation/human-qprobe-switch-stop-intent.json'
+once(intent_name,snapshot)
 sent=False;actual=None
 if same(producer):
  actual=identity(producer['pid'])
@@ -102,7 +113,9 @@ def main():
     parser.add_argument('--human-intent', type=Path, required=True)
     parser.add_argument('--code-ready-receipt', type=Path, required=True)
     parser.add_argument('--recover-known-pre-signal-failure', action='store_true')
+    parser.add_argument('--recover-known-no-pidfd-failure', action='store_true')
     args = parser.parse_args()
+    assert not (args.recover_known_pre_signal_failure and args.recover_known_no_pidfd_failure)
     instruction = json.loads(args.human_intent.read_text())
     assert instruction['existing_run_id'] == RUN
     assert instruction['stop_scope_confirmation_pending'] is False
@@ -148,13 +161,27 @@ def main():
         payload['known_pre_signal_schema_failure'] = True
         payload['original_failure_stderr_sha256'] = hashlib.sha256(error_text.encode()).hexdigest()
         claim = claim.with_name('qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.json')
+    if args.recover_known_no_pidfd_failure:
+        previous_claim=claim.with_name('qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.json')
+        previous=json.loads(previous_claim.read_text())['payload']
+        assert all(previous[key]==payload[key] for key in ('run_id','execution_id','source_commit','pid','ticks','human_instruction_sha256'))
+        original=json.loads(previous_claim.with_name(previous_claim.stem+'.result.json').read_text())
+        error_text=previous_claim.with_suffix('.stderr').read_text()
+        assert original['exit_code']==1 and original['results']==[]
+        assert "AttributeError: module 'os' has no attribute 'pidfd_open'" in error_text
+        assert 'fd=os.pidfd_open' in error_text and instruction['existing_training_stopped'] is False
+        payload['known_no_pidfd_failure']=True
+        payload['original_failure_stderr_sha256']=hashlib.sha256(error_text.encode()).hexdigest()
+        claim=claim.with_name('qprobe-switch-6a262-local-stop-after-known-no-pidfd-once.json')
     with claim.open('x') as f:json.dump(dict(payload=payload,claimed_unix=time.time(),no_automatic_retry=True),f);f.flush();os.fsync(f.fileno())
     spec = importlib.util.spec_from_file_location('immutable_a800_deploy',RUNTIME/'reproduction/a800_common/deploy.py')
     module = importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     error = claim.with_suffix('.stderr')
     try:
         with error.open('xb') as stream:
-            result = subprocess.run(module.ssh_command(REMOTE),input=json.dumps(payload).encode(),stdout=subprocess.PIPE,stderr=stream,timeout=60)
+            route=module.ssh_command(REMOTE)
+            route[-1]=shlex.quote('/data/search-g1/env/bin/python')+' -c '+shlex.quote(REMOTE)
+            result = subprocess.run(route,input=json.dumps(payload).encode(),stdout=subprocess.PIPE,stderr=stream,timeout=60)
         rows = [json.loads(x[len('HUMAN_STOP_JSON:'):]) for x in result.stdout.decode().splitlines() if x.startswith('HUMAN_STOP_JSON:')]
         receipt = dict(exit_code=result.returncode,results=rows,observed_unix=time.time(),no_automatic_retry=True)
     except subprocess.TimeoutExpired:

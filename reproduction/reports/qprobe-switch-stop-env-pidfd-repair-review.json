@@ -1,0 +1,62 @@
+{
+  "acceptance_limits": [
+    "This repair must be published before invocation.",
+    "Existing remote stop intent, absent signal receipt and live exact producer are runtime preconditions; the reviewer did not independently query them.",
+    "Actual cleanup and owned GPU release require later real verification; this receipt grants no runtime acceptance.",
+    "Any later transport uncertainty consumes the new exclusive claim and does not authorize another retry."
+  ],
+  "accepted_controls": {
+    "checkpoints_preserved_and_cleanup_not_claimed": true,
+    "existing_canonical_stop_intent_identity_birth_and_human_sha_checked_and_preserved": true,
+    "existing_ssh_route_prefix_preserved": true,
+    "interpreter_and_pidfd_open_send_capability_checked_before_any_stop_intent": true,
+    "new_algorithm_complete_source_review_and_publication_readiness_gate_unchanged": true,
+    "new_exclusive_local_claim_and_separate_immutable_remote_attempt_intent": true,
+    "only_exact_pipeline_pidfd_sigterm": true,
+    "only_remote_interpreter_changed_to_existing_training_env_python": true,
+    "prior_exclusive_claim_payload_identity_and_human_sha_checked": true,
+    "prior_exit1_empty_results_and_exact_no_pidfd_failure_required": true,
+    "recovery_modes_mutually_exclusive": true,
+    "signal_receipt_absence_and_exact_live_producer_checked_at_runtime": true,
+    "timeout_does_not_qualify_for_recovery": true
+  },
+  "approved": true,
+  "compared_published_operator_commit": "f6f575966cbc803fdf83153422544042872be4bb",
+  "evidence_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/a800/owned_processes.py": "df83d747f3b86a187eb2dc4267ac146a6afeab7338f274ab5ecd8e7de9e2969e",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.json": "844a7e5c343f4859e37e0d73f5638d810f95029d5329fcb45a618ba9f7d831d1",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.result.json": "40dceb5cbc161740638f1ef9614ff260c8f4dabf182a7f05e16d82410fd0fa6a",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.stderr": "33686585c5b81b0e5c0875b8ff4d9fda14aacce1d994557ee7d2411fb209d311"
+  },
+  "exact_target": {
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-6047f7f9674b49fdad718a256ab3db95",
+    "execution_id": "140e43d2243d49a99d88f77399f263b8",
+    "pid": 2635844,
+    "run_id": "6a26247f538b4145a24b156e79fb04d1",
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "start_ticks": 602743013
+  },
+  "implementation_actor": "/root",
+  "independent": true,
+  "original_failure": {
+    "exception": "AttributeError: module 'os' has no attribute 'pidfd_open'",
+    "exit_code": 1,
+    "failure_before_fd_allocation_and_signal": true,
+    "owned_processes_source_sha256": "df83d747f3b86a187eb2dc4267ac146a6afeab7338f274ab5ecd8e7de9e2969e",
+    "owned_signal_function_line": 81,
+    "remote_traceback_line": 67,
+    "results": []
+  },
+  "remote_actions_performed": false,
+  "reviewed_unix": 1791961348.3286889,
+  "reviewer": "/root/qprobe_warmup_independent_review",
+  "role": "a800_exact_current_pipeline_env_pidfd_repair_independent_review",
+  "runtime_acceptance": false,
+  "schema_version": 1,
+  "scope": "targeted local static source review and preserved known no-pidfd failure evidence; no remote-state inspection",
+  "signals_sent_by_reviewer": false,
+  "source_file_sha256": "74a5b73b17533641b68efc716ba2f455036794270c4a8e2c6a8192632b62415c",
+  "source_modified_by_reviewer": false,
+  "source_path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_controlled_human_stop.py",
+  "unresolved_material_findings": []
+}
