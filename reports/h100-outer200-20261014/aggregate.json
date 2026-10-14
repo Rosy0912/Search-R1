@@ -1,0 +1,68 @@
+{
+  "experiment": "Recursive Bran experiment A / Tree-GRPO",
+  "platform": "H100 eight physical GPUs",
+  "completed_outer": 200,
+  "actual_adam_each_rank": 4000,
+  "native_saved_ranks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "training_source": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
+  "config_sha256": "43e28cc7ecc0d38a93324bf480aafb23a0c1ecdb979e9ea587d0358ae095233d",
+  "post_evaluation_checkpoint_sha256": "8f402d440401c3147ac41ede8035d4acfe250f5a19486d84b7b85e20165576a3",
+  "dev512": {
+    "hits": 257,
+    "count": 512,
+    "nq_hits": 116,
+    "nq_count": 256,
+    "hotpot_hits": 141,
+    "hotpot_count": 256,
+    "metrics": {
+      "val/em/all": 0.501953125,
+      "val/em/nq": 0.453125,
+      "val/em/hotpotqa": 0.55078125,
+      "val/f1/all": 0.5756324404761907,
+      "val/f1/nq": 0.551636904761905,
+      "val/f1/hotpotqa": 0.5996279761904763,
+      "timing_s/gen": 717.2061590328813,
+      "timing_s/testing": 629.9336341880262,
+      "timing_s/update_actor": 253.79049679264426,
+      "timing_s/step": 1706.4130097962916
+    }
+  },
+  "dev_curve": [
+    {
+      "outer": 5,
+      "hits": 96,
+      "count": 512
+    },
+    {
+      "outer": 50,
+      "hits": 199,
+      "count": 512
+    },
+    {
+      "outer": 100,
+      "hits": 236,
+      "count": 512
+    },
+    {
+      "outer": 150,
+      "hits": 246,
+      "count": 512
+    },
+    {
+      "outer": 200,
+      "hits": 257,
+      "count": 512
+    }
+  ],
+  "final51713_complete": false,
+  "scope": "Native completed training and full dev512; no claim of final51713 completion or independent tensor replay"
+}
