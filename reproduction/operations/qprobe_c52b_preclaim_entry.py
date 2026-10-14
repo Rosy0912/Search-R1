@@ -29,6 +29,12 @@ HELPER_SHA='af3bd439b53c32e194dc2141ff3c7fa3eb67023e71bda171da0bdec744fd8d80'
 LIBRARY_SHA='c1512efd74268662f94b4a446df0cd6c3cdcaabd83d2ef2f65df698d35f3cd52'
 LAUNCHER_SHA='143565b2e32c78035e57e78ccc32bd98f3ff6c447e94094e9e3acc649e7e4bf1'
 PREFIX_SHA='c4f92b2a90544d09154317eccac44c50c81ff795b40b820c2316a429d546f642'
+BUSY_RECEIPT=ROOT/'preparation/qprobe-c52b-preclaim-retry-1791969889110004000.json'
+BUSY_RECEIPT_SHA='3e907cbfa2059cab1da5148cdadb5781a16db3e407c16e823b8457901c1504ff'
+OLD_RETRY_CLAIM=ROOT/'preparation/qprobe-c52b-preclaim-explicit-retry-once.json'
+OLD_RETRY_CLAIM_SHA='600cdd86ac501418e06ef1358168e7276d687b947a4dbec6941cc4c8d0a1125f'
+OLD_OPERATOR_COMMIT='d9ed8a460c13c59d45b98aa1376d7b6fb1dce2d6'
+OLD_OPERATOR_SHA='7d8b8995565401466700993481b96c2a05175df3bca5b7b79e08eeb96584010f'
 
 REMOTE=r'''
 import ast,csv,hashlib,importlib.util,io,json,os,re,socket,stat,subprocess,sys,time
@@ -153,6 +159,12 @@ result=dict(role='qprobe_c52b_preclaim_readonly_inspection',base=str(base),run_i
  original_failure_gpu6_uuid='GPU-92249a14-a344-f77f-e18c-d1cea5c638a7',
  last_audited_gpu3_pid_observation=gpu3,current_assigned_compute_apps=current,assigned_gpu_inventory=inventory,assigned_idle=idle,ready_for_one_retry=idle,
  metadata_only_output=True,no_model_or_cuda_context=True,scientific_launcher_source_commit=qintent['source_commit'],scientific_launcher_library_sha256=sha(library),embedded_launcher_sha256=payload['launcher_sha256'])
+if 'previous_busy_read' in payload:
+ previous=payload['previous_busy_read'];assert payload['mode']=='retry'
+ assert previous['receipt_sha256']=='3e907cbfa2059cab1da5148cdadb5781a16db3e407c16e823b8457901c1504ff'
+ assert previous['old_claim_sha256']=='600cdd86ac501418e06ef1358168e7276d687b947a4dbec6941cc4c8d0a1125f'
+ assert previous['operator_sha256']=='7d8b8995565401466700993481b96c2a05175df3bca5b7b79e08eeb96584010f'
+ result['previous_busy_read_provenance']=previous
 print('QPROBE_C52B_INSPECTION_JSON:'+json.dumps(result,allow_nan=False),flush=True)
 if payload['mode']=='retry':
  prior=payload['prior_inspection'];assert 0<=time.time()-prior['observed_unix']<=120
@@ -167,11 +179,34 @@ else:assert payload['mode']=='inspect'
 '''
 
 
+def known_busy_read(helper,path,relative,handle_sha):
+    assert path==BUSY_RECEIPT and hashlib.sha256(path.read_bytes()).hexdigest()==BUSY_RECEIPT_SHA
+    previous=helper.read(path);claim=helper.read(OLD_RETRY_CLAIM)
+    assert hashlib.sha256(OLD_RETRY_CLAIM.read_bytes()).hexdigest()==OLD_RETRY_CLAIM_SHA
+    original=subprocess.check_output(['git','-C',str(OPS),'show',OLD_OPERATOR_COMMIT+':'+relative])
+    assert hashlib.sha256(original).hexdigest()==OLD_OPERATOR_SHA
+    for value in (previous,claim):
+        assert (value['run_id'],value['execution_id'],value['source_commit'],value['base'])==(RUN,EXECUTION,SOURCE,BASE)
+        assert value['mode']=='retry' and value['operator_commit']==OLD_OPERATOR_COMMIT and value['operator_sha256']==OLD_OPERATOR_SHA
+        assert value['handle_sha256']==handle_sha and value['embedded_launcher_sha256']==LAUNCHER_SHA
+    assert previous['exit_code']==1 and previous['status']=='RETRY_COMMAND_RETURNED' and previous['retry_launch_receipt'] is None
+    proof=previous['inspection'];assert (proof['run_id'],proof['execution_id'],proof['source_commit'],proof['base'])==(RUN,EXECUTION,SOURCE,BASE)
+    assert proof['preclaim_terminal_zero_verified'] is True and len(proof['absence_checks'])==16 and all(value is True for value in proof['absence_checks'].values())
+    assert proof['assigned_idle'] is False and proof['ready_for_one_retry'] is False and proof['current_assigned_compute_apps']
+    return dict(receipt_path=str(path),receipt_sha256=BUSY_RECEIPT_SHA,old_claim_path=str(OLD_RETRY_CLAIM),
+        old_claim_sha256=OLD_RETRY_CLAIM_SHA,operator_commit=OLD_OPERATOR_COMMIT,operator_sha256=OLD_OPERATOR_SHA,
+        observed_unix=proof['observed_unix'],native_launcher_was_not_entered=True,old_local_claim_preserved=True)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);actions=parser.add_mutually_exclusive_group(required=True)
     actions.add_argument('--inspect',action='store_true');actions.add_argument('--retry',action='store_true')
+    actions.add_argument('--retry-after-known-busy',action='store_true')
     parser.add_argument('--inspect-receipt',type=Path);parser.add_argument('--receipt',type=Path)
-    args=parser.parse_args();mode='retry' if args.retry else 'inspect'
+    parser.add_argument('--previous-retry-receipt',type=Path)
+    args=parser.parse_args();retry_requested=args.retry or args.retry_after_known_busy
+    mode='retry-after-known-busy' if args.retry_after_known_busy else 'retry' if args.retry else 'inspect'
+    assert args.retry_after_known_busy or args.previous_retry_receipt is None
     commit=subprocess.check_output(['git','-C',str(OPS),'rev-parse','HEAD'],text=True).strip()
     own=Path(__file__).resolve();relative=str(own.relative_to(OPS));own_sha=hashlib.sha256(own.read_bytes()).hexdigest()
     for name in (relative,HELPER):
@@ -183,8 +218,11 @@ def main():
     helper.authority(HANDLE,intent,RUN,EXECUTION);module=helper.runtime_module(RUNTIME,intent)
     assert intent['source_sha256']['reproduction/a800_common/deploy.py']==LIBRARY_SHA
     assert hashlib.sha256(module.REMOTE_LAUNCH_PREPARED.encode()).hexdigest()==LAUNCHER_SHA
-    payload=dict(intent=intent,mode=mode,library_sha256=LIBRARY_SHA,launcher_sha256=LAUNCHER_SHA,prefix_sha256=PREFIX_SHA)
-    if args.retry:
+    payload=dict(intent=intent,mode='retry' if retry_requested else 'inspect',library_sha256=LIBRARY_SHA,launcher_sha256=LAUNCHER_SHA,prefix_sha256=PREFIX_SHA)
+    if args.retry_after_known_busy:
+        assert args.previous_retry_receipt is not None
+        payload['previous_busy_read']=known_busy_read(helper,args.previous_retry_receipt,relative,hashlib.sha256(HANDLE.read_bytes()).hexdigest())
+    if retry_requested:
         assert args.inspect_receipt is not None
         args.inspect_receipt.relative_to(ROOT/'preparation');prior=helper.read(args.inspect_receipt)
         assert prior['mode']=='inspect' and prior['exit_code']==0 and prior['status']=='READ_RETURNED' and prior['operator_sha256']==own_sha
@@ -203,8 +241,10 @@ def main():
         source_commit=SOURCE,base=BASE,run_id=RUN,execution_id=EXECUTION,authority_sha256=authority_sha,
         handle_sha256=hashlib.sha256(HANDLE.read_bytes()).hexdigest(),scientific_library_sha256=LIBRARY_SHA,
         embedded_launcher_sha256=LAUNCHER_SHA,no_automatic_retry=True)
-    if args.retry:
-        helper.once(ROOT/'preparation/qprobe-c52b-preclaim-explicit-retry-once.json',dict(result,inspect_receipt=str(args.inspect_receipt),claimed_unix=time.time()))
+    if args.retry_after_known_busy:result['previous_busy_read_provenance']=payload['previous_busy_read']
+    if retry_requested:
+        claim_path=ROOT/'preparation/qprobe-c52b-retry-after-known-busy-read-once.json' if args.retry_after_known_busy else OLD_RETRY_CLAIM
+        helper.once(claim_path,dict(result,inspect_receipt=str(args.inspect_receipt),claimed_unix=time.time()))
     with tempfile.TemporaryFile() as out,tempfile.TemporaryFile() as err:
         try:
             actual=subprocess.run(route,input=json.dumps(payload,allow_nan=False).encode(),stdout=out,stderr=err,timeout=180)
