@@ -1,0 +1,287 @@
+{
+  "experiment": "Recursive Bran experiment A / Tree-GRPO",
+  "completed_outer": 200,
+  "actual_adam_each_rank": 4000,
+  "dev512": {
+    "hits": 257,
+    "count": 512,
+    "nq_hits": 116,
+    "nq_count": 256,
+    "hotpot_hits": 141,
+    "hotpot_count": 256,
+    "metrics": {
+      "val/em/all": 0.501953125,
+      "val/em/nq": 0.453125,
+      "val/em/hotpotqa": 0.55078125,
+      "val/f1/all": 0.5756324404761907,
+      "val/f1/nq": 0.551636904761905,
+      "val/f1/hotpotqa": 0.5996279761904763,
+      "timing_s/gen": 717.2061590328813,
+      "timing_s/testing": 629.9336341880262,
+      "timing_s/update_actor": 253.79049679264426,
+      "timing_s/step": 1706.4130097962916
+    }
+  },
+  "final51713": {
+    "accepted": true,
+    "checkpoint_sha": "dfa2603b195a05e65bedb98e07d5feea17dde961c99ec2c945a29c2d6bacaad0",
+    "count": 51713,
+    "elapsed_seconds": 3888.179783766158,
+    "final_run": "84d95ec7600843efb00a5e16b9f13134",
+    "rows_sha": "17aabb810c75354e11df00ac28fcd28140cd9b99386629248db377b81c94c19e",
+    "scope": "Numeric rows, native aggregate, actual wait, checkpoint manifest, eight worker generation records and whole-device utilization including possible cohost tasks; not fresh tensor hashes or utilization attribution",
+    "status": "ACCEPTED_ROWS_AND_EIGHT_GPU",
+    "totals": {
+      "2wikimultihopqa": {
+        "answer_format": 12377.0,
+        "count": 12576,
+        "em": 5518.0,
+        "f1": 6230.443373233251,
+        "format_rate": 2938.0,
+        "generated_tokens": 3015457.0,
+        "search_calls": 31198.0
+      },
+      "all": {
+        "answer_format": 51236.0,
+        "count": 51713,
+        "em": 24968.0,
+        "f1": 28495.970352590455,
+        "format_rate": 26087.0,
+        "generated_tokens": 9642823.0,
+        "search_calls": 117642.0
+      },
+      "bamboogle": {
+        "answer_format": 123.0,
+        "count": 125,
+        "em": 46.0,
+        "f1": 60.666666666666664,
+        "format_rate": 72.0,
+        "generated_tokens": 23326.0,
+        "search_calls": 302.0
+      },
+      "hotpotqa": {
+        "answer_format": 7339.0,
+        "count": 7405,
+        "em": 3224.0,
+        "f1": 4078.5692853030873,
+        "format_rate": 3488.0,
+        "generated_tokens": 1580022.0,
+        "search_calls": 17047.0
+      },
+      "musique": {
+        "answer_format": 2278.0,
+        "count": 2417,
+        "em": 442.0,
+        "f1": 650.603940014233,
+        "format_rate": 1206.0,
+        "generated_tokens": 610896.0,
+        "search_calls": 6708.0
+      },
+      "nq": {
+        "answer_format": 3599.0,
+        "count": 3610,
+        "em": 1738.0,
+        "f1": 2026.5617581764673,
+        "format_rate": 2571.0,
+        "generated_tokens": 508343.0,
+        "search_calls": 7397.0
+      },
+      "popqa": {
+        "answer_format": 14235.0,
+        "count": 14267,
+        "em": 6843.0,
+        "f1": 7453.871789321818,
+        "format_rate": 7848.0,
+        "generated_tokens": 2012895.0,
+        "search_calls": 30487.0
+      },
+      "triviaqa": {
+        "answer_format": 11285.0,
+        "count": 11313,
+        "em": 7157.0,
+        "f1": 7995.253539874689,
+        "format_rate": 7964.0,
+        "generated_tokens": 1891884.0,
+        "search_calls": 24503.0
+      }
+    },
+    "training_run": "d97047b5902642c883d24aa908945cda",
+    "whole_device_utilization": {
+      "GPU-02524001-4775-0600-1310-b89506702828": {
+        "mean": 12.206632653061224,
+        "nonzero_fraction": 0.28061224489795916,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-1760ed5d-0687-f06a-b72b-c61393195962": {
+        "mean": 11.880102040816327,
+        "nonzero_fraction": 0.2857142857142857,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-18030bbd-bc34-8171-942d-f56fec178dd7": {
+        "mean": 12.487244897959183,
+        "nonzero_fraction": 0.29591836734693877,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-21ad233e-ce4f-de0b-f3e0-ce1fbb7a95eb": {
+        "mean": 12.681122448979592,
+        "nonzero_fraction": 0.30357142857142855,
+        "peak": 95.0,
+        "samples": 392
+      },
+      "GPU-6508a185-f0d1-4100-196f-bb653d47f50f": {
+        "mean": 12.71938775510204,
+        "nonzero_fraction": 0.3086734693877551,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-88dcd1f6-1efc-5fb0-59e5-2d11e87f1d9d": {
+        "mean": 12.688775510204081,
+        "nonzero_fraction": 0.29591836734693877,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e": {
+        "mean": 13.334183673469388,
+        "nonzero_fraction": 0.29591836734693877,
+        "peak": 94.0,
+        "samples": 392
+      },
+      "GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b": {
+        "mean": 12.813775510204081,
+        "nonzero_fraction": 0.3010204081632653,
+        "peak": 94.0,
+        "samples": 392
+      }
+    },
+    "workers": {
+      "0": {
+        "calls": 152,
+        "gpu_uuid": "GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b",
+        "pid": 1512810,
+        "rows": 15965,
+        "tokens": 1126579
+      },
+      "1": {
+        "calls": 152,
+        "gpu_uuid": "GPU-21ad233e-ce4f-de0b-f3e0-ce1fbb7a95eb",
+        "pid": 1513109,
+        "rows": 15965,
+        "tokens": 1123998
+      },
+      "2": {
+        "calls": 152,
+        "gpu_uuid": "GPU-88dcd1f6-1efc-5fb0-59e5-2d11e87f1d9d",
+        "pid": 1513110,
+        "rows": 15965,
+        "tokens": 1130136
+      },
+      "3": {
+        "calls": 152,
+        "gpu_uuid": "GPU-1760ed5d-0687-f06a-b72b-c61393195962",
+        "pid": 1513111,
+        "rows": 15965,
+        "tokens": 1127410
+      },
+      "4": {
+        "calls": 152,
+        "gpu_uuid": "GPU-6508a185-f0d1-4100-196f-bb653d47f50f",
+        "pid": 1513112,
+        "rows": 15965,
+        "tokens": 1141048
+      },
+      "5": {
+        "calls": 152,
+        "gpu_uuid": "GPU-18030bbd-bc34-8171-942d-f56fec178dd7",
+        "pid": 1513113,
+        "rows": 15965,
+        "tokens": 1134824
+      },
+      "6": {
+        "calls": 152,
+        "gpu_uuid": "GPU-02524001-4775-0600-1310-b89506702828",
+        "pid": 1513114,
+        "rows": 15965,
+        "tokens": 1139232
+      },
+      "7": {
+        "calls": 152,
+        "gpu_uuid": "GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e",
+        "pid": 1513115,
+        "rows": 15965,
+        "tokens": 1139750
+      }
+    }
+  },
+  "native_summary": {
+    "status": "COMPLETE",
+    "count": 51713,
+    "metrics": {
+      "val/qa_count/nq": 3610,
+      "val/f1/nq": 0.5613744482483288,
+      "val/em/nq": 0.4814404432132964,
+      "val/answer_format/nq": 0.9969529085872576,
+      "val/format_rate/nq": 0.7121883656509695,
+      "val/generated_tokens/nq": 140.81523545706372,
+      "val/search_calls/nq": 2.0490304709141274,
+      "val/qa_count/triviaqa": 11313,
+      "val/f1/triviaqa": 0.7067315071046308,
+      "val/em/triviaqa": 0.6326350216565013,
+      "val/answer_format/triviaqa": 0.997524971271988,
+      "val/format_rate/triviaqa": 0.7039688853531335,
+      "val/generated_tokens/triviaqa": 167.2309732166534,
+      "val/search_calls/triviaqa": 2.1659153186599487,
+      "val/qa_count/popqa": 14267,
+      "val/f1/popqa": 0.5224554418813919,
+      "val/em/popqa": 0.4796383262073316,
+      "val/answer_format/popqa": 0.9977570617508936,
+      "val/format_rate/popqa": 0.5500806055933273,
+      "val/generated_tokens/popqa": 141.08747459171514,
+      "val/search_calls/popqa": 2.136889325015771,
+      "val/qa_count/hotpotqa": 7405,
+      "val/f1/hotpotqa": 0.5507858589200658,
+      "val/em/hotpotqa": 0.4353814989871708,
+      "val/answer_format/hotpotqa": 0.9910871033085753,
+      "val/format_rate/hotpotqa": 0.4710330857528697,
+      "val/generated_tokens/hotpotqa": 213.37231600270087,
+      "val/search_calls/hotpotqa": 2.302093180283592,
+      "val/qa_count/2wikimultihopqa": 12576,
+      "val/f1/2wikimultihopqa": 0.49542329621765674,
+      "val/em/2wikimultihopqa": 0.43877226463104324,
+      "val/answer_format/2wikimultihopqa": 0.9841762086513995,
+      "val/format_rate/2wikimultihopqa": 0.23361959287531806,
+      "val/generated_tokens/2wikimultihopqa": 239.77870547073792,
+      "val/search_calls/2wikimultihopqa": 2.4807569974554706,
+      "val/qa_count/musique": 2417,
+      "val/f1/musique": 0.2691782954134187,
+      "val/em/musique": 0.18287132809267687,
+      "val/answer_format/musique": 0.9424906909391808,
+      "val/format_rate/musique": 0.49896565990897807,
+      "val/generated_tokens/musique": 252.74968969797268,
+      "val/search_calls/musique": 2.7753413322300373,
+      "val/qa_count/bamboogle": 125,
+      "val/f1/bamboogle": 0.48533333333333334,
+      "val/em/bamboogle": 0.368,
+      "val/answer_format/bamboogle": 0.984,
+      "val/format_rate/bamboogle": 0.576,
+      "val/generated_tokens/bamboogle": 186.608,
+      "val/search_calls/bamboogle": 2.416,
+      "val/qa_count/all": 51713,
+      "val/f1/all": 0.5510407509251146,
+      "val/em/all": 0.4828186336124379,
+      "val/answer_format/all": 0.9907760137682982,
+      "val/format_rate/all": 0.5044572931371222,
+      "val/generated_tokens/all": 186.46806412314118,
+      "val/search_calls/all": 2.274901862200994
+    },
+    "checkpoint_sha": "dfa2603b195a05e65bedb98e07d5feea17dde961c99ec2c945a29c2d6bacaad0",
+    "workers": 8,
+    "batch_size": 1024,
+    "elapsed_seconds": 3888.179783766158,
+    "question_metrics_sha": "17aabb810c75354e11df00ac28fcd28140cd9b99386629248db377b81c94c19e"
+  },
+  "input_identity_proof_sha256": "24eb82640393806e880bb3466d03684378aee55f2c62e28a7353a6e39f429140",
+  "acceptance_proof_sha256": "63ad710a6ef8ee0aed6757dadcd779501d3d8d5b356ad6881a2a55b7eff192ca"
+}
