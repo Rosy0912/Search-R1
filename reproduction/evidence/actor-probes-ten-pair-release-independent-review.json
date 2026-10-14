@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "checked_unix": 1791936103.3681762,
+  "independent_initialization_without_parent_context": true,
+  "native_algorithm_accepted": false,
+  "pinned_native_core_owned_processes_sha256": "df83d747f3b86a187eb2dc4267ac146a6afeab7338f274ab5ecd8e7de9e2969e",
+  "reader_sha256": [
+    "743d055d4d6e868b34f0280e010d7bd67a516fed6f33779d986f7756f23a6e82",
+    "7284c1eaee74d06b245072fec114646d5d9649baba70d6282ec58a47fca0d4a4"
+  ],
+  "remote_operations_performed": false,
+  "reviewer_task": "/root/owned_pair_release_review",
+  "role": "independent_exact_owned_capacity_pair_release_review",
+  "scope": "Closedtwoexpectedbirths/onlycapacitynamespace/boot/node/readers/UID/UUID/TorchNVMLguards; BOTHdurableexclusiveclaims precedeanyPIDfdSIGTERM; unknownassignedforeign refuse; no group/Ray termination orG1Popen; exit0 ANDallassignedcontextabsent mandatorybeforeofficiallaunch. Knownpartialfailures noautoretry; nativefirstiterationpending",
+  "source_sha256": "4e987476823c793d85f4e6c88561d2a982e82e5a7fd6734a8a0f3bda2bc5d1b0"
+}

@@ -1,0 +1,105 @@
+{
+  "actor_probe_native_algorithm_accepted": false,
+  "blocker_consecutive_goal_turns_reset_to": 0,
+  "capacity_counts_as_training_peak": false,
+  "complete_outers": 0,
+  "dev512": null,
+  "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+  "final51713": null,
+  "formal_user_report_delivered": false,
+  "hourly_anchor_advanced": false,
+  "inherited_training_state": false,
+  "initial_model": "officialfresh",
+  "keepers": [
+    {
+      "NONEXCLUSIVE": true,
+      "NVML_mib_each": [
+        61856
+      ],
+      "Torch_bytes_each": 64424509440,
+      "claim_sha256": "ffd4e274b3234f1a15173a2c024d8d2b9c2094b68208f3c4426bb6d034874080",
+      "identity": {
+        "alive": true,
+        "birth_matches": true,
+        "euid": 0,
+        "pgid": 2435117,
+        "pid": 2435117,
+        "sid": 2435117,
+        "start_ticks": 601538171,
+        "state": "S",
+        "uid": 0
+      },
+      "indices": [
+        0
+      ],
+      "source_backup_sha256": "e1d46b43e3b96bbb43268b9531a5d633934964ead29854570ccfba1df96772f9",
+      "twoREADY_and_postREADY_verified": true
+    },
+    {
+      "NONEXCLUSIVE": true,
+      "NVML_mib_each": [
+        61856,
+        61856,
+        61856
+      ],
+      "Torch_bytes_each": 64424509440,
+      "claim_sha256": "a7544f94e010864fb6b27b096a195a8333141f0b8018b1a76d7043a9d69eb4d9",
+      "identity": {
+        "alive": true,
+        "birth_matches": true,
+        "euid": 0,
+        "pgid": 2340358,
+        "pid": 2340358,
+        "sid": 2340358,
+        "start_ticks": 601041566,
+        "state": "S",
+        "uid": 0
+      },
+      "indices": [
+        1,
+        2,
+        3
+      ],
+      "source_backup_sha256": "861a00c09acf3a438563e9a159e99b88da00bb9d2c0316ab326efb119bd25cee",
+      "twoREADY_and_postREADY_verified": true
+    }
+  ],
+  "lost_updates": 0,
+  "new_reward_window": {
+    "change": null,
+    "count": 0,
+    "latest": null,
+    "mean": null,
+    "range": null
+  },
+  "no_foreign_signals": true,
+  "old_window_new_Adam": 0,
+  "old_window_new_complete": 0,
+  "old_window_new_skips": 0,
+  "pipeline_Popen_issued": false,
+  "processed_opportunities": 0,
+  "resource_blocker_resolved": true,
+  "role": "actual_all_four_capacity_owned_and_resource_blocker_resolved",
+  "run_id": "a9be0ee91ff942349a26caf372e22a27",
+  "runtime_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "skips": 0,
+  "snapshot_unix": 1791935926.7783828,
+  "source_file_hashes": {
+    "free0first": "2badda17fb555cd7d51aa5edae6d570b17460a67151693177c8305bbf9bf57e0",
+    "free0second_and_123": "7a2827c748fd620ba89217153537d807a3e8da317e32a00702cd16b2ed2db4ea",
+    "free0stage": "53c0b34339d77ff3bf1e4334c7cbe0facd966c0c7dd0dcc9108870f12c586978"
+  },
+  "stage64": null,
+  "successful_Adam": 0,
+  "third_blocked_snapshot_was_observed_but_later_resolved": true,
+  "train_GPU_cumulative_peak": null,
+  "train_GPU_instant": null,
+  "train_GPU_window_peak": null,
+  "trainer_started": false,
+  "true_foreign_assigned_apps": [],
+  "true_foreign_aux_apps": [],
+  "zero_two_distinct_readings": [
+    1791935828.9960063,
+    1791935926.1836286
+  ]
+}
