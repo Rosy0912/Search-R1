@@ -20,6 +20,20 @@ FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-
 SHADOW=FAILED/'failure-cleanup717827'
 
 
+def check_failed_readers(base):
+    """The stager and corpus creator have distinct, retained claim schemas."""
+    from reproduction.a800.owned_processes import identity
+    stage=json.loads((base/'logs/retrieval-staging-claim.json').read_text())
+    corpus=json.loads((base/'logs/corpus-cache-claim.json').read_text())
+    assert (corpus['run_id'],corpus['slurm_job_id'],corpus['uid']) == (stage['run_id'],stage['slurm_job_id'],stage['uid'])
+    assert_quiescent(base,stage)
+    creator=corpus['creator']
+    assert creator['uid']==corpus['uid']
+    try: actual=identity(creator['pid'])
+    except (FileNotFoundError,ProcessLookupError):actual=None
+    assert actual is None or actual['state']=='Z' or actual['start_ticks']!=creator['start_ticks'], 'Cache creator remains live'
+
+
 def main():
     assert os.getuid()==14090 and socket.gethostname().split('.')[0]=='ACD1-67'
     assert os.environ.get('SLURM_JOB_ID') not in (None,'717827')
@@ -34,8 +48,7 @@ def main():
     from reproduction.common8.temporary_cache import cleanup as clean_corpus
     from reproduction.common8.stage_retrieval import cleanup as clean_stage
     from reproduction.a800.owned_processes import OwnedProcesses
-    for name in ('corpus-cache-claim.json','retrieval-staging-claim.json'):
-        assert_quiescent(SHADOW,json.loads((SHADOW/'logs'/name).read_text()))
+    check_failed_readers(SHADOW)
     owned=OwnedProcesses(SHADOW/'logs/process-ledger.json',run['run_id'])
     # No live process is eligible after terminal Slurm teardown. Fail rather
     # than signal any recovered PID when the kernel has no pidfd support.

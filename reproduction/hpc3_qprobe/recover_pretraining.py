@@ -241,7 +241,7 @@ def submit(commit):
     from search_g1.qprobe_features import FeatureCache
     features=FeatureCache(TARGET/'question-features');features.verify_all()
     if features.manifest['count']!=169028:raise ValueError('Actual feature cache incomplete')
-    command=['sbatch','--parsable','--account=jxu957','--qos=formal-user','--partition=acd_ue',
+    command=['sbatch','--parsable','--account=jxu957','--qos=formal-user','--partition=emergency_acd',
         '--nodes=1','--ntasks=1','--gres=gpu:4','--cpus-per-task=48','--mem=512G','--time=7-00:00:00',
         '--job-name=qprobe-warmup200','--export=NONE','--chdir='+str(TARGET),
         '--output='+str(TARGET/'logs/training-%j.log'),'--error='+str(TARGET/'logs/training-%j.log'),
