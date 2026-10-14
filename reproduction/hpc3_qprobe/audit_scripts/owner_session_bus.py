@@ -53,9 +53,9 @@ class Reader:
 
     def value(self, signature, offset=0):
         kind = signature[offset]
-        self.align({'y':1, 'g':1, 'v':1, 's':4, 'o':4, 'u':4, 'b':4, 't':8, '(':8}[kind])
-        if kind in ('y', 'u', 'b', 't'):
-            fmt = {'y':'B', 'u':'I', 'b':'I', 't':'Q'}[kind]
+        self.align({'y':1, 'g':1, 'v':1, 's':4, 'o':4, 'u':4, 'i':4, 'b':4, 't':8, '(':8}[kind])
+        if kind in ('y', 'u', 'i', 'b', 't'):
+            fmt = {'y':'B', 'u':'I', 'i':'i', 'b':'I', 't':'Q'}[kind]
             return struct.unpack(self.endian+fmt, self.take(struct.calcsize(fmt)))[0], offset+1
         if kind in ('s', 'o', 'g'):
             count = self.take(1)[0] if kind == 'g' else struct.unpack(self.endian+'I', self.take(4))[0]
@@ -113,10 +113,10 @@ class Bus:
         serial = self.serial
         body = b''
         for arg in args:
-            body = pad(body, 4) + string(arg)
+            body = pad(body, 4) + (struct.pack('<i',arg) if type(arg) is int else string(arg))
         fields = [(1,'o',path), (2,'s',interface), (3,'s',member), (6,'s',destination)]
         if args:
-            fields.append((8,'g','s'*len(args)))
+            fields.append((8,'g',''.join('i' if type(arg) is int else 's' for arg in args)))
         header = b''
         for number, sig, value in fields:
             header = pad(header, 8) + bytes([number]) + string(sig, 'g')
@@ -190,6 +190,8 @@ def verify_proof(proof, inspected):
     relevant = [line.split(None, 10) for line in lines if int(line.split()[0]) in TEST_PIDS]
     if len(relevant) != len(TEST_PIDS):
         raise ValueError('Expected stale test process missing')
+    if sorted(int(row[0]) for row in relevant) != TEST_PIDS:
+        raise ValueError('Observer process identities duplicated or incomplete')
     for row in relevant:
         if len(row) != 11 or row[2:4] != ['2337454','2337454']:
             raise ValueError('Test process session/group differs')
@@ -207,9 +209,11 @@ def verify_proof(proof, inspected):
         raise ValueError('D-Bus target session birth differs')
 
 
-def run(terminate=False):
+def run(terminate=False, signal_stale_test=False):
+    if terminate and signal_stale_test:
+        raise ValueError('Only one explicit stale-session action permitted')
     password = input()
-    proof = json.loads(input()) if terminate else None
+    proof = json.loads(input()) if terminate or signal_stale_test else None
     env = os.environ.copy()
     env['QPROBE_OWNER_PASSWORD'] = password
     password = None
@@ -236,12 +240,13 @@ def run(terminate=False):
                 time.sleep(.05)
             bus = Bus(path)
             result = bus.inspect()
-            result.update(terminate_requested=terminate, terminated=False, local_bridge_uid=os.getuid(), held_local_ssh_pid=child.pid)
-            if terminate:
+            result.update(terminate_requested=terminate, signal_requested=signal_stale_test, actual_scope_cleaned=False, method_accepted=False, local_bridge_uid=os.getuid(), held_local_ssh_pid=child.pid)
+            if terminate or signal_stale_test:
                 verify_proof(proof,result)
-                bus.call('org.freedesktop.login1','/org/freedesktop/login1','org.freedesktop.login1.Manager','TerminateSession',[SESSION])
-                result['terminated'] = True
-                result['terminated_unix'] = time.time()
+                member = 'TerminateSession' if terminate else 'KillSession'
+                args = [SESSION] if terminate else [SESSION,'all',15]
+                bus.call('org.freedesktop.login1','/org/freedesktop/login1','org.freedesktop.login1.Manager',member,args)
+                result.update(method_accepted=True,method=member,signal=15 if signal_stale_test else None,accepted_unix=time.time())
             print(json.dumps(result),flush=True)
         finally:
             if bus is not None:
@@ -257,5 +262,8 @@ def run(terminate=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--terminate-verified-stale-test',action='store_true')
-    run(parser.parse_args().terminate_verified_stale_test)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--terminate-verified-stale-test',action='store_true')
+    group.add_argument('--signal-verified-stale-test',action='store_true')
+    args = parser.parse_args()
+    run(args.terminate_verified_stale_test,args.signal_verified_stale_test)
