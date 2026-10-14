@@ -595,7 +595,11 @@ class RayPPOTrainer(object):
             if not self.config.get('baselines'):
                 return
             from search_r1.baselines.evaluation import batch_answer_metrics
-            qa_rows.extend(batch_answer_metrics(batch, self.tokenizer))
+            rows = batch_answer_metrics(batch, self.tokenizer)
+            if os.environ.get('RECURSIVE_LUMIA_PAIRED_EVALUATION') == '1':
+                from reproduction.recursive_lumia.paired_evaluation import attach_question_ids
+                attach_question_ids(rows, batch.non_tensor_batch['index'])
+            qa_rows.extend(rows)
 
         gen_config = GenerationConfig(
             max_turns=self.config.max_turns,
@@ -714,6 +718,9 @@ class RayPPOTrainer(object):
         if qa_rows:
             from search_r1.baselines.evaluation import aggregate_answer_metrics
             metric_dict.update(aggregate_answer_metrics(qa_rows))
+            if os.environ.get('RECURSIVE_LUMIA_PAIRED_EVALUATION') == '1':
+                from reproduction.recursive_lumia.paired_evaluation import save_evaluation
+                save_evaluation(qa_rows, metric_dict, self.actual_outer_updates, len(self.val_dataset))
         if self.config.get('baselines'):
             print('BASELINE_EVALUATION_METRICS_JSON=' + json.dumps(metric_dict, sort_keys=True), flush=True)
         from search_r1.baselines.retriever_phase import release_retriever_gpu

@@ -1,6 +1,7 @@
 """Task-owned loopback transport; forward retrieval payloads without modification."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import hashlib
 import os
 from pathlib import Path
 import sys
@@ -28,7 +29,14 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 def main():
-    base=Path(sys.argv[1]);r=json.loads((base/'receipts/retriever-ready.json').read_text())
+    base=Path(sys.argv[1])
+    configuration=json.loads((base/'runs'/os.environ['RECURSIVE_ARM']/'receipts/configuration.json').read_text())
+    path=Path(configuration['retriever_receipt'])
+    assert path.parent==base/'receipts' and not path.is_symlink()
+    raw=path.read_bytes()
+    assert hashlib.sha256(raw).hexdigest()==configuration['retriever_receipt_sha256']
+    r=json.loads(raw)
+    assert r['url']==configuration['retriever_url']
     assert r['root']==str(base) and r['encoder_dtype']=='float32' and r['index_dtype']=='float32'
     server=ThreadingHTTPServer(('127.0.0.1',29146), Handler)
     server.remote=r['url']

@@ -25,7 +25,8 @@ def main():
         SEARCH_R1_TREE_RANK_AUDIT_DIR=str(out/'rank-audit'), SEARCH_R1_TRAJECTORY_DIR=str(out/'trajectories'),
         TREE_COMMON_DATA=r['data'],TREE_INSTRUCT_MODEL=r['model'],RECURSIVE_A_LUMIA_FRESH_PROFILE='1',
         RECURSIVE_A_OMIT_FULL_BETA='1',RECURSIVE_A_GUARD_ROUND_PROGRESS='1',
-        TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',RECURSIVE_A_SPARSE_DETAILS='1')
+        TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',RECURSIVE_A_SPARSE_DETAILS='1',
+        RECURSIVE_LUMIA_PAIRED_EVALUATION='1')
     from release.recursive_bran_a.h100_migration.ray_cli_compat import prepare_click
     prepare_click()
     import ray

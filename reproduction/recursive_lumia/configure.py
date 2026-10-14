@@ -19,6 +19,14 @@ def prepare(base, arm):
     if receipt.exists():
         raise RuntimeError('Existing immutable run; never cold-restart or overwrite')
     assets = json.loads((base/'receipts/assets.json').read_text())
+    retriever_path = base/'receipts'/os.environ.get('RECURSIVE_RETRIEVER_RECEIPT', 'retriever-ready.json')
+    assert retriever_path.parent == base/'receipts' and not retriever_path.is_symlink()
+    retriever_raw = retriever_path.read_bytes()
+    retriever = json.loads(retriever_raw)
+    assert retriever['root'] == str(base) and retriever['encoder_dtype'] == retriever['index_dtype'] == 'float32'
+    if retriever_path.name == 'gpu-retriever-ready.json':
+        assert retriever['validation']['top3_identical'] and retriever['validation']['http_documents_identical']
+        assert retriever['validation']['max_score_error'] <= 2e-5
     repo = Path(__file__).resolve().parents[2]
     model, data = assets['model'], Path(assets['data'])
     os.environ.update(TREE_COMMON_DATA=str(data), TREE_INSTRUCT_MODEL=model,
@@ -57,6 +65,8 @@ def prepare(base, arm):
     config_path = run/'receipts/resolved.yaml'
     config_path.write_text(text)
     record = dict(run_id=uuid.uuid4().hex, arm=arm, config=str(config_path),
+        retriever_receipt=str(retriever_path), retriever_receipt_sha256=hashlib.sha256(retriever_raw).hexdigest(),
+        retriever_url=retriever['url'],
         config_sha256=hashlib.sha256(text.encode()).hexdigest(), data_identity=identity['content_identity']['sha256'],
         model=model, data=str(data), source_commit=os.environ['RECURSIVE_SOURCE_COMMIT'],
         execution_backend='slurm_lumia', host=socket.gethostname().split('.')[0],

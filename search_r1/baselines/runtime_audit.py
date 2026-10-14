@@ -31,6 +31,8 @@ def runtime_env_vars():
         result[resource] = str(teacher_cpu_threads())
     if 'RECURSIVE_A_LUMIA_FRESH_PROFILE' in os.environ:
         result['RECURSIVE_A_LUMIA_FRESH_PROFILE'] = os.environ['RECURSIVE_A_LUMIA_FRESH_PROFILE']
+    if 'RECURSIVE_LUMIA_PAIRED_EVALUATION' in os.environ:
+        result['RECURSIVE_LUMIA_PAIRED_EVALUATION'] = os.environ['RECURSIVE_LUMIA_PAIRED_EVALUATION']
     return result
 
 
