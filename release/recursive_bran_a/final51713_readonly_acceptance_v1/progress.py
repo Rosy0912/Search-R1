@@ -31,6 +31,9 @@ def main():
     worker_recovery = BASE/'final51713-worker-recovery-v1'
     if (worker_recovery/'evaluation-launch.json').exists():
         CONTROL = worker_recovery
+    scoped_scoring = BASE/'final51713-scoped-scoring-v1'
+    if (scoped_scoring/'evaluation-launch.json').exists():
+        CONTROL = scoped_scoring
     plan = load(CONTROL / 'execution-plan.json')
     launch = load(CONTROL / 'evaluation-launch.json')
     terminal = load(CONTROL / 'evaluation-actual-exit.json')

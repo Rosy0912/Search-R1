@@ -73,6 +73,9 @@ def audit(base=BASE):
     worker_recovery = base/'final51713-worker-recovery-v1'
     if (worker_recovery/'evaluation-launch.json').exists():
         folder = worker_recovery
+    scoped_scoring = base/'final51713-scoped-scoring-v1'
+    if (scoped_scoring/'evaluation-launch.json').exists():
+        folder = scoped_scoring
     plan_path = folder / 'execution-plan.json'
     exit_path = folder / 'evaluation-actual-exit.json'
     if not plan_path.exists() or not exit_path.exists():
@@ -102,6 +105,16 @@ def audit(base=BASE):
     assert summary['checkpoint_sha'] == plan['checkpoint_manifest_sha256']
     rows_path = output / 'question-metrics.jsonl'
     assert sha(rows_path) == summary['question_metrics_sha']
+    if plan.get('resume_rows'):
+        assert sha(plan['resume_rows'])==plan['resume_rows_sha256']
+        assert sha(plan['previous_evaluation_plan'])==plan['previous_evaluation_plan_sha256']
+        previous=load(plan['previous_evaluation_plan'])
+        assert previous['checkpoint_manifest_sha256']==plan['checkpoint_manifest_sha256']
+        assert previous['config_sha256']==plan['config_sha256']
+        with Path(plan['resume_rows']).open() as prior, rows_path.open() as current:
+            prefix=[json.loads(line) for line in prior]
+            assert len(prefix)==plan['resume_count']
+            for row in prefix: assert json.loads(next(current))==row
     totals = collect_rows(rows_path, 51713)
     for source, group in totals.items():
         assert summary['metrics']['val/qa_count/' + source] == group['count']
@@ -133,7 +146,8 @@ def audit(base=BASE):
     # The worker hook measures each action RPC, including further search turns
     # and shrinking active tails. There are at least 102 initial batch RPCs;
     # exactly 102 would incorrectly reject ordinary multi-turn evaluation.
-    assert all(w['calls'] >= 102 for w in workers.values()), 'All eight workers must cover at least 102 batch starts'
+    remaining_batches=math.ceil((51713-plan.get('resume_count',0))/512)
+    assert all(w['calls'] >= remaining_batches for w in workers.values()), 'All eight workers must cover remaining batch starts'
     utilization = {w['gpu_uuid']: [] for w in workers.values()}
     with (folder / 'gpu-device-observer.jsonl').open() as stream:
         for line in stream:
