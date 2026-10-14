@@ -1,0 +1,155 @@
+{
+  "protocol": "recursive_bran_ablation150_report_v1",
+  "time": 1791989852.3178558,
+  "reference_condition": "A-original",
+  "conditions": {
+    "A-original": {
+      "condition_id": "A-original",
+      "run_id": "retained-A-reference",
+      "config_sha256": null,
+      "world_size": 8,
+      "milestones": {
+        "5": {
+          "outer": 5,
+          "dev512": {
+            "all": {
+              "count": 512,
+              "hits": 96,
+              "em": 0.1875,
+              "f1": null
+            },
+            "nq": {
+              "count": 256,
+              "hits": 54,
+              "em": 0.2109375,
+              "f1": null
+            },
+            "hotpotqa": {
+              "count": 256,
+              "hits": 42,
+              "em": 0.1640625,
+              "f1": null
+            }
+          },
+          "dev_status": "COMPLETE_NATIVE_AGGREGATE",
+          "native_actual_adam_each_rank": null,
+          "receipts_complete_through_outer": false,
+          "receipt_adam_each_rank": null,
+          "receipt_skips_each_rank": null,
+          "scalar_coverage_count": 0,
+          "complete_scalar_prefix": false,
+          "generated_tokens_recorded_sum": null,
+          "complete_generated_token_prefix": false,
+          "allocated_gpu_hours_from_recorded_outer_wall": null,
+          "recorded_stage_seconds_sum": {},
+          "tree": null,
+          "boundary_policy_loss": null,
+          "boundary_train_selected_reward": null,
+          "cost_scope": "Recorded emitted tokens include padding and discarded tails per native convention. Stage sums overlap; do not add components to total step. GPU hours = configured world size × recorded outer wall, not active GPU utilization or allocation lease."
+        }
+      },
+      "sampled_memory": null
+    },
+    "C1-root-only": {
+      "condition_id": "C1-root-only",
+      "run_id": "260d1debb6214d75b3d1a5954d88f524",
+      "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+      "world_size": 8,
+      "milestones": {
+        "5": {
+          "outer": 5,
+          "dev512": {
+            "all": {
+              "count": 512,
+              "hits": 92,
+              "em": 0.1796875,
+              "f1": 0.2491707071049385
+            },
+            "nq": {
+              "count": 256,
+              "hits": 52,
+              "em": 0.203125,
+              "f1": 0.30157959843214255
+            },
+            "hotpotqa": {
+              "count": 256,
+              "hits": 40,
+              "em": 0.15625,
+              "f1": 0.1967618157777342
+            }
+          },
+          "dev_status": "COMPLETE_NATIVE_AGGREGATE",
+          "native_actual_adam_each_rank": 100.0,
+          "receipts_complete_through_outer": true,
+          "receipt_adam_each_rank": 100,
+          "receipt_skips_each_rank": 0,
+          "scalar_coverage_count": 5,
+          "complete_scalar_prefix": true,
+          "generated_tokens_recorded_sum": 3492082.0,
+          "complete_generated_token_prefix": false,
+          "allocated_gpu_hours_from_recorded_outer_wall": 8.05731946469595,
+          "recorded_stage_seconds_sum": {
+            "timing_s/update_actor": 839.3984302412719,
+            "timing_s/step": 3625.7937591131777,
+            "timing_s/gen": 1745.4934323001653,
+            "timing_s/ref": 43.08001799508929,
+            "timing_s/adv": 45.06004021689296,
+            "timing_s/stage_testing": 2.390146255493164e-05,
+            "timing_s/testing": 721.2036139015108,
+            "timing_s/save_checkpoint": 8.260831236839294e-07
+          },
+          "tree": {
+            "questions": 512,
+            "selected": 2560,
+            "shortfalls": 0,
+            "attempts": 4967,
+            "candidates": 4967,
+            "accepted": 472,
+            "all_correct": 6,
+            "all_wrong": 298,
+            "mixed": 208,
+            "reward_0_to_1": 282,
+            "reward_1_to_0": 190,
+            "candidate_generations": {
+              "1": 4967
+            },
+            "selected_generations": {
+              "0": 512,
+              "1": 2048
+            },
+            "branch_positions": {
+              "0": 3150,
+              "1": 1697,
+              "3": 21,
+              "2": 99
+            },
+            "selected_reward_count_unavailable": 0,
+            "scope": "Recorded closed trees only; no statistics at unrecorded outer"
+          },
+          "boundary_policy_loss": 0.00014942609850550071,
+          "boundary_train_selected_reward": 0.18828125298023224,
+          "cost_scope": "Recorded emitted tokens include padding and discarded tails per native convention. Stage sums overlap; do not add components to total step. GPU hours = configured world size × recorded outer wall, not active GPU utilization or allocation lease."
+        }
+      },
+      "sampled_memory": null
+    }
+  },
+  "comparisons": {
+    "C1-root-only": {
+      "5": {
+        "status": "COMPLETE_AGGREGATE",
+        "aggregate_difference_pp": -0.78125,
+        "scope": "Same-outer aggregate EM difference; no paired or causal claim"
+      }
+    }
+  },
+  "limitations": [
+    "Native scalars/receipts are not independent Adam tensor reloads.",
+    "TRAIN cohorts and selected reward are not fixed dev EM.",
+    "Latest human scope is aggregate EM; no paired/bootstrap/replay.",
+    "C1 outer1 reuses a saved pre-update batch after a namespace fault; its replay timer excludes original sampling. Do not treat recorded prefix cost as full end-to-end GPU billing.",
+    "Worker CUDA RNG and former vLLM executor state were not saved at the zero-write fault; no bitwise restart is claimed.",
+    "A reference is read from original native logs, not replayed checkpoints; only aggregate EM is compared."
+  ],
+  "analysis_complete": true
+}

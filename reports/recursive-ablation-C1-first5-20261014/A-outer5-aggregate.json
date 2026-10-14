@@ -1,0 +1,23 @@
+{
+  "dev512": {
+    "count": 512,
+    "hits": 96,
+    "nq": {
+      "count": 256,
+      "hits": 54,
+      "em": 0.2109375,
+      "f1": 0.3008707360018614
+    },
+    "hotpot": {
+      "count": 256,
+      "hits": 42,
+      "em": 0.1640625,
+      "f1": 0.2004618779339663
+    }
+  },
+  "source": {
+    "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/logs/training.log",
+    "captured_line_sha256": "d0d587b788510ad19f2c107addfefe7144fdbc79b93f4850428715c71d6fd649",
+    "new_inference": false
+  }
+}

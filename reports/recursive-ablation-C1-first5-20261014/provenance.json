@@ -1,0 +1,47 @@
+{
+  "scope": "Initial5 acceptance, then automatic150; aggregate EM only",
+  "group": "C1-root-only",
+  "run_id": "260d1debb6214d75b3d1a5954d88f524",
+  "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+  "scientific_source_commit": "233b0dc95de3f7b797d5b424d3b7dcaafca5328f",
+  "entry_repair_commit": "09f3f8cd4d42a7b0db6c7825e256d997aa0389c5",
+  "completed_outer": 5,
+  "actual_adam_each_rank": 100,
+  "skips_each_rank": 0,
+  "finite_losses": true,
+  "sixth_actual_generation_observed": true,
+  "source_report": "/dataset/shaoshitong/recursive-ablation150-20261014/analysis/C1-first5-bb3f68ac5789482ea37bb58669b97d04",
+  "source_files": {
+    "findings-zh.md": {
+      "bytes": 794,
+      "sha256": "29f6f1e3d4c2022280adbd3605f177c93fb8ba22d8d2a0bd611d55bcf7482052"
+    },
+    "A-outer5-aggregate.json": {
+      "bytes": 513,
+      "sha256": "57951158ec531fc243fb24a8283d0277ed483691cab1c84725388fc01d0a7416"
+    },
+    "aggregate.json": {
+      "bytes": 5765,
+      "sha256": "c55a5e4d0e9bb9237b994a4a4fc5e3175450e6782bfce64f2b6cd842420fd07b"
+    },
+    "curve.csv": {
+      "bytes": 233,
+      "sha256": "77c6d67e63f0ae242c0cdad7622bbe116f1c0c296aa8b1d09ce8c4c863f2ec81"
+    },
+    "study-input.json": {
+      "bytes": 1545,
+      "sha256": "3352db50018f9b6e9accf281e2e6795ecc31dd1d88ac5128faebd88c60d24cf8"
+    },
+    "reference-native-outer5.log": {
+      "bytes": 6315,
+      "sha256": "d0d587b788510ad19f2c107addfefe7144fdbc79b93f4850428715c71d6fd649"
+    }
+  },
+  "keypoint": {
+    "native_only": false,
+    "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C1-root-only/checkpoints/training_state/global_step_5/post-evaluation/manifest.json",
+    "sha256": "bbf5a2e3643409cb80f98a7526c94236b04346338598d182e02e80fb070e666d"
+  },
+  "source_role": "Original A aggregate reused; no extra evaluation",
+  "goal_complete": false
+}
