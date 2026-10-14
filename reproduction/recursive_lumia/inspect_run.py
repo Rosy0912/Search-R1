@@ -124,8 +124,8 @@ def inspect(run, log_path, hash_native=False):
         raise ValueError('Completed rounds do not form this fresh run’s continuous prefix')
     boundary = checkpoint(run,identity,hash_native)
     sixth = []
-    for line in Path(log_path).read_text(errors='replace').splitlines():
-        if 'TREE_TIMING=' not in line: continue
+    for line in Path(log_path).read_text(errors='replace').splitlines(keepends=True):
+        if not line.endswith('\n') or 'TREE_TIMING=' not in line: continue
         event = json.JSONDecoder().raw_decode(line.split('TREE_TIMING=',1)[1])[0]
         if (event.get('run_id') == config['run_id'] and event.get('outer') == 6
                 and event.get('event') in ('generation_rpc_complete','trajectory_complete')):
