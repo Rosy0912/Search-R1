@@ -122,16 +122,8 @@ def evidence_namespace(run, config):
     return output, entry['allocation']
 
 
-def inspect(run, log_path, hash_native=False):
-    run = Path(run).resolve()
-    config = json.loads((run/'receipts/configuration.json').read_text())
-    output, job = evidence_namespace(run,config)
-    fresh = json.loads((output/'fresh-initialization.json').read_text())
-    identity = dict(job_id=str(job), run_id=config['run_id'], code_commit=config['source_commit'],
-                    config_sha256=config['config_sha256'],data_identity=config['data_identity'])
-    if any(fresh[key] != value for key,value in identity.items()):
-        raise ValueError('Fresh receipt and run configuration disagree')
-    log_text = Path(log_path).read_text(errors='replace')
+def attempt_evidence(run, output, identity, log_text):
+    """Read physical rank evidence for one attempt, including resumed outer IDs."""
     round_metrics = {}
     for line in log_text.splitlines(keepends=True):
         if not line.endswith('\n') or 'training/actual_outer_updates:' not in line: continue
@@ -158,6 +150,20 @@ def inspect(run, log_path, hash_native=False):
             console_metrics=round_metrics.get(outer),
             reported_pg_loss_finite=(math.isfinite(round_metrics[outer]['actor/pg_loss'])
                 if outer in round_metrics and 'actor/pg_loss' in round_metrics[outer] else None)))
+    return attempts
+
+
+def inspect(run, log_path, hash_native=False):
+    run = Path(run).resolve()
+    config = json.loads((run/'receipts/configuration.json').read_text())
+    output, job = evidence_namespace(run,config)
+    fresh = json.loads((output/'fresh-initialization.json').read_text())
+    identity = dict(job_id=str(job), run_id=config['run_id'], code_commit=config['source_commit'],
+                    config_sha256=config['config_sha256'],data_identity=config['data_identity'])
+    if any(fresh[key] != value for key,value in identity.items()):
+        raise ValueError('Fresh receipt and run configuration disagree')
+    log_text = Path(log_path).read_text(errors='replace')
+    attempts = attempt_evidence(run, output, identity, log_text)
     if [r['outer'] for r in attempts] != list(range(1,len(attempts)+1)):
         raise ValueError('Completed rounds do not form this fresh run’s continuous prefix')
     boundary = checkpoint(run,identity,hash_native)

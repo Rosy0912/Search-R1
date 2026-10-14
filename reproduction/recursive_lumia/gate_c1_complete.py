@@ -83,21 +83,30 @@ def verify(run, log, expected_job, *, group='C1-root-only'):
     scheduler=subprocess.check_output(['sacct','-X','-n','-P','-j',str(expected_job),
         '--format=JobIDRaw,User,State,ExitCode'],text=True)
     validate_exit(record,entry,complete,terminal,wait,expected_job,scheduler,expected_group=group)
-    audit=inspect(run,log,hash_native=True)
+    if entry.get('resume_manifest'):
+        from .inspect_chain import inspect_chain
+        audit=inspect_chain(run,run/'receipts/attempt-chain.json',hash_native=True)
+    else:
+        audit=inspect(run,log,hash_native=True)
     rounds=validate_rounds(audit,complete['actual_optimizer_calls_per_rank'])
+    def milestone(outer):
+        return audit.get('milestone_attempts',{}).get(str(outer),
+            dict(output=str(output),job=str(expected_job)))
+    mechanism_output=Path(milestone(5)['output'])
     if group=='C1-root-only':
-        mechanism=verify_events(output,record,outer=5)
+        mechanism=verify_events(mechanism_output,record,outer=5)
     else:
         from .c2_evidence import verify_events as verify_c2_events
-        mechanism=verify_c2_events(output,record,outer=5)
+        mechanism=verify_c2_events(mechanism_output,record,outer=5)
     manifest_path=Path(record['data'])/'manifest.json'
     if sha(manifest_path)!=record['data_identity']:
         raise ValueError('Frozen data manifest changed')
     expected_ids=json.loads(manifest_path.read_text())['splits']['validation']['question_ids_sha256']
     evaluations=[]
     for outer in (5,50,100,150):
-        metadata,rows,files=load_evaluation(output/'evaluations'/f'dev512-outer-{outer:06d}.jsonl')
-        expected=dict(run_id=record['run_id'],job=str(expected_job),code_commit=record['source_commit'],
+        owner=milestone(outer)
+        metadata,rows,files=load_evaluation(Path(owner['output'])/'evaluations'/f'dev512-outer-{outer:06d}.jsonl')
+        expected=dict(run_id=record['run_id'],job=owner['job'],code_commit=record['source_commit'],
             config_sha256=record['config_sha256'],data_identity=record['data_identity'],completed_outer=outer,split='dev512')
         ids_sha=hashlib.sha256(json.dumps(list(rows),ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
         if any(metadata[k]!=v for k,v in expected.items()) or ids_sha!=expected_ids:
@@ -112,7 +121,9 @@ def verify(run, log, expected_job, *, group='C1-root-only'):
         run_id=record['run_id'],source_commit=record['source_commit'],config_sha256=record['config_sha256'],
         rounds=rounds,mechanism=mechanism,evaluations=evaluations,final_native=final_native,
         native5=audit['native5'],sixth_real_generation_observed=True,
-        limits='Fresh-run ancestry only; full native bytes and same-world verification, not arbitrary cold/vLLM bitwise restart proof.')
+        restoration_links=audit.get('restoration_links',[]),
+        discarded_after_restored_boundary=audit.get('discarded_after_restored_boundary',[]),
+        limits='Fresh or explicitly archived same-host/config/source continuation; full native bytes and observed restoration receipts, not arbitrary cross-host/vLLM bitwise restart proof.')
 
 
 def main():
