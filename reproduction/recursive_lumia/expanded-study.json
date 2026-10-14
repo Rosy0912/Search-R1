@@ -6,16 +6,16 @@
   "conditional_future": "adaptive branch-position selection only after main-arm evidence; it is distinct from fixed early/uniform/late parameter ablations",
   "ablation_order": [
     {"label": "C1-root-only", "outer": 150, "change": "Only root may be a parent; unchanged reward acceptance/backoff/fill"},
-    {"label": "C2-uniform-final", "outer": 150, "change": "Build unchanged reward-guided tree, retain root plus four actual non-root records uniformly without replacement using independent final-selection RNG"},
-    {"label": "budget5", "outer": 150, "change": "Continuation budget5 excluding root"},
-    {"label": "budget10", "reuse": "matched original-A150"},
-    {"label": "budget20", "outer": 150, "change": "Continuation budget20 excluding root"},
+    {"label": "C2-random-final", "outer": 150, "change": "Build unchanged reward-guided tree, retain root plus four actual non-root records uniformly without replacement using independent final-selection RNG"},
+    {"label": "budget-5", "outer": 150, "change": "Continuation budget5 excluding root"},
+    {"label": "budget-10", "reuse": "matched original-A150"},
+    {"label": "budget-20", "outer": 150, "change": "Continuation budget20 excluding root"},
     {"label": "position-early", "outer": 150, "change": "Frozen published early-position distribution only"},
     {"label": "position-uniform", "reuse": "matched original-A150"},
     {"label": "position-late", "outer": 150, "change": "Frozen published late-position distribution only"},
-    {"label": "depth1", "reuse": "matched C1-root-only150"},
-    {"label": "depth2", "outer": 150, "change": "Maximum lineage generation2 only"},
-    {"label": "depth4", "reuse": "matched original-A150; target5 root-included makes generation4 nonbinding"}
+    {"label": "generation-1", "reuse": "matched C1-root-only150"},
+    {"label": "generation-2", "outer": 150, "change": "Maximum lineage generation2 only"},
+    {"label": "generation-4", "reuse": "matched original-A150; target5 root-included makes generation4 nonbinding"}
   ],
   "new_unique_ablation_runs_before_verified_reuse": 7,
   "sequence": "C1 then C2; only then parameter conditions. Never add an ordinary independent-sampling arm or duplicate a proved matching condition.",
