@@ -121,6 +121,33 @@ deployment observation. `bind` follows completed feature preparation and fixes
 the immutable teacher cache path from the stage intent and output paths under
 the new remote run.
 
+For the snapshot-metadata repair, prepare a fresh independent run from the
+published repair commit and reuse the completed BF4 encoding instead of running
+`feature-plan` and a GPU encoding job:
+
+```text
+python -m reproduction.a800_common.deploy_qprobe feature-adopt --handle NEW_HANDLE.json \
+  --feature-source-base /data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18
+python -m reproduction.a800_common.deploy_qprobe bind --handle NEW_HANDLE.json
+```
+
+`feature-adopt` only accepts that explicitly selected successful encoding. It
+verifies original run/source and process birth, zero exit status, model/data
+identity and unchanged encoding producers, then copies the three immutable
+cache files on A800 and checks their complete SHA values before and after the
+copy. The new readiness record says `copied_verified_existing_encoding`, records
+the original GPU encoding separately from the current CPU copy process, and
+does not claim fresh GPU encoding. Its exclusive feature claim prevents a
+competing encoding job; failures keep the claim and partial output for diagnosis.
+Use the new handle for launch; the failed BF4 handle remains historical evidence.
+
+The repair seals generation metadata from the returned complete behavior
+identity and every actual turn's matching snapshot. It rejects absent or mixed
+turn evidence and a conflicting existing top-level value, then retains all
+original strict checks. It changes no frozen G1 scientific producer. The shared
+schema2 teacher cache's scientific identity therefore remains compatible and
+existing identity or failed zero-chunk evidence is preserved.
+
 The teacher cache defaults to the stable remote namespace
 `/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2`, so a later fresh
 actor launch can reuse accepted trajectories. Choose another explicit

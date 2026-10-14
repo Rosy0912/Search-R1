@@ -20,6 +20,7 @@ import torch
 from search_g1.qprobe_model import OnlineQProbe, QProbeConfig
 from search_g1.qprobe_runtime import (
     QProbeRuntime, QProbeCandidateStream, collect, validate_config, _retriever_contract,
+    _derived_policy_snapshot_id,
 )
 from search_g1.qprobe_selection import PredictQuestion
 
@@ -27,6 +28,67 @@ try:
     from verl import DataProto
 except ModuleNotFoundError:
     DataProto = None
+
+
+class QuestionProbeSnapshotSealTests(unittest.TestCase):
+    def setUp(self):
+        self.identity = dict(run_id="run", logical_update=1, policy_snapshot_id="actor:1",
+                             trajectory_ids=["row-0", "row-1"], source_sha256={"source.py": "sha"})
+        self.meta = dict(behavior_identity=copy.deepcopy(self.identity))
+        self.turns = [[dict(policy_snapshot_id="actor:1")],
+                      [dict(policy_snapshot_id="actor:1"), dict(policy_snapshot_id="actor:1")]]
+
+    def test_missing_top_level_is_derived_from_all_turns_without_mutating_metadata(self):
+        before = copy.deepcopy((self.meta, self.turns, self.identity))
+        self.assertEqual(_derived_policy_snapshot_id(self.meta, self.turns, self.identity), "actor:1")
+        self.assertEqual((self.meta, self.turns, self.identity), before)
+        self.assertNotIn("policy_snapshot_id", self.meta)
+        self.meta["policy_snapshot_id"] = "actor:1"
+        self.assertEqual(_derived_policy_snapshot_id(self.meta, self.turns, self.identity), "actor:1")
+
+    def test_entire_returned_behavior_identity_must_match(self):
+        for fault in ("missing", "none", "missing_field", "extra_field", "changed_source", "changed_order"):
+            with self.subTest(fault=fault):
+                meta = copy.deepcopy(self.meta)
+                if fault == "missing": del meta["behavior_identity"]
+                elif fault == "none": meta["behavior_identity"] = None
+                elif fault == "missing_field": del meta["behavior_identity"]["run_id"]
+                elif fault == "extra_field": meta["behavior_identity"]["unexpected"] = True
+                elif fault == "changed_source": meta["behavior_identity"]["source_sha256"]["source.py"] = "other"
+                elif fault == "changed_order": meta["behavior_identity"]["trajectory_ids"].reverse()
+                with self.assertRaisesRegex(RuntimeError, "QPROBE_BEHAVIOR_IDENTITY_CHANGED"):
+                    _derived_policy_snapshot_id(meta, self.turns, self.identity)
+
+    def test_missing_empty_or_malformed_actual_turn_evidence_is_rejected(self):
+        faults = (None, [], [[], self.turns[1]], [{"policy_snapshot_id": "actor:1"}],
+                  [[None]], [["actor:1"]], [[{}]], [[{"policy_snapshot_id": None}]],
+                  [[{"policy_snapshot_id": ""}]], [[{"policy_snapshot_id": " "}]])
+        for turns in faults:
+            with self.subTest(turns=turns), self.assertRaisesRegex(RuntimeError, "MISSING_REAL_QPROBE_TURN"):
+                _derived_policy_snapshot_id(self.meta, turns, self.identity)
+
+    def test_every_actual_turn_must_observe_the_same_expected_snapshot(self):
+        faults = ([[dict(policy_snapshot_id="actor:2")]],
+                  [self.turns[0], [dict(policy_snapshot_id="actor:2")]],
+                  [[dict(policy_snapshot_id="actor:1"), dict(policy_snapshot_id="actor:2")]])
+        for turns in faults:
+            with self.subTest(turns=turns), self.assertRaisesRegex(RuntimeError, "QPROBE_POLICY_SNAPSHOT_CHANGED"):
+                _derived_policy_snapshot_id(self.meta, turns, self.identity)
+        # Even a correct top-level claim cannot substitute for actual turn evidence.
+        self.meta["policy_snapshot_id"] = "actor:1"
+        with self.assertRaisesRegex(RuntimeError, "QPROBE_POLICY_SNAPSHOT_CHANGED"):
+            _derived_policy_snapshot_id(self.meta, faults[0], self.identity)
+
+    def test_present_top_level_none_empty_or_conflicting_snapshot_is_rejected(self):
+        for snapshot in (None, "", " ", "actor:2"):
+            with self.subTest(snapshot=snapshot), self.assertRaisesRegex(RuntimeError, "QPROBE_POLICY_SNAPSHOT_CHANGED"):
+                _derived_policy_snapshot_id(dict(self.meta, policy_snapshot_id=snapshot), self.turns, self.identity)
+
+    def test_expected_snapshot_must_be_nonempty(self):
+        for snapshot in (None, "", " "):
+            identity = dict(self.identity, policy_snapshot_id=snapshot)
+            with self.subTest(snapshot=snapshot), self.assertRaisesRegex(RuntimeError, "QPROBE_POLICY_SNAPSHOT_CHANGED"):
+                _derived_policy_snapshot_id(dict(behavior_identity=copy.deepcopy(identity)), self.turns, identity)
 
 
 class MemoryCache:
@@ -310,6 +372,7 @@ class NativeFakeManager:
         self.missing_row = missing_row
         self.timing_raw = {}
         self.original_probabilities = None
+        self.returned_meta_keys = None
 
     def run_llm_loop(self, gen_batch, initial_input_ids):
         self.calls.append(len(gen_batch))
@@ -330,18 +393,22 @@ class NativeFakeManager:
         self.original_probabilities = probabilities.clone()
         prompts = gen_batch.batch["input_ids"][:size].clone()
         full_mask = torch.cat((torch.ones_like(prompts), mask), dim=1)
-        turns = np.empty(size, dtype=object); turns[:] = [[{"real_generated_turn": True}]] * size
-        return DataProto.from_dict(tensors=dict(prompts=prompts, responses=tensor,
+        turns = np.empty(size, dtype=object)
+        turns[:] = [[dict(real_generated_turn=True,
+                         policy_snapshot_id=gen_batch.meta_info["behavior_identity"]["policy_snapshot_id"])]
+                    for _ in range(size)]
+        output = DataProto.from_dict(tensors=dict(prompts=prompts, responses=tensor,
             input_ids=torch.cat((prompts, tensor), dim=1), attention_mask=full_mask,
             info_mask=full_mask.clone(), sampling_mask=mask.bool(), sampling_log_probs=probabilities,
             position_ids=(full_mask.cumsum(-1)-1)*full_mask),
             non_tensors=dict(behavior_trajectory_id=gen_batch.non_tensor_batch["behavior_row_id"][:size],
                              behavior_turns=turns),
-            meta_info=dict(behavior_identity=gen_batch.meta_info["behavior_identity"],
-                policy_snapshot_id=gen_batch.meta_info["policy_snapshot_id"],
+            meta_info=dict(behavior_identity=copy.deepcopy(gen_batch.meta_info["behavior_identity"]),
                 behavior_sampling={"temperature": 1., "top_p": 1.},
                 turns_stats=[1]*size, active_mask=[False]*size, valid_action_stats=[1]*size,
                 valid_search_stats=[0]*size, actual_retrieval_stats=[0]*size))
+        self.returned_meta_keys = frozenset(output.meta_info)
+        return output
 
 
 @unittest.skipIf(DataProto is None, "Native DataProto dependencies are unavailable")
@@ -380,6 +447,9 @@ class QuestionProbeNativeCollectorTests(unittest.TestCase):
                 parents, output, identity, audit = collect(trainer, manager, stream,
                     {"attempt_id": "native-test", "attempt_index": 1}, value)
             self.assertEqual(manager.calls, [2560])
+            self.assertNotIn("policy_snapshot_id", manager.returned_meta_keys)
+            self.assertEqual(output.meta_info["behavior_identity"], identity)
+            self.assertEqual(output.meta_info["policy_snapshot_id"], identity["policy_snapshot_id"])
             self.assertEqual(stream.consumed, 5120)
             self.assertEqual(len(stream.loader.dataset.materialized), 512)
             self.assertEqual(len(set(stream.loader.dataset.materialized)), 512)
@@ -464,6 +534,43 @@ class QuestionProbeNativeCollectorTests(unittest.TestCase):
             directory = value.output_dir/"attempts/partial-test"
             self.assertTrue((directory/"selection.json").exists())
             self.assertFalse((directory/"rollout-audit.json").exists())
+
+    def test_native_collector_rejects_corrupt_snapshot_evidence_before_labels(self):
+        for fault, error in (
+            ("identity", "QPROBE_BEHAVIOR_IDENTITY_CHANGED"),
+            ("missing_turn_snapshot", "MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT"),
+            ("nondict_turn", "MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT"),
+            ("mixed_turns", "QPROBE_POLICY_SNAPSHOT_CHANGED"),
+            ("top_none", "QPROBE_POLICY_SNAPSHOT_CHANGED"),
+            ("top_conflict", "QPROBE_POLICY_SNAPSHOT_CHANGED"),
+        ):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp, \
+                    patch.dict(os.environ, {"SEARCH_G1_BASE": temp}):
+                trainer, value, snapshots = self._fixture(temp, exploration=0)
+                class CorruptingManager(NativeFakeManager):
+                    def run_llm_loop(self, gen_batch, initial_input_ids):
+                        output = super().run_llm_loop(gen_batch, initial_input_ids)
+                        if fault == "identity": output.meta_info["behavior_identity"]["run_id"] = "different-run"
+                        elif fault == "missing_turn_snapshot":
+                            del output.non_tensor_batch["behavior_turns"][0][0]["policy_snapshot_id"]
+                        elif fault == "nondict_turn": output.non_tensor_batch["behavior_turns"][0] = [None]
+                        elif fault == "mixed_turns":
+                            output.non_tensor_batch["behavior_turns"][-1][0]["policy_snapshot_id"] = "different-actor"
+                        elif fault == "top_none": output.meta_info["policy_snapshot_id"] = None
+                        elif fault == "top_conflict": output.meta_info["policy_snapshot_id"] = "different-actor"
+                        return output
+                with patch("reproduction.common8.behavior_runtime.prepare_identity", fake_prepare), \
+                     patch("reproduction.common8.behavior_runtime.attach_generation_identity", fake_attach), \
+                     self.assertRaisesRegex(RuntimeError, error):
+                    collect(trainer, CorruptingManager(), NativeMemoryStream(),
+                            {"attempt_id": "corrupt-test", "attempt_index": 1}, value)
+                self.assertIsNone(value.pending)
+                self.assertEqual(value.head.update_count, 0)
+                self.assertEqual(len(snapshots), 1)
+                directory = value.output_dir/"attempts/corrupt-test"
+                self.assertTrue((directory/"selection.json").exists())
+                self.assertFalse((directory/"after-generation.pt").exists())
+                self.assertFalse((directory/"rollout-audit.json").exists())
 
 
 if __name__ == "__main__": unittest.main()

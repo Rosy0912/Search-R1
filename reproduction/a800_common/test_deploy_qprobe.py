@@ -1,5 +1,8 @@
 """CPU-only checks for the prospective control boundary; no SSH or model load."""
 import ast
+import copy
+import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -24,10 +27,81 @@ def intent():
         launch_services=False, target_updates=200)
 
 
+def feature_origin():
+    old = dict(run_id=control.FEATURE_SOURCE_RUN,execution_id=control.FEATURE_SOURCE_EXECUTION,
+        source_commit=control.FEATURE_SOURCE_COMMIT,profile='common8',execution_backend='ssh_local',
+        training_world_size=4,completed_updates=0,initial_model='/data/search-g1/assets/qwen2.5-3b-instruct',
+        reference_model='/data/search-g1/assets/qwen2.5-3b-instruct',model_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1',
+        initial_model_sha256={str(i):'a'*64 for i in range(9)},input_sha256={'train.parquet':'b'*64},
+        calibration_question_ids=['one'],source_sha256={name:'c'*64 for name in control.FEATURE_PRODUCERS})
+    new = dict(copy.deepcopy(old),run_id='d'*32,execution_id='e'*32,source_commit='f'*40)
+    ready = dict(run_id=old['run_id'],source_commit=old['source_commit'],
+        cache_dir=control.FEATURE_SOURCE_BASE+'/question-features',pid=2861772,start_ticks=604134066,sid=2861771,
+        stage='question_feature_cache_complete',count=169028,feature_dim=2048,completed_training_outers=0,
+        target_training_outers=200,exit_code=0,actual_visible_cuda_count=1,physical_index=6,
+        physical_gpu_uuid=control.FEATURE_UUID,actual_cuda_uuids=[control.FEATURE_UUID],
+        manifest_sha256=control.FEATURE_MANIFEST_SHA,feature_file_sha256=control.FEATURE_FILE_SHA,spec_sha=control.FEATURE_SPEC_SHA)
+    terminal = dict(run_id=old['run_id'],execution_id=old['execution_id'],source_commit=old['source_commit'],
+        exit_code=0,status='FEATURE_CHILD_EXITED',child=dict(pid=2861772,start_ticks=604134066,sid=2861771))
+    model_sha = hashlib.sha256(json.dumps(new['initial_model_sha256'],sort_keys=True,separators=(',', ':')).encode()).hexdigest()
+    manifest = dict(count=169028,feature_dim=2048,spec_sha=control.FEATURE_SPEC_SHA,
+        files={'features.npy':dict(bytes=100,sha256=control.FEATURE_FILE_SHA),'index.jsonl':dict(bytes=20,sha256='1'*64)},
+        spec=dict(train_parquet_sha256='b'*64,encoder_compute_dtype='bfloat16',feature_dtype='float16',
+            encoder_files_sha256=model_sha,encoder_revision=new['model_revision'],feature_layer=27,max_prompt_tokens=4096))
+    return old,new,ready,terminal,manifest
+
+
 class ProspectiveControlTests(unittest.TestCase):
     def test_embedded_remote_programs_compile(self):
-        for name in ('REMOTE_STAGE','REMOTE_PREPARE','REMOTE_BIND','REMOTE_INSPECT','REMOTE_LAUNCH_GATE'):
+        for name in ('REMOTE_STAGE','REMOTE_PREPARE','REMOTE_FEATURE_ADOPT','REMOTE_BIND','REMOTE_INSPECT','REMOTE_LAUNCH_GATE'):
             ast.parse(getattr(control, name), filename=name)
+
+    def test_feature_adoption_rejects_changed_origin_pipeline_assets_or_failed_encoding(self):
+        original = feature_origin()
+        self.assertTrue(control.validate_feature_origin(*original))
+        mutations = (
+            lambda rows: rows[0].update(source_commit='0'*40),
+            lambda rows: rows[1]['initial_model_sha256'].update({'0':'0'*64}),
+            lambda rows: rows[1]['input_sha256'].update({'train.parquet':'0'*64}),
+            lambda rows: rows[1]['source_sha256'].update({control.FEATURE_PRODUCERS[0]:'0'*64}),
+            lambda rows: rows[2].update(start_ticks=604134067),
+            lambda rows: rows[2].update(actual_cuda_uuids=['wrong-uuid']),
+            lambda rows: rows[3].update(exit_code=1),
+            lambda rows: rows[4].update(spec_sha='0'*64),
+            lambda rows: rows[4]['spec'].update(encoder_files_sha256='0'*64),
+            lambda rows: rows[4]['spec'].update(encoder_compute_dtype='float32'),
+            lambda rows: rows[4]['files']['features.npy'].update(bytes=0),
+            lambda rows: rows[4]['files']['index.jsonl'].update(bytes=-1),
+            lambda rows: rows[4]['files']['features.npy'].update(sha256='0'*64),
+        )
+        for index,mutate in enumerate(mutations):
+            with self.subTest(index=index):
+                changed=copy.deepcopy(original);mutate(changed)
+                with self.assertRaises(AssertionError):
+                    control.validate_feature_origin(*changed)
+
+    def test_copied_features_keep_real_origin_encoding_and_new_cpu_copy_separate(self):
+        old,new,ready,terminal,manifest=feature_origin()
+        self.assertIs(control.validate_prepared_features(ready,old),ready)
+        copied=dict(ready,run_id=new['run_id'],execution_id=new['execution_id'],source_commit=new['source_commit'],
+            cache_dir=intent()['base']+'/question-features',kind='copied_verified_existing_encoding',
+            fresh_gpu_encoding=False,actual_visible_cuda_count=None,model_loaded=False,
+            copy_process=dict(pid=100,start_ticks=200,sid=99,uid=0),
+            origin=dict(base=control.FEATURE_SOURCE_BASE,run_id=old['run_id'],execution_id=old['execution_id'],
+                source_commit=old['source_commit'],encoding_pid=2861772,encoding_start_ticks=604134066,
+                encoding_exit_code=0,encoding_cuda_uuid=control.FEATURE_UUID,
+                immutable_encoder_producer_sha256=new['source_sha256']))
+        for key in ('pid','sid','start_ticks','physical_index','physical_gpu_uuid','actual_cuda_uuids'):
+            copied.pop(key)
+        self.assertIs(control.validate_prepared_features(copied,new),copied)
+        mutations=(lambda row:row.update(fresh_gpu_encoding=True),lambda row:row.update(actual_visible_cuda_count=1),
+            lambda row:row['origin'].update(source_commit='0'*40),lambda row:row['origin'].update(encoding_start_ticks=200),
+            lambda row:row['copy_process'].update(pid=2861772,start_ticks=604134066,sid=2861771),
+            lambda row:row['origin']['immutable_encoder_producer_sha256'].update({control.FEATURE_PRODUCERS[0]:'0'*64}))
+        for index,mutate in enumerate(mutations):
+            with self.subTest(index=index):
+                changed=copy.deepcopy(copied);mutate(changed)
+                with self.assertRaises(AssertionError):control.validate_prepared_features(changed,new)
 
     def test_independent_review_cannot_approve_other_source_or_partial_contract(self):
         original = intent()

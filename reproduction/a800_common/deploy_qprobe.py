@@ -29,6 +29,17 @@ BASELINE_COMMIT = '34e63b7b12f4056503803905c1b3dd1be95f0adc'
 BASELINE_RUN_ID = '1db662001a0f4d998928bcf6f5f33c9d'
 INITIAL_PROBES = '/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
 TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2'
+FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
+FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
+FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
+FEATURE_SOURCE_EXECUTION = '7d85bd0daa93462981aefc2a9d87fdb7'
+FEATURE_MANIFEST_SHA = '7228f5005cf8ac9f1f67f48a4529a24577dc8903f89c2bfa5e49ee0faf74a1c9'
+FEATURE_FILE_SHA = 'e2186ca7ea6735470ad5cd1302b03054529c675ba45b9f3297c1b07bab7e97c3'
+FEATURE_SPEC_SHA = 'aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4'
+FEATURE_UUID = 'GPU-92249a14-a344-f77f-e18c-d1cea5c638a7'
+FEATURE_PRODUCERS = ('search_g1/qprobe_features.py','search_g1/qprobe_prepare.py',
+    'reproduction/a800_common/precompute_qprobe.py','reproduction/common8/prepare_run.py',
+    'reproduction/common8/verify_data.py')
 MAX_BUNDLE = 32 * 1024**2
 REVIEW_CHECKS = (
     'official_model_and_canonical_data', 'frozen_teacher_5120_x_5',
@@ -95,6 +106,69 @@ def validate_review(review, intent):
     assert all(review['checks'][key] is True for key in REVIEW_CHECKS)
     assert type(review['reviewed_unix']) in (int, float) and 0 < review['reviewed_unix'] <= time.time()
     return review
+
+
+def validate_feature_origin(old, new, ready, exit_receipt, manifest):
+    """Authenticate the completed encoding separately from a new run's identity."""
+    assert (old['run_id'],old['execution_id'],old['source_commit']) == (FEATURE_SOURCE_RUN,FEATURE_SOURCE_EXECUTION,FEATURE_SOURCE_COMMIT)
+    assert new['run_id'] != old['run_id'] and new['execution_id'] != old['execution_id'] and new['source_commit'] != old['source_commit']
+    for candidate in (old,new):
+        assert candidate['profile']=='common8' and candidate['execution_backend']=='ssh_local'
+        assert candidate['training_world_size']==4 and candidate['completed_updates']==0 and not candidate.get('full_state_restore')
+        assert candidate['initial_model']==candidate['reference_model']=='/data/search-g1/assets/qwen2.5-3b-instruct'
+        assert candidate['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    assert len(old['initial_model_sha256'])==9 and old['initial_model_sha256']==new['initial_model_sha256']
+    assert old['input_sha256']==new['input_sha256'] and old['calibration_question_ids']==new['calibration_question_ids']
+    for name in FEATURE_PRODUCERS:
+        assert old['source_sha256'].get(name) is not None and old['source_sha256'][name]==new['source_sha256'].get(name)
+    assert ready['run_id']==old['run_id'] and ready['source_commit']==old['source_commit']
+    assert ready['cache_dir']==FEATURE_SOURCE_BASE+'/question-features'
+    assert (ready['pid'],ready['start_ticks'],ready['sid'])==(2861772,604134066,2861771)
+    assert ready['count']==169028 and ready['feature_dim']==2048 and ready['completed_training_outers']==0
+    assert ready['stage']=='question_feature_cache_complete' and ready['target_training_outers']==200
+    assert ready['exit_code']==0 and ready['actual_visible_cuda_count']==1 and ready['physical_index']==6
+    assert ready['physical_gpu_uuid']==FEATURE_UUID and ready['actual_cuda_uuids']==[FEATURE_UUID]
+    assert ready['manifest_sha256']==FEATURE_MANIFEST_SHA and ready['feature_file_sha256']==FEATURE_FILE_SHA and ready['spec_sha']==FEATURE_SPEC_SHA
+    assert (exit_receipt['run_id'],exit_receipt['execution_id'],exit_receipt['source_commit'])==(old['run_id'],old['execution_id'],old['source_commit'])
+    assert exit_receipt['exit_code']==0 and exit_receipt['status']=='FEATURE_CHILD_EXITED'
+    child=exit_receipt['child'];assert (child['pid'],child['start_ticks'],child['sid'])==(2861772,604134066,2861771)
+    assert manifest['count']==169028 and manifest['feature_dim']==2048 and manifest['spec_sha']==FEATURE_SPEC_SHA
+    assert manifest['files']['features.npy']['sha256']==FEATURE_FILE_SHA
+    assert manifest['spec']['train_parquet_sha256']==new['input_sha256']['train.parquet']
+    assert manifest['spec']['encoder_compute_dtype']=='bfloat16' and manifest['spec']['feature_dtype']=='float16'
+    canonical=lambda value:json.dumps(value,sort_keys=True,separators=(',', ':'),ensure_ascii=False).encode()
+    model_sha=hashlib.sha256(canonical(new['initial_model_sha256'])).hexdigest()
+    assert manifest['spec']['encoder_files_sha256']==model_sha
+    assert manifest['spec']['encoder_revision']==new['model_revision']
+    assert manifest['spec']['feature_layer']==27 and manifest['spec']['max_prompt_tokens']==4096
+    assert set(manifest['files'])=={'index.jsonl','features.npy'}
+    assert all(type(row['bytes']) is int and row['bytes']>0 and re.fullmatch('[0-9a-f]{64}',row['sha256']) for row in manifest['files'].values())
+    return True
+
+
+def validate_prepared_features(features, run):
+    assert features['run_id']==run['run_id'] and features['source_commit']==run['source_commit']
+    assert features['count']==169028 and features['feature_dim']==2048 and features['exit_code']==0
+    assert features['completed_training_outers']==0 and features['target_training_outers']==200
+    assert features['cache_dir'].startswith('/data/shaoshitong/Search-G1-a800-fresh200-') and features['cache_dir'].endswith('/question-features')
+    if features.get('kind')=='copied_verified_existing_encoding':
+        assert features['fresh_gpu_encoding'] is False and features['actual_visible_cuda_count'] is None
+        assert features['origin']['base']==FEATURE_SOURCE_BASE and features['origin']['run_id']==FEATURE_SOURCE_RUN
+        assert features['origin']['source_commit']==FEATURE_SOURCE_COMMIT and features['origin']['execution_id']==FEATURE_SOURCE_EXECUTION
+        assert features['execution_id']==run['execution_id']
+        process=features['copy_process']
+        assert all(type(process[key]) is int and process[key]>0 for key in ('pid','start_ticks','sid'))
+        assert type(process['uid']) is int and process['uid']>=0
+        assert (process['pid'],process['start_ticks'],process['sid'])!=(2861772,604134066,2861771)
+        assert (features['origin']['encoding_pid'],features['origin']['encoding_start_ticks'],features['origin']['encoding_exit_code'])==(2861772,604134066,0)
+        assert features['origin']['encoding_cuda_uuid']==FEATURE_UUID and features['model_loaded'] is False
+        assert features['origin']['immutable_encoder_producer_sha256']=={name:run['source_sha256'][name] for name in FEATURE_PRODUCERS}
+        assert features['manifest_sha256']==FEATURE_MANIFEST_SHA and features['feature_file_sha256']==FEATURE_FILE_SHA and features['spec_sha']==FEATURE_SPEC_SHA
+    else:
+        assert features.get('kind') is None and features['actual_visible_cuda_count']==1
+        assert features['stage']=='question_feature_cache_complete' and features['physical_index'] in (5,6)
+        assert features['actual_cuda_uuids']==[features['physical_gpu_uuid']]
+    return features
 
 
 REMOTE_COMMON = r'''
@@ -284,9 +358,12 @@ REMOTE_BIND = REMOTE_COMMON + r'''
 payload=json.load(sys.stdin);intent=payload['intent'];staged(intent);base=owned(intent['base']);unlaunched(base)
 assert read(base/'preparation/qprobe-intent.json')==intent
 before=read(base/'logs/run-manifest.json');features=read(base/'preparation/features-ready.json')
-assert features['run_id']==before['run_id'] and features['source_commit']==intent['source_commit']
-assert features['count']==169028 and features['actual_visible_cuda_count']==1 and features['exit_code']==0
-assert features['completed_training_outers']==0
+sys.path.insert(0,str(base/'repo'))
+from reproduction.a800_common.deploy_qprobe import validate_prepared_features
+validate_prepared_features(features,before)
+assert features['cache_dir']==str(base/'question-features')
+assert sha(owned(base/'question-features/manifest.json'))==features['manifest_sha256']
+if features.get('kind')=='copied_verified_existing_encoding':assert read(base/'logs/qprobe-feature-adoption.json')==features
 once(base/'logs/qprobe-bind-claim.json',dict(deployment_id=intent['deployment_id'],claimed_unix=time.time(),no_automatic_retry=True))
 sys.path.insert(0,str(base/'repo'))
 from reproduction.common8.qprobe_bind import bind
@@ -298,6 +375,81 @@ receipt=dict(stage='QPROBE_BOUND_PRELAUNCH',deployment_id=intent['deployment_id'
  source_commit=run['source_commit'],question_probe=run['question_probe'],target_updates=200,
  extra_frozen_teacher_warmup_outers=1,completed_training_outers=0,trainer_started=False,checked_unix=time.time())
 once(base/'logs/qprobe-bound.json',receipt);output(receipt)
+'''
+
+REMOTE_FEATURE_ADOPT = REMOTE_COMMON + r'''
+import stat
+payload=json.load(sys.stdin);intent=payload['intent'];staged(intent);base=owned(intent['base']);unlaunched(base)
+assert read(base/'preparation/qprobe-intent.json')==intent
+sys.path.insert(0,str(base/'repo'))
+from reproduction.a800_common.deploy_qprobe import (FEATURE_SOURCE_BASE,FEATURE_SOURCE_COMMIT,FEATURE_MANIFEST_SHA,
+ FEATURE_FILE_SHA,FEATURE_SPEC_SHA,FEATURE_PRODUCERS,validate_feature_origin)
+origin=owned(payload['feature_source_base']);assert str(origin)==FEATURE_SOURCE_BASE and origin!=base
+new=read(base/'logs/run-manifest.json');old=read(origin/'logs/run-manifest.json')
+assert new.get('question_probe') is None and new['source_commit']==intent['source_commit']
+for name in ('qprobe-feature-claim.json','qprobe-bind-claim.json','qprobe-feature-adopt-claim.json'):
+ assert not (base/'logs'/name).exists(), 'Feature preparation or binding already claimed'
+target=base/'question-features';assert not target.exists() and not target.is_symlink()
+assert not any(base.glob('question-features.partial*')) and not (base/'preparation/features-ready.json').exists()
+ready_path=origin/'preparation/features-ready.json';exit_path=origin/'logs/qprobe-feature-background-exit.json'
+ready=read(ready_path);completed=read(exit_path);cache=owned(origin/'question-features');manifest_path=cache/'manifest.json'
+assert sha(owned(manifest_path))==FEATURE_MANIFEST_SHA;manifest=read(manifest_path)
+validate_feature_origin(old,new,ready,completed,manifest)
+assert old['execution_host']==new['execution_host']==socket.gethostname() and ready['hostname']==socket.gethostname()
+assert ready['uid']==completed['child']['uid']==os.getuid()
+old_repo=owned(origin/'repo');new_repo=owned(base/'repo')
+assert git('-C',str(old_repo),'rev-parse','HEAD')==FEATURE_SOURCE_COMMIT and not git('-C',str(old_repo),'status','--porcelain')
+assert git('-C',str(new_repo),'rev-parse','HEAD')==intent['source_commit'] and source_map(new_repo)==intent['source_sha256']
+for name in FEATURE_PRODUCERS:
+ assert sha(owned(old_repo/name))==old['source_sha256'][name]==sha(owned(new_repo/name))==new['source_sha256'][name]
+for name,expected in new['input_sha256'].items():
+ assert Path(name).name==name
+ previous=owned(origin/'data'/name);current=owned(base/'data'/name)
+ assert stat.S_ISREG(previous.stat().st_mode) and stat.S_ISREG(current.stat().st_mode)
+ assert previous.stat().st_size==current.stat().st_size and sha(previous)==sha(current)==expected
+official=base/'preparation/official-model-manifest-original.json'
+assert sha(owned(official))==sha(owned(origin/'preparation/official-model-manifest-original.json'))=='7f53ce6c010ac076b1ec482031bea7c9e6b8d0a096a61b880fe8ad4971bc9e44'
+from reproduction.common8.prepare_run import verify_model
+model=owned(new['initial_model']);assert model.is_dir()
+for name in new['initial_model_sha256']:
+ assert Path(name).name==name and stat.S_ISREG(owned(model/name).stat().st_mode)
+assert verify_model(Path(new['initial_model']),official)==new['initial_model_sha256']
+rows=[dict(name='manifest.json',bytes=manifest_path.stat().st_size,sha256=FEATURE_MANIFEST_SHA)]
+rows += [dict(name=name,**manifest['files'][name]) for name in ('index.jsonl','features.npy')]
+assert set(manifest['files'])=={'index.jsonl','features.npy'}
+assert set(path.name for path in cache.iterdir())=={'manifest.json','index.jsonl','features.npy'}
+for row in rows:
+ source=owned(cache/row['name']);assert stat.S_ISREG(source.stat().st_mode) and source.stat().st_size==row['bytes'] and sha(source)==row['sha256']
+receipt_shas={str(path.relative_to(origin)):sha(path) for path in (ready_path,exit_path,origin/'logs/run-manifest.json')}
+text=(Path('/proc')/str(os.getpid())/'stat').read_text();fields=text[text.rfind(')')+2:].split()
+copy_process=dict(pid=os.getpid(),start_ticks=int(fields[19]),sid=int(fields[3]),uid=os.getuid())
+once(base/'logs/qprobe-feature-claim.json',dict(copy_process,kind='copied_verified_existing_encoding',run_id=new['run_id'],source_commit=new['source_commit'],
+ source_base=str(origin),claimed_unix=time.time(),gpu_job_started=False,no_automatic_retry=True))
+once(base/'logs/qprobe-feature-adopt-claim.json',dict(run_id=new['run_id'],source_commit=new['source_commit'],
+ source_base=str(origin),origin_receipt_sha256=receipt_shas,claimed_unix=time.time(),no_automatic_retry=True))
+target.mkdir(mode=0o700,exist_ok=False)
+for row in rows:
+ source=owned(cache/row['name']);destination=target/row['name']
+ with source.open('rb') as reader,destination.open('xb') as writer:
+  shutil.copyfileobj(reader,writer,1024**2);writer.flush();os.fsync(writer.fileno())
+ assert destination.stat().st_size==row['bytes'] and sha(destination)==sha(source)==row['sha256']
+from search_g1.qprobe_features import FeatureCache
+verification=FeatureCache(target,expected_spec_sha=FEATURE_SPEC_SHA).verify_all()
+assert verification['count']==169028 and verification['feature_dim']==2048 and verification['feature_file_sha256']==FEATURE_FILE_SHA
+for path in (ready_path,exit_path,origin/'logs/run-manifest.json'):
+ assert sha(path)==receipt_shas[str(path.relative_to(origin))], 'Origin metadata changed during adoption'
+receipt=dict(stage='CPU_EXISTING_FEATURE_CACHE_ADOPTED',kind='copied_verified_existing_encoding',
+ run_id=new['run_id'],source_commit=new['source_commit'],execution_id=new['execution_id'],
+ cache_dir=str(target),manifest_sha256=sha(target/'manifest.json'),**verification,
+ fresh_gpu_encoding=False,actual_visible_cuda_count=None,completed_training_outers=0,target_training_outers=200,
+ exit_code=0,model_loaded=False,qa_partitioned=False,copy_process=copy_process,files=rows,checked_unix=time.time(),
+ origin=dict(base=str(origin),run_id=old['run_id'],execution_id=old['execution_id'],source_commit=old['source_commit'],
+  encoding_pid=ready['pid'],encoding_start_ticks=ready['start_ticks'],encoding_exit_code=completed['exit_code'],
+  encoding_cuda_uuid=ready['physical_gpu_uuid'],receipt_sha256=receipt_shas,
+  immutable_encoder_producer_sha256={name:new['source_sha256'][name] for name in FEATURE_PRODUCERS}))
+once(base/'logs/qprobe-feature-adoption.json',receipt);once(base/'preparation/features-ready.json',receipt)
+output(dict(stage=receipt['stage'],kind=receipt['kind'],run_id=new['run_id'],source_commit=new['source_commit'],
+ count=verification['count'],feature_dim=verification['feature_dim'],fresh_gpu_encoding=False,exit_code=0))
 '''
 
 REMOTE_INSPECT = REMOTE_COMMON + r'''
@@ -345,7 +497,7 @@ REMOTE_LAUNCH_GATE = REMOTE_COMMON + r'''
 payload=json.load(sys.stdin);intent=payload['intent'];staged(intent);base=owned(intent['base']);unlaunched(base)
 assert read(base/'preparation/qprobe-intent.json')==intent
 sys.path.insert(0,str(base/'repo'))
-from reproduction.a800_common.deploy_qprobe import validate_review
+from reproduction.a800_common.deploy_qprobe import validate_review,validate_prepared_features
 from reproduction.a800_common import deploy as published_deploy
 repo=owned(base/'repo');assert git('-C',str(repo),'rev-parse','HEAD')==intent['source_commit']
 assert not git('-C',str(repo),'status','--porcelain') and source_map(repo)==intent['source_sha256']
@@ -356,6 +508,10 @@ assert payload['launch_code']==published_deploy.REMOTE_LAUNCH_PREPARED
 assert payload['embedded_launcher_sha256']==hashlib.sha256(published_deploy.REMOTE_LAUNCH_PREPARED.encode()).hexdigest()
 review=validate_review(payload['review'],intent)
 run=read(base/'logs/run-manifest.json');q=run['question_probe']
+ready=validate_prepared_features(read(base/'preparation/features-ready.json'),run)
+assert ready['cache_dir']==str(base/'question-features')
+assert sha(owned(base/'question-features/manifest.json'))==ready['manifest_sha256']
+if ready.get('kind')=='copied_verified_existing_encoding':assert read(base/'logs/qprobe-feature-adoption.json')==ready
 assert read(base/'logs/qprobe-bound.json')['run_id']==run['run_id']
 assert q['candidate_questions']==5120 and q['selected_questions']==512 and q['responses_per_question']==5
 assert q['exploration_questions']==64 and q['bootstrap_max_groups_per_outer']==5120
@@ -471,15 +627,17 @@ def feature_plan(intent, physical_index=6, batch_size=32):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('stage', 'prepare', 'feature-plan', 'bind', 'inspect', 'launch'))
+    parser.add_argument('action', choices=('stage', 'prepare', 'feature-plan', 'feature-adopt', 'bind', 'inspect', 'launch'))
     parser.add_argument('--handle', type=Path, required=True)
     parser.add_argument('--source-commit');parser.add_argument('--published-ref')
     parser.add_argument('--baseline-intent-sha256');parser.add_argument('--review-receipt', type=Path)
     parser.add_argument('--initial-probes-source-base')
     parser.add_argument('--teacher-warmup-cache')
+    parser.add_argument('--feature-source-base')
     parser.add_argument('--physical-index', type=int, choices=(5,6), default=6)
     parser.add_argument('--batch-size', type=int, default=32)
     args = parser.parse_args()
+    assert args.action=='feature-adopt' or args.feature_source_base is None
     if args.action == 'stage':
         assert args.source_commit and args.published_ref and args.baseline_intent_sha256
         result = stage(args)
@@ -490,8 +648,11 @@ def main():
             result = feature_plan(intent, args.physical_index, args.batch_size)
         else:
             payload = dict(intent=intent)
-            code, timeout = {'prepare':(REMOTE_PREPARE,1000),'bind':(REMOTE_BIND,600),
+            code, timeout = {'prepare':(REMOTE_PREPARE,1000),'bind':(REMOTE_BIND,600),'feature-adopt':(REMOTE_FEATURE_ADOPT,1000),
                              'inspect':(REMOTE_INSPECT,60),'launch':(REMOTE_LAUNCH_GATE,600)}[args.action]
+            if args.action=='feature-adopt':
+                assert args.feature_source_base==FEATURE_SOURCE_BASE, 'Select the exact completed BF4 encoding source explicitly'
+                payload['feature_source_base']=args.feature_source_base
             if args.action == 'inspect':payload['observe_code'] = REMOTE_OBSERVE
             if args.action == 'launch':
                 assert args.review_receipt is not None, 'An independent review of the exact published source is required'

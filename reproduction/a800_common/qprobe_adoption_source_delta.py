@@ -34,6 +34,7 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/a800_common/precompute_qprobe.py',
     'reproduction/a800_common/test_deploy_qprobe.py',
     'search_g1/qprobe_runtime.py',
+    'search_g1/test_qprobe_runtime.py',
     'search_g1/qprobe_warmup.py',
     'search_g1/test_qprobe_warmup.py',
 ))

@@ -423,6 +423,42 @@ def _collect_pool(stream, count):
     return DataProto.concat(rows), pool.questions
 
 
+def _derived_policy_snapshot_id(meta_info, behavior_turns, identity):
+    """Derive the seal from actual turns after validating the complete identity.
+
+    The native generator returns the full behavior identity and per-turn
+    snapshots but may omit a top-level snapshot. A present top-level value is
+    evidence too and cannot be replaced when it contradicts the actual turns.
+    This helper neither changes metadata nor fills missing turn evidence.
+    """
+    if not isinstance(identity, dict) or not isinstance(meta_info, dict) or \
+            not isinstance(meta_info.get("behavior_identity"), dict) or \
+            meta_info["behavior_identity"] != identity:
+        raise RuntimeError("QPROBE_BEHAVIOR_IDENTITY_CHANGED_DURING_GENERATION")
+    expected = identity.get("policy_snapshot_id")
+    if not isinstance(expected, str) or not expected.strip():
+        raise RuntimeError("QPROBE_POLICY_SNAPSHOT_CHANGED_DURING_GENERATION")
+    if behavior_turns is None or len(behavior_turns) == 0:
+        raise RuntimeError("MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT")
+    observed = set()
+    for row_turns in behavior_turns:
+        if not isinstance(row_turns, (list, tuple)) or not row_turns:
+            raise RuntimeError("MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT")
+        for turn in row_turns:
+            if not isinstance(turn, dict):
+                raise RuntimeError("MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT")
+            snapshot = turn.get("policy_snapshot_id")
+            if not isinstance(snapshot, str) or not snapshot.strip():
+                raise RuntimeError("MISSING_REAL_QPROBE_TURN_POLICY_SNAPSHOT")
+            observed.add(snapshot)
+    if observed != {expected}:
+        raise RuntimeError("QPROBE_POLICY_SNAPSHOT_CHANGED_DURING_GENERATION")
+    derived = next(iter(observed))
+    if "policy_snapshot_id" in meta_info and meta_info["policy_snapshot_id"] != derived:
+        raise RuntimeError("QPROBE_POLICY_SNAPSHOT_CHANGED_DURING_GENERATION")
+    return derived
+
+
 def _complete_generation(output, identity):
     """Infrastructure/provenance failures cannot silently become five incorrect EMs.
 
@@ -437,6 +473,7 @@ def _complete_generation(output, identity):
     turns = output.non_tensor_batch.get("behavior_turns")
     if actual_ids is None or list(actual_ids) != expected_ids or turns is None or len(turns) != 2560 or not all(turns):
         raise RuntimeError("MISSING_OR_MISORDERED_REAL_QPROBE_TRAJECTORIES")
+    output.meta_info["policy_snapshot_id"] = _derived_policy_snapshot_id(output.meta_info, turns, identity)
     if output.meta_info.get("policy_snapshot_id") != identity["policy_snapshot_id"]:
         raise RuntimeError("QPROBE_POLICY_SNAPSHOT_CHANGED_DURING_GENERATION")
     for key in ROW_META:
