@@ -78,7 +78,11 @@ def run(commit):
         value=dict(commit=commit,failed_job=JOB,target=str(recovery.TARGET),cleanup_job=cleanup['job'],
             training_job=submitted['job'],teacher_questions_reused=1024,teacher_trajectories_reused=5120,
             formal_completed_outers=0,training_progress_accepted=False,finished_unix=time.time())
-        publish(DIRECTORY/'complete.json',value);state('COMPLETED_ONCE_NATIVE4_SUBMISSION',exit_code=0,**value)
+        publish(DIRECTORY/'complete.json',value)
+        state('COMPLETED_ONCE_NATIVE4_SUBMISSION',exit_code=0,target=value['target'],
+              training_job=value['training_job'],cleanup_job=value['cleanup_job'],
+              teacher_questions_reused=1024,teacher_trajectories_reused=5120,
+              formal_completed_outers=0,training_progress_accepted=False)
         print(json.dumps(value),flush=True);return value
     except Exception as error:
         state('FAILED',exit_code=1,error=repr(error));raise
