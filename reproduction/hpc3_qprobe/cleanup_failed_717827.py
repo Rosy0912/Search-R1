@@ -59,7 +59,7 @@ def submit(commit):
     intent=FAILED/'preparation/cleanup717827-submit-claim.json';receipt=FAILED/'preparation/cleanup717827-submission.json'
     assert not SHADOW.exists() and not intent.exists() and not receipt.exists(),'Inspect existing cleanup claim instead of repeating'
     command=['sbatch','--parsable','--account=jxu957','--qos=formal-user','--partition=acd_ue',
-        '--nodelist=ACD1-67','--nodes=1','--ntasks=1','--cpus-per-task=1','--mem=1G','--gres=none',
+        '--nodelist=ACD1-67','--nodes=1','--ntasks=1','--cpus-per-task=1','--mem=1G','--gres=gpu:1',
         '--time=00:10:00','--job-name=qprobe-cleanup717827','--export=NONE',
         '--output='+str(FAILED/'logs/cleanup717827-%j.log'),str(source/'reproduction/hpc3_qprobe/cleanup_failed_717827.sh'),str(source)]
     test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)

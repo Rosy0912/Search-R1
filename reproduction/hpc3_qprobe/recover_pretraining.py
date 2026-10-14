@@ -111,12 +111,23 @@ def terminal():
         if (FAILED/'logs'/name).exists():raise ValueError('Pipeline work already claimed; use full-state recovery instead')
     if JOB=='717827':
         shadow=FAILED/'failure-cleanup717827'
-        cleanup=json.loads((shadow/'complete.json').read_text())
         claim=json.loads((FAILED/'preparation/cleanup717827-submission.json').read_text())
         terminal_cleanup=subprocess.check_output(['sacct','-nP','-j',claim['job'],'-X','--format=JobID,State,ExitCode,UID,NodeList'],text=True).strip()
-        if claim['returncode']!=0 or terminal_cleanup!=claim['job']+'|COMPLETED|0:0|14090|ACD1-67':raise ValueError('Actual own cleanup job incomplete')
-        if cleanup['cleaned'] is not True or cleanup['run_id']!=run['run_id'] or cleanup['failed_job']!=JOB or cleanup['cleanup_job']!=claim['job']:
-            raise ValueError('Original failed native tmpfs was not closed')
+        cleanup_complete=terminal_cleanup==claim['job']+'|COMPLETED|0:0|14090|ACD1-67'
+        if claim['returncode']!=0:raise ValueError('Own private cleanup submission failed')
+        if cleanup_complete:
+            cleanup=json.loads((shadow/'complete.json').read_text())
+            if cleanup['cleaned'] is not True or cleanup['run_id']!=run['run_id'] or cleanup['failed_job']!=JOB or cleanup['cleanup_job']!=claim['job']:
+                raise ValueError('Original failed native tmpfs was not closed')
+        else:
+            # The actual terminal actor never entered warmup/training. Its
+            # tmpfs cleanup may wait for a GPU slot on the original node (ACD
+            # forbids CPU-only allocations). A new UUID/run is isolated on a
+            # different node, while the once-only cleanup remains required.
+            d=fields(subprocess.check_output(['scontrol','show','job','-d',claim['job']],text=True))
+            source=ROOT/'source'/claim['commit']
+            if d['JobState'] not in ('PENDING','RUNNING') or d['UserId']!='jxu957(14090)' or d['Account']!='jxu957' or d['ReqNodeList']!='ACD1-67' or d['Command']!=str(source/'reproduction/hpc3_qprobe/cleanup_failed_717827.sh'):
+                raise ValueError('Private cleanup is not the actual bound pending/running job')
         stage=json.loads((FAILED/'logs/pipeline-status.json').read_text())
         if stage['stage']!='OWNED_CLEANUP_FAILED' or 'pidfd_open' not in stage['error']:raise ValueError('Not observed old-kernel cleanup failure')
         ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
@@ -131,8 +142,9 @@ def terminal():
         for rank in range(4):
             model=json.loads((FAILED/'logs/model-smoke-initial'/('rank-'+str(rank)+'.json')).read_text())
             if model['accepted'] is not True or model['actual_optimizer_writes']!=0:raise ValueError('Actor writes before fresh reset')
-        repaired=json.loads((shadow/'logs/process-ledger.json').read_text())
-        if repaired['run_id']!=run['run_id'] or any(j['state']!='STOPPED' for j in repaired['jobs'].values()):raise ValueError('Cleanup ledger not quiescent')
+        if cleanup_complete:
+            repaired=json.loads((shadow/'logs/process-ledger.json').read_text())
+            if repaired['run_id']!=run['run_id'] or any(j['state']!='STOPPED' for j in repaired['jobs'].values()):raise ValueError('Cleanup ledger not quiescent')
     if JOB in ('717637','717698','717765'):
         cleanup=json.loads((FAILED/'logs/cleanup-status.json').read_text())
         ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
@@ -176,7 +188,9 @@ def terminal():
     for name,record in preserved['files'].items():
         if name.startswith('logs/') and hashlib.sha256((FAILED/name).read_bytes()).hexdigest()!=record['sha256']:
             raise ValueError('Preserved terminal log changed')
-    return dict(actual=actual,detail=detail,terminal_readback=readback,prior=prior,failed_run_id=run['run_id'],checked_unix=time.time())
+    value=dict(actual=actual,detail=detail,terminal_readback=readback,prior=prior,failed_run_id=run['run_id'],checked_unix=time.time())
+    if JOB=='717827':value.update(private_cleanup_job=claim['job'],private_cleanup_complete=cleanup_complete,excluded_node='ACD1-67',cleanup_required_before_goal_complete=True)
+    return value
 
 
 def fresh(commit):
@@ -222,7 +236,8 @@ def submit(commit):
     claim=TARGET/'preparation/training-submit-claim.json';receipt=TARGET/'preparation/training-submission.json'
     if claim.exists() or receipt.exists():raise ValueError('Recovery submission already attempted; never duplicate')
     jobs=subprocess.check_output(['squeue','-h','-u','jxu957','-o','%i|%j|%T'],text=True,timeout=30)
-    if any('qprobe' in line for line in jobs.splitlines()):raise ValueError('Existing own qprobe job requires inspection')
+    cleanup_job=actual.get('private_cleanup_job')
+    if any('qprobe' in line and (cleanup_job is None or not line.startswith(cleanup_job+'|qprobe-cleanup717827|')) for line in jobs.splitlines()):raise ValueError('Existing own qprobe job requires inspection')
     from search_g1.qprobe_features import FeatureCache
     features=FeatureCache(TARGET/'question-features');features.verify_all()
     if features.manifest['count']!=169028:raise ValueError('Actual feature cache incomplete')
@@ -231,6 +246,7 @@ def submit(commit):
         '--job-name=qprobe-warmup200','--export=NONE','--chdir='+str(TARGET),
         '--output='+str(TARGET/'logs/training-%j.log'),'--error='+str(TARGET/'logs/training-%j.log'),
         str(source/'reproduction/hpc3_qprobe/train.sh'),str(TARGET),commit]
+    if JOB=='717827':command.insert(1,'--exclude=ACD1-67')
     test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)
     publish(TARGET/'preparation/training-test-only.json',dict(command=command,exit=test.returncode,stdout=test.stdout,stderr=test.stderr,epoch=time.time()))
     if test.returncode:raise ValueError('Actual recovery scheduler preflight failed')
