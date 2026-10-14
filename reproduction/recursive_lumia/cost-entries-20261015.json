@@ -1,0 +1,57 @@
+[
+  {
+    "label": "assets",
+    "job": "138632",
+    "log": null
+  },
+  {
+    "label": "retired-CPU-retriever",
+    "job": "138633",
+    "log": null
+  },
+  {
+    "label": "aborted-before-Adam-original",
+    "job": "138635",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/original-138635.log"
+  },
+  {
+    "label": "retired-E-resource-gate",
+    "job": "138636",
+    "log": null
+  },
+  {
+    "label": "cancelled-before-start-curriculum",
+    "job": "138637",
+    "log": null
+  },
+  {
+    "label": "failed-before-initialization-curriculum",
+    "job": "138638",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/curriculum-ada-138638.log"
+  },
+  {
+    "label": "aborted-before-Adam-curriculum",
+    "job": "138639",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/curriculum-ada-r2-138639.log"
+  },
+  {
+    "label": "retrieval-benchmark",
+    "job": "138640",
+    "log": null
+  },
+  {
+    "label": "shared-GPU-retriever",
+    "job": "138645",
+    "log": null
+  },
+  {
+    "label": "main-original",
+    "job": "138650",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/original-gpu-r1-138650.log"
+  },
+  {
+    "label": "main-curriculum",
+    "job": "138651",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/curriculum-gpu-r1-138651.log"
+  }
+]
