@@ -67,6 +67,9 @@ def audit(base=BASE):
     recovery = base / 'final51713-shortpath-recovery-v1'
     if (recovery/'evaluation-launch.json').exists():
         folder = recovery
+    tokenizer_recovery = base/'final51713-tokenizer-recovery-v1'
+    if (tokenizer_recovery/'evaluation-launch.json').exists():
+        folder = tokenizer_recovery
     plan_path = folder / 'execution-plan.json'
     exit_path = folder / 'evaluation-actual-exit.json'
     if not plan_path.exists() or not exit_path.exists():
