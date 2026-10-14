@@ -1,67 +1,220 @@
-# HPC3 question probe: one frozen-teacher warmup plus 200 training outers
+# HPC3 question probe: current native4 execution contract
 
-This experiment starts from the official Qwen2.5-3B-Instruct revision
-`aa8e72537993ba99e69dfaafa59ed015b17504d1`. It reuses read-only HPC3 model,
-canonical common data, retrieval assets and the existing Python3.10/Torch2.4/
-vLLM0.6.3 runtime. It has its own allocation, source snapshot, services and output.
-The existing CoSearch and TOP-D jobs are not deployment targets.
+This companion describes the current launch and acceptance contract. It is not
+a receipt that formal training, outer200, or the final CUDA restoration has
+completed. The algorithm design remains in [question-diversity-probe.md](question-diversity-probe.md).
 
-Before the first formal actor update, draw a fixed seeded pool of 5120 unique
-canonical training questions. Generate five complete real search trajectories
-for each question using the still-frozen official actor. Ten immutable chunks
-contain all 25600 trajectories, their unique identities, strict terminal EM
-vectors, correct count K, mean and sample standard deviation (ddof=1). Preserve
-all K=0 and K=5 groups. Infrastructure/provenance failures cannot become five
-zero labels. Cache identity pins exact questions, model files, sampling settings,
-scorer source, feature namespace and retrieval version. Full SHA readback is
-required before reuse; accepted chunks are never regenerated on restart.
+## Owner, allocation and immutable paths
 
-The warmup head bootstrap fits **all 5120 groups**, without the legacy historical
-bootstrap cap of512. It uses the existing six-count classification and mean/std
-auxiliary objective. Warmup is one additional collection outer, not an actor
-optimizer update and not one of the 200 successful training outers. Existing
-actor LR warmup57 and all original reward/advantage/PPO guards remain separate.
+| Setting | Current contract |
+| --- | --- |
+| Login owner | `jxu957`, actual UID `14090` |
+| Slurm account / QOS | `jxu957` / `formal-user` |
+| Partition | `emergency_acd` |
+| Training allocation | One node, **four reserved GPUs**, 48 CPUs, `--mem=512G` |
+| Training topology | `training_world_size=4`, actor microbatch 4 per rank |
+| Recovery/final-audit exclusions | `ACD1-31,ACD1-67` |
+| Storage admission budget | User-authorized provisional 2 TB, `2 * 10**12` bytes |
+| Publication/control root | `/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014` |
+| Immutable source | `ROOT/source/<full 40-character commit>`, with full-file publication SHA proof |
+| Producer outputs | A distinct owned `qprobe-teacher-warmup200-*` remote base |
 
-Actual eight-rank pre/post readbacks must prove unchanged model parameters,
-empty/unchanged Adam, scheduler and zero completed actor outers. Restore the
-pre-warmup worker and driver RNG boundary so a cache hit does not change the
-formal actor's initial sampling state. Candidate selection uses its own stream;
-warmup does not consume the normal training sampler. The head is saved at outer0.
-Restoration of a trained actor uses its paired checkpoint and does not rerun
-teacher warmup or initialize a new head.
+Four cards share the unchanged global training budget. Each rank handles 640
+trajectories, with actor microbatch 4 and local minibatch 32; the global
+minibatch remains 128. One successful outer has 20 optimizer opportunities per
+rank. Actual accepted optimizer writes and rejected opportunities must be
+measured rather than inferred from the requested budget.
 
-After warmup, use the documented question-probe flow: 5120 candidates, E=64
-uniform exploration followed by448 highest predicted expected sample std,
-512x5 real trajectories, original actor update, then one online head fit for
-the next outer. Keep successful training outer budget200 and prohibit update201.
+The official initial/reference model is Qwen2.5-3B-Instruct revision
+`aa8e72537993ba99e69dfaafa59ed015b17504d1`. Model, canonical common data,
+original retrieval assets and the existing Python3.10/Torch2.4/vLLM0.6.3 runtime
+are reused through verified remote bindings. Native BF16 computation retains
+FP32 master parameters, optimizer state and reductions. Python headers, private
+runtime wrappers, library paths and node-local JIT/cache roots remain bound to
+the actual runtime. CoSearch, TOP-D and shared model/retrieval assets retain
+their own state and ownership.
 
-The one-GPU feature preparation entry is
-`reproduction/hpc3_qprobe/features.sh BASE IMMUTABLE_SOURCE`. It only prepares
-fixed question features; submission or feature completion alone is not proof
-that warmup or formal training has run. Runtime acceptance requires actual warmup
-25600 trajectories, all5120 fitted labels, eight-rank frozen-state/RNG evidence,
-then actual complete formal updates and eventual outer200 acceptance.
+Requested GRES is insufficient. Native admission must match Slurm device
+assignments, NVML device minors/indices and actual CUDA UUIDs; all worker and
+frozen-state checks use **four actual ranks**. Historical `common8` package names
+and `eight-rank-*` artifact names do not change the required world size.
 
-The full native entry is `reproduction/hpc3_qprobe/train.sh BASE COMMIT`, with
-one exclusive eight-GPU Slurm allocation after successful feature preparation.
-It retains the existing actual resource, CUDA/FSDP, model/reference/vLLM,
-retrieval parity and policy-safety gates. The explicit native BF16 profile keeps
-FP32 master parameters, optimizer state and reductions. The shared original
-Python3.10 binary and matching headers are bound by full SHA; private wrappers
-preserve inherited library search paths needed by the retrieval overlay.
+Before native model work and each archive reservation, the actual owner must
+successfully measure shared experiment usage and reserve the required complete
+checkpoint/output or archive/target copies within the provisional budget.
+Filesystem free space does not prove personal quota. Permission failures block
+the measurement; an observer's partial read cannot become an owner admission.
+The 2 TB authorization is not a claim that the filesystem quota has been
+independently confirmed. Large model, tensor, optimizer, FAISS, rollout and
+evaluation files stay remote; local work keeps code, documentation and small
+audit summaries.
 
-An independent single-GPU debug entry exercises real CUDA JIT, FlashAttention,
-two official Qwen question features and two short vLLM generations. It has
-separate immutable outputs and zero formal training outers. It cannot replace
-the full feature cache, real teacher search collection or actor training.
+## Extra frozen-teacher collection before formal outer1
 
-Slurm single-card cgroups may reindex a physical card to process-local ordinal0.
-Debug admission binds the actual Slurm device index to the NVML device minor,
-then checks the UUID read through CUDA. Requested GRES never substitutes for
-the actual allocation. Failed debug jobs retain their source, log and terminal
-evidence; a once-only recovery submission requires an actually failed own job.
+Draw the fixed seeded pool (`seed=20261013`) of **5120 unique canonical training
+questions**. Collect five complete real search trajectories per question using
+the frozen official actor. Ten immutable chunks contain all 25600 trajectories,
+their unique identities and five binary strict terminal EM labels. For correct
+count `K`, preserve the mean `K/5` and sample standard deviation
+`sqrt(K * (5-K) / 20)`, with `ddof=1`. Keep the `K=0` and `K=5` groups. A failed
+generation, missing response or provenance failure cannot become a zero label.
 
-Before native model work, a fresh actual shared-account storage readback must
-fit the 1TB personal budget after reserving all five full checkpoints and96GiB
-for other outputs. Filesystem free space is not personal quota evidence. This
-prelaunch floor does not replace later measurement of actual artifact growth.
+The cache namespace pins exact questions, initial model files, sampling and
+scorer sources/configuration, feature namespace and retrieval version. Reuse
+requires fresh full SHA and binding checks. Accepted chunks retain their real
+labels and trajectories; a verified partial cache can be copied independently
+to a fresh recovery base when its teacher namespace is unchanged.
+
+Fit the six-count question head on **all 5120 complete groups before the first
+formal actor update**, including the existing mean/std auxiliary objective.
+The legacy historical bootstrap cap of 512 does not apply to this warmup.
+This is one extra collection outer, separate from the 200 successful training
+outers. Head bootstrap may write its own CPU Adam state; it does not write actor
+Adam, advance the actor scheduler, or complete an actor outer.
+
+Actual four-rank before/after readbacks must prove unchanged actor parameters,
+actor Adam and scheduler with zero actor updates. Restore and read back the
+pre-warmup worker RNG boundary. Persist and read back the driver RNG, actual
+candidate stream and private selector RNG before/after warmup, and compare the
+saved initial head with the actual fitted head. Warmup does not consume the
+formal candidate stream. A trained-actor recovery uses its complete paired
+state and does not run teacher warmup or initialize a replacement head.
+
+## Formal training and complete-goal acceptance
+
+Each formal attempt predicts all 5120 candidates, draws `E=64` uniformly for
+exploration, then selects 448 remaining questions with the greatest predicted
+expected sample standard deviation. The 512 selected groups produce five real
+trajectories each. Retain the original Search-G1 reward, GRPO/PPO, actor LR
+warmup57, numerical checks and policy/provenance gates. No post-rollout EM
+filter or refill is permitted. Commit one online head update only after the
+corresponding actor outer succeeds; incomplete attempts cannot commit the head.
+
+Completion requires all of the following evidence:
+
+- The real frozen-teacher 5120/G5 collection, all5120 initial fit and actual
+  four-rank/driver/data/RNG boundary checks described above.
+- **200 successful formal actor outers**, with linked attempt, optimizer,
+  scheduler and head receipts; no update201.
+- Ordered canonical fixed512 validation at **5, 50, 100, 150 and 200**. At step5,
+  the separate real inline dev512 evaluation is required; the historical
+  stage64 evaluation is not a replacement for it.
+- The final canonical **51713 native questions**, with exact ordered identities,
+  seven-source counts, per-source scores and both macro/weighted EM and F1.
+  Retain repeated canonical questions and remove only producer shard padding;
+  do not assume the historical eight-card padding count applies to native4.
+- Complete paired checkpoints at **all five** milestones, including HF weights,
+  four-rank Adam/scheduler/RNG, driver/data state, question head/Adam/private RNG,
+  replay, selector state and pinned reward dependencies. Each original pair
+  must have separate archive and target copies with fresh full-file SHA and
+  complete file-set checks. A later receipt's historical pointer does not
+  archive an earlier checkpoint's weights.
+- A distinct final200 native4 **restore-only** allocation that actually loads
+  the archived target pair. Actual actor/model/Adam/scheduler/RNG and head/
+  replay/selector/driver/data readbacks must agree at two boundaries, with zero
+  new writes, generation, fitting, validation or update201. The question head
+  uses constant-LR Adam and has no scheduler object.
+- Actual owned-process cleanup and successful job terminal accounting. CPU
+  structural/SHA reports, a Slurm submission, `RUNNING`, or an initial model
+  smoke alone cannot accept the final recovery or the full goal.
+
+The ordinary training restore binder continues to reject `step >= 200`.
+Final200 verification uses the separate `final_restore_audit.sh` entry and
+never enters the training loop. `verify_goal.py` is the final CPU consumer,
+called after the native audit is actually `COMPLETED|0:0`; it must fail early
+when completed200 evidence is absent.
+
+## Once controls for archives and final native audit
+
+Use an explicitly published helper source, even when the producer uses an older
+immutable source. The producer's default environment/source link may not contain
+new control modules. Populate these variables from verified actual receipts:
+
+```bash
+QP_HELPER_COMMIT='FULL_40_CHARACTER_PUBLISHED_HELPER_COMMIT'
+QP_SOURCE="/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/$QP_HELPER_COMMIT"
+QP_PRODUCER='/data/user/jxu957/experiments/ACTUAL_OWNED_PRODUCER_BASE'
+```
+
+For each actually published pair at 5/50/100/150/200, invoke once, substituting
+the real milestone:
+
+```bash
+bash "$QP_SOURCE/reproduction/hpc3_qprobe/final_control.sh" "$QP_SOURCE" archive-start \
+  --base "$QP_PRODUCER" --commit "$QP_HELPER_COMMIT" --step 5
+bash "$QP_SOURCE/reproduction/hpc3_qprobe/final_control.sh" "$QP_SOURCE" archive-inspect \
+  --base "$QP_PRODUCER" --step 5
+```
+
+`archive-start` writes an exclusive intent before starting a detached CPU
+supervisor. Actual PID/start-time/session/owner binding authenticates the worker;
+the supervisor retains its child and records its real wait status. CPU workers
+use threadcaps1 and an empty CUDA mask, request no GPU, and load no main actor.
+Archive reservations/copies serialize under the project storage lock. The
+inspector reports actual process state, copied/partial bytes and the observed
+child exit code; it does not launch another attempt.
+
+Only after the producer is actually `COMPLETED|0:0` with final51713 and cleanup:
+
+```bash
+bash "$QP_SOURCE/reproduction/hpc3_qprobe/final_control.sh" "$QP_SOURCE" audit-start \
+  --base "$QP_PRODUCER" --commit "$QP_HELPER_COMMIT"
+bash "$QP_SOURCE/reproduction/hpc3_qprobe/final_control.sh" "$QP_SOURCE" audit-inspect \
+  --base "$QP_PRODUCER"
+```
+
+The short `audit-start` entry detaches the heavy CPU verification and submission
+work from the SSH window. It freshly checks all five source/archive/target file
+sets, performs actual scheduler `--test-only`, then submits once with
+`jxu957/formal-user/emergency_acd`, four GPUs, 48 CPUs, `512G`, exclusions31/67,
+job name `qprobe-final200audit` and a new independent audit base. The GPU entry
+is bound to the verified **target receipt** and complete transport proof.
+The CPU submit controller does not access GPU devices or load the actor, but is
+explicitly allowed to request this native GPU audit; requesting or allocating
+resources is not CUDA restoration acceptance. Inspectors expose CPU process
+births/IO, real child wait status and the distinct Slurm outcome.
+
+An unknown Popen/SSH/sbatch outcome preserves the original intent. Never delete
+its claim, rerun a start command, or fabricate a successful exit code. Once the
+actual job is identified, explicit reconciliation checks its owner, source,
+resources and nonce workdir, plus uniqueness among the matching active jobs:
+
+```bash
+bash "$QP_SOURCE/reproduction/hpc3_qprobe/final_control.sh" "$QP_SOURCE" audit-reconcile \
+  --base "$QP_PRODUCER" --job ACTUAL_JOB_ID
+```
+
+Reconciliation observes the original job; it does not submit another one.
+The final CPU goal check remains an explicit follow-up after successful native
+audit completion. These controls create no automation and send no messages.
+
+## Historical evidence retained separately
+
+Earlier eight-card assumptions, 1 TB admission limits, account/QOS trials and
+ACL failures are historical records, not current launch defaults. Account
+transition ownership, shared-group access and scheduling evidence remain under
+`ROOT/preparation/account-transition-*.json`; any earlier
+`d_huiqimai_team/normal` settings are superseded by the current contract above.
+
+Actual failed-startup originals and SHA manifests remain in the corresponding
+remote producer bases, including:
+
+- `qprobe-teacher-warmup200-4gpu-jxu957-recovery717827-20261014/failed-job-717938`:
+  initial actor log-probability consistency failure, before formal work.
+- `qprobe-teacher-warmup200-4gpu-jxu957-recovery717938-20261014/failed-job-718288`:
+  owner storage measurement blocked by the two private checkpoint directories;
+  the specifically authorized group-access repair retains content evidence.
+- `qprobe-teacher-warmup200-4gpu-jxu957-recovery718288-20261014/failed-job-718322`:
+  teacher policy-identity metadata transport failure, before committed chunks
+  or formal work.
+- `qprobe-teacher-warmup200-4gpu-jxu957-recovery718322-20261014/failed-job-718509`:
+  NVML telemetry timeout after two committed teacher chunks, with no formal
+  actor updates. Verified chunk reuse preserves this historical origin.
+
+These bases are children of `/data/user/jxu957/experiments`. Failure archives do
+not claim successful training or final recovery. The separate old-node31
+process-birth/private-cache readback is required by final goal acceptance; it
+does not claim that the unavailable GPU context query succeeded. Current
+telemetry records bounded query failures as durable gaps, requires genuine
+successful samples, and retains strict device/UUID/schema/durability and
+training-evidence checks. Persistent query failure remains a failure.
