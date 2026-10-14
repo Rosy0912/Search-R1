@@ -425,7 +425,7 @@ def main():
     updated = copy.deepcopy(previous_status)
     updated.update(status='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         phase='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
-        observed_epoch=epoch,last_observed_epoch=epoch,current_outer=outer,new_completed_outer=outer-RESTORE,
+        observed_epoch=epoch,last_observed_epoch=epoch,current_outer=outer,completed_outer=outer,new_completed_outer=outer-RESTORE,
         actual_current_restore_outer=outer,actual_current_restore_adam_per_rank=completed,
         successful_adam_per_rank=completed,actual_total_adam_per_rank=totals,
         effective_counters_known=True,actual_child_counters_known=True,
@@ -469,7 +469,7 @@ def main():
     followup.update(status=f'NORMAL_TRAINING_OUTER{outer}_FULL_' + (f'NEXT{next_outer}_ENTERED' if next_outer else 'FINAL_WORK_PENDING'),
         source_commit=SOURCE,unit=UNIT,main_pid=int(rs.get('MainPID',0)),invocation_id=INVOCATION,
         last_confirmed_outer=outer,target_outer=TARGET,restored_outer=RESTORE,actual_next_outer_entered=next_outer,
-        actual_optimizer_completed_outer=outer,observed_epoch=epoch,successful_adam_per_rank=completed,
+        actual_optimizer_completed_outer=outer,completed_outer=outer,observed_epoch=epoch,successful_adam_per_rank=completed,
         all_skipped_attempts=progress.get('all_skipped_attempts'),actual_total_adam_per_rank=totals,
         latest_native_checkpoint_outer=outer,last_progress_receipt=receipt_name,evidence=str(args.poll),
         latest_full_outer_wall_seconds=total_seconds,normal_dev512_wall_seconds=dev_seconds,

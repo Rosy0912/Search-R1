@@ -1,7 +1,7 @@
 """Finish local status/report publication from an immutable FULL and later poll.
 
 No SSH, process actions, tensors, remote reads or training modifications. The
-original c413 validator and FULL receipt are retained byte-for-byte.
+original c413 validation logic is unchanged; FULL receipts are retained byte-for-byte.
 """
 import argparse
 import copy
@@ -13,7 +13,8 @@ import sys
 
 import sync_nested_native_progress as core
 
-DEPENDENCY_SHA = 'c413fc582c2aaa46fefb00aa7d9cf1a368f3655ec5059a9192c7efba3d09d07a'
+ORIGINAL_VALIDATOR_SHA = 'c413fc582c2aaa46fefb00aa7d9cf1a368f3655ec5059a9192c7efba3d09d07a'
+DEPENDENCY_SHA = '020bec1d2f1f06aa2149ad5cc1d1c72f41567c3b8cd10de10193b9a7d1a964c6'
 need = core.need
 
 
@@ -30,7 +31,7 @@ def main():
     workspace = args.workspace.resolve();base = workspace/core.BASE_REL;n = args.outer
     need(core.RESTORE < n <= core.TARGET, 'Only actual child6..200 is allowed')
     dependency = Path(core.__file__).resolve()
-    need(core.digest(dependency.read_bytes()) == DEPENDENCY_SHA, 'Original c413 validator changed', 'REJECTED_INPUT_NO_WRITE')
+    need(core.digest(dependency.read_bytes()) == DEPENDENCY_SHA, 'Pinned local publisher dependency changed', 'REJECTED_INPUT_NO_WRITE')
     loaded = []
 
     def read(path):
@@ -167,7 +168,8 @@ def main():
         current_training_variances=variances,cumulative_cost=cost_pin,candidate_index=candidate_pin,
         candidate_current_supplement=part_pin,current_branch_fallback_rates=rates_pin,candidate_registry=registry_pin,
         candidate_cost_join_scope=rates.get('cumulative_boundary'),attachments=attachments,final_phase_evidence=final,
-        original_validator_sha256=DEPENDENCY_SHA,finalizer_sha256=core.digest(Path(__file__).read_bytes()),
+        original_validator_sha256=ORIGINAL_VALIDATOR_SHA,current_validator_dependency_sha256=DEPENDENCY_SHA,
+        finalizer_sha256=core.digest(Path(__file__).read_bytes()),
         loaded_native_restore_outer=5,no_new_restore_performed=True,missing_rank_opportunity_fields_remain_null=True,
         errors=[],run_result=second.get('run_result'),new_training_submitted=False,running_source_hot_modified=False,
         additional_review_or_test=False,exact_executor_resume=False,goal_status='active',goal_complete=False)
@@ -182,7 +184,7 @@ def main():
                                     else f'ACTUAL_FULL{n}_FINAL_PHASE_CONFIRMED'),
         current_remote_health_known=True,
         unit=core.UNIT,main_pid=int(rs['MainPID']),invocation_id=rs['InvocationID'],
-        source_commit=core.SOURCE,current_outer=n,last_confirmed_outer=n,last_confirmed_chain_outer=n,
+        source_commit=core.SOURCE,current_outer=n,completed_outer=n,last_confirmed_outer=n,last_confirmed_chain_outer=n,
         actual_optimizer_completed_outer=n,new_completed_outer=n-5,last_durable_completed_outer=n,
         latest_native_checkpoint_outer=n,latest_native_manifest_sha256=native['manifest_sha256'],
         observed_epoch=epoch,last_observed_epoch=epoch,last_actual_poll=rel(second_pin),
