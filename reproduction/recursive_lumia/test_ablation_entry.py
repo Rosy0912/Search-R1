@@ -19,6 +19,8 @@ class LumiaEntry(unittest.TestCase):
     def test_accepts_actual_lumia_boundary(self):
         r,e=self.fixture()
         validate_allocation(r,e,1066,'gpu-l40s-1')
+        validate_allocation(dict(r,host='gpu-4090-3'),dict(e,SLURM_JOB_NODELIST='node6'),
+                            1066,'gpu-4090-3')
 
     def test_rejects_wrong_owner_backend_or_devices(self):
         r,e=self.fixture()

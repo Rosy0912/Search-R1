@@ -16,7 +16,7 @@ import uuid
 from release.recursive_bran_a.ablation150_v1.contracts import read_receipt, sha
 from .prepare_ablation import BASELINE_CONFIG_SHA, BASELINE_RUN_ID, condition_for
 
-HOSTS = {'node9':'gpu-ada6000-2', 'node10':'gpu-l40s-1', 'node11':'gpu-l40s-2'}
+HOSTS = {'node6':'gpu-4090-3', 'node9':'gpu-ada6000-2', 'node10':'gpu-l40s-1', 'node11':'gpu-l40s-2'}
 TERMINAL = {'COMPLETED','FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL',
             'PREEMPTED','BOOT_FAIL','DEADLINE','REVOKED'}
 
@@ -121,6 +121,9 @@ def _execute_locked(args, receipt_path, record, base):
         run_id=record['run_id'],group=record['group'],output=str(output),
         config_sha256=record['config_sha256'],source_commit=record['source_commit'],
         entry_source_commit=os.environ['RECURSIVE_SOURCE_COMMIT'],
+        gpu_hardware=subprocess.check_output(['nvidia-smi',
+            '--query-gpu=index,name,uuid,memory.total,driver_version',
+            '--format=csv,noheader,nounits'],text=True).splitlines(),
         execution_backend='slurm_lumia',resume_manifest=args.resume_manifest,
         previous_allocation_state=previous_state,retry_unstarted_proof=retry_proof)
     replace_json(previous_path,entry)

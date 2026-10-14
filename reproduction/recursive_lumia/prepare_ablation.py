@@ -19,7 +19,7 @@ BASELINE_CONFIG_SHA = '274b6801a78591ca8b28dadcbe68dd0ab46ff5c7b0e4e6be4fc34a829
 BASELINE_RUN_ID = '1fec29ed0ce64a4f989565ee73e1db95'
 BASELINE_SOURCE_SHA = '2f85d77d387887555b436f90e29c43512069e9c3'
 DATA_SHA = '7b6369e17ebd497ea159d57dc159647eed8adad852b7468cc600b7f203e80f43'
-HOSTS = {'gpu-l40s-1', 'gpu-l40s-2', 'gpu-ada6000-2'}
+HOSTS = {'gpu-l40s-1', 'gpu-l40s-2', 'gpu-ada6000-2', 'gpu-4090-3'}
 
 
 def condition_for(group):
