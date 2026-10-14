@@ -73,5 +73,10 @@
     "label": "idle-3090-collective-diagnostic-no-training",
     "job": "138666",
     "log": null
+  },
+  {
+    "label": "independent-C1-native-restoration-diagnostic-no-training",
+    "job": "138667",
+    "log": null
   }
 ]
