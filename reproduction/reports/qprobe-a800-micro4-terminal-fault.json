@@ -1,0 +1,42 @@
+{
+  "actual_owned_births_gone": 185,
+  "actual_processed_opportunities_per_rank": 100,
+  "actual_returned_adam_per_rank": 100,
+  "actual_skips_per_rank": 0,
+  "all_project_trainers_found": 0,
+  "archive_sha256": "b6e2f090256de6b98bd6dbaf514f7970e74a17187aa502d0ff108cb8ffb3ac83",
+  "checked_unix": 1791991298.344748,
+  "checkpoint5_full_restart_qualified": false,
+  "checkpoint5_producer_saved_tensors": 435,
+  "dev512_after5": null,
+  "first_five_native_accepted": false,
+  "four_rank_replicas_counted_once": true,
+  "keyerror_identifier": "bytes",
+  "latest_human": {
+    "async_full_rollout_phase_required": true,
+    "checkpoint_recovery_replaced": true,
+    "exploration_questions": 0,
+    "fresh200": true,
+    "plan_commit": "9c4b9a404531010603dca7d99ddea540ab21d276",
+    "predicted_diversity_questions": 512
+  },
+  "location": "reproduction/common8/runtime.py:61",
+  "new_fresh_trainer_started": false,
+  "old_execution_id": "6bf23d2d28c94ab095629b795d26dc30",
+  "old_run_id": "34fffb9fe8ad4d75b54b9c9747c256fb",
+  "old_source_and_checkpoint_preserved": true,
+  "old_source_commit": "f7d9f1488d3c1373098b9401463812b24fe94b63",
+  "pipeline_failed": true,
+  "reader_sha256": "a0c7906c4070d2edef9c2146fd5bebd00e8395ff7c424e2b1431f6243fca5437",
+  "receipt_sha256": "4131de5cd66160f6a19b20b74455de3923bc8056f095345356a679c0d37b9a19",
+  "recorded_driver_complete_outers": 4,
+  "role": "qprobe_micro4_terminal_fault_and_human_fresh_override",
+  "stage64": {
+    "em": 0.21875,
+    "f1": 0.29713939913664034,
+    "questions": 64,
+    "step": 5
+  },
+  "terminal_observed_unix": 1791991068.333815,
+  "trainer_exit_code": 1
+}
