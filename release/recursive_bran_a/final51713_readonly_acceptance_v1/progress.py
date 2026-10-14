@@ -67,6 +67,11 @@ def main():
                           '--format=csv,noheader,nounits'], capture_output=True, text=True, timeout=15)
     summary = load(Path(plan['output'])/'summary.json') if plan else None
     progress = load(Path(plan['output'])/'progress.json') if plan else None
+    if progress and plan.get('resume_count'):
+        progress = dict(progress)
+        progress['new_questions_since_resume'] = progress['completed']-plan['resume_count']
+        progress['new_questions_per_second'] = progress['new_questions_since_resume']/progress['elapsed_seconds']
+        progress['throughput_note'] = 'Native cumulative-count rate includes preserved prefix; use new-question rate or batch_rows/batch_seconds for current speed'
     log = tail(CONTROL/'evaluation.log', 16384)
     actions = []
     for line in tail(CONTROL/'evaluation.log', 4194304).splitlines():
