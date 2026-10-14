@@ -1,0 +1,66 @@
+{
+  "actual_GitHub_source_bytes_verified": true,
+  "actual_cuda_uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7",
+  "actual_question_delta": 42688,
+  "automation_paused": true,
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18",
+  "canonical_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "checked_unix": 1791962255.865835,
+  "dev512": null,
+  "execution_id": "7d85bd0daa93462981aefc2a9d87fdb7",
+  "extra_teacher_collection_outers": 1,
+  "feature_birth": 604134066,
+  "feature_complete_accepted": false,
+  "feature_measurements": [
+    {
+      "completed": 12448,
+      "log_bytes": 44933,
+      "observed_unix": 1791961813.1467445
+    },
+    {
+      "completed": 55136,
+      "log_bytes": 200344,
+      "observed_unix": 1791961978.8922915
+    }
+  ],
+  "feature_physical_index": 6,
+  "feature_pid": 2861772,
+  "feature_target": 169028,
+  "final51713": null,
+  "formal_complete_outers": 0,
+  "formal_returned_adam": 0,
+  "formal_skips": 0,
+  "formal_target": 200,
+  "initial_model": "same official immutable asset; fresh weights/Adam/scheduler/RNG/sampler",
+  "input_receipt_sha256": {
+    "qprobe-feature-operator-inspect-1791961809084588000.json": "632c2607742ee90bda872948b56ee72b81161ad704c4ebe0d7a997b91bcf0c3e",
+    "qprobe-feature-operator-inspect-1791961975380358000.json": "4327146d9e400f08de858f3c8af68481134944239ff8583d5f24c8a565eb9733"
+  },
+  "latest_reward": null,
+  "new_run_native_training_acceptance": false,
+  "new_run_sampled_gpu_peak": null,
+  "official_model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "old_run": {
+    "canonical_checkpoint5_preserved": true,
+    "cleanup_actual_accepted": true,
+    "completed_outer_returned_adam": 140,
+    "completed_outers_at_signal": 7,
+    "intentional_stop": true,
+    "owned_cuda_remaining": 0,
+    "registered_births": 197,
+    "run_id": "6a26247f538b4145a24b156e79fb04d1"
+  },
+  "old_run_statistics_mixed": false,
+  "parent_checkpoint": null,
+  "role": "qprobe_a800_fresh0_feature_two_actual_progress_scalar",
+  "run_id": "0f49c2a664b448f59b5f21dd49f9b10b",
+  "source_code_review_approved": true,
+  "source_commit": "bf4b88d04c166951691029b18d05d91ece7c7054",
+  "source_map_sha256": "f015f86b2708bb56560abaf46ea72d39b3894901686d2f7c0f833a9a1aedf86f",
+  "stage": "QUESTION_FEATURE_PREPARATION",
+  "stage64": null,
+  "teacher_questions": 5120,
+  "teacher_trajectories": 25600,
+  "teacher_warmup_started": false,
+  "warmup_counts_toward_formal_target": false
+}
