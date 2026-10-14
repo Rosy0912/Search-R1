@@ -65,9 +65,9 @@
     "log": null
   },
   {
-    "label": "C2-random-final-after-C1",
+    "label": "cancelled-unstarted-C2-rebound-to-native-C1",
     "job": "138665",
-    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-random-final-after-C1-138665.log"
+    "log": null
   },
   {
     "label": "idle-3090-collective-diagnostic-no-training",
@@ -83,5 +83,15 @@
     "label": "independent-C1-native-restoration-Ray-device-mapping-no-training",
     "job": "138668",
     "log": null
+  },
+  {
+    "label": "C1-full-native-continuation-L40S",
+    "job": "138678",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C1-native-L40S-138678.log"
+  },
+  {
+    "label": "C2-after-native-C1",
+    "job": "138679",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-after-native-C1-138679.log"
   }
 ]
