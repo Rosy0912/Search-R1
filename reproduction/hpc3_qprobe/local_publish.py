@@ -55,7 +55,9 @@ def main():
     payload=dict(base='/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014',commit=sha,
         published_remote_sha=remote,archive_sha256=hashlib.sha256(archive).hexdigest(),files=files,
         archive=base64.b64encode(archive).decode())
-    result=run('mou176','python3 -c '+shlex.quote(REMOTE),json.dumps(payload),args.control_work)
+    # The account's actual shell access has been restored. New deployment
+    # receipts must be authored by JXU for the later native restore audit.
+    result=run('jxu957','python3 -c '+shlex.quote(REMOTE),json.dumps(payload),args.control_work)
     assert result.returncode==0,result.stderr
     value=json.loads(result.stdout)
     assert value['commit']==sha and value['file_count']==len(files) and value['status']=='PUBLISHED_SOURCE_FULL_SHA_PASS'
