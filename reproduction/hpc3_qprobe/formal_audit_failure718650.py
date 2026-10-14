@@ -230,9 +230,14 @@ def archive():
                 path=aliases[path];s=path.lstat()
                 need(stat.S_ISREG(s.st_mode),'REGISTERED_ALIAS_NOT_REGULAR')
             if not stat.S_ISREG(s.st_mode): continue
-            need(s.st_uid == OWNER, 'NONOWNED_EVIDENCE')
+            # These two exact pre-existing preparation aliases point to the
+            # MOU-produced shared feature/model metadata, not JXU-owned states.
+            # Preserve their actual owner/group and bytes without chmod/chown.
+            need(s.st_uid == OWNER or (bool(alias) and s.st_uid==21930 and s.st_gid==21919),
+                 'NONOWNED_EVIDENCE')
             inventory.append(dict(path=str(path),relative_path=str(logical.relative_to(BASE)),
-                inode=s.st_ino,device=s.st_dev,bytes=s.st_size,mtime_ns=s.st_mtime_ns,**alias))
+                uid=s.st_uid,gid=s.st_gid,inode=s.st_ino,device=s.st_dev,bytes=s.st_size,
+                mtime_ns=s.st_mtime_ns,**alias))
     ARCHIVE.mkdir(mode=0o770)
     publish(ARCHIVE / 'terminal.json', value)
     publish(ARCHIVE / 'inventory.json',dict(files=inventory,bytes=sum(row['bytes'] for row in inventory)))
@@ -246,7 +251,8 @@ def archive():
         sha = digest(path, report)
         s = path.stat()
         need((s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns) ==
-             (row['device'],row['inode'],row['bytes'],row['mtime_ns']), 'EVIDENCE_CHANGED_DURING_READ')
+             (row['device'],row['inode'],row['bytes'],row['mtime_ns']) and
+             (s.st_uid,s.st_gid)==(row['uid'],row['gid']), 'EVIDENCE_CHANGED_DURING_READ')
         if 'alias_path' in row:
             alias=Path(row['alias_path']);a=alias.lstat()
             need(stat.S_ISLNK(a.st_mode) and (a.st_ino,a.st_mtime_ns)==
