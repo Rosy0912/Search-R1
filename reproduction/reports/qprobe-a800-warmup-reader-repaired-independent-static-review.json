@@ -1,0 +1,70 @@
+{
+  "approved": true,
+  "checked_unix": 1791963303.760174,
+  "checks": {
+    "after_receipt_exact_boundary_after_rank_path": true,
+    "ansi_removed_before_parsing": true,
+    "arbitrary_embedded_or_trailing_text_not_accepted": true,
+    "before_receipt_exact_boundary_before_rank_path": true,
+    "boundary_tensor_payload_not_read": true,
+    "expected_files_must_exist_and_be_canonical_owned_regular": true,
+    "full_line_json_loads_requires_one_complete_json_object": true,
+    "only_known_TaskRunner_or_main_task_Ray_prefix_removed": true,
+    "partial_tail_lines_discarded": true,
+    "progress_stage_and_512_G5_scalar_budget_checked": true,
+    "receipt_rank_and_current_run_checked": true,
+    "recorded_bytes_positive_exact_stat_match": true,
+    "rng_boundary_file_size_limit_bytes": 67108864,
+    "rng_restore_source_exact_same_rank_before_path": true,
+    "source_syntax_parses": true,
+    "stat_module_import_present": true,
+    "teacher_log_tail_limit_bytes": 262144
+  },
+  "embedded_reader_sha256": "fda6b547e6899f1ea4aff21e8073b616b740a160163df101a642be26d21d5c5e",
+  "findings": [],
+  "model_tensor_rollout_or_qa_payload_read": false,
+  "native_launch_authorization_changed": false,
+  "native_warmup_or_formal_training_acceptance": false,
+  "previous_rejected_review": {
+    "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-a800-warmup-reader-independent-static-review.json",
+    "preserved_unchanged": true,
+    "sha256": "3dde4beffc134898b1c1bac6b9f9d007a25b2a4bd350252988e1699b22d022e4",
+    "source_sha256": "f72bd75e0099e337d426e5d3d2cce73dd2fc66449ea1ace1336fd4299e1cf87b"
+  },
+  "remote_actions_performed": false,
+  "resolved_findings": [
+    {
+      "lines": [
+        275,
+        283
+      ],
+      "priority": 2,
+      "resolved": true,
+      "title": "Exact per-rank before/after and restore path binding"
+    },
+    {
+      "lines": [
+        255,
+        264
+      ],
+      "priority": 2,
+      "resolved": true,
+      "title": "Whole-line structured teacher progress parsing"
+    }
+  ],
+  "retained_scope": {
+    "actor_zero_writes_distinct_from_head_optimizer_updates": true,
+    "current_run_head_snapshot_and_four_rank_receipt_binding": true,
+    "driver_rng_status": "source_restore_only_not_independent_persisted_readback",
+    "original_common_launch_inspect_cleanup_supervisor_unchanged": "Parent-provided earlier byte-equality verification; not re-reviewed here.",
+    "shared_cache_complete_not_equated_with_current_run_ready": true
+  },
+  "role": "qprobe_a800_warmup_reader_repaired_independent_targeted_static_review",
+  "schema_version": 1,
+  "scope": "Only the two previously required fixes; this does not expand or repeat the original three-action review or establish native acceptance.",
+  "source_bytes": 25222,
+  "source_file": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py",
+  "source_sha256": "37bb99444eef2184a57ab73219e5924dfec474d05fc0facf57e1b46ff1c3238a",
+  "status": "accepted_for_read_only_inspection_static_scope",
+  "tests_executed": false
+}

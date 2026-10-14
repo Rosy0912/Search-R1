@@ -1,0 +1,146 @@
+{
+  "actual_old_cleanup": {
+    "accepted": true,
+    "actual_pipeline_and_owned_sessions_exited": true,
+    "identity": {
+      "execution_backend": "ssh_local",
+      "execution_id": "140e43d2243d49a99d88f77399f263b8",
+      "profile": "common8",
+      "run_id": "6a26247f538b4145a24b156e79fb04d1",
+      "slurm_job_id": null,
+      "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+      "training_world_size": 4
+    },
+    "owned_cuda_contexts_remaining": 0,
+    "private_cache_removed": true,
+    "recorded_births": 197
+  },
+  "approved": true,
+  "approved_for": "one_final_native_pipeline_launch_through_published_BF4_gates",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18",
+  "deferred_actual_acceptance": [
+    "native current PID/GPU UUID/resource admission",
+    "real frozen5120x5 teacher collection and all5120 head fit",
+    "complete successful formal actor iterations and eventual outer200 acceptance"
+  ],
+  "deployment_id": "27bab88929e048b4869f3889b99d8e18",
+  "deployment_prelaunch_accepted": true,
+  "evidence": {
+    "bind": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.bind-1791962762873782000.json",
+      "sha256": "98e7bde4605d8a2a300a32f61765ac0ae49d7b2e84bd5639d6d53834dd61987a"
+    },
+    "code_ready": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-a800-code-ready-verified.json",
+      "sha256": "82dac83052b59b94e71500d577f0cb1d1b214bc6e663a8b211ac57ecc29d7454"
+    },
+    "code_review": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-a800-independent-code-review-committed.json",
+      "sha256": "0542b16aa6d09ad78d27ecd3a78a054542857653187382fe528b298a4a9e37b7"
+    },
+    "features": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-feature-operator-inspect-1791962687409529000.json",
+      "sha256": "317b8609a0f8ecb5208b397fe189eae3ea47ad107057d7242d7b34a48768d6f0"
+    },
+    "inspect": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.inspect-1791962809322337000.json",
+      "sha256": "81bec72623f3b1a6e8ab56c3157c76eb5c1b6c0fef048d30a0b5551ae67c355c"
+    },
+    "intent": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.json",
+      "sha256": "83d099d07d97b616fbc717961fd59d7f666a3d5ee8035e672b6fdca437e6a0eb"
+    },
+    "old_cleanup": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-feature-operator-old-cleanup-1791961713370760000.json",
+      "sha256": "1dc648acd2f518bfa4eded7788b5a29201fbad9ed1d473f43f0d4a31b9501588"
+    },
+    "prepare": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.prepare-1791959740316181000.json",
+      "sha256": "67270ef832250f346fc64a844aa3cfd77a884e73c3076ba04f6bfbf977c6bd6d"
+    },
+    "publication": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-a800-source-publication.json",
+      "sha256": "1f6d738601656c4ced35f168ebe2a28029c24d27cdbb3cc41cdbcbb3e160040b"
+    },
+    "stage": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.stage-1791959653163073000.json",
+      "sha256": "66517f33d6d6f8efc001d5d4f08010a1d1230a2fe80fc8416deae068f039bf45"
+    }
+  },
+  "execution_id": "7d85bd0daa93462981aefc2a9d87fdb7",
+  "features": {
+    "actual_child_exit_code": 0,
+    "actual_cuda_uuids": [
+      "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7"
+    ],
+    "cache_dir": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18/question-features",
+    "child_pid": 2861772,
+    "child_start_ticks": 604134066,
+    "count": 169028,
+    "feature_dim": 2048,
+    "feature_file_sha256": "e2186ca7ea6735470ad5cd1302b03054529c675ba45b9f3297c1b07bab7e97c3",
+    "feature_runtime_preparation_accepted": true,
+    "finished_unix": 1791962589.247788,
+    "manifest_sha256": "7228f5005cf8ac9f1f67f48a4529a24577dc8903f89c2bfa5e49ee0faf74a1c9",
+    "physical_index": 6,
+    "spec_sha": "aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4"
+  },
+  "formal_training_runtime_accepted": false,
+  "frozen_teacher_runtime_accepted": false,
+  "implementation_actor": "/root",
+  "independent": true,
+  "native_gpu_admission_accepted": false,
+  "observation_limit": "BF4 combined inspect repeats the standard observation and omits qprobe metadata; exact bound settings were independently taken from the successful actual bind receipt.",
+  "prelaunch_state": {
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "completed_training_outers": 0,
+    "pipeline_claimed": false,
+    "protected_physical_indices": [
+      4,
+      7
+    ],
+    "trainer_claimed": false,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "training_world_size": 4
+  },
+  "question_probe": {
+    "bootstrap_max_groups_per_outer": 5120,
+    "cache_dir": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18/question-features",
+    "candidate_questions": 5120,
+    "exploration_questions": 64,
+    "head_batch_size": 256,
+    "head_epochs_per_outer": 2,
+    "head_hidden_size": 64,
+    "head_learning_rate": 0.0003,
+    "mean_loss_weight": 0.1,
+    "output_dir": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18/artifacts/question-probe",
+    "replay_half_life_outer": 4.0,
+    "replay_window_outer": 16,
+    "responses_per_question": 5,
+    "seed": 20261013,
+    "selected_questions": 512,
+    "std_loss_weight": 0.1,
+    "teacher_warmup_cache": "/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2"
+  },
+  "remote_actions_performed_by_reviewer": false,
+  "reviewed_unix": 1791963135.34915,
+  "reviewer": "/root/qprobe_warmup_independent_review",
+  "role": "a800_qprobe_actual_prelaunch_deployment_independent_review",
+  "run_id": "0f49c2a664b448f59b5f21dd49f9b10b",
+  "runtime_acceptance": false,
+  "runtime_source_count": 469,
+  "schema_version": 1,
+  "scope": "local review of actual preserved stage/prepare/publication/feature-completion/bind/unclaimed/old-cleanup receipts",
+  "source_commit": "bf4b88d04c166951691029b18d05d91ece7c7054",
+  "source_map_sha256": "f015f86b2708bb56560abaf46ea72d39b3894901686d2f7c0f833a9a1aedf86f",
+  "tests_or_static_algorithm_review_repeated": false,
+  "unresolved_material_findings": []
+}

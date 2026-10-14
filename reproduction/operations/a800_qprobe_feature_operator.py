@@ -173,6 +173,139 @@ REMOTE_OLD_CLEANUP = REMOTE_COMMON + r'''
 print('FEATURE_OPERATOR_JSON:'+json.dumps(old_cleanup()),flush=True)
 '''
 
+REMOTE_INSPECT_WARMUP = REMOTE_COMMON + r'''
+import contextlib,importlib.util,io,math,stat
+sys.dont_write_bytecode=True
+bound_run=pinned_run();bound_base=base;bound_repo=repo
+prepared=read(bound_base/'preparation/deployment-intent.json')
+assert prepared['base']==str(bound_base) and prepared['source_commit']==bound_run['source_commit']
+assert prepared['source_sha256']==bound_run['source_sha256'] and prepared['deployment_id']==payload['intent']['deployment_id']
+module_path=owned(bound_repo/'reproduction/a800_common/deploy.py')
+assert hashlib.sha256(module_path.read_bytes()).hexdigest()==bound_run['source_sha256']['reproduction/a800_common/deploy.py']
+spec=importlib.util.spec_from_file_location('verified_bf4_metadata_observer',module_path)
+published=importlib.util.module_from_spec(spec);spec.loader.exec_module(published)
+captured=io.StringIO();original_stdin=sys.stdin
+try:
+ sys.stdin=io.StringIO(json.dumps(prepared))
+ with contextlib.redirect_stdout(captured):exec(published.REMOTE_OBSERVE,{'__name__':'verified_bf4_metadata_observation'})
+finally:sys.stdin=original_stdin
+rows=[json.loads(line.split(':',1)[1]) for line in captured.getvalue().splitlines() if line.startswith('DEPLOYMENT_JSON:')]
+assert len(rows)==1;standard=rows[0]
+assert standard.get('run_id',bound_run['run_id'])==bound_run['run_id']
+assert standard.get('execution_id',bound_run['execution_id'])==bound_run['execution_id']
+def select(value,keys):
+ result={}
+ for key in keys:
+  item=value.get(key)
+  if item is None or type(item) in (bool,int) or type(item) is float and math.isfinite(item):result[key]=item
+  elif isinstance(item,str):result[key]=item[:256]
+ return result
+def birth_summary(value):return select(value,('pid','start_ticks','sid','uid','birth_matches','alive','state'))
+result=dict(run_id=bound_run['run_id'],execution_id=bound_run['execution_id'],source_commit=bound_run['source_commit'],
+ observed_unix=time.time(),training_world_size=bound_run['training_world_size'],
+ driver_rng_status='source_restore_only_not_independent_persisted_readback',
+ head_output_classes_contract=6,head_k_class_histogram=None,metadata_only=True)
+result.update(select(standard,('pipeline_birth_matches','pipeline_process_state','pipeline_alive','pid','start_ticks',
+ 'pipeline_claimed','trainer_claimed','pipeline_stage','pipeline_status_unix','recorded_completed_outers','last_recorded_outer',
+ 'stdout_log_bytes','stdout_log_modified_unix','failure_type','last_command')))
+for key in ('failure_diagnostic','startup_diagnostic'):
+ if key in standard:result[key]=standard[key][:6]
+update=standard.get('latest_actual_update')
+if update:
+ result['latest_actual_update']=select(update,('step','opportunities_processed','actual_optimizer_writes','optimizer_writes_before','optimizer_writes_after'))
+ result['latest_actual_update']['metrics']=select(update.get('metrics',{}),('critic/rewards/mean','actor/pg_loss','actor/ppo_kl',
+  'actor/grad_norm','actor/optimizer_steps_this_update','actor/update_opportunities_this_attempt','actor/skipped_update_opportunities'))
+result['rank_optimizer_counts']=[]
+for row in standard.get('opportunity_ledgers',[])[:4]:
+ item=select(row,('rank','exists','file_bytes','scan_from_start','malformed_complete_lines','oversized_lines','partial_final_line',
+  'identity_rejected_rows','processed_opportunities_per_rank','successful_writes_per_rank','cumulative_optimizer_writes'))
+ processed=row.get('processed_opportunities_per_rank');written=row.get('successful_writes_per_rank')
+ item['processed_without_successful_write']=processed-written if type(processed) is int and type(written) is int else None
+ result['rank_optimizer_counts'].append(item)
+result['owned_job_status']=[]
+for job in standard.get('owned_jobs',[])[:32]:
+ item=select(job,('name','ledger_state','live_registered_count','exit_code','log_bytes','log_modified_unix'))
+ item['leader']=birth_summary(job.get('leader',{}));item['exception_diagnostic']=job.get('exception_diagnostic',[])[:6]
+ result['owned_job_status'].append(item)
+gpu=standard.get('gpu_samples',{})
+result['gpu_sampler']=select(gpu,('matching_sample_count','cumulative_sample_count','latest_sample_unix','latest_sample_age_seconds',
+ 'maximum_scanned_sampling_gap_seconds','identity_or_scalar_rejected_rows','training_claimed','pretraining_history_only'))
+if gpu.get('sampler'):result['gpu_sampler']['process']=birth_summary(gpu['sampler'])
+result['gpu_sampler']['latest_devices']=[select(device,('physical_index','used_mib','total_mib','util_percent','sampled_run_peak_mib'))
+ for device in gpu.get('latest_devices',[])[:6]]
+result['training_log']=select(standard.get('training_log',{}),('exists','bytes','modified_unix'))
+result['training_log']['exception_diagnostic']=standard.get('training_log',{}).get('exception_diagnostic',[])[:6]
+configuration=bound_base/'logs/resolved-training-config.json'
+result['resolved_selection_mode']=None
+if configuration.is_file():
+ document=read(configuration);assert document['run_id']==bound_run['run_id'] and document['execution_id']==bound_run['execution_id']
+ result['resolved_selection_mode']=document['resolved_config']['data'].get('selection_mode')
+ result['resolved_config_sha256']=document['resolved_config_sha256']
+question_probe=bound_run.get('question_probe') or {}
+result['question_probe']=select(question_probe,('candidate_questions','selected_questions','responses_per_question',
+ 'exploration_questions','bootstrap_max_groups_per_outer','head_batch_size','head_epochs_per_outer'))
+train_log=owned(bound_run['train_log']) if Path(bound_run['train_log']).is_file() else None
+result['teacher_partial_progress']=None
+if train_log:
+ train_log.relative_to(bound_base/'logs');info=train_log.stat();limit=256*1024;offset=max(0,info.st_size-limit)
+ with train_log.open('rb') as file:file.seek(offset);tail=file.read(limit)
+ lines=tail.splitlines()
+ if offset and lines:lines=lines[1:]
+ if tail and not tail.endswith(b'\n') and lines:lines=lines[:-1]
+ for line in lines:
+  text=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]','',line.decode(errors='replace')).strip()
+  text=re.sub(r'^\((?:TaskRunner|main_task) pid=[1-9][0-9]*(?:, ip=[0-9a-fA-F:.]+)?\)\s*','',text,count=1)
+  try:value=json.loads(text)
+  except ValueError:continue
+  if not isinstance(value,dict) or value.get('stage')!='frozen_teacher_warmup_chunk_complete':continue
+  count=value.get('completed_questions');trajectories=value.get('completed_trajectories')
+  if type(count) is int and 0<count<=5120 and count%512==0 and trajectories==5*count and value.get('total_questions')==5120:
+   result['teacher_partial_progress']=dict(completed_questions=count,completed_trajectories=trajectories,
+    total_questions=5120,log_modified_unix=info.st_mtime,bound_to_current_run_log=True)
+ result['teacher_tail_scan_bytes']=len(tail)
+ready_path=bound_base/'artifacts/question-probe/teacher-warmup-ready.json'
+result['teacher_warmup_ready_exists']=ready_path.is_file()
+if ready_path.is_file():
+ ready=read(ready_path);head=ready['head_checkpoint'];expected_snapshot=bound_run['run_id']+':0'
+ assert ready['status']=='FROZEN_TEACHER_WARMUP_HEAD_READY' and head['actor_snapshot_id']==expected_snapshot
+ before=sorted(ready['before_workers'],key=lambda row:row['rank']);after=sorted(ready['after_workers'],key=lambda row:row['rank'])
+ restored=sorted(ready['actor_rng_restored'],key=lambda row:row['rank'])
+ assert [row['rank'] for row in before]==[row['rank'] for row in after]==[row['rank'] for row in restored]==[0,1,2,3]
+ worker_rows=[]
+ for first,last,rng in zip(before,after,restored):
+  boundary=bound_base/'artifacts/question-probe/teacher-warmup-boundary'
+  for worker,phase in ((first,'before'),(last,'after')):
+   proof=worker['rng_receipt'];assert proof['run_id']==bound_run['run_id'] and proof['rank']==worker['rank']
+   expected=boundary/phase/('rank-%d.pt'%worker['rank']);assert Path(proof['path'])==expected
+   info=owned(expected).stat()
+   assert stat.S_ISREG(info.st_mode) and type(proof['bytes']) is int and 0<proof['bytes']<=64*1024**2 and info.st_size==proof['bytes']
+  expected_before=boundary/'before'/('rank-%d.pt'%rng['rank']);assert Path(rng['source'])==expected_before
+  info=owned(expected_before).stat();assert stat.S_ISREG(info.st_mode) and 0<info.st_size<=64*1024**2 and info.st_size==first['rng_receipt']['bytes']
+  worker_rows.append(dict(rank=first['rank'],parameter_sha256_before=first['parameter_sha256'],parameter_sha256_after=last['parameter_sha256'],
+   optimizer_sha256_before=first['optimizer_sha256'],optimizer_sha256_after=last['optimizer_sha256'],
+   scheduler_sha256_before=first['scheduler_sha256'],scheduler_sha256_after=last['scheduler_sha256'],
+   state_hashes_match=all(first[key]==last[key] for key in ('parameter_sha256','optimizer_sha256','scheduler_sha256')),
+   actor_optimizer_writes_before=first['actual_optimizer_writes'],actor_optimizer_writes_after=last['actual_optimizer_writes'],
+   actor_completed_outer_before=first['completed_outer'],actor_completed_outer_after=last['completed_outer'],
+   rng_restored=rng['rng_equal'],rng_restore_actor_optimizer_writes=rng['actual_optimizer_writes'],
+   rng_restore_completed_training_outers=rng['completed_training_outers']))
+ cache=Path(payload['intent']['teacher_warmup_cache']);assert cache.resolve()==cache
+ complete=read(cache/'complete.json');proof=ready['cache_receipt'];assert proof==complete
+ chunk_map={row['relative_path']:row['sha256'] for row in proof['chunks']}
+ result['teacher_warmup_ready']=dict(**select(ready,('status','reused_questions','fitted_questions','extra_warmup_outers',
+  'completed_training_outers','target_training_outers','checked_unix')),
+  ready_metadata_sha256=hashlib.sha256(ready_path.read_bytes()).hexdigest(),actor_snapshot_id=head['actor_snapshot_id'],
+  head=select(head,('checkpoint_sha','version','completed_outer','feature_spec_sha','update_count')),
+  head_metrics=select(ready['head_metrics'],('bootstrap_groups','replay_groups','head_optimizer_updates','replay_weighted_loss',
+   'count_ce','mean_mse','std_mse','completed_outer')),
+  frozen_workers=worker_rows,actor_rng_restored_rank_count=sum(row['rng_equal'] is True for row in restored),
+  cache_complete_metadata_matches_ready=True,cache_questions=proof['questions'],cache_trajectories=proof['trajectories'],
+  cache_identity_sha256=proof['identity_sha256'],cache_chunk_count=len(chunk_map),
+  cache_chunk_hash_map_sha256=hashlib.sha256(json.dumps(chunk_map,sort_keys=True,separators=(',',':')).encode()).hexdigest())
+assert not any(name=='torch' or name.startswith('torch.') for name in sys.modules)
+print('FEATURE_OPERATOR_JSON:'+json.dumps(result,allow_nan=False),flush=True)
+'''
+
 
 def write_once(path, value):
     with path.open('x') as target:
@@ -190,6 +323,7 @@ def main():
     actions.add_argument('--launch-features',action='store_true')
     actions.add_argument('--inspect-features',action='store_true')
     actions.add_argument('--inspect-old-cleanup',action='store_true')
+    actions.add_argument('--inspect-warmup',action='store_true')
     args = parser.parse_args()
     operator_repo = Path(__file__).resolve().parents[2]
     commit = subprocess.check_output(['git','-C',str(operator_repo),'rev-parse','HEAD'],text=True).strip()
@@ -208,6 +342,8 @@ def main():
         write_once(ROOT/'preparation/qprobe-feature-background-local-start-once.json',dict(
             source_commit=SOURCE,base=BASE,operator_commit=commit,claimed_unix=time.time(),no_automatic_retry=True))
     remote = {'launch':REMOTE_LAUNCH,'inspect':REMOTE_INSPECT,'old-cleanup':REMOTE_OLD_CLEANUP}[action]
+    if args.inspect_warmup:
+        action = 'warmup';remote = REMOTE_INSPECT_WARMUP
     route = module.ssh_command(remote)
     assert route[-1].startswith('python3 -c ')
     route[-1] = '/data/search-g1/env/bin/python -c '+route[-1][len('python3 -c '):]

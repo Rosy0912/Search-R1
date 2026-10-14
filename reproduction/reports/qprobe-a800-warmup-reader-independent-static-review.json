@@ -1,0 +1,56 @@
+{
+  "approved": false,
+  "checked_unix": 1791963034.171869,
+  "embedded_reader_sha256": "e4044bab2f0b1b08db4e3aa8931f9bd09474d563dcf6d91eacd6b31cf97da9ae",
+  "findings": [
+    {
+      "body": "Containment under teacher-warmup-boundary does not bind before/after phase or rank. A rank0 receipt can name rank3.pt, a before receipt can name an after or chunk boundary, and a missing path can still satisfy resolve equality. This weakens the intended independent current-run RNG proof.",
+      "end_line": 279,
+      "file": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py",
+      "priority": 2,
+      "required_fix": "Require before receipt path == boundary/before/rank-N.pt, after path == boundary/after/rank-N.pt, restore source == boundary/before/rank-N.pt; verify regular owned existing files and recorded byte sizes by stat only. Do not read tensor payloads.",
+      "start_line": 278,
+      "title": "Bind each RNG receipt to the exact rank and boundary file"
+    },
+    {
+      "body": "Searching for the first brace anywhere and accepting raw_decode without checking surrounding or trailing text can turn JSON embedded in a model or QA log message into teacher_partial_progress. Scalar extraction prevents payload output but does not establish that the line is the actual progress event.",
+      "end_line": 260,
+      "file": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py",
+      "priority": 2,
+      "required_fix": "Strip ANSI and only the known Ray process prefix, then require the remaining full line to be one valid JSON object with the expected stage and integer 512/G5 budgets. Ignore other lines and retain only whitelisted scalar fields.",
+      "start_line": 256,
+      "title": "Parse only complete standalone progress JSON lines"
+    }
+  ],
+  "limitations": [
+    "This is a static reader audit, not native warmup/training acceptance.",
+    "The added reader reports initial head readiness and actor progress; it does not expose per-formal-outer question-head completion event metadata.",
+    "Driver RNG restoration has no independent persisted readback in BF4; the reader correctly labels that scope."
+  ],
+  "model_tensor_rollout_or_qa_payload_read": false,
+  "native_launch_review_or_authorization_changed": false,
+  "passed_checks": {
+    "actor_optimizer_and_head_optimizer_metrics_separate": true,
+    "current_run_head_snapshot_checked": true,
+    "driver_rng_labeled_source_only": true,
+    "existing_json_read_limit_bytes": 1048576,
+    "four_rank_worker_receipt_run_ids_checked": true,
+    "no_nvml_query_in_added_reader": true,
+    "no_remote_mutation_or_automatic_retry_in_added_reader": true,
+    "no_torch_model_or_tensor_load_in_added_reader": true,
+    "prior_actions_not_re_reviewed": true,
+    "published_bf4_observer_source_hash_checked": true,
+    "shared_cache_complete_not_used_as_current_run_ready": true,
+    "standard_observer_stdout_captured_and_selected": true,
+    "teacher_log_tail_limit_bytes": 262144
+  },
+  "remote_actions_performed": false,
+  "role": "qprobe_a800_warmup_reader_independent_targeted_static_review",
+  "schema_version": 1,
+  "scope": "Only the added inspect-warmup reader and its action routing; prior three action behavior was not re-reviewed.",
+  "source_bytes": 24828,
+  "source_file": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py",
+  "source_sha256": "f72bd75e0099e337d426e5d3d2cce73dd2fc66449ea1ace1336fd4299e1cf87b",
+  "status": "needs_reader_fixes",
+  "tests_executed": false
+}
