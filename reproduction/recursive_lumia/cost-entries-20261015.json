@@ -60,8 +60,13 @@
     "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C1-root-only-4090-138654.log"
   },
   {
-    "label": "C2-uniform-final-after-C1",
+    "label": "cancelled-unstarted-C2-invalid-condition",
     "job": "138657",
-    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-uniform-final-after-C1-138657.log"
+    "log": null
+  },
+  {
+    "label": "C2-random-final-after-C1",
+    "job": "138665",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-random-final-after-C1-138665.log"
   }
 ]
