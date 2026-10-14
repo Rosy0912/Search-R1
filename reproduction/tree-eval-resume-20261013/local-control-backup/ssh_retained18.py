@@ -39,7 +39,8 @@ sys.exit(subprocess.call(args+[cfg['user']+'@'+expected_ip,COMMAND]))
     # SOCKS route can fail even while ordinary `ssh mgmt-host` succeeds.
     return ['ssh', '-T', '-o', 'BatchMode=yes', '-o',
             'ConnectTimeout=15', '-o', 'ServerAliveInterval=15', '-o',
-            'ServerAliveCountMax=3', 'mgmt-host', 'python3 -c '+shlex.quote(source)]
+            'ServerAliveCountMax=3', '-o', 'KexAlgorithms=curve25519-sha256',
+            '-o', 'IPQoS=none', 'mgmt-host', 'python3 -c '+shlex.quote(source)]
 
 
 def run(command, target='h100-10', timeout=60):
