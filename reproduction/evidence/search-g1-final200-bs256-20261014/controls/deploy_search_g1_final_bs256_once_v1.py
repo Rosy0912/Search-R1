@@ -8,12 +8,14 @@ for row in subprocess.check_output(['git','ls-tree','-rz',commit],cwd=repo).spli
  files[name.decode()]=hashlib.sha256(subprocess.check_output(['git','cat-file','blob',blob.decode()],cwd=repo)).hexdigest()
 archive=gzip.compress(subprocess.check_output(['git','archive','--format=tar',commit],cwd=repo))
 script="""import pathlib,json,os,sys,tarfile,io,hashlib,datetime,uuid,subprocess
-P=pathlib.Path;base=P('/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v1');source=P('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012');commit=COMMIT;files=FILES
+payload=sys.stdin.buffer
+size=int.from_bytes(payload.read(8),'big');meta=json.loads(payload.read(size))
+P=pathlib.Path;base=P('/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v1');source=P('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012');commit=meta['commit'];files=meta['files']
 assert not (base/'preparation/deploy-intent.json').exists(),'Inspect existing deployment intent instead of replay'
 def once(p,x):
  with P(p).open('x') as f:json.dump(x,f,indent=2);f.flush();os.fsync(f.fileno())
 once(base/'preparation/deploy-intent.json',{'commit':commit,'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'New isolated final-only code deployment; old eval unchanged'})
-root=base/'repo';root.mkdir();archive=sys.stdin.buffer.read()
+root=base/'repo';root.mkdir();archive=payload.read()
 with tarfile.open(fileobj=io.BytesIO(archive),mode='r:gz') as t:
  for m in t.getmembers():
   name=P(m.name);assert not name.is_absolute() and '..' not in name.parts and (m.isdir() or m.isfile())
@@ -34,7 +36,7 @@ launch=base/'preparation/launch-final.sh'
 launch.write_text('#!/bin/bash\\nset -euo pipefail\\nexport PATH='+str(base/'env/bin')+':/usr/local/bin:/usr/bin:/bin\\nexport PYTHONPATH='+str(root)+'\\ncd '+str(root)+'\\nexec '+str(base/'env/bin/python')+' -m reproduction.common8.final_resume_pipeline --base '+str(base)+'\\n');launch.chmod(0o700)
 once(base/'preparation/deploy-receipt.json',{'commit':commit,'verified_file_count':len(files),'all_remote_full_sha_match':True,'binding':str(base/'preparation/final-binding.json'),'manifest':str(base/'preparation/final-evaluation-manifest.json'),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
 print(json.dumps({'source_commit':commit,'verified_files':len(files),'manifest':str(base/'preparation/final-evaluation-manifest.json'),'batch_size':256,'cache':.35}))
-""".replace('COMMIT',repr(commit)).replace('FILES',repr(files))
+"""
 # The verified existing transport forwards raw source archive bytes, never weights.
 sys.path.insert(0,'work');import search_g1_restore5_transport as t
 original=subprocess.run
@@ -44,4 +46,5 @@ def direct(args,*a,**kw):
   if option in args:i=args.index(option);del args[i-1:i+1]
  return original(args,*a,**kw)
 t.subprocess.run=direct
-result=t.remote(str('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/env/bin/python')+' -c '+shlex.quote(script),'outputs/gigpo-e1-instruct200/SEARCH-G1-FINAL-BS256-DEPLOY-ONCE-v1.json',stdin=archive)
+header=json.dumps({'commit':commit,'files':files}).encode()
+result=t.remote(str('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/env/bin/python')+' -c '+shlex.quote(script),'outputs/gigpo-e1-instruct200/SEARCH-G1-FINAL-BS256-DEPLOY-ONCE-v1.json',stdin=len(header).to_bytes(8,'big')+header+archive)
