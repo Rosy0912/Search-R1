@@ -75,6 +75,53 @@ def expand_cost_fields(costs, cost_pin, bound):
     return decoded, pins
 
 
+def validate_next_activity(first, second, native, outer, growth, first_pin, second_pin):
+    """Use measured log growth or a newly completed, poll-bound next rollout."""
+    need(all(value is not None and value >= 0 for value in growth.values()),
+         'Second observed log sizes are missing or decreased')
+    evidence = dict(poll_bindings=[first_pin, second_pin], observed_epochs=[first['epoch'], second['epoch']],
+                    next_outer=outer+1, optimizer_completion_inferred=False, additional_adam_credit=0)
+    if any(value > 0 for value in growth.values()):
+        return dict(evidence, kind='ACTUAL_SAME_INSTANCE_LOG_BYTE_GROWTH', log_byte_growth=growth)
+    attempts = (first.get('progress') or {}).get('training_attempts_seen')
+    need(core.integer(attempts) and attempts >= outer
+         and (second.get('progress') or {}).get('training_attempts_seen') == attempts,
+         'Original next rollout attempt boundary differs')
+    expected_attempt = int(attempts)+1
+    records = second.get('rollout_cost') or []
+    need(isinstance(records, list), 'Second rollout cost records are invalid')
+    candidates = [(index, row) for index, row in enumerate(records)
+                  if isinstance(row, dict) and row.get('candidate_outer') == outer+1]
+    need(len(candidates) == 1, 'Second actual sampling activity has not yet advanced')
+    index, row = candidates[0]
+    identity = native.get('identity') or {}
+    need(row.get('status') == 'TRAINING_ROLLOUT_COST_COMPLETE' and row.get('error') is None
+         and row.get('attempt_id') == expected_attempt and row.get('completed_outer_before') == outer
+         and row.get('code_commit') == core.SOURCE and row.get('config_sha256') == core.CONFIG
+         and row.get('job_id') == core.JOB and row.get('run_id') == Path(core.RUN).name
+         and all(core.sha64(identity.get(key)) and row.get(key) == identity[key]
+                 for key in ('data_identity', 'model_identity')),
+         'Next completed rollout boundary/source/config/identity differs', 'REJECTED_INPUT_NO_WRITE')
+    prior = first.get('rollout_cost') or []
+    need(isinstance(prior, list) and not any(isinstance(item, dict) and item.get('attempt_id') == expected_attempt
+                                           for item in prior), 'Next rollout was already present in the first observation')
+    end = row.get('end_epoch');start = row.get('start_epoch')
+    need(core.number(start) and core.number(end) and start < end
+         and first['epoch'] < end < second['epoch']
+         and core.number(row.get('wall_seconds')) and row['wall_seconds'] > 0,
+         'Next rollout completion is not strictly between the two actual observations')
+    costs = row.get('costs') or {}
+    need(isinstance(costs, dict) and core.integer(row.get('question_rows')) and row['question_rows'] > 0
+         and all(core.integer(costs.get(key)) and costs[key] > 0
+                 for key in ('generated_tokens', 'prefill_tokens', 'retrieval_calls', 'trajectories'))
+         and row.get('outer_credit_not_inferred') is True and row.get('actual_optimizer_writes') is None,
+         'Next rollout lacks positive generation/retrieval costs or separates no optimizer credit')
+    return dict(evidence, kind='ACTUAL_NEXT_ROLLOUT_COMPLETION_BETWEEN_POLLS',
+                record_json_selector=f'rollout_cost[{index}]', record=copy.deepcopy(row),
+                record_canonical_sha256=core.digest(core.json_bytes(row)),
+                native_identity_binding=dict(data_identity=identity['data_identity'], model_identity=identity['model_identity']))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workspace', type=Path, default=Path.cwd())
@@ -148,12 +195,12 @@ def main():
     sizes1, sizes2 = first.get('own_output_files') or {}, second.get('own_output_files') or {}
     growth = {name:sizes2[name]-sizes1[name] if core.integer(sizes1.get(name)) and core.integer(sizes2.get(name)) else None
               for name in ('stage.log', 'retriever.log')}
+    activity = None
     if n < core.TARGET:
         stage = (first.get('logs') or {}).get('stage.log') or ''
         need(active and second.get('run_result') is None
              and re.search(r'epoch\s+\d+,\s*step\s+' + str(n+1) + r'\b', stage), 'Original actual next-stage evidence missing')
-        need(all(value is not None and value >= 0 for value in growth.values())
-             and any(value > 0 for value in growth.values()), 'Second actual sampling activity has not yet advanced')
+        activity = validate_next_activity(first, second, native, n, growth, first_pin, second_pin)
         next_outer, final = n+1, None
     else:
         next_outer, final = None, core.final_phase(second, resource2, active)
@@ -218,7 +265,8 @@ def main():
     proof = dict(status=f'ACTUAL_FULL{n}_NATIVE{n}_TWO_OBSERVATIONS_LOCAL_SUMMARY_FINALIZED',
         source_commit=core.SOURCE,config_sha256=core.CONFIG,unit=core.UNIT,main_pid=int(rs['MainPID']),
         invocation_id=core.INVOCATION,observed_epochs=[first['epoch'],epoch],completed_outer=n,active_outer=next_outer,
-        same_original_instance=True,log_byte_growth=growth,log_growth_scope='Observed same-instance log activity after the real next-stage marker; no next-outer completion, token count or partial Adam credit inferred.',
+        same_original_instance=True,log_byte_growth=growth,continued_progress_evidence=activity,
+        log_growth_scope='Measured stage/retriever byte differences only; zero remains zero. Continued progress evidence is separate; no next-outer optimizer completion or partial Adam credit inferred.',
         full_outer_receipt=full_pin,snapshots=[first_pin,second_pin,resource_pin,resource2_pin],native_readback=native_pin,
         native_manifest_sha256=native['manifest_sha256'],successful_adam_per_rank=completed,
         current_dev512=actual_dev,latest_dev_outer=latest_scores['outer'],latest_actual_dev512_scores=latest_scores,
@@ -248,6 +296,7 @@ def main():
         latest_native_checkpoint_outer=n,latest_native_manifest_sha256=native['manifest_sha256'],
         observed_epoch=epoch,last_observed_epoch=epoch,last_actual_poll=rel(second_pin),
         current_next_outer_progress=next_outer,second_snapshot=Path(second_pin['path']).name,
+        current_next_outer_progress_evidence=activity,
         second_snapshot_sha256=second_pin['sha256'],last_actual_second_snapshot_epoch=epoch,
         actual_next_outer_entered=next_outer,active_outer_in_progress=next_outer,active_outer=next_outer,
         current_outer_full_metric=metric,current_iteration_metrics=metric,
@@ -309,9 +358,12 @@ def main():
         for label, pin in attachments.items():
             value[label] = rel(pin);value[label+'_sha256'] = pin['sha256']
     report = (f'Current nested Tree200 on original H10018: actual complete outer{n}/200; '
-        + (f'outer{next_outer} sampling in the same original instance.' if next_outer else 'training200 complete; final work remains.')
+        + ((f'outer{next_outer} rollout generation completed in the same original instance; optimizer completion remains uncredited.'
+            if activity['kind'] == 'ACTUAL_NEXT_ROLLOUT_COMPLETION_BETWEEN_POLLS'
+            else f'outer{next_outer} sampling in the same original instance.') if next_outer else 'training200 complete; final work remains.')
         + f'\n\nTwo actual observations at{first["epoch"]} and{epoch}; same PID{rs["MainPID"]}/Invocation{core.INVOCATION}. '
-        + f'Observed log byte growth {growth}; this does not credit the next outer.\n\n'
+        + f'Observed log byte growth {growth}; this does not credit the next outer. '
+        + f'Continued progress evidence {json.dumps(activity)}.\n\n'
         + f'Actual cumulative credited Adam/rank {completed}; actual totals including known partial writes {totals}. '
         + f'Original loaded native5 stays5; latest native writer boundary{n}. Missing per-rank opportunity fields remain null.\n\n'
         + f'Current dev512 {"complete" if actual_dev else "null"}; latest actual dev{latest_scores["outer"]}: '
