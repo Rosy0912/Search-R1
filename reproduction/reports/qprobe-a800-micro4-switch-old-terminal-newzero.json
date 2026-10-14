@@ -1,0 +1,160 @@
+{
+  "role": "qprobe_micro4_switch_hourly_scalar_hash_only",
+  "checked_unix": 1791980633.925035,
+  "source_commit": "f7d9f1488d3c1373098b9401463812b24fe94b63",
+  "latest_human_actor_micro_per_rank": 4,
+  "actor_global_micro": 16,
+  "gradient_accumulation": 8,
+  "world4": true,
+  "mini128": true,
+  "science_and_data_unchanged": true,
+  "independent_reviews_approved": true,
+  "evidence_sha256": {
+    "qprobe-micro4-source-publication.json": {
+      "sha256": "45589decf816930d6f17172d758733eee1cdcdd0f2d7278a8f28d9f9d0cae2d1",
+      "bytes": 2722
+    },
+    "qprobe-micro4-actual-prelaunch-review.json": {
+      "sha256": "202d3e901744ea895208de072735fa708f5fe6c7792d5773c5667e91acc529e9",
+      "bytes": 66416
+    },
+    "qprobe-micro4-stop-publication.json": {
+      "sha256": "ee807733e8bbb96c06dc7f2668cbf36d3ff50ee2addd78ab1e760c9b723622e7",
+      "bytes": 448
+    },
+    "qprobe-micro4-stop-independent-review.json": {
+      "sha256": "0e73ff9ac8e0a5d45da0a165f93fd8471b8d60e84c3f96d3173f6383241c5428",
+      "bytes": 1557
+    },
+    "qprobe-micro4-stop-command.json": {
+      "sha256": "3a439070effad0719954f55ef5a23ca692478c93841449272288f2d118a518f1",
+      "bytes": 2142
+    },
+    "qprobe-micro4-old-cleanup-command.json": {
+      "sha256": "86ffb44510e7d63270f68b1074274561ef1c65146bb3516c580a4ab708a79669",
+      "bytes": 5357
+    },
+    "qprobe-micro4-old-terminal-observe-command.json": {
+      "sha256": "03627dbd0f7d234a84517ab7aa8f9d3d926970ea8c19852358de7e9f9567cabf",
+      "bytes": 13170
+    },
+    "qprobe-micro4-launch-command.json": {
+      "sha256": "80347e4f9f1d447c72ff3b4590565f0589bad007872c9ac5d6f8ad5b832daa2a",
+      "bytes": 594
+    },
+    "qprobe-micro4-failed-launch-inspect-command.json": {
+      "sha256": "ef6e336a404ffa15190550d65582751561daf181ea56898a94cc6cac6e955445",
+      "bytes": 4788
+    }
+  },
+  "superseded_micro2_window": {
+    "run_id": "00028e46b70b40a2ba6980b1c988f92c",
+    "source_commit": "d85979d8d2af24e6468ca7565078acd8bc1ae1f7",
+    "from_delivered_anchor_unix": 1791976805.0,
+    "terminal_observed_unix": 1791980357.4161034,
+    "complete_outers": 1,
+    "added_complete_outers": 1,
+    "processed_opportunities": 26,
+    "successful_adam": 26,
+    "added_successful_adam": 26,
+    "skip": 0,
+    "complete_outer_adam": 20,
+    "partial_outer": 2,
+    "partial_opportunities": 6,
+    "partial_successful_adam": 6,
+    "uncommitted_inflight_unknown": true,
+    "reward_latest_step": 1,
+    "reward_latest": 0.24950356781482697,
+    "new_complete_window_steps": [
+      1
+    ],
+    "reward_window_mean": 0.24950356781482697,
+    "reward_window_min": 0.24950356781482697,
+    "reward_window_max": 0.24950356781482697,
+    "prior_window_mean": null,
+    "reward_mean_change": null,
+    "stage64": null,
+    "dev512": null,
+    "no_new_scores": true,
+    "human_switch_not_unplanned_training_failure": true,
+    "actual_owned_cleanup_accepted": true,
+    "recorded_births": 191,
+    "owned_cuda_remaining": 0,
+    "gpu_terminal_sample_unix": 1791980292.2487566,
+    "gpu_terminal_sample_age_s": 65.16693902015686,
+    "gpu_devices": [
+      {
+        "physical_index": 0,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 52881
+      },
+      {
+        "physical_index": 1,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 3,
+        "sampled_run_peak_mib": 52977
+      },
+      {
+        "physical_index": 2,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 53513
+      },
+      {
+        "physical_index": 3,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 53643
+      },
+      {
+        "physical_index": 5,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 20003
+      },
+      {
+        "physical_index": 6,
+        "used_mib": 4,
+        "total_mib": 81920,
+        "util_percent": 0,
+        "sampled_run_peak_mib": 27129
+      }
+    ],
+    "gpu_lifetime_samples": 3572,
+    "gpu_max_sample_gap_seconds": 11.741981506347656,
+    "complete_outer_gpu_window_peak_unverified": true,
+    "counts_not_inherited_by_new200": true
+  },
+  "corrected_micro4_run": {
+    "run_id": "34fffb9fe8ad4d75b54b9c9747c256fb",
+    "execution_id": "6bf23d2d28c94ab095629b795d26dc30",
+    "source_commit": "f7d9f1488d3c1373098b9401463812b24fe94b63",
+    "complete_outers": 0,
+    "target": 200,
+    "processed_opportunities": 0,
+    "successful_adam": 0,
+    "skip": 0,
+    "parent_checkpoint": null,
+    "fresh_official_state": true,
+    "launch_refused_before_any_gpu_binding_or_pipeline_or_trainer_claim": true,
+    "actual_failure": "auxiliary GPU6 occupied at prebind gate",
+    "failed_gate_unix": 1791980401.159806,
+    "actual_zero_inspection_unix": 1791980425.0920298,
+    "feature_encoding_169028_accepted_reuse": true,
+    "teacher5120_x5_cache_retained_conditional_reuse": true,
+    "teacher_warmup_and_new_head_fit_not_started": true,
+    "reward_latest": null,
+    "stage64": null,
+    "dev512": null,
+    "final51713": null,
+    "new_run_gpu_peak": null,
+    "old_stats_not_mixed": true
+  },
+  "no_credentials_models_environment_or_raw_qa_tokens": true
+}
