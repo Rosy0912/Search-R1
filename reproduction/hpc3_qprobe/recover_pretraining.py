@@ -32,9 +32,9 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job not in ('717607','717637','717698','717765','717827','717938','718288'):raise ValueError('Only actually observed own startup failures are supported')
+    if job not in ('717607','717637','717698','717765','717827','717938','718288','718322'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765','717938':'717827','718288':'717938'}[job]
+    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765','717938':'717827','718288':'717938','718322':'718288'}[job]
     FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
     FAILED_COMMIT={'717607':'1552de146c2dd44e4fd40eb94b27839ac8648ef1',
@@ -43,11 +43,12 @@ def select_failed_job(job):
         '717765':'1e0ac4e588faa7811f0aeabb1c9b3a9e28f0012e',
         '717827':'a75e0c944e2bbae284e52ce9b9f8bf909ab89564',
         '717938':'594d43b73c5a1e5159a24fb0d97880ff22fb0056',
-        '718288':'e715462c55af0b836aee47432ca051cc02f5a5d9'}[job]
+        '718288':'e715462c55af0b836aee47432ca051cc02f5a5d9',
+        '718322':'c5961481b68d483e578f20d6786d314fcdabaa07'}[job]
 
 
 def diagnostic_gate(commit):
-    if JOB not in ('717607','717637','717698','717765','717827','717938','718288'):return None
+    if JOB not in ('717607','717637','717698','717765','717827','717938','718288','718322'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -135,6 +136,13 @@ def terminal_717938():
 
 def terminal():
     if os.getuid()!=14090:raise ValueError('Actual jxu957 owner required')
+    if JOB=='718322':
+        from reproduction.hpc3_qprobe.teacher_identity_failure import preserved
+        value=preserved()
+        if value['base']!=str(FAILED) or value['source_commit']!=FAILED_COMMIT:
+            raise ValueError('Actual pre-formal teacher failure source/base differs')
+        value.update(cleanup_retry_binding())
+        return value
     if JOB=='717938':return terminal_717938()
     if JOB=='718288':
         from reproduction.hpc3_qprobe.storage_startup_failure import preserved
@@ -304,7 +312,7 @@ def submit(commit):
         '--job-name=qprobe-warmup200','--export=NONE','--chdir='+str(TARGET),
         '--output='+str(TARGET/'logs/training-%j.log'),'--error='+str(TARGET/'logs/training-%j.log'),
         str(source/'reproduction/hpc3_qprobe/train.sh'),str(TARGET),commit]
-    if JOB in ('717827','717938','718288'):command.insert(1,'--exclude=ACD1-67')
+    if JOB in ('717827','717938','718288','718322'):command.insert(1,'--exclude=ACD1-67')
     test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)
     publish(TARGET/'preparation/training-test-only.json',dict(command=command,exit=test.returncode,stdout=test.stdout,stderr=test.stderr,epoch=time.time()))
     if test.returncode:raise ValueError('Actual recovery scheduler preflight failed')
@@ -321,6 +329,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827','717938','718288'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827','717938','718288','718322'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)

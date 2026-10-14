@@ -249,7 +249,10 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
         info_mask=torch.cat((attention, model_mask), dim=1),
         position_ids=(mask.cumsum(-1) - 1) * mask,
         sampling_log_probs=selected, sampling_mask=model_mask.bool())
-    final_meta.update(behavior_identity=copy.deepcopy(identity), behavior_sampling=sampling,
+    # Every actual per-turn sampler record was checked against this snapshot.
+    # Workers need not echo controller metadata in their DataProto return.
+    final_meta.update(behavior_identity=copy.deepcopy(identity),
+        policy_snapshot_id=identity['policy_snapshot_id'], behavior_sampling=sampling,
         turns_stats=turns_stats, active_mask=active, valid_action_stats=valid_actions,
         valid_search_stats=valid_searches, actual_retrieval_stats=actual_retrieval)
     print('ACTIVE_TRAJ_NUM:', active_counts)

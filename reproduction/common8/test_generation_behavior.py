@@ -179,6 +179,26 @@ def generation_fixture(prompts=None, *, validation=False, do_sample=True):
 
 
 class ControllerCpuTests(unittest.TestCase):
+    def test_native_four_teacher_and_formal_g5_output_passes_qprobe_identity_gate(self):
+        from search_g1.qprobe_runtime import _complete_generation
+        # The real controller, TensorDict and DataProto transport all2560 rows;
+        # WorkerFixture deliberately returns empty meta_info, as native workers do.
+        batch, initial = generation_fixture([[10, 11]] * 2560)
+        manager = ManagerFixture(lambda ordinal, identity: [23, 24, 99])
+        manager.config.num_gpus = 4
+        with patch('reproduction.common8.behavior_runtime.failed_generation_evidence'):
+            output = controller.run(manager, batch, initial)
+        identity = batch.meta_info['behavior_identity']
+        self.assertEqual(output.meta_info['policy_snapshot_id'], identity['policy_snapshot_id'])
+        _complete_generation(output, identity)
+        # Missing/mismatched final identity still fails closed; no weakened gate.
+        output.meta_info.pop('policy_snapshot_id')
+        with self.assertRaisesRegex(RuntimeError, 'QPROBE_POLICY_SNAPSHOT_CHANGED'):
+            _complete_generation(output, identity)
+        output.meta_info['policy_snapshot_id'] = 'changed-policy'
+        with self.assertRaisesRegex(RuntimeError, 'QPROBE_POLICY_SNAPSHOT_CHANGED'):
+            _complete_generation(output, identity)
+
     def run_success(self, manager=None, prompts=None):
         manager = manager or ManagerFixture()
         batch, initial = generation_fixture(prompts)
