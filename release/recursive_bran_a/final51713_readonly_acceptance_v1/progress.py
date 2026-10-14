@@ -21,6 +21,10 @@ def tail(path, size=131072):
 
 
 def main():
+    global CONTROL
+    recovery = BASE/'final51713-shortpath-recovery-v1'
+    if (recovery/'evaluation-launch.json').exists():
+        CONTROL = recovery
     plan = load(CONTROL / 'execution-plan.json')
     launch = load(CONTROL / 'evaluation-launch.json')
     terminal = load(CONTROL / 'evaluation-actual-exit.json')
@@ -33,7 +37,9 @@ def main():
                            tick=int(fields[19]), state=fields[0])
     records = {}
     if plan:
-        logs = list(Path('/tmp/rba-final-'+plan['run_id']).glob('session_*/logs/worker-*.out'))
+        runtime = load(CONTROL/'runtime-recovery.json')
+        ray_root = Path(runtime['ray_tmpdir']) if runtime else Path('/tmp/rba-final-'+plan['run_id'])
+        logs = list(ray_root.glob('**/logs/worker-*.out'))
         for path in logs + [CONTROL/'evaluation.log']:
             for line in tail(path, 524288).splitlines():
                 if 'FINAL51713_GPU=' in line:
@@ -55,7 +61,7 @@ def main():
     # Print structural events/errors only, never prompts, document contents, or answers.
     selected = [line for line in log.splitlines() if any(word in line for word in
                 ('FINAL51713_', 'Traceback', 'Error:', 'Exception:', 'ERROR', 'Loading', 'checkpoint'))]
-    print(json.dumps(dict(time=time.time(), plan=plan, launch=launch, actual_exit=terminal,
+    print(json.dumps(dict(time=time.time(), control=str(CONTROL), plan=plan, launch=launch, actual_exit=terminal,
                           process=process, workers=workers, gpu=dict(rc=gpu.returncode, stdout=gpu.stdout,
                           stderr=gpu.stderr), summary=summary, structural_log_tail=selected[-15:],
                           scope='Latest retained worker events and current whole-device utilization; cohost work may contribute')))

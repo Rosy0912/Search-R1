@@ -64,6 +64,9 @@ def collect_gpu_records(paths):
 
 def audit(base=BASE):
     folder = base / 'final51713-supervisor-recovery-v1'
+    recovery = base / 'final51713-shortpath-recovery-v1'
+    if (recovery/'evaluation-launch.json').exists():
+        folder = recovery
     plan_path = folder / 'execution-plan.json'
     exit_path = folder / 'evaluation-actual-exit.json'
     if not plan_path.exists() or not exit_path.exists():
@@ -99,7 +102,9 @@ def audit(base=BASE):
         for key in KEYS:
             assert math.isclose(summary['metrics']['val/' + key + '/' + source],
                                 group[key] / group['count'], rel_tol=1e-10, abs_tol=1e-10)
-    logs = list(Path('/tmp/rba-final-' + plan['run_id']).glob('session_*/logs/worker-*.out'))
+    runtime_path = folder/'runtime-recovery.json'
+    ray_root = Path(load(runtime_path)['ray_tmpdir']) if runtime_path.exists() else Path('/tmp/rba-final-' + plan['run_id'])
+    logs = list(ray_root.glob('**/logs/worker-*.out'))
     records = collect_gpu_records(logs + [folder / 'evaluation.log'])
     workers = {}
     for key, row in records.items():
