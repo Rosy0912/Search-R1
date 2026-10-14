@@ -178,6 +178,8 @@ def main():
         actual_optimizer_completed_outer=n,new_completed_outer=n-5,last_durable_completed_outer=n,
         latest_native_checkpoint_outer=n,latest_native_manifest_sha256=native['manifest_sha256'],
         observed_epoch=epoch,last_observed_epoch=epoch,last_actual_poll=rel(second_pin),
+        current_next_outer_progress=next_outer,second_snapshot=Path(second_pin['path']).name,
+        second_snapshot_sha256=second_pin['sha256'],last_actual_second_snapshot_epoch=epoch,
         actual_next_outer_entered=next_outer,active_outer_in_progress=next_outer,active_outer=next_outer,
         current_outer_full_metric=metric,current_iteration_metrics=metric,
         current_outer_full_metric_pending=metric is None,current_full_outer_metric_pending=metric is None,
