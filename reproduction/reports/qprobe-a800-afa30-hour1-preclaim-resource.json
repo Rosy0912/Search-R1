@@ -1,0 +1,111 @@
+{
+  "actual_assigned_compute_apps": [
+    {
+      "alive": true,
+      "birth_matches": null,
+      "cwd_basename": "chx",
+      "cwd_classification": "outside_project_namespace",
+      "cwd_namespace": null,
+      "gpu_uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+      "physical_index": 1,
+      "pid": 3015213,
+      "sid": 3015213,
+      "start_ticks": 604945783,
+      "state": "R",
+      "uid": 0,
+      "used_memory_mib": 872
+    }
+  ],
+  "actual_gpu_inventory": [
+    {
+      "gpu_uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+      "physical_index": 0,
+      "total_mib": 81920,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "gpu_uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+      "physical_index": 1,
+      "total_mib": 81920,
+      "used_mib": 881,
+      "util_percent": 75
+    },
+    {
+      "gpu_uuid": "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+      "physical_index": 2,
+      "total_mib": 81920,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "gpu_uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9",
+      "physical_index": 3,
+      "total_mib": 81920,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "gpu_uuid": "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b",
+      "physical_index": 5,
+      "total_mib": 81920,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "gpu_uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7",
+      "physical_index": 6,
+      "total_mib": 81920,
+      "used_mib": 4,
+      "util_percent": 0
+    }
+  ],
+  "actual_observed_unix": 1791969895.6593616,
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-c52b44701a0544bd9e219122e53d3c77",
+  "created_unix": 1791970134.08365,
+  "dev512": null,
+  "execution_id": "79fba41ac07a414aaab7f85b87d55c7f",
+  "features_count": 169028,
+  "features_finite_cpu_verified": true,
+  "features_sha256": "e2186ca7ea6735470ad5cd1302b03054529c675ba45b9f3297c1b07bab7e97c3",
+  "final51713": null,
+  "formal_complete_outers": 0,
+  "formal_opportunities": 0,
+  "formal_skips": 0,
+  "formal_successful_adam": 0,
+  "formal_target": 200,
+  "goal_active": true,
+  "gpu_sampling_gap": null,
+  "input_receipt_sha256": "3e907cbfa2059cab1da5148cdadb5781a16db3e407c16e823b8457901c1504ff",
+  "new_complete_outers": 0,
+  "new_reward_window_mean": null,
+  "new_reward_window_range": null,
+  "new_run_gpu_cumulative_peak": null,
+  "new_run_gpu_sampler_started": false,
+  "new_successful_adam": 0,
+  "node_gpu_sample_is_training_owned_peak": false,
+  "optimizer_update_window_gpu_peak": null,
+  "original_failure": "native GPU6 occupied before pipeline claim",
+  "original_pipeline_alive": false,
+  "original_pipeline_birth": 604602873,
+  "original_pipeline_pid": 2957011,
+  "preclaim_operator_source_commit": "d9ed8a460c13c59d45b98aa1376d7b6fb1dce2d6",
+  "prior_run_statistics_mixed": false,
+  "private_repair_source_commit": "3bd1c173664c581c0eb6fd9e6a872a718bf0d5b3",
+  "resource_coordination_pending": true,
+  "retry_command_exit_code": 1,
+  "retry_launcher_executed": false,
+  "retry_preflight_failure": "new GPU1 compute application found",
+  "reward_latest": null,
+  "reward_window_change": null,
+  "role": "qprobe_a800_afa30_hour1_preclaim_sanitized_scalar",
+  "run_id": "afa30a5dab184b32a6c89c155e550235",
+  "scientific_runtime_unchanged": true,
+  "source_commit": "3bd1c173664c581c0eb6fd9e6a872a718bf0d5b3",
+  "stage64": null,
+  "teacher_committed_chunks": 0,
+  "teacher_ready": false,
+  "teacher_warmup_started": false,
+  "verifiable_inflight": null,
+  "window_start_unix": 1791966428.642339
+}
