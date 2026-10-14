@@ -78,5 +78,10 @@
     "label": "independent-C1-native-restoration-diagnostic-no-training",
     "job": "138667",
     "log": null
+  },
+  {
+    "label": "independent-C1-native-restoration-Ray-device-mapping-no-training",
+    "job": "138668",
+    "log": null
   }
 ]
