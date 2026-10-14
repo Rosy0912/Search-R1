@@ -130,6 +130,13 @@ Use an explicitly published helper source, even when the producer uses an older
 immutable source. The producer's default environment/source link may not contain
 new control modules. Populate these variables from verified actual receipts:
 
+The producer job ID comes from its original submission and native allocation
+admission receipts. The scientific run manifest need not contain a flat
+`slurm_job_id` field. Controllers bind the admission's run ID, actual four GPU
+UUIDs/indices, account, source command and work directory, preserve its full SHA
+in the once-control binding, and check fresh Slurm accounting. Do not edit a live
+run manifest to manufacture this field.
+
 ```bash
 QP_HELPER_COMMIT='FULL_40_CHARACTER_PUBLISHED_HELPER_COMMIT'
 QP_SOURCE="/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/$QP_HELPER_COMMIT"

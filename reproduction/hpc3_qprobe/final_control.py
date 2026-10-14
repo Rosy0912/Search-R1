@@ -102,8 +102,34 @@ def producer(base,*,complete=False):
     job=prior['job'];need(re.fullmatch('[1-9][0-9]*',job) is not None,'actual producer job missing')
     entry=ROOT/'source'/run['source_commit']/'reproduction/hpc3_qprobe/train.sh'
     need(prior['returncode']==0 and prior['commit']==claim['commit']==run['source_commit'] and
-         run['slurm_job_id']==job and claim['command'][-3:]==[str(entry),str(base),run['source_commit']],
+         run.get('slurm_job_id',job)==job and claim['command'][-3:]==[str(entry),str(base),run['source_commit']],
          'producer submission/source binding differs')
+    # The native producer manifest deliberately remains backend-neutral. Its
+    # actual Slurm job is recorded by the immutable allocation admission, not
+    # an invented/retrofitted field in the live scientific manifest.
+    allocation_path=base/'logs/native-allocation-admission.json';allocation=read(allocation_path)
+    uuids=allocation.get('actual_cuda_runtime_uuids',[])
+    indices=allocation.get('actual_allocated_indices',[])
+    need(allocation.get('accepted') is True and allocation.get('run_id')==run['run_id'] and
+         allocation.get('slurm_job_id')==job and type(allocation.get('training_world_size')) is int and
+         allocation['training_world_size']==4 and allocation.get('requested_gres')=='gres/gpu:4' and
+         allocation.get('visible_devices')==['0','1','2','3'] and len(indices)==4 and
+         all(type(index) is int and index>=0 for index in indices) and len(set(indices))==4 and
+         len(uuids)==4 and len(set(uuids))==4 and all(isinstance(value,str) and
+             re.fullmatch('GPU-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}',value) is not None
+             for value in uuids),'actual native4 producer allocation binding differs')
+    from reproduction.common8.native_allocation import fields,allocated_indices
+    detail=allocation.get('actual_allocation_detail','');observed=fields(detail)
+    need(observed.get('JobId')==job and observed.get('UserId')=='jxu957(14090)' and
+         observed.get('Account')=='jxu957' and observed.get('QOS')=='formal-user' and
+         observed.get('Partition')=='emergency_acd' and observed.get('WorkDir')==str(base) and
+         observed.get('Command')==str(entry) and observed.get('NumNodes')=='1' and
+         observed.get('NumCPUs')=='48' and observed.get('MinMemoryNode')=='512G' and
+         observed.get('NodeList')==allocation.get('node') and
+         'gres/gpu=4' in observed.get('TRES','').split(','),
+         'actual native producer detail binding differs')
+    need(allocated_indices(detail,allocation['node'],count=4)==indices,
+         'actual native producer GPU index detail differs')
     raw=subprocess.check_output(['sacct','-nP','-X','-j',job,
         '--format=JobID,State,ExitCode,User,UID,Account,QOS,Partition'],text=True,timeout=30)
     rows=[line.split('|') for line in raw.splitlines() if line.strip()]
@@ -114,7 +140,8 @@ def producer(base,*,complete=False):
               (rows[0][1]!='COMPLETED' or rows[0][2]=='0:0'),'producer has no observed execution')
     binding=dict(base=str(base),run_id=run['run_id'],producer_commit=run['source_commit'],producer_job=job,
         source_manifest_sha256=digest(manifest),original_submission_sha256=digest(base/'preparation/training-submission.json'),
-        original_claim_sha256=digest(base/'preparation/training-submit-claim.json'))
+        original_claim_sha256=digest(base/'preparation/training-submit-claim.json'),
+        native_allocation_sha256=digest(allocation_path))
     return run,binding,raw
 
 

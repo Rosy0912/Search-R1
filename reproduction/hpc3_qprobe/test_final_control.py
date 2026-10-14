@@ -20,13 +20,21 @@ class FinalControlTests(unittest.TestCase):
         self.patch_root=patch.object(control,'ROOT',self.root);self.patch_owner=patch.object(control,'OWNER',os.getuid())
         self.patch_root.start();self.patch_owner.start()
         self.run_id='a'*32;self.commit='b'*40;self.job='12345'
-        self.run=dict(run_id=self.run_id,source_commit=self.commit,slurm_job_id=self.job,training_world_size=4,
+        self.run=dict(run_id=self.run_id,source_commit=self.commit,training_world_size=4,
             actor_micro_batch_per_rank=4,execution_site='hpc3',checkpoint_dir=str(self.base/'checkpoints/search-g1-common8'))
         for folder in ('logs','preparation'):(self.base/folder).mkdir()
         self.write(self.base/'logs/run-manifest.json',self.run)
         self.write(self.base/'preparation/training-submission.json',dict(job=self.job,commit=self.commit,returncode=0))
         cmd=['sbatch',str(self.root/'source'/self.commit/'reproduction/hpc3_qprobe/train.sh'),str(self.base),self.commit]
         self.write(self.base/'preparation/training-submit-claim.json',dict(commit=self.commit,command=cmd))
+        self.allocation=dict(accepted=True,run_id=self.run_id,slurm_job_id=self.job,training_world_size=4,
+            requested_gres='gres/gpu:4',visible_devices=['0','1','2','3'],actual_allocated_indices=[1,2,3,7],
+            actual_cuda_runtime_uuids=['GPU-00000000-0000-0000-0000-%012d'%i for i in range(4)],node='ACD1-1',
+            actual_allocation_detail='JobId=12345 UserId=jxu957(14090) Account=jxu957 QOS=formal-user '+
+                'Partition=emergency_acd WorkDir='+str(self.base)+' Command='+cmd[-3]+
+                ' NumNodes=1 NumCPUs=48 MinMemoryNode=512G NodeList=ACD1-1 '+
+                'AllocTRES=cpu=48,mem=512G,node=1,gres/gpu=4\n Nodes=ACD1-1 GRES=gpu:4(IDX:1-3,7)\n')
+        self.write(self.base/'logs/native-allocation-admission.json',self.allocation)
         self.raw='12345|RUNNING|0:0|jxu957|14090|jxu957|formal-user|emergency_acd\n'
         self.owner_context=patch.object(control,'owner');self.owner_context.start()
 
@@ -67,6 +75,49 @@ class FinalControlTests(unittest.TestCase):
             control.producer(self.base,complete=True)
         bad=copy.deepcopy(self.run);bad['slurm_job_id']='999';self.write(self.base/'logs/run-manifest.json',bad)
         with self.assertRaises(ValueError):self.producer()
+
+    def test_real_manifest_shape_uses_native_allocation_without_inventing_job_field(self):
+        manifest=self.base/'logs/run-manifest.json';before=manifest.read_bytes()
+        run,binding,_=self.producer()
+        self.assertNotIn('slurm_job_id',run);self.assertEqual(manifest.read_bytes(),before)
+        self.assertEqual(binding['producer_job'],self.job)
+        self.assertEqual(binding['native_allocation_sha256'],
+                         control.digest(self.base/'logs/native-allocation-admission.json'))
+        self.assertEqual(list(self.root.iterdir()),[])
+
+    def test_allocation_must_bind_the_actual_producer_and_exact_four_gpu_identity(self):
+        path=self.base/'logs/native-allocation-admission.json'
+        invalid=[('accepted',False),('run_id','c'*32),('slurm_job_id','999'),('training_world_size',8),
+                 ('training_world_size',True),('requested_gres','gres/gpu:8'),
+                 ('visible_devices',['0','1','2','3','4','5','6','7']),
+                 ('actual_allocated_indices',[1,2,3,3]),('actual_allocated_indices',[1,2,3,True]),
+                 ('actual_cuda_runtime_uuids',[self.allocation['actual_cuda_runtime_uuids'][0]]*4),
+                 ('actual_cuda_runtime_uuids',['GPU-invalid']*4)]
+        for key,value in invalid:
+            bad=copy.deepcopy(self.allocation);bad[key]=value;self.write(path,bad)
+            with self.subTest(key=key,value=value),self.assertRaisesRegex(ValueError,'allocation binding'):
+                self.producer()
+        path.unlink()
+        with self.assertRaises(FileNotFoundError):self.producer()
+
+    def test_changed_native_admission_cannot_adopt_an_existing_control_claim(self):
+        _,binding,_=self.producer();control.control_root(binding)
+        changed=copy.deepcopy(self.allocation);changed['checked_unix']=123456
+        self.write(self.base/'logs/native-allocation-admission.json',changed)
+        _,new_binding,_=self.producer()
+        with self.assertRaisesRegex(ValueError,'another producer'):control.control_root(new_binding)
+
+    def test_native_detail_must_match_original_source_owner_resources_and_gpu_indices(self):
+        path=self.base/'logs/native-allocation-admission.json';detail=self.allocation['actual_allocation_detail']
+        for before,after in [('JobId=12345','JobId=999'),('jxu957(14090)','mou176(21930)'),
+                             ('QOS=formal-user','QOS=other'),('Partition=emergency_acd','Partition=other'),
+                             ('WorkDir='+str(self.base),'WorkDir=/other'),
+                             ('Command=','Command=/other'),('NumCPUs=48','NumCPUs=96'),
+                             ('MinMemoryNode=512G','MinMemoryNode=1T'),
+                             ('gres/gpu=4','gres/gpu=8'),('IDX:1-3,7','IDX:0,2-3,7')]:
+            changed=copy.deepcopy(self.allocation);changed['actual_allocation_detail']=detail.replace(before,after)
+            self.write(path,changed)
+            with self.subTest(before=before),self.assertRaises(ValueError):self.producer()
 
     def test_only_real_five_pair_paths_counters_and_four_ranks(self):
         path,value=self.receipt(5);control.pair(self.base,self.run,5)
