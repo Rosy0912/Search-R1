@@ -51,6 +51,14 @@ def pinned_run():
  assert subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True,timeout=10).strip()==intent['source_commit']
  assert not subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],timeout=10).strip()
  paths=[p for p in repo.rglob('*') if p.is_file() and (p.suffix in ('.py','.sh','.yaml','.yml','.json') or str(p.relative_to(repo)) in ('verl/version/version','verl/single_controller/version/version')) and not {'.git','__pycache__','evidence'}.intersection(p.relative_to(repo).parts)]
+ # Hydra creates exactly these ignored launch-configuration YAMLs after startup.
+ # Keep all declared source bytes and reject every other undeclared runtime file.
+ generated=[]
+ for path in paths:
+  relative=str(path.relative_to(repo))
+  if relative not in intent['source_sha256'] and re.fullmatch(r'outputs/[0-9]{4}-[0-9]{2}-[0-9]{2}/[0-9]{2}-[0-9]{2}-[0-9]{2}/\.hydra/(config|hydra|overrides)\.yaml',relative):
+   owned(path);generated.append(path)
+ paths=[path for path in paths if path not in generated]
  actual={str(path.relative_to(repo)):hashlib.sha256(owned(path).read_bytes()).hexdigest() for path in paths}
  assert actual==intent['source_sha256']
  assert run['completed_updates']==0 and run['training_world_size']==4
