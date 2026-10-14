@@ -1,0 +1,182 @@
+{
+  "A9_all_registered_births_exited": true,
+  "actual_startup_error": "AssertionError: Authorized local GPUs are occupied: [['GPU-92249a14-a344-f77f-e18c-d1cea5c638a7', '2582112']]",
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-76398c90bc554e7cbd81d465a547eb71",
+  "complete_outers": 0,
+  "current_assigned_gpu_rows": [
+    {
+      "compute_app_count": 0,
+      "compute_memory_total_mib": 0,
+      "device_minus_compute_memory_mib": 4,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 0,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 4,
+      "uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83"
+    },
+    {
+      "compute_app_count": 0,
+      "compute_memory_total_mib": 0,
+      "device_minus_compute_memory_mib": 4,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 1,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 4,
+      "uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40"
+    },
+    {
+      "compute_app_count": 0,
+      "compute_memory_total_mib": 0,
+      "device_minus_compute_memory_mib": 4,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 2,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 4,
+      "uuid": "GPU-19f588c3-3f42-a910-5f9a-21687befed5b"
+    },
+    {
+      "compute_app_count": 0,
+      "compute_memory_total_mib": 0,
+      "device_minus_compute_memory_mib": 4,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 3,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 4,
+      "uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+    },
+    {
+      "compute_app_count": 0,
+      "compute_memory_total_mib": 0,
+      "device_minus_compute_memory_mib": 4,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 5,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 4,
+      "uuid": "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b"
+    },
+    {
+      "compute_app_count": 1,
+      "compute_memory_total_mib": 1142,
+      "device_minus_compute_memory_mib": 9,
+      "foreign_to_run_ledger_compute_memory_mib": 1142,
+      "gpu_utilization_percent": 0,
+      "index": 6,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 0,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 1151,
+      "uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 83877,
+      "relative": "logs/run-manifest.json",
+      "sha256": "0f0b1e847a70b13dbb53b6b0be4f65fd0f9ef42a0c70bfe9380093f8178a3431"
+    },
+    {
+      "bytes": 1104,
+      "relative": "logs/deployment-launch-receipt.json",
+      "sha256": "b25a87a7539bc0a37ed4f731726f989bb73eb50c57e52301c736316a950e7970"
+    },
+    {
+      "bytes": 1308,
+      "relative": "logs/deployment-pipeline.log",
+      "sha256": "d4e4ee1cc42bcbdfe0a92d5ff4d0b72dec4999492647a193d8c2503b5a5936a3"
+    }
+  ],
+  "identity": {
+    "execution_id": "6fd0219e4f56467b938ad3e549ad8ad4",
+    "run_id": "3ecc1a1afd9948d18d1d5d670c547b51",
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c"
+  },
+  "lost_A9_Adam": 60,
+  "lost_A9_outers": 3,
+  "lost_newrun_updates": 0,
+  "native_algorithm_accepted": false,
+  "newrun_has_no_trainer_or_service_ledger": true,
+  "next_resource_read_not_before_unix": 1791947227.0313225,
+  "no_foreign_signals": true,
+  "no_model_test_or_extra_eval": true,
+  "no_repeatlaunch": true,
+  "observation_scope": "current resources; oldA9 ownership identity separately bound; new3ecc zero counts from its actual absent runtime artifacts",
+  "observed_unix": 1791945427.0313225,
+  "outside_A9_ledger_compute_apps": [
+    {
+      "after": {
+        "pid": 2582112,
+        "read_status": "read",
+        "sid": 2582112,
+        "start_ticks": 602414731,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2582112,
+        "read_status": "read",
+        "sid": 2582112,
+        "start_ticks": 602414731,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "foreign_to_run_ledger",
+      "gpu_index": 6,
+      "gpu_uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7",
+      "matching_jobs": [],
+      "pid": 2582112,
+      "reason": "stable_live_birth_absent_from_full_sampled_run_ledger",
+      "used_memory_mib": 1142
+    }
+  ],
+  "pipeline_exited_verified": true,
+  "pipeline_identity": {
+    "pid": 2592914,
+    "sid": 2592914,
+    "start_ticks": 602487016
+  },
+  "pretrainer_artifacts_absent": {
+    "actual-attempts.jsonl": true,
+    "actual-updates.jsonl": true,
+    "native-allocation-admission.json": true,
+    "pipeline-launch-claim.json": true,
+    "pipeline-status.json": true,
+    "process-ledger.json": true,
+    "search-g1-common8-training.log": true,
+    "training-launch-claim.json": true
+  },
+  "processed_opportunities": 0,
+  "readonly_metadata_sha256": "4e27094bf6fb05482f05fcb13385261b33b2468e8aace28dee6aeb99eb01b246",
+  "resource_blocked_consecutive_goal_turns": 1,
+  "retained_A9_updates": 0,
+  "role": "actual_new3ecc_pretrainer_occupancy_exit_resource_window",
+  "skips": 0,
+  "successful_adam": 0,
+  "trainer_never_started": true
+}
