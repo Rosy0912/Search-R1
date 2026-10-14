@@ -1,0 +1,42 @@
+{
+  "actual_preparation_verification": {
+    "independent_actual_deployment_review_verified": true,
+    "prepared_receipt_sha256": "90938c9cbbeae4dfc9b21770d90e03d515190ac03f627786abebf9d17777256d"
+  },
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-76398c90bc554e7cbd81d465a547eb71",
+  "identity": {
+    "execution_backend": "ssh_local",
+    "execution_id": "6fd0219e4f56467b938ad3e549ad8ad4",
+    "profile": "common8",
+    "run_id": "3ecc1a1afd9948d18d1d5d670c547b51",
+    "slurm_job_id": null,
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "training_world_size": 4
+  },
+  "launch_artifact_exists": {
+    "deployment-launch-receipt.json": false,
+    "pipeline-launch-claim.json": false,
+    "pipeline-status.json": false,
+    "prepared-launch-claim.json": false,
+    "process-ledger.json": false,
+    "training-launch-claim.json": false
+  },
+  "lost_A9_complete_outers": 3,
+  "lost_A9_successful_adam": 60,
+  "native_algorithm_accepted": false,
+  "observed_unix": 1791945061.9331229,
+  "operator_adaptation": "apply existing4card runtime environment; fsync transportdiagnostics before rc/JSON assertions",
+  "prepared_receipt_sha256": "90938c9cbbeae4dfc9b21770d90e03d515190ac03f627786abebf9d17777256d",
+  "prior_write_claim_preserved": true,
+  "readonly_receipt_sha256": "d1710b2e321b13efc11b0c5ec17d950c3871cd24b5fd817fc7a1a1782b54e40a",
+  "remote_review_rewritten": false,
+  "retained_A9_updates": 0,
+  "review_file": {
+    "bytes": 12241,
+    "path": "/data/shaoshitong/Search-G1-a800-fresh200-76398c90bc554e7cbd81d465a547eb71/logs/actor-probe-production-deployment-review.json",
+    "sha256": "f35fbcdd0a06557f62908b3fcf79021b1e39149e398393195c2737b80311d5c7"
+  },
+  "role": "independent_actual_review_write_reconciled_no_repeat",
+  "successful_adam": 0,
+  "training_complete_outers": 0
+}
