@@ -231,6 +231,34 @@ def prepare_target():
     return dict(status='FRESH_NATIVE4_TARGET_PREPARED',target_base=str(TARGET),source_commit=SOURCE)
 
 
+def repair_unstarted():
+    """Publish the repaired policy only for the actually failed preflight target."""
+    if os.getuid()!=TARGET_UID:raise ValueError('Only target owner may repair its unstarted preparation')
+    untouched();validate_old(job(OLD)[0])
+    for name in ('training-launch-claim.json','run-manifest.json','process-ledger.json','native-allocation-admission.json'):
+        if (TARGET/'logs'/name).exists():raise ValueError('Native target was already claimed; never hot edit')
+    for name in ('account-transition-submit-claim.json','account-transition-submission.json'):
+        if (BASE/'preparation'/name).exists():raise ValueError('Submission already attempted; never rebind')
+    failure=json.loads((TARGET/'preparation/prelaunch-storage/logs/storage-budget-admission.json').read_text())
+    if failure['accepted'] is not False:raise ValueError('Actual failed preflight evidence required')
+    proof=json.loads((BASE/'preparation'/('source-'+SOURCE+'-verification.json')).read_text())
+    source=BASE/'source'/SOURCE
+    if proof['status']!='PUBLISHED_SOURCE_FULL_SHA_PASS':raise ValueError('Unpublished repair')
+    for name,sha in proof['files'].items():
+        if hashlib.sha256((source/name).read_bytes()).hexdigest()!=sha:raise ValueError('Repaired source differs')
+    path=TARGET/'preparation/personal-storage-authorization.json'
+    if path.exists():raise ValueError('Preparation repair already attempted; inspect actual binding')
+    old=(TARGET/'repo').resolve()
+    once(path,dict(budget_bytes=2*10**12,scope='jxu957_native4_qprobe_only',
+        original_human_text='可能这个是2TB上限，没事，你先提交看看，能不能跑起来',
+        source='direct current-turn human instruction',epoch=time.time(),actual_hard_quota_unverified=True))
+    link=TARGET/'repo';temporary=TARGET/'repo.repaired';temporary.symlink_to(source);temporary.replace(link)
+    once(TARGET/'preparation/repaired-before-any-native-claim.json',dict(before_source=str(old),
+        after_source=str(source),source_commit=SOURCE,failed_storage_proof=failure,
+        algorithm_budget_changed=False,source_files=len(proof['files']),native_training_started=False))
+    return dict(status='FAILED_PREPARATION_REPAIRED_BEFORE_ANY_NATIVE_CLAIM',source_commit=SOURCE)
+
+
 def preflight():
     if os.getuid() != TARGET_UID:
         raise ValueError('Target account identity differs')
@@ -334,7 +362,7 @@ def release():
 
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser(); p.add_argument('mode', choices=('access', 'prepare-target', 'preflight', 'submit', 'cancel-old', 'release'))
+    p = argparse.ArgumentParser(); p.add_argument('mode', choices=('access', 'prepare-target', 'repair-unstarted', 'preflight', 'submit', 'cancel-old', 'release'))
     p.add_argument('--commit',required=True)
     p.add_argument('--target-account',choices=('jxu957','mou176'),default='jxu957')
     p.add_argument('--owner-observation')
@@ -346,5 +374,5 @@ if __name__ == '__main__':
     QOS='formal-user' if TARGET_ACCOUNT=='jxu957' else 'normal'
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-'+TARGET_ACCOUNT+'-20261014')
     if len(SOURCE)!=40 or any(c not in '0123456789abcdef' for c in SOURCE):raise ValueError('Invalid source commit')
-    print(json.dumps({'access': access, 'prepare-target':prepare_target, 'preflight': preflight, 'submit': submit,
+    print(json.dumps({'access': access, 'prepare-target':prepare_target, 'repair-unstarted':repair_unstarted, 'preflight': preflight, 'submit': submit,
                       'cancel-old': cancel_old, 'release': release}[args.mode]()), flush=True)

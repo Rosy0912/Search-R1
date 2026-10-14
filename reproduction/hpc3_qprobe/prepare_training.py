@@ -20,12 +20,21 @@ def storage_admission(base,model):
     # Model shards, FP32 Adam moments and a complete exported model; reserve all
     # five milestones, plus features, teacher cache, head/replay and rollout audits.
     reserve=4*len(checkpoint['save_steps'])*checkpoint['per_save_allowance_bytes']+96*2**30
+    authorization=base/'preparation/personal-storage-authorization.json'
+    limit=10**12
+    if authorization.is_file():
+        policy=json.loads(authorization.read_text())
+        if policy.get('budget_bytes')!=2*10**12 or policy.get('scope')!='jxu957_native4_qprobe_only':
+            raise ValueError('PERSONAL_STORAGE_AUTHORIZATION_DIFFERS')
+        limit=policy['budget_bytes']
     proof=dict(account_experiment_root=str(root),measured_allocated_bytes=measured,
         measurement_stdout=result.stdout,measurement_stderr=result.stderr,
         checkpoint_upper_allowance_bytes=4*len(checkpoint['save_steps'])*checkpoint['per_save_allowance_bytes'],
         other_run_allowance_bytes=96*2**30,remaining_run_allowance_bytes=reserve,
-        personal_budget_bytes=10**12,projected_bytes=measured+reserve,
-        accepted=measured+reserve<=10**12,checked_unix=time.time(),
+        personal_budget_bytes=limit,projected_bytes=measured+reserve,
+        budget_authorization=str(authorization) if authorization.is_file() else None,
+        actual_filesystem_hard_quota_verified=False,
+        accepted=measured+reserve<=limit,checked_unix=time.time(),
         scope='fresh prelaunch personal storage floor; actual growth still requires monitoring')
     write_once(base/'logs/storage-budget-admission.json',proof)
     if not proof['accepted']:raise ValueError('PERSONAL_1TB_STORAGE_RESERVATION_EXCEEDED')
