@@ -3,7 +3,7 @@ import json
 import tempfile
 import unittest
 
-from reproduction.common8.native_allocation import allocated_indices, validate_native_four
+from reproduction.common8.native_allocation import allocated_indices, validate_native_four, add_gpu_minor_numbers
 from reproduction.common8.precision_contract import NATIVE4_BF16_PROFILE, SAMPLING_JOURNAL_POLICY, bf16_policy
 from reproduction.common8.formal_contract import formal_mathematics
 from reproduction.common8.topology import actor_local_micro, actor_local_mini, local_trajectories
@@ -12,6 +12,12 @@ from reproduction.common8 import test_configuration, configuration
 
 
 class NativeFourTests(unittest.TestCase):
+    def test_verbose_xml_minors_reject_duplicate_or_different_inventory(self):
+        rows=[['0','GPU-a','80000'],['1','GPU-b','80000']]
+        xml='<nvidia_smi_log><gpu><uuid>GPU-a</uuid><minor_number>4</minor_number></gpu><gpu><uuid>GPU-b</uuid><minor_number>7</minor_number></gpu></nvidia_smi_log>'
+        self.assertEqual(add_gpu_minor_numbers(rows,xml),[rows[0]+['4'],rows[1]+['7']])
+        for bad in (xml.replace('GPU-b','GPU-a'),xml.replace('GPU-b','GPU-c'),xml.replace('>7<','>4<'),xml.replace('>7<','>N/A<')):
+            with self.assertRaises(AssertionError):add_gpu_minor_numbers(rows,bad)
     def binding(self):
         return dict(profile='common8',execution_site='hpc3',execution_backend='slurm',
                     training_world_size=4,actor_micro_batch_per_rank=4,
