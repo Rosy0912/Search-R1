@@ -73,6 +73,15 @@ def request_interrupt(sig,frame):
     _interrupt_requested=sig
 
 
+def verify_initial_probe_binding(run):
+    restore=run.get('full_state_restore')
+    if restore and restore.get('kind')=='question_probe_pair':
+        version=restore['reward_probe_version']
+        assert isinstance(version,str) and version and run['initial_probe_version']==version, 'Paired restored reward probe binding differs'
+    else:
+        assert run['initial_probe_version'] is None, 'Fresh initial probe must be unbound'
+
+
 def gpu_rows(fields,kind='gpu'):
     # Operational query bound, not an occupancy/sampling-gap acceptance limit.
     return list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits'],text=True,timeout=30))))
@@ -441,7 +450,8 @@ def main():
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):(base/name).mkdir(parents=True,exist_ok=True)
     lock=(base/'gpu-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     signal.signal(signal.SIGTERM,request_interrupt);signal.signal(signal.SIGINT,request_interrupt)
-    assert run['profile']=='common8' and run['completed_updates']==0 and run['initial_probe_version'] is None
+    assert run['profile']=='common8' and run['completed_updates']==0
+    verify_initial_probe_binding(run)
     assert not (base/'logs/process-ledger.json').exists(), 'Inspect/clean previous attempt; never duplicate launch'
     for name,sha in run['source_sha256'].items():assert digest(base/'repo'/name)==sha
     for port in (18010,18012):

@@ -50,6 +50,18 @@ def rollout_logprob_metadata(rollout):
     return values
 
 
+def verify_source_snapshot(base,run):
+    from reproduction.common8.configuration import REPO
+    canonical_repo=REPO.resolve()
+    assert (base/'repo').resolve()==canonical_repo, 'Run source link differs from loaded immutable source'
+    if run.get('execution_site')=='hpc3':
+        assert canonical_repo==Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source')/run['source_commit'], 'HPC3 immutable commit source differs'
+    # This is a current disk-source identity check, not proof of loaded modules.
+    for name, expected in run['source_sha256'].items():
+        path = base / 'repo' / name
+        assert path.resolve() == canonical_repo/name and hashlib.sha256(path.read_bytes()).hexdigest() == expected
+
+
 def _native_run():
     base = Path(os.environ['SEARCH_G1_BASE'])
     run = json.loads((base / 'logs/run-manifest.json').read_text())
@@ -57,10 +69,8 @@ def _native_run():
     assert run['profile'] == 'common8' and run['completed_updates'] == 0
     world_size(run)
     job = execution_job_id(run)
-    # This is a current disk-source identity check, not proof of loaded modules.
-    for name, expected in run['source_sha256'].items():
-        path = base / 'repo' / name
-        assert path.resolve() == path and hashlib.sha256(path.read_bytes()).hexdigest() == expected
+    # Current disk-source identity; this does not prove loaded module bytes.
+    verify_source_snapshot(base,run)
     return base, run, job
 
 
