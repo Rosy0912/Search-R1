@@ -18,6 +18,7 @@ def execute(args):
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '0,1,2,3,4,5,6,7':
         raise ValueError('All eight authorized physical cards are required')
     previous = base / 'receipts' / 'current-entry.json'
+    retry_proof = None
     if previous.exists():
         old = json.loads(previous.read_text())
         proc = Path('/proc') / str(old['pid'])
@@ -25,8 +26,15 @@ def execute(args):
             stat = proc.joinpath('stat').read_text().rsplit(')', 1)[1].split()
             if int(stat[19]) == old['tick'] and proc.stat().st_uid == old['uid'] and stat[0] != 'Z':
                 raise ValueError('This group still has a live owner; do not submit a duplicate')
-        if not args.resume_manifest:
+        if args.retry_unstarted:
+            if args.resume_manifest:
+                raise ValueError('Pre-initialization retry cannot also claim native resume')
+            from .unstarted_retry import check
+            retry_proof = check(base, old)
+        elif not args.resume_manifest:
             raise ValueError('Existing group needs an explicit native checkpoint; do not reset Adam')
+    elif args.retry_unstarted:
+        raise ValueError('No previous exact failed entry exists to retry')
     output = base / 'output' / ('attempt-' + uuid.uuid4().hex)
     output.mkdir(parents=True, exist_ok=False)
     os.environ.update(RECURSIVE_ABLATION_RECEIPT=str(receipt_path),
@@ -60,7 +68,9 @@ def execute(args):
         tick=int(Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]),
         run_id=record['run_id'], group=record['group'], output=str(output),
         config_sha256=record['config_sha256'], source_commit=record['source_commit'],
-        resume_manifest=args.resume_manifest, allocation=os.environ['SLURM_JOB_ID'])
+        entry_source_commit=os.environ.get('RBA_ABLATION_ENTRY_COMMIT', record['source_commit']),
+        resume_manifest=args.resume_manifest, retry_unstarted_proof=retry_proof,
+        allocation=os.environ['SLURM_JOB_ID'])
     replace_json(previous, entry)
     print('ABLATION_ENTRY_START=' + json.dumps(entry, sort_keys=True), flush=True)
     from omegaconf import OmegaConf
@@ -75,7 +85,9 @@ def execute(args):
         if key in os.environ:
             env[key] = os.environ[key]
     env.update(TOKENIZERS_PARALLELISM='false', NCCL_DEBUG='WARN')
-    ray_root = str(base / 'tmp' / ('ray-' + record['run_id']))
+    # Ray creates a session/socket suffix. Keep its root short enough for the
+    # kernel AF_UNIX107-byte address limit on this H100 runtime.
+    ray_root = '/tmp/ra-' + record['run_id'][:10]
     context = ray.init(address='local', num_gpus=8, num_cpus=96, include_dashboard=False,
         object_store_memory=8589934592, _node_ip_address='127.0.0.1', _temp_dir=ray_root,
         runtime_env={'env_vars': env, 'worker_process_setup_hook': worker_setup})
@@ -100,6 +112,7 @@ def main():
     parser.add_argument('--receipt', required=True)
     parser.add_argument('--resume-manifest')
     parser.add_argument('--resume-sha256')
+    parser.add_argument('--retry-unstarted', action='store_true')
     raise SystemExit(execute(parser.parse_args()))
 
 

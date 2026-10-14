@@ -26,6 +26,10 @@ group = state.get('current') if state else None
 record = dict(time=time.time(), deployment=read(b / 'deployment.json'),
               study=state, study_start=read(b / 'study-start.json'),
               launch=read(b / 'study-launch.json'), actual_exit=read(b / 'study-actual-exit.json'))
+active = read(b / 'active-study.json')
+if active:
+    record['active_study'] = active
+    record['actual_exit'] = read(Path(active['actual_exit_path']))
 if record['study_start']:
     record['study_process'] = proc(record['study_start']['pid'])
 if group:
@@ -38,7 +42,7 @@ if group:
         record['progress'] = read(output / 'progress.json')
         record['entry_exit'] = read(output / 'entry-exit.json')
         record['native_complete'] = read(output / 'training-complete.json')
-    log = g / 'logs/training.log'
+    log = Path(state.get('current_training_log', str(g / 'logs/training.log')))
     if log.is_file():
         size = log.stat().st_size
         with log.open('rb') as f:

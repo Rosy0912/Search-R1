@@ -48,16 +48,19 @@ def run(args):
     known = {'A-original': original}
     state_path = base / 'study-progress.json'
     state = dict(started=time.time(), status='ACTIVE', source_commit=args.source_commit,
+                 entry_source_commit=os.environ.get('RBA_ABLATION_ENTRY_COMMIT', args.source_commit),
                  requested_labels=len(conditions), conditions=conditions, complete={}, current=None)
     if state_path.exists():
         old = json.loads(state_path.read_text())
         if old['source_commit'] != args.source_commit or old['conditions'] != conditions:
             raise ValueError('Existing sequential study belongs to different frozen conditions/source')
         state = old
+        state['entry_source_commit'] = os.environ.get('RBA_ABLATION_ENTRY_COMMIT', args.source_commit)
         known.update(state['complete'])
     start = dict(time=time.time(), pid=os.getpid(), uid=os.getuid(),
         tick=int(Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]),
         source_commit=args.source_commit, allocation=os.environ['SLURM_JOB_ID'])
+    start['entry_source_commit'] = os.environ.get('RBA_ABLATION_ENTRY_COMMIT', args.source_commit)
     previous = base / 'study-start.json'
     if previous.exists():
         owner = json.loads(previous.read_text())
@@ -85,6 +88,7 @@ def run(args):
         record = read_receipt(receipt_path)
         if record['condition'] != row['options'] or record['source_commit'] != args.source_commit:
             raise ValueError('Existing group config is not this frozen single-factor condition')
+        entry_flags = []
         if (group_base / 'receipts' / 'current-entry.json').exists():
             old = json.loads((group_base / 'receipts' / 'current-entry.json').read_text())
             completed = Path(old['output']) / 'training-complete.json'
@@ -97,19 +101,33 @@ def run(args):
                 known[group] = accepted
                 replace_json(state_path, state)
                 continue
-            raise RuntimeError('Interrupted group needs an explicitly selected complete native resume checkpoint')
+            from .unstarted_retry import check
+            retry_proof = check(group_base, old)
+            preserved_wait = group_base / 'receipts' / ('actual-parent-wait-pid-' + str(old['pid']) + '.json')
+            if not preserved_wait.exists():
+                preserved_wait.write_bytes((group_base / 'receipts' / 'actual-parent-wait.json').read_bytes())
+            preserved_entry = group_base / 'receipts' / ('entry-pid-' + str(old['pid']) + '.json')
+            if not preserved_entry.exists():
+                preserved_entry.write_bytes((group_base / 'receipts' / 'current-entry.json').read_bytes())
+            entry_flags = ['--retry-unstarted']
+            state['unstarted_retry'] = dict(group=group, proof=retry_proof, time=time.time())
         state['current'] = group
         replace_json(state_path, state)
         env = dict(os.environ, RBA_ABLATION_BASE=str(group_base), RBA_ABLATION_SOURCE_COMMIT=args.source_commit)
         print('ABLATION_STUDY_START_GROUP=' + json.dumps(dict(group=group, time=time.time())), flush=True)
-        with (group_base / 'logs' / 'training.log').open('xb') as log:
-            child = subprocess.Popen(['bash', str(source / 'release' / 'recursive_bran_a' / 'ablation150_v1' / 'run.sh')],
+        log_path = group_base / 'logs' / 'training.log'
+        if log_path.exists():
+            log_path = group_base / 'logs' / ('training-attempt-' + str(time.time_ns()) + '.log')
+        state['current_training_log'] = str(log_path)
+        with log_path.open('xb') as log:
+            child = subprocess.Popen(['bash', str(source / 'release' / 'recursive_bran_a' / 'ablation150_v1' / 'run.sh'), *entry_flags],
                                      env=env, stdout=log, stderr=subprocess.STDOUT)
             state['child'] = dict(pid=child.pid, group=group, started=time.time())
             replace_json(state_path, state)
             rc = child.wait()
         replace_json(group_base / 'receipts' / 'actual-parent-wait.json', dict(time=time.time(),
-            pid=child.pid, rc=rc, group=group, source_commit=args.source_commit))
+            pid=child.pid, rc=rc, group=group, source_commit=args.source_commit,
+            entry_source_commit=os.environ.get('RBA_ABLATION_ENTRY_COMMIT', args.source_commit)))
         if rc != 0:
             state['status'] = 'PROGRAMMING_OR_RUNTIME_FAILURE_REQUIRES_NATIVE_RECOVERY'
             state['actual_parent_wait_rc'] = rc
