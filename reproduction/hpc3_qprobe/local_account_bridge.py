@@ -17,7 +17,7 @@ def run(account, command, payload, control_work):
     spec = importlib.util.spec_from_file_location('campus_transport', Path(control_work)/'start_cosearch_flash_hf.py')
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
     secret = Path('/Users/shaoshitong/Documents/remote_codex_control/memories/hpc3-credentials.private.md').read_text()
-    line = next(l for l in secret.splitlines() if l.startswith('账号 '+account+' '))
+    line = next(l for l in secret.splitlines() if l.startswith('账号 '+account))
     password = re.split(r'密码\s*[:：]?\s*', line, 1)[1].strip().strip('`')
     secret = line = None
     ssh = ['sshpass', '-e', 'ssh', '-T', '-oStrictHostKeyChecking=yes',
