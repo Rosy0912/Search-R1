@@ -504,7 +504,7 @@
       "old_sha256": "a199f8f6111c5cbf5554e2f80a08f3f8e2936667d3a1079a19a90c888cb7ae48"
     },
     "reproduction/a800_common/adopt_initial_probes.py": {
-      "new_sha256": "330270243a114281f7c32298f536bc632138a89f49096dc29d9be87cde1d300f",
+      "new_sha256": "96fe3e7e951bde17d4484df5f101487f02b5d3d43774dff50c151cd1c82d0ce4",
       "old_sha256": null
     },
     "reproduction/a800_common/bf16-adoption-source-delta.json": {
@@ -516,7 +516,7 @@
       "old_sha256": "81ea073eeb75a6c969f7485e32ba4c713026758889779334b551b587d4585da7"
     },
     "reproduction/a800_common/deploy_qprobe.py": {
-      "new_sha256": "54176e066cf4aa18271ba1e6028cec6db39f1b13a673fc7c215ccec761e1a978",
+      "new_sha256": "174920c7d2b834eab781e3232bf7e4f6997004fb2d2f9dc4c52c6f4b17b8bfb3",
       "old_sha256": null
     },
     "reproduction/a800_common/precompute_qprobe.py": {
@@ -524,7 +524,7 @@
       "old_sha256": null
     },
     "reproduction/a800_common/prepare_run.py": {
-      "new_sha256": "09a3eaca17712bac6a946695a72a6c6c6015faa05536ff036663bf03e1aceae4",
+      "new_sha256": "a9537894bfc70e4d786cca4177181447b5993d2c9314cc3c097d11590283f6e8",
       "old_sha256": "9e0298f0277a12eb810f0195e2d459848ad3b03d2e021607ca0ce1553cb44b61"
     },
     "reproduction/a800_common/qprobe_adoption_source_delta.py": {
@@ -536,11 +536,11 @@
       "old_sha256": "03db83e339851938ea83886ac6170a19b2d9d74e0a0fead4b5b4a55be417a184"
     },
     "reproduction/a800_common/test_deploy_qprobe.py": {
-      "new_sha256": "146a99523937af00e98ecacf9a111da324a2326519c0268c4ff1c273618d0121",
+      "new_sha256": "bd0904e526a0c8afea2e6c129ea220d90f392e98e7663690822fe55d1742f1f5",
       "old_sha256": null
     },
     "reproduction/a800_common/test_qprobe_initial_probe_adoption.py": {
-      "new_sha256": "eb6441cde07f2279b3d52e1e9e38f0e8e50d9ab080706591c194e29308d9805f",
+      "new_sha256": "1d285d663931a2bfac07208b30a8e0ffe9b4032c299054196d9694da93b665bf",
       "old_sha256": null
     },
     "reproduction/a800_common/train.sh": {
@@ -1018,7 +1018,7 @@
   "role": "a800_qprobe_frozen_g1_initial0_source_delta",
   "schema_version": 1,
   "target_precision_profile": "bf16_policy_fp32_master",
-  "target_source_map_sha256_without_delta": "00f8a8acece34624ccc1cfc8df022c78973859900cbc55d23a7b743df9e255d1",
+  "target_source_map_sha256_without_delta": "88f74978b2fa8c95e33fad614b8bd109df2f78befc47e8ac90298801a2dc36f7",
   "unchanged_frozen_g1_source_sha256": {
     "probe_server.py": "284df6e025822eb654d5858c394ce5c27fe80bb0d538a7d7dfa247081c461900",
     "reproduction/a800/prepare_run.py": "abc38f06bebd79e97bc3fd70959e902e7c2118bcea95d5eebe57545d212f2842",

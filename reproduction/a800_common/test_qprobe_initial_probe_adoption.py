@@ -11,6 +11,33 @@ from reproduction.a800_common import qprobe_adoption_source_delta as sources
 from reproduction.common8.source_files import runtime_files
 
 
+class Initial0Micro4BudgetTests(unittest.TestCase):
+    def fixture(self):
+        from reproduction.common8.formal_contract import formal_mathematics
+        previous=dict(profile='common8',training_world_size=4,run_id='6de29bcb7be741cfa1bfacdf9e34efc9',
+            source_commit='f820ba6cb2db4f5cbe2ffc370cf515c3fe22d43c')
+        current=dict(profile='common8',execution_backend='ssh_local',training_world_size=4,completed_updates=0,
+            target_updates=200,actor_micro_batch_per_rank=4,precision_profile='bf16_policy_fp32_master')
+        budget=json.loads((Path(__file__).resolve().parents[2]/'reproduction/common8/budget.json').read_text())
+        previous['budget']=dict(budget,**formal_mathematics(previous))
+        current['budget']=dict(budget,**formal_mathematics(current))
+        return previous,current
+
+    def test_only_exact_fresh_micro4_and_existing_precision_transition_are_accepted(self):
+        from reproduction.a800_common.adopt_initial_probes import budget_changes_allowed
+        previous,current=self.fixture();changes=budget_changes_allowed(current,previous)
+        self.assertEqual(set(changes),{'compute_dtype','rollout_dtype','allow_tf32','per_rank_actor_micro_batch',
+                                      'ppo_micro_batch_size','objective_reduction'})
+        for patch in ({'training_world_size':8},{'completed_updates':1},{'actor_micro_batch_per_rank':4.0},
+                      {'full_state_restore':{'checkpoint':'prior'}}):
+            with self.subTest(patch=patch),self.assertRaises(ValueError):
+                budget_changes_allowed(dict(current,**patch),previous)
+        for key,value in (('ppo_micro_batch_size',32),('per_rank_actor_micro_batch',2),
+                          ('objective_reduction','other reduction'),('lr_warmup_steps',58),('per_rank_log_prob_micro_batch',4)):
+            changed=copy.deepcopy(current);changed['budget'][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):budget_changes_allowed(changed,previous)
+
+
 class QProbeInitial0SourceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

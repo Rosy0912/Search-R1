@@ -7,12 +7,12 @@ checkpoints or continue the separate H100 run.
 
 | Quantity | A800 placement |
 | --- | --- |
-| Training GPUs | Physical 0–3, four ranks |
-| Retrieval / probe GPUs | Retrieval 5–6, probe 6; physical 4 and 7 excluded |
+| Training GPUs | Any four actually idle cards outside auxiliary5/6 |
+| Retrieval / probe GPUs | Retrieval 5–6, probe 6; actual excluded complement bound at launch |
 | Outer batch | 512 questions × 5 responses = 2560 trajectories |
 | PPO mini-batch | Global 128, local 32 |
-| Actor micro-batch | Local 2, actual global 8 |
-| Accumulation per mini-batch | 16 forwards/backwards per rank |
+| Actor micro-batch | Local 4, actual global 16 |
+| Accumulation per mini-batch | 8 forwards/backwards per rank |
 | Old/reference log-prob micro-batch | Global 32, local 8 |
 | Optimizer opportunities | 20 per outer; successful Adam writes counted separately |
 | Learning rate | 1e-6, 57 completed-outer warmup, then constant |
@@ -104,7 +104,7 @@ intent must match the supplied exact SHA. Only source commit, source-map hash
 and creation time change in the formal method. The old baseline's ninth input,
 its historical source bundle, is excluded from the eight copied inputs.
 Preparation uses CPU with CUDA
-hidden and preserves BF16, actor local2/global8, accumulation16, reference
+hidden and preserves BF16, actor local4/global16, accumulation8, reference
 local8, formal guards and LR warmup57.
 
 The fresh intent and prepared manifest explicitly mark GPU placement as
@@ -165,6 +165,15 @@ map. The frozen scientific producers and fixed feature producers retain their
 exact bytes, so this placement change keeps the shared schema2 cache identity
 and copies the completed BF4 encoding into the new run without re-encoding.
 
+Actor local4/global16 changes the training micro-batch only. The teacher identity
+binds the complete rollout configuration, whose global log-prob micro-batch32
+and other sampling fields remain unchanged. A matching completed schema2 cache
+therefore reuses all5120 questions/25600 trajectories. Each fresh official actor
+gets a newly fitted5120-group head; no old actor, head checkpoint or Adam state
+is inherited. Initial0 frozen reward-head adoption permits exactly this
+local2→4/global8→16/two-row→four-row budget transition alongside the existing
+FP32→BF16 transition and retains every other identity/budget check.
+
 The teacher cache defaults to the stable remote namespace
 `/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2`, so a later fresh
 actor launch can reuse accepted trajectories. Choose another explicit
@@ -196,7 +205,7 @@ the exact `source_commit` and complete `source_sha256` map, a past positive
   "bootstrap_all_5120_groups": true,
   "exploration_64": true,
   "formal_200_not_201": true,
-  "four_rank_bf16_local2_global8_accum16_ref8": true,
+  "four_rank_bf16_local4_global16_accum8_ref8": true,
   "unchanged_guards_lr_warmup57": true
 }
 ```

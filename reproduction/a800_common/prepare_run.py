@@ -25,7 +25,7 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None,rest
     base,model,official_path=map(lambda p:Path(p).resolve(),(base,model,official_path))
     identity=dict(profile='common8',training_world_size=4,execution_backend='ssh_local',
         slurm_job_id=None,execution_id=uuid.uuid4().hex,precision_profile=BF16_PROFILE,
-        behavior_probability_policy=SAMPLING_JOURNAL_POLICY)
+        behavior_probability_policy=SAMPLING_JOURNAL_POLICY,actor_micro_batch_per_rank=4)
     validate_base(base,identity)
     if initial_probes_source_base is not None:
         initial_probes_source_base=Path(initial_probes_source_base)
@@ -66,8 +66,8 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None,rest
     budget.update(formal_mathematics(identity))
     assert budget['model_revision']==REVISION and budget['fresh_actor']
     assert budget['common_manifest_sha256']==data_proof['manifest_sha256']
-    assert budget['world_size']==4 and budget['ppo_micro_batch_size']==8
-    assert budget['per_rank_actor_micro_batch']==2 and budget['ppo_mini_batch_size']==128
+    assert budget['world_size']==4 and budget['ppo_micro_batch_size']==16
+    assert budget['per_rank_actor_micro_batch']==4 and budget['ppo_mini_batch_size']==128
     assert budget['per_rank_log_prob_micro_batch']==8
     inputs={name:digest(base/'data'/name) for name in
         ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet',

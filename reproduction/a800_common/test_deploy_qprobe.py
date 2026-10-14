@@ -2,8 +2,10 @@
 import ast
 import copy
 import hashlib
+import inspect
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -52,6 +54,52 @@ def feature_origin():
 
 
 class ProspectiveControlTests(unittest.TestCase):
+    def test_prepared_micro4_derives_and_resolves_the_actual_four_rank_contract(self):
+        from reproduction.a800_common import prepare_run as preparation
+        from reproduction.common8.formal_contract import formal_mathematics,verify_formal_config
+        from reproduction.common8.configuration import arguments
+        function=ast.parse(inspect.getsource(preparation.prepare)).body[0]
+        identity_node=next(node for node in function.body if isinstance(node,ast.Assign)
+            and any(isinstance(target,ast.Name) and target.id=='identity' for target in node.targets))
+        identity=eval(compile(ast.Expression(identity_node.value),'actual_prepare_identity','eval'),vars(preparation))
+        derivation=next(node for node in ast.walk(function) if isinstance(node,ast.Call)
+            and isinstance(node.func,ast.Name) and node.func.id=='formal_mathematics')
+        self.assertLess(identity_node.lineno,derivation.lineno)
+        self.assertEqual(ast.dump(derivation.args[0]),ast.dump(ast.Name(id='identity',ctx=ast.Load())))
+        self.assertEqual(identity['actor_micro_batch_per_rank'],4)
+        repo=Path(control.__file__).resolve().parents[2]
+        budget=json.loads((repo/'reproduction/common8/budget.json').read_text());budget.update(formal_mathematics(identity))
+        self.assertEqual((budget['per_rank_actor_micro_batch'],budget['ppo_micro_batch_size'],budget['per_rank_log_prob_micro_batch']),(4,16,8))
+        self.assertEqual((128//budget['world_size'])//budget['per_rank_actor_micro_batch'],8)
+        self.assertEqual(budget['objective_reduction'],'original four-row micro masked_mean')
+        self.assertEqual((budget['optimizer_opportunities_per_outer'],budget['lr_warmup_steps']),(20,57))
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve();(base/'logs').mkdir()
+            run=dict(identity,budget=budget,contract_kind='fresh200_warmup57',policy_safety_mode='inline_first_five',
+                completed_updates=0,target_updates=200,acceptance_update=5,model_revision=budget['model_revision'],
+                initial_model='/data/search-g1/assets/qwen2.5-3b-instruct',reference_model='/data/search-g1/assets/qwen2.5-3b-instruct',
+                checkpoint_dir=str(base/'checkpoints/search-g1-common8'),vllm_gpu_memory_utilization=0.25,
+                source_sha256={name:hashlib.sha256((repo/name).read_bytes()).hexdigest() for name in
+                    ('reproduction/common8/recipe.json','reproduction/common8/budget.json','verl/trainer/config/ppo_trainer.yaml')})
+            (base/'logs/run-manifest.json').write_text(json.dumps(run))
+            _,overrides=arguments(base);document=dict(do_search=True)
+            for assignment in overrides:
+                key,raw=assignment.split('=',1)
+                try:value=json.loads(raw)
+                except ValueError:
+                    try:value=ast.literal_eval(raw)
+                    except (ValueError,SyntaxError):value=raw
+                parts=key.lstrip('+').split('.');parent=document
+                for part in parts[:-1]:parent=parent.setdefault(part,{})
+                parent[parts[-1]]=value
+            defaults=(repo/'verl/trainer/config/ppo_trainer.yaml').read_text()
+            document['actor_rollout_ref']['actor']['clip_ratio']=float(re.search(r'^\s+clip_ratio: ([0-9.]+)$',defaults,re.MULTILINE).group(1))
+            verify_formal_config(document,run,base)
+            self.assertEqual(document['actor_rollout_ref']['actor']['ppo_micro_batch_size'],16)
+            self.assertEqual(document['actor_rollout_ref']['ref']['log_prob_micro_batch_size'],32)
+            document['actor_rollout_ref']['actor']['ppo_micro_batch_size']=8
+            with self.assertRaises(AssertionError):verify_formal_config(document,run,base)
+
     def test_actual_flexible_mapping_drives_cuda_and_receipt_without_claiming_stage_indices(self):
         for inventory_count,selected in ((8,[0,2,3,4]),(8,[1,3,4,7]),(10,[0,2,8,9])):
             physical=[[str(index),'GPU-'+str(index),'81920','4','0'] for index in range(inventory_count)]

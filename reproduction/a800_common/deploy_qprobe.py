@@ -44,7 +44,7 @@ MAX_BUNDLE = 32 * 1024**2
 REVIEW_CHECKS = (
     'official_model_and_canonical_data', 'frozen_teacher_5120_x_5',
     'bootstrap_all_5120_groups', 'exploration_64', 'formal_200_not_201',
-    'four_rank_bf16_local2_global8_accum16_ref8', 'unchanged_guards_lr_warmup57',
+    'four_rank_bf16_local4_global16_accum8_ref8', 'unchanged_guards_lr_warmup57',
 )
 
 
@@ -528,10 +528,10 @@ assert features.manifest['count']==169028 and features.spec['train_parquet_sha25
 assert run['retriever_version']==sha_json(ASSETS)
 from reproduction.common8.precision_contract import BF16_PROFILE
 assert run['precision_profile']==BF16_PROFILE
-assert run.get('actor_micro_batch_per_rank',2)==2
-budget=run['budget'];assert budget['per_rank_actor_micro_batch']==2 and budget['ppo_micro_batch_size']==8
+assert run['actor_micro_batch_per_rank']==4
+budget=run['budget'];assert budget['per_rank_actor_micro_batch']==4 and budget['ppo_micro_batch_size']==16
 assert budget['ppo_mini_batch_size']==128 and budget['per_rank_log_prob_micro_batch']==8 and budget['lr_warmup_steps']==57
-assert (128//4)//2==16
+assert (128//4)//4==8
 for path in (base/'checkpoints',base/'artifacts/question-probe',base/'cache'):
  assert str(path).startswith('/data/') and path.resolve()==path
 from reproduction.common8.native_allocation import bind_idle_local_placement

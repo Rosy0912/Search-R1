@@ -152,20 +152,28 @@ def _bf16_reuse(run, old):
 
 
 def budget_changes_allowed(run, old):
-    """Only the authenticated legacy-to-BF16 execution fields may differ."""
+    """Authenticate BF16 and the explicit fresh four-rank micro4 transition."""
     previous, current = old['budget'], run['budget']
     if canonical_bytes(previous) == canonical_bytes(current):
         return {}
     _check(_bf16_reuse(run, old), 'Initial calibration scientific budget changed')
     values = dict(compute_dtype=('float32', 'bfloat16'),
                   rollout_dtype=('float32', 'bfloat16'), allow_tf32=(False, None))
+    if run.get('actor_micro_batch_per_rank')==4:
+        _check(type(run['actor_micro_batch_per_rank']) is int
+               and run.get('profile')=='common8' and run.get('execution_backend')=='ssh_local'
+               and run.get('training_world_size')==old.get('training_world_size')==4
+               and run.get('completed_updates')==0 and run.get('target_updates')==200
+               and not run.get('full_state_restore'), 'Micro4 adoption requires a fresh four-rank actor')
+        values.update(per_rank_actor_micro_batch=(2,4),ppo_micro_batch_size=(8,16),
+                      objective_reduction=('original two-row micro masked_mean','original four-row micro masked_mean'))
     for name, (before, after) in values.items():
         _check(canonical_bytes(previous[name]) == canonical_bytes(before)
                and canonical_bytes(current[name]) == canonical_bytes(after),
-               'Unapproved initial calibration precision transition: ' + name)
+               'Unapproved initial calibration budget transition: ' + name)
     _check(canonical_bytes({k: v for k, v in previous.items() if k not in values})
            == canonical_bytes({k: v for k, v in current.items() if k not in values}),
-           'Initial calibration nonprecision budget changed')
+           'Initial calibration unrelated budget changed')
     return {name: dict(old=previous[name], new=current[name]) for name in values}
 
 
