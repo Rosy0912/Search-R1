@@ -18,6 +18,7 @@ BASE = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014')
 OLD = '716883'
 ORIGINAL_SOURCE = 'd4cc3dcbb4f2b2b93ac42fba11f72a4009480bd3'
 SOURCE = None
+OWNER_OBSERVATION = None
 TARGET = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-20261014')
 ORIGIN_UID = 21930
 TARGET_UID = 14090
@@ -44,6 +45,29 @@ def cli(args):
 
 
 def job(job_id):
+    # HPC3 hides other users' jobs. Each side supplies an actual fresh readback
+    # from its own authenticated login; never infer cancellation from invisibility.
+    if job_id==OLD and os.getuid()!=ORIGIN_UID:
+        path=Path(OWNER_OBSERVATION) if OWNER_OBSERVATION else BASE/'preparation/account-transition-retired.json'
+        if not path.is_file() or path.is_symlink() or path.stat().st_uid!=ORIGIN_UID:
+            raise ValueError('Actual original-owner readback required')
+        if path.parent.resolve()!=BASE/'preparation':
+            raise ValueError('Owner observation must remain in this run preparation namespace')
+        row=json.loads(path.read_text())
+        if time.time()-row['epoch']>300:
+            raise ValueError('Original-owner job readback is stale')
+        detail=row['actual'];value=scheduler_fields(detail)
+        if value.get('JobId')!=OLD or value.get('UserId')!='mou176('+str(ORIGIN_UID)+')':
+            raise ValueError('Owner job readback differs')
+        return value,detail
+    if job_id!=OLD and os.getuid()!=TARGET_UID:
+        path=BASE/'preparation/account-transition-submission.json'
+        if path.stat().st_uid!=TARGET_UID:
+            raise ValueError('Replacement must be observed by its actual owner')
+        row=json.loads(path.read_text())
+        if row['job']!=job_id or time.time()-row['epoch']>120:
+            raise ValueError('Replacement owner observation is stale or differs')
+        return scheduler_fields(row['actual']),row['actual']
     detail = cli(['scontrol', 'show', 'job', '-d', job_id])
     return scheduler_fields(detail), detail
 
@@ -284,7 +308,11 @@ def cancel_old():
 def release():
     if os.getuid() != TARGET_UID:
         raise ValueError('Only target owner can release the replacement')
-    old, _ = job(OLD)
+    # No earlier pending observation can be used in place of terminal proof.
+    path=BASE/'preparation/account-transition-retired.json'
+    if path.stat().st_uid!=ORIGIN_UID:raise ValueError('Retirement must be produced by actual original owner')
+    terminal=json.loads(path.read_text())
+    old=scheduler_fields(terminal['actual'])
     if old['JobState'] != 'CANCELLED' or old['RunTime'] != '00:00:00':
         raise ValueError('Old job was not cancelled before any native execution')
     retirement = json.loads((BASE/'preparation/account-transition-retired.json').read_text())
@@ -308,7 +336,9 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(); p.add_argument('mode', choices=('access', 'prepare-target', 'preflight', 'submit', 'cancel-old', 'release'))
     p.add_argument('--commit',required=True)
     p.add_argument('--target-account',choices=('jxu957','mou176'),default='jxu957')
+    p.add_argument('--owner-observation')
     args = p.parse_args();SOURCE=args.commit
+    OWNER_OBSERVATION=args.owner_observation
     TARGET_ACCOUNT=args.target_account
     TARGET_UID=14090 if TARGET_ACCOUNT=='jxu957' else ORIGIN_UID
     SLURM_ACCOUNT='d_huiqimai_team' if TARGET_ACCOUNT=='jxu957' else 'mou176'
