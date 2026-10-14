@@ -56,14 +56,20 @@ def native_birth(allocation):
         producer = allocation['pipeline_identity']
         assert all(type(producer[key]) is int for key in ('pid', 'start_ticks', 'sid', 'uid'))
         assert producer['pid'] > 0 and producer['start_ticks'] > 0 and producer['sid'] > 0 and producer['uid'] >= 0
-        assert allocation['training_physical_indices'] == [0, 1, 2, 3]
-        assert allocation['actual_allocated_indices'] == [0, 1, 2, 3, 5, 6]
+        training = allocation['training_physical_indices']
+        assert len(training) == 4 and all(type(index) is int for index in training) and len(set(training)) == 4
+        assert not set(training).intersection({5, 6})
+        assert allocation['actual_allocated_indices'] == training + [5, 6]
         assert allocation['auxiliary_physical_indices'] == allocation['retriever_physical_indices'] == [5, 6]
         assert allocation['probe_physical_index'] == 6 and allocation['assigned_compute_applications'] == []
-        assert set(allocation['assigned_gpu_uuids']) == {'0', '1', '2', '3', '5', '6'}
+        assert set(allocation['assigned_gpu_uuids']) == {str(index) for index in training + [5, 6]}
+        inventory = {int(row[0]): row[1].strip() for row in allocation['physical_gpu_inventory']}
+        assert len(inventory) == len(allocation['physical_gpu_inventory']) and set(training + [5, 6]) <= set(inventory)
+        assert allocation['excluded_physical_indices'] == sorted(set(inventory) - set(training + [5, 6]))
+        assert all(allocation['assigned_gpu_uuids'][str(index)] == inventory[index] for index in training + [5, 6])
         assert len(set(allocation['assigned_gpu_uuids'].values())) == 6
         assert len(set(allocation['actual_cuda_runtime_uuids'])) == 4
-        assert allocation['actual_cuda_runtime_uuids'] == [allocation['assigned_gpu_uuids'][str(i)] for i in (0, 1, 2, 3)]
+        assert allocation['actual_cuda_runtime_uuids'] == [allocation['assigned_gpu_uuids'][str(i)] for i in training]
         return dict(role='actual_ssh_local_resource_birth', execution_backend='ssh_local',
             execution_id=allocation['execution_id'], hostname=allocation['node'],
             pipeline_identity={key: producer[key] for key in ('pid', 'start_ticks', 'sid', 'uid')},

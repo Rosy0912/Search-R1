@@ -107,6 +107,18 @@ Preparation uses CPU with CUDA
 hidden and preserves BF16, actor local2/global8, accumulation16, reference
 local8, formal guards and LR warmup57.
 
+The fresh intent and prepared manifest explicitly mark GPU placement as
+unbound. At final launch, the selector measures actual NVML inventory,
+compute applications, memory and utilization, then binds four idle training
+cards outside auxiliary5/6. GPU4/7 may be selected when idle. Every assigned
+card, including auxiliary5/6, must have no compute application, at most256MiB
+used and zero utilization. The immutable binding receipt records the selected
+indices, ordered UUIDs and actual excluded complement. The final qprobe gate
+binds before its launch claim; the deployment environment and launch receipt
+derive from that actual manifest. Pipeline startup rechecks the same binding
+and its120-second freshness without selecting different cards. Busy cards
+cause a failure requiring observation; no process is stopped or shared.
+
 `feature-plan` only prints the separate remote feature job's argv, environment
 and progress paths. Run that job on A800 from the new run's `repo`, using the
 printed environment and explicit auxiliary physical GPU5 or6 after checking
@@ -147,6 +159,11 @@ turn evidence and a conflicting existing top-level value, then retains all
 original strict checks. It changes no frozen G1 scientific producer. The shared
 schema2 teacher cache's scientific identity therefore remains compatible and
 existing identity or failed zero-chunk evidence is preserved.
+
+Placement adapters are outside the teacher identity's rollout/scorer source
+map. The frozen scientific producers and fixed feature producers retain their
+exact bytes, so this placement change keeps the shared schema2 cache identity
+and copies the completed BF4 encoding into the new run without re-encoding.
 
 The teacher cache defaults to the stable remote namespace
 `/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2`, so a later fresh

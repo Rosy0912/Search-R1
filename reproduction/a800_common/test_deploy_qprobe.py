@@ -24,7 +24,7 @@ def intent():
         source_base='/data/shaoshitong/Search-G1-qprobe-source-' + identifier,
         baseline_base=control.BASELINE, baseline_commit=control.BASELINE_COMMIT,
         initial_probes_source_base=control.INITIAL_PROBES, teacher_warmup_cache=control.TEACHER_CACHE,
-        launch_services=False, target_updates=200)
+        launch_services=False, target_updates=200,gpu_placement_policy=control.PLACEMENT_POLICY,gpu_placement_bound=False)
 
 
 def feature_origin():
@@ -52,6 +52,36 @@ def feature_origin():
 
 
 class ProspectiveControlTests(unittest.TestCase):
+    def test_actual_flexible_mapping_drives_cuda_and_receipt_without_claiming_stage_indices(self):
+        for inventory_count,selected in ((8,[0,2,3,4]),(8,[1,3,4,7]),(10,[0,2,8,9])):
+            physical=[[str(index),'GPU-'+str(index),'81920','4','0'] for index in range(inventory_count)]
+            run=dict(profile='common8',execution_backend='ssh_local',slurm_job_id=None,execution_id='a'*32,
+                training_world_size=4,gpu_placement_policy=control.PLACEMENT_POLICY,gpu_placement_bound=True,
+                retriever_physical_indices=[5,6],probe_physical_index=6,
+                training_physical_indices=selected,auxiliary_physical_indices=[5,6],physical_gpu_inventory=physical,
+                assigned_gpu_uuids={str(index):physical[index][1] for index in selected+[5,6]},
+                training_gpu_uuids=[physical[index][1] for index in selected],
+                excluded_physical_indices=sorted(set(range(inventory_count))-set(selected+[5,6])),
+                gpu_placement_binding_receipt='logs/local-gpu-placement-binding.json',
+                gpu_placement_binding_sha256='a'*64,gpu_placement_bound_unix=time.time())
+            placement=control.original_deploy.launch_placement(run)
+            self.assertEqual(placement['cuda_visible_devices'],','.join(map(str,selected)))
+            self.assertEqual(placement['training_physical_indices'],selected)
+            self.assertEqual(placement['training_gpu_uuids'],run['training_gpu_uuids'])
+            for patch in ({'gpu_placement_bound':False},{'training_physical_indices':[0,2,3,5]},
+                          {'training_gpu_uuids':['GPU-0']*4},{'excluded_physical_indices':[4,7]}):
+                with self.assertRaises(AssertionError):control.original_deploy.launch_placement(dict(run,**patch))
+
+    def test_qprobe_binding_precedes_claim_and_parent_cuda_comes_from_binding(self):
+        gate=ast.parse(control.REMOTE_LAUNCH_GATE)
+        bind_line=next(node.lineno for node in ast.walk(gate) if isinstance(node,ast.Call) and isinstance(node.func,ast.Name) and node.func.id=='bind_idle_local_placement')
+        claim_line=next(node.lineno for node in ast.walk(gate) if isinstance(node,ast.Constant) and node.value=='logs/qprobe-launch-claim.json')
+        self.assertLess(bind_line,claim_line)
+        for code in (control.original_deploy.REMOTE_EXECUTE,control.original_deploy.REMOTE_LAUNCH_PREPARED):
+            ast.parse(code)
+            self.assertNotIn("CUDA_VISIBLE_DEVICES='0,1,2,3'",code)
+            self.assertIn("placement['cuda_visible_devices']",code)
+
     def test_embedded_remote_programs_compile(self):
         for name in ('REMOTE_STAGE','REMOTE_PREPARE','REMOTE_FEATURE_ADOPT','REMOTE_BIND','REMOTE_INSPECT','REMOTE_LAUNCH_GATE'):
             ast.parse(getattr(control, name), filename=name)

@@ -34,6 +34,27 @@ SHARED_SHA = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
 DATA_NAMES = ('manifest.json', 'train.parquet', 'validation.parquet', 'stage.parquet', 'final.parquet', 'exclusions-audit.json')
 VERSION_FILES = ('verl/version/version', 'verl/single_controller/version/version')
 RUNTIME_SUFFIXES = ('.py', '.sh', '.yaml', '.yml', '.json')
+PLACEMENT_POLICY = 'launch_time_four_idle_excluding_auxiliary_v1'
+
+
+def launch_placement(run):
+    """Only an actual launch-time binding may become CUDA ENV or launch evidence."""
+    assert run['gpu_placement_policy']==PLACEMENT_POLICY and run['gpu_placement_bound'] is True
+    from reproduction.common8.native_allocation import local_placement
+    training,auxiliary,_,_=local_placement(run)
+    assert all(type(index) is int and index>=0 for index in training) and not set(training).intersection(auxiliary)
+    physical={int(row[0]):row[1].strip() for row in run['physical_gpu_inventory']}
+    assert len(physical)==len(run['physical_gpu_inventory']) and len(set(physical.values()))==len(physical)
+    assert set(training+auxiliary)<=set(physical)
+    assigned=run['assigned_gpu_uuids'];assert assigned=={str(index):physical[index] for index in training+auxiliary}
+    assert run['training_gpu_uuids']==[assigned[str(index)] for index in training]
+    assert run['excluded_physical_indices']==sorted(set(physical)-set(training+auxiliary))
+    assert run['gpu_placement_binding_receipt']=='logs/local-gpu-placement-binding.json'
+    assert re.fullmatch('[0-9a-f]{64}',run['gpu_placement_binding_sha256'])
+    return {key:run[key] for key in ('gpu_placement_policy','gpu_placement_bound','training_physical_indices',
+        'training_gpu_uuids','auxiliary_physical_indices','assigned_gpu_uuids','excluded_physical_indices',
+        'gpu_placement_binding_receipt','gpu_placement_binding_sha256','gpu_placement_bound_unix')} | {
+        'cuda_visible_devices':','.join(map(str,training))}
 
 
 REMOTE_EXECUTE = r'''
@@ -169,7 +190,7 @@ try:
         if key.startswith('SLURM_') or key in ('PYTHONHOME','RAY_ADDRESS','LD_LIBRARY_PATH','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):
             environment.pop(key,None)
     environment.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',
-        CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+environment.get('PATH','/usr/bin:/bin'),
+        CUDA_VISIBLE_DEVICES='',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+environment.get('PATH','/usr/bin:/bin'),
         C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',
         TMPDIR=str(base/'tmp'),RAY_TMPDIR=str(base/'ray'),HF_HOME=str(base/'cache/hf'),XDG_CACHE_HOME=str(base/'cache'),
         TRITON_CACHE_DIR=str(base/'cache/triton'),TORCHINDUCTOR_CACHE_DIR=str(base/'cache/inductor'),
@@ -188,6 +209,10 @@ try:
     environment['RAY_TMPDIR']=run['ray_tmp_dir']
     assert run['source_sha256']==source and run['execution_backend']=='ssh_local' and run['slurm_job_id'] is None
     assert not (base/'logs/pipeline-launch-claim.json').exists() and not (base/'logs/process-ledger.json').exists()
+    from reproduction.common8.native_allocation import bind_idle_local_placement
+    from reproduction.a800_common.deploy import launch_placement
+    run=bind_idle_local_placement(base);placement=launch_placement(run)
+    environment['CUDA_VISIBLE_DEVICES']=placement['cuda_visible_devices']
     state('STARTING_ONE_ACTUAL_LOCAL_PIPELINE',run_id=run['run_id'],execution_id=run['execution_id'])
     args=[python,'-m','reproduction.a800_common.run_pipeline','--base',str(base)]
     log=base/'logs/deployment-pipeline.log'
@@ -201,7 +226,7 @@ try:
             execution_id=run['execution_id'],slurm_job_id=None,hostname=socket.gethostname(),
             pid=process.pid,start_ticks=ticks,sid=sid,stdout_log=str(log),source_commit=actual,
             source_transport=transport,launched_unix=time.time(),training_world_size=4,
-            training_physical_indices=[0,1,2,3],same_process_after_five=True,no_automatic_retry=True)
+            same_process_after_five=True,no_automatic_retry=True,**placement)
         write_once(base/'logs/deployment-launch-receipt.json',receipt)
     state('LAUNCHED',**{k:receipt[k] for k in ('run_id','execution_id','pid','start_ticks','stdout_log','source_transport')})
 except BaseException as failure:
@@ -304,6 +329,9 @@ for proc in Path('/proc').iterdir():
         except (FileNotFoundError,PermissionError,ProcessLookupError):pass
 for key in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256'):
     assert re.fullmatch('[0-9a-f]{40}' if key=='launcher_source_commit' else '[0-9a-f]{64}',payload[key])
+from reproduction.common8.native_allocation import bind_idle_local_placement
+from reproduction.a800_common.deploy import launch_placement
+run=bind_idle_local_placement(base);placement=launch_placement(run)
 claim=dict(deployment_id=intent['deployment_id'],run_id=run['run_id'],execution_id=run['execution_id'],
     runtime_source_commit=run['source_commit'],claimed_unix=time.time(),no_automatic_retry=True,
     **{k:payload[k] for k in ('launcher_source_commit','launcher_source_sha256','embedded_launcher_sha256')},**retry_provenance)
@@ -311,14 +339,14 @@ write_once(base/'logs'/('preclaim-retry-claim.json' if preclaim_retry else 'prep
 env=dict(os.environ)
 for key in tuple(env):
     if key.startswith('SLURM_') or key in ('PYTHONHOME','RAY_ADDRESS','LD_LIBRARY_PATH','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(key,None)
-env.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',CUDA_VISIBLE_DEVICES='0,1,2,3',PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+env.get('PATH','/usr/bin:/bin'),C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
+env.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='4',CUDA_VISIBLE_DEVICES=placement['cuda_visible_devices'],PYTHONPATH=str(repo),PATH='/data/search-g1/env/bin:'+env.get('PATH','/usr/bin:/bin'),C_INCLUDE_PATH='/data/search-r1/bootstrap-tools/python-dev/usr/include/python3.10:/data/search-r1/bootstrap-tools/python-dev/usr/include',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',PYTHONUNBUFFERED='1',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0',VLLM_ATTENTION_BACKEND='XFORMERS',NO_PROXY='127.0.0.1,localhost',RAY_DEDUP_LOGS='0')
 env.update({name:str(base/path) for name,path in dict(TMPDIR='tmp',HF_HOME='cache/hf',XDG_CACHE_HOME='cache',TRITON_CACHE_DIR='cache/triton',TORCHINDUCTOR_CACHE_DIR='cache/inductor').items()})
 env['RAY_TMPDIR']=run.get('ray_tmp_dir',str(base/'ray'))
 log=base/'logs'/('deployment-preclaim-retry.log' if preclaim_retry else 'deployment-pipeline.log')
 with log.open('xb') as out:
     p=subprocess.Popen(['/data/search-g1/env/bin/python','-m','reproduction.a800_common.run_pipeline','--base',str(base)],cwd=repo,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=subprocess.STDOUT,start_new_session=True)
     text=(Path('/proc')/str(p.pid)/'stat').read_text();fields=text[text.rfind(')')+2:].split();ticks=int(fields[19]);sid=int(fields[3]);assert ticks>0 and sid==p.pid
-    receipt=dict(claim,execution_backend='ssh_local',slurm_job_id=None,hostname=socket.gethostname(),pid=p.pid,start_ticks=ticks,sid=sid,stdout_log=str(log),source_commit=run['source_commit'],source_transport=source['source_transport'],launched_unix=time.time(),training_world_size=4,training_physical_indices=[0,1,2,3],same_process_after_five=True)
+    receipt=dict(claim,execution_backend='ssh_local',slurm_job_id=None,hostname=socket.gethostname(),pid=p.pid,start_ticks=ticks,sid=sid,stdout_log=str(log),source_commit=run['source_commit'],source_transport=source['source_transport'],launched_unix=time.time(),training_world_size=4,same_process_after_five=True,**placement)
     write_once(base/'logs'/('deployment-retry-receipt.json' if preclaim_retry else 'deployment-launch-receipt.json'),receipt)
 try:print('DEPLOYMENT_JSON:'+json.dumps(dict(stage='UNCLAIMED_PIPELINE_RETRY_LAUNCHED' if preclaim_retry else 'PREPARED_PIPELINE_LAUNCHED',**receipt)),flush=True)
 except BrokenPipeError:sys.stdout=open(os.devnull,'w')
@@ -624,7 +652,8 @@ def create_intent(args):
     value = dict(schema_version=1, role='fresh_a800_common_deployment_intent', deployment_id=identifier,
         created_unix=time.time(), host='baai-a800', base='/data/shaoshitong/Search-G1-a800-fresh200-' + identifier,
         source_commit=args.source_commit, source_sha256=published_source(repo, args.source_commit),
-        inputs=inputs, training_world_size=4, training_physical_indices=[0, 1, 2, 3],
+        inputs=inputs, training_world_size=4, training_physical_indices=None,
+        gpu_placement_policy=PLACEMENT_POLICY,gpu_placement_bound=False,
         auxiliary_physical_indices=[5, 6], target_updates=200, same_process_after_five=True,
         execution_policy='one explicit execution; inspect the same handle after failure or uncertainty; no automatic retry')
     if args.initial_probes_source_base is not None:

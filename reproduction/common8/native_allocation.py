@@ -10,12 +10,15 @@ This is resource evidence, not model/GRPO acceptance.
 """
 import argparse
 import csv
+import fcntl
+import hashlib
 import io
 import json
 import os
 import re
 import socket
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -194,16 +197,212 @@ def admit(base):
     return proof
 
 
+LOCAL_PLACEMENT_POLICY='launch_time_four_idle_excluding_auxiliary_v1'
+LOCAL_IDLE_MAX_USED_MIB=256
+LOCAL_BINDING_MAX_AGE_SECONDS=120
+LOCAL_BINDING_RECEIPT='logs/local-gpu-placement-binding.json'
+
+
+def _local_inventory(rows):
+    """Preserve actual NVML IDs; a physical index is never a device count."""
+    physical={}
+    for row in rows:
+        assert len(row)==5, 'Incomplete actual local GPU inventory'
+        index=int(row[0]);uuid=row[1].strip();total,used,util=map(int,row[2:])
+        assert index>=0 and index not in physical and uuid.startswith('GPU-')
+        assert total>0 and 0<=used<=total and 0<=util<=100
+        physical[index]=dict(uuid=uuid,total_mib=total,used_mib=used,util_percent=util)
+    assert physical and len({row['uuid'] for row in physical.values()})==len(physical), 'Invalid actual GPU UUID inventory'
+    return physical
+
+
+def _local_application_indices(physical,applications):
+    by_uuid={row['uuid']:index for index,row in physical.items()}
+    occupied=set()
+    for row in applications:
+        assert len(row)==2 and row[0].strip() in by_uuid and row[1].strip().isdecimal(), 'Unknown actual local compute application'
+        occupied.add(by_uuid[row[0].strip()])
+    return occupied
+
+
+def select_idle_local_placement(rows,applications):
+    """CPU-only launch selection: four idle cards and two idle service cards."""
+    physical=_local_inventory(rows);auxiliary=[5,6]
+    assert set(auxiliary)<=set(physical), 'Auxiliary GPUs5,6 absent from actual local inventory'
+    occupied=_local_application_indices(physical,applications)
+    idle={index for index,row in physical.items() if index not in occupied
+          and row['used_mib']<=LOCAL_IDLE_MAX_USED_MIB and row['util_percent']==0}
+    assert set(auxiliary)<=idle, 'Authorized local GPUs are occupied: '+repr(sorted(set(auxiliary)-idle))
+    eligible=sorted(idle-set(auxiliary))
+    assert len(eligible)>=4, 'Insufficient idle local training GPUs: '+repr(dict(idle_training_indices=eligible,occupied_indices=sorted(occupied)))
+    training=eligible[:4]
+    return training,sorted(set(physical)-set(training)-set(auxiliary))
+
+
+def _query_local_gpu_state():
+    def query(fields,kind):
+        raw=subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,
+            '--format=csv,noheader,nounits'],text=True,timeout=30)
+        return [[value.strip() for value in row] for row in csv.reader(io.StringIO(raw)) if row]
+    rows=query('index,uuid,memory.total,memory.used,utilization.gpu','gpu')
+    applications=query('gpu_uuid,pid','compute-apps')
+    return rows,applications
+
+
 def local_placement(run):
-    """Only the human-authorized A800 placement is accepted by this adapter."""
+    """Validate the actual bound four-card assignment and its full complement."""
     from reproduction.common8.topology import world_size, execution_job_id
     assert execution_job_id(run) is None and world_size(run)==4
+    assert run.get('gpu_placement_policy')==LOCAL_PLACEMENT_POLICY and run.get('gpu_placement_bound') is True, 'Local GPU placement is still an unbound preparation placeholder'
     training=run['training_physical_indices'];auxiliary=run['auxiliary_physical_indices']
     retriever=run['retriever_physical_indices'];probe=run['probe_physical_index']
-    assert training==[0,1,2,3] and auxiliary==[5,6] and retriever==[5,6] and probe==6
+    assert isinstance(training,list) and len(training)==4 and auxiliary==[5,6] and retriever==[5,6] and probe==6
     assigned=training+auxiliary
     assert all(type(i) is int for i in assigned) and len(set(assigned))==len(assigned)
+    physical=_local_inventory(run['physical_gpu_inventory'])
+    assert set(assigned)<=set(physical), 'Assigned cards absent from bound actual inventory'
+    assert run['excluded_physical_indices']==sorted(set(physical)-set(assigned)), 'Excluded GPU indices differ from the actual assignment complement'
+    assert run['assigned_gpu_uuids']=={str(i):physical[i]['uuid'] for i in assigned}, 'Bound physical GPU UUID mapping differs'
+    assert run['training_gpu_uuids']==[physical[i]['uuid'] for i in training], 'Bound training UUID order differs'
     return training,auxiliary,retriever,probe
+
+
+def _assert_local_idle(run,rows,applications,indices=None):
+    training,auxiliary,_,_=local_placement(run)
+    physical=_local_inventory(rows)
+    bound=_local_inventory(run['physical_gpu_inventory'])
+    assert {index:row['uuid'] for index,row in physical.items()}=={index:row['uuid'] for index,row in bound.items()}, 'Actual physical inventory changed since launch-time binding'
+    occupied=_local_application_indices(physical,applications)
+    assigned=training+auxiliary if indices is None else indices
+    assert set(assigned)<=set(training+auxiliary)
+    busy=[index for index in assigned if index in occupied or physical[index]['used_mib']>LOCAL_IDLE_MAX_USED_MIB or physical[index]['util_percent']!=0]
+    assert not busy, 'Authorized local GPUs are occupied: '+repr(busy)
+    return physical
+
+
+def assert_local_training_idle(run):
+    """Recheck the fixed selection before trainer launch; do not reselect."""
+    rows,applications=_query_local_gpu_state()
+    _assert_local_idle(run,rows,applications,indices=run['training_physical_indices'])
+
+
+def assert_local_component_gpus_available(run,indices,owned_records):
+    """Permit only idle cards or CUDA contexts of actual recorded PID births."""
+    from reproduction.a800.owned_processes import same
+    training,auxiliary,_,_=local_placement(run)
+    assert all(type(index) is int for index in indices) and set(indices)<=set(training+auxiliary)
+    rows,applications=_query_local_gpu_state();physical=_local_inventory(rows)
+    bound=_local_inventory(run['physical_gpu_inventory'])
+    assert {index:row['uuid'] for index,row in physical.items()}=={index:row['uuid'] for index,row in bound.items()}, 'Actual physical inventory changed before component launch'
+    _local_application_indices(physical,applications)
+    by_pid={record['pid']:record for record in owned_records}
+    assert all(by_pid[record['pid']]==record for record in owned_records), 'Ambiguous recorded project PID births'
+    for index in indices:
+        contexts=[row for row in applications if row[0]==physical[index]['uuid']]
+        if contexts:
+            for _,pid in contexts:
+                record=by_pid.get(int(pid))
+                assert record is not None and same(record), 'Authorized local GPUs are occupied by an unowned or changed PID birth: '+repr(dict(index=index,pid=pid))
+        else:
+            assert physical[index]['used_mib']<=LOCAL_IDLE_MAX_USED_MIB and physical[index]['util_percent']==0, 'Authorized local GPUs are occupied without an authenticated project context: '+str(index)
+
+
+def _write_local_once(path,data):
+    raw=(json.dumps(data,sort_keys=True,allow_nan=False)+'\n').encode()
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0),0o600)
+    with os.fdopen(fd,'wb') as out:
+        out.write(raw);out.flush();os.fsync(out.fileno())
+    fd=os.open(path.parent,os.O_RDONLY|getattr(os,'O_DIRECTORY',0))
+    try:os.fsync(fd)
+    finally:os.close(fd)
+    return hashlib.sha256(raw).hexdigest()
+
+
+def bind_idle_local_placement(base):
+    """Persist a launch-time selection before any CUDA work or launch claim.
+
+    Repeated prelaunch calls retain the exact selected assignment, validate the
+    immutable receipt, and query current occupancy. They never reselect a bound
+    run. An interrupted binding or an aged/busy binding requires inspection.
+    """
+    from reproduction.a800.owned_processes import identity,publish
+    from reproduction.common8.topology import validate_base
+    base=Path(base).resolve();target=base/'logs/run-manifest.json'
+    with (base/'gpu-placement.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        run=json.loads(target.read_text());validate_base(base,run)
+        assert run['execution_host']==socket.gethostname() and run['profile']=='common8' and run['completed_updates']==0
+        assert run.get('gpu_placement_policy')==LOCAL_PLACEMENT_POLICY, 'Fresh launch-time placement policy is required'
+        for name in ('native-allocation-admission.json','pipeline-launch-claim.json','training-launch-claim.json','process-ledger.json'):
+            assert not (base/'logs'/name).exists(), 'GPU execution already admitted or claimed; never bind a running attempt'
+        receipt_path=base/LOCAL_BINDING_RECEIPT
+        rows,applications=_query_local_gpu_state()
+        if run.get('gpu_placement_bound') is True:
+            local_placement(run)
+            assert run['gpu_placement_binding_receipt']==LOCAL_BINDING_RECEIPT
+            assert receipt_path.is_file() and not receipt_path.is_symlink() and receipt_path.stat().st_uid==os.getuid()
+            raw=receipt_path.read_bytes();receipt=json.loads(raw)
+            assert hashlib.sha256(raw).hexdigest()==run['gpu_placement_binding_sha256'], 'Immutable placement receipt changed'
+            for key in ('run_id','execution_id','source_commit','training_physical_indices','auxiliary_physical_indices','excluded_physical_indices','training_gpu_uuids','assigned_gpu_uuids','physical_gpu_inventory','gpu_placement_bound_unix'):
+                assert receipt[key]==run[key], 'Manifest differs from immutable placement receipt: '+key
+            assert receipt['host']==socket.gethostname()
+            assert 0<=time.time()-run['gpu_placement_bound_unix']<=LOCAL_BINDING_MAX_AGE_SECONDS, 'Launch-time GPU placement is stale; never reuse a staging-time selection'
+            _assert_local_idle(run,rows,applications)
+            return run
+        assert run.get('gpu_placement_bound') is False and not receipt_path.exists(), 'Partial or unknown placement binding requires inspection'
+        for name in ('prepared-launch-claim.json','qprobe-launch-claim.json','preclaim-retry-claim.json'):
+            assert not (base/'logs'/name).exists(), 'Select idle GPUs before any launch claim'
+        training,excluded=select_idle_local_placement(rows,applications)
+        auxiliary=run['auxiliary_physical_indices']
+        assert auxiliary==run['retriever_physical_indices']==[5,6] and run['probe_physical_index']==6
+        physical=_local_inventory(rows);now=time.time()
+        run.update(training_physical_indices=training,excluded_physical_indices=excluded,
+            physical_gpu_inventory=rows,training_gpu_uuids=[physical[i]['uuid'] for i in training],
+            assigned_gpu_uuids={str(i):physical[i]['uuid'] for i in training+auxiliary},
+            gpu_placement_bound=True,gpu_placement_bound_unix=now,
+            gpu_placement_binding_receipt=LOCAL_BINDING_RECEIPT,
+            gpu_placement_semantics='actual launch-time idle physical GPU selection; no exclusive system GPU reservation or foreign process ownership claimed')
+        local_placement(run)
+        receipt=dict(role='actual_launch_time_idle_local_gpu_selection',gpu_placement_policy=LOCAL_PLACEMENT_POLICY,
+            host=socket.gethostname(),selector_identity=identity(os.getpid()),
+            observed_compute_applications=applications,idle_max_used_mib=LOCAL_IDLE_MAX_USED_MIB,
+            idle_required_util_percent=0,cuda_initialized=False,admission=False,launch_claim=False,
+            scope='read-only actual NVML selection before CUDA/admission/launch claims; foreign GPUs excluded and never signalled',
+            **{key:run[key] for key in ('run_id','execution_id','source_commit','training_physical_indices','auxiliary_physical_indices','excluded_physical_indices','training_gpu_uuids','assigned_gpu_uuids','physical_gpu_inventory','gpu_placement_bound_unix')})
+        run['gpu_placement_binding_sha256']=_write_local_once(receipt_path,receipt)
+        publish(target,run)
+        assert json.loads(target.read_text())==run, 'Actual run manifest did not persist the selection'
+        return run
+
+
+def bind_local_placement(base,run=None):
+    """Compatibility entry for callers holding a prepared manifest."""
+    bound=bind_idle_local_placement(base)
+    if run is not None:
+        assert run['run_id']==bound['run_id'] and run['execution_id']==bound['execution_id']
+    return bound
+
+
+def _local_cuda_probe(indices,expected_uuids):
+    """Create short-lived real contexts on each assigned card, then exit."""
+    assert len(indices)==len(expected_uuids)==len(set(expected_uuids)) and all(uuid.startswith('GPU-') for uuid in expected_uuids)
+    code='''import json,os,sys,torch
+from reproduction.common8.native_allocation import cuda_uuids
+from reproduction.a800.owned_processes import identity
+expected=json.loads(sys.argv[1])
+indices=json.loads(sys.argv[2])
+assert os.environ['CUDA_VISIBLE_DEVICES'].split(',')==list(map(str,indices))
+count=len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))
+assert count==len(expected)
+assert torch.cuda.device_count()==count
+actual=cuda_uuids(count)
+assert actual==expected, 'Actual assigned CUDA UUID mapping differs before context creation'
+contexts=[torch.empty(1,dtype=torch.uint8,device='cuda:'+str(i)) for i in range(count)]
+for i in range(count):torch.cuda.synchronize(i)
+print(json.dumps(dict(actual_cuda_runtime_uuids=actual,context_logical_ordinals=list(range(count)),producer_identity=identity(os.getpid()))))
+'''
+    env=dict(os.environ,CUDA_VISIBLE_DEVICES=','.join(map(str,indices)))
+    return json.loads(subprocess.check_output([sys.executable,'-c',code,json.dumps(expected_uuids),json.dumps(indices)],text=True,env=env,timeout=60))
 
 
 def admit_local(base,run):
@@ -214,26 +413,39 @@ def admit_local(base,run):
     """
     from reproduction.a800.owned_processes import identity
     from reproduction.common8.topology import validate_base
-    import torch
     validate_base(base,run)
     assert run['profile']=='common8' and run['completed_updates']==0
     training,auxiliary,retriever,probe=local_placement(run)
+    persisted=json.loads((base/'logs/run-manifest.json').read_text())
+    for key in ('run_id','execution_id','source_commit','training_physical_indices','auxiliary_physical_indices','excluded_physical_indices','training_gpu_uuids','assigned_gpu_uuids','physical_gpu_inventory','gpu_placement_binding_sha256'):
+        assert persisted[key]==run[key], 'Admission differs from the persisted launch-time manifest: '+key
+    receipt=base/run['gpu_placement_binding_receipt']
+    assert run['gpu_placement_binding_receipt']==LOCAL_BINDING_RECEIPT and receipt.is_file() and not receipt.is_symlink()
+    assert hashlib.sha256(receipt.read_bytes()).hexdigest()==run['gpu_placement_binding_sha256'], 'Placement receipt changed before native admission'
     assigned=training+auxiliary
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     assert visible==list(map(str,training)), 'Local pipeline must expose only its four training GPUs'
-    raw=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total','--format=csv,noheader,nounits'],text=True,timeout=30)
-    rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
-    physical={int(r[0]):r[1] for r in rows}
-    assert set(assigned)<=set(physical) and len({physical[i] for i in assigned})==len(assigned)
-    raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=30)
-    assigned_uuids={physical[i] for i in assigned}
-    applications=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw_apps)) if r]
-    occupied=[r for r in applications if r[0] in assigned_uuids]
-    assert not occupied, 'Authorized local GPUs are occupied: '+repr(occupied)
-    # Check idle assignment first, before creating CUDA contexts or any claim.
-    assert torch.cuda.device_count()==len(training)
-    actual=cuda_uuids(len(training))
-    assert actual==[physical[i] for i in training], 'Actual training CUDA UUID mapping differs from assignment'
+    rows,applications=_query_local_gpu_state()
+    physical=_assert_local_idle(run,rows,applications)
+    assigned_uuids={physical[i]['uuid'] for i in assigned}
+    # The persisted manifest and fresh idle check precede this first CUDA work.
+    cuda_probe=_local_cuda_probe(assigned,[physical[i]['uuid'] for i in assigned])
+    assigned_actual=cuda_probe['actual_cuda_runtime_uuids']
+    assert assigned_actual==[physical[i]['uuid'] for i in assigned], 'Actual assigned CUDA UUID mapping differs from assignment'
+    assert cuda_probe['context_logical_ordinals']==list(range(len(assigned)))
+    actual=assigned_actual[:len(training)]
+    # The probe has exited; refuse a foreign arrival before admission and never
+    # stop it. Bound UUIDs and selected indices remain unchanged after claims.
+    deadline=time.monotonic()+30
+    while True:
+        rows,applications=_query_local_gpu_state()
+        assert not any(row[0] in assigned_uuids and int(row[1])!=cuda_probe['producer_identity']['pid'] for row in applications), 'Authorized local GPUs are occupied by a foreign arrival after CUDA mapping proof'
+        try:
+            _assert_local_idle(run,rows,applications)
+            break
+        except AssertionError:
+            assert time.monotonic()<deadline, 'Assigned CUDA proof contexts or telemetry did not become idle after probe exit'
+            time.sleep(.5)
     producer=identity(os.getpid())
     proof=dict(accepted=True,profile='common8',run_id=run['run_id'],slurm_job_id=None,
         execution_backend='ssh_local',execution_id=run['execution_id'],node=socket.gethostname(),
@@ -241,9 +453,12 @@ def admit_local(base,run):
         visible_devices=list(map(str,assigned)),training_visible_devices=visible,
         actual_allocated_indices=assigned,training_physical_indices=training,
         auxiliary_physical_indices=auxiliary,retriever_physical_indices=retriever,
-        probe_physical_index=probe,assigned_gpu_uuids={str(i):physical[i] for i in assigned},
+        probe_physical_index=probe,assigned_gpu_uuids={str(i):physical[i]['uuid'] for i in assigned},
+        excluded_physical_indices=run['excluded_physical_indices'],
+        gpu_placement_binding_sha256=run['gpu_placement_binding_sha256'],
+        assigned_cuda_runtime_uuids=assigned_actual,actual_cuda_context_probe=cuda_probe,
         actual_cuda_runtime_uuids=actual,physical_gpu_inventory=rows,
-        assigned_compute_applications=occupied,unassigned_compute_applications=[r for r in applications if r[0] not in assigned_uuids],
+        assigned_compute_applications=[r for r in applications if r[0] in assigned_uuids],unassigned_compute_applications=[r for r in applications if r[0] not in assigned_uuids],
         checked_unix=time.time(),scope='actual local PID birth/host and idle assigned GPU UUIDs before project launch; not model/GRPO acceptance')
     target=base/'logs/native-allocation-admission.json'
     with target.open('x') as f:

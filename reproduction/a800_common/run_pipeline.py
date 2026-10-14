@@ -40,6 +40,16 @@ class LocalPipeline(Pipeline):
         super().__init__(base,run)
         self.env['RAY_TMPDIR']=ray_tmp_dir
 
+    def start(self,name,args,gpus,extra=None):
+        if gpus:
+            self.observe_all()
+            from reproduction.common8.native_allocation import assert_local_training_idle,assert_local_component_gpus_available
+            if name=='trainer':assert_local_training_idle(self.run)
+            else:
+                records=[record for job in self.owned.jobs.values() for record in job['ledger'].values()]
+                assert_local_component_gpus_available(self.run,gpus,records)
+        return super().start(name,args,gpus,extra)
+
     def initial_probe_calibration(self):
         source=self.run.get('initial_probe_adoption_source_base')
         if source is None:
@@ -145,7 +155,6 @@ def launch(base,run):
     assert supported_execution_role(run,base)=='production'
     assert run['completed_updates']==0 and run['initial_probe_version'] is None
     assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
-    assert os.environ.get('CUDA_VISIBLE_DEVICES')=='0,1,2,3'
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):
         (base/name).mkdir(parents=True,exist_ok=True)
     lock=(base/'gpu-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -155,12 +164,19 @@ def launch(base,run):
     for name,sha in run['source_sha256'].items():assert digest(base/'repo'/name)==sha
     for port in (18010,18012):
         with socket.socket() as sock:sock.bind(('127.0.0.1',port))
-    from reproduction.common8.native_allocation import admit
+    from reproduction.common8.native_allocation import admit,bind_idle_local_placement,local_placement
+    bound=bind_idle_local_placement(base)
+    assert bound['run_id']==run['run_id'] and bound['execution_id']==run['execution_id']
+    run.clear();run.update(bound)
+    training,_,_,_=local_placement(run)
+    os.environ['CUDA_VISIBLE_DEVICES']=','.join(map(str,training))
     allocation=admit(base)
     claim=dict(run_id=run['run_id'],execution_backend='ssh_local',execution_id=run['execution_id'],
         slurm_job_id=None,node=allocation['node'],pipeline_identity=allocation['pipeline_identity'],
         training_physical_indices=allocation['training_physical_indices'],
         auxiliary_physical_indices=allocation['auxiliary_physical_indices'],
+        excluded_physical_indices=allocation['excluded_physical_indices'],
+        gpu_placement_binding_sha256=allocation['gpu_placement_binding_sha256'],
         assigned_gpu_uuids=allocation['assigned_gpu_uuids'],
         allocation_sha256=digest(base/'logs/native-allocation-admission.json'),claimed_unix=time.time(),
         semantics='exclusive actual local pipeline startup, before owned service/trainer launches; no training completion claim')

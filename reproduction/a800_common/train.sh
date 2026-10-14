@@ -17,7 +17,7 @@ export ECO_BAL_GROUND=0.6 ECO_BAL_NOSEARCH_BONUS=0.5 ECO_W_COST=0.02
 export ECO_WRONG_GROUND_SCALE=0 ECO_PROBE_BASE=0 ECO_PROBE_ALPHA_COST=0 ECO_USE_CF=0
 export ECO_NO_SELF=1 ECO_PROBE_MAX_WAIT=300
 cd "$BASE/repo"
-python -c 'import json,os; from pathlib import Path; from reproduction.common8.formal_contract import assert_formal_run; from reproduction.common8.run_pipeline import supported_execution_role; from reproduction.common8.topology import execution_job_id,world_size; base=Path(os.environ["SEARCH_G1_BASE"]); run=json.loads((base/"logs/run-manifest.json").read_text()); assert_formal_run(run); assert run["execution_backend"]=="ssh_local" and execution_job_id(run) is None and world_size(run)==4; assert supported_execution_role(run,base)=="production"; assert os.environ["CUDA_VISIBLE_DEVICES"]=="0,1,2,3"'
+python -c 'import json,os; from pathlib import Path; from reproduction.common8.formal_contract import assert_formal_run; from reproduction.common8.run_pipeline import supported_execution_role; from reproduction.common8.topology import execution_job_id,world_size; from reproduction.common8.native_allocation import local_placement; base=Path(os.environ["SEARCH_G1_BASE"]); run=json.loads((base/"logs/run-manifest.json").read_text()); assert_formal_run(run); assert run["execution_backend"]=="ssh_local" and execution_job_id(run) is None and world_size(run)==4; assert supported_execution_role(run,base)=="production"; training,_,_,_=local_placement(run); assert os.environ["CUDA_VISIBLE_DEVICES"]==",".join(map(str,training))'
 python -m reproduction.common8.probe_admission --verify
 # The real fresh0 probes, local allocation, immutable model and bound source
 # are frozen prospectively; the actual full2560 behavior gate runs before Adam.

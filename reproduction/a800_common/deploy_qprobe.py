@@ -20,7 +20,7 @@ from pathlib import Path
 
 from reproduction.a800_common import deploy as original_deploy
 from reproduction.a800_common.deploy import (
-    REMOTE_LAUNCH_PREPARED, REMOTE_OBSERVE, digest, published_source, ssh_command, write_once,
+    PLACEMENT_POLICY, REMOTE_LAUNCH_PREPARED, REMOTE_OBSERVE, digest, published_source, ssh_command, write_once,
 )
 
 ROLE = 'a800_qprobe_prospective_intent'
@@ -61,6 +61,7 @@ def validate_intent(intent):
     assert intent['initial_probes_source_base'] != intent['base']
     validate_teacher_cache(intent['teacher_warmup_cache'])
     assert intent['launch_services'] is False and intent['target_updates'] == 200
+    assert intent['gpu_placement_policy']==PLACEMENT_POLICY and intent['gpu_placement_bound'] is False
     return intent
 
 
@@ -213,6 +214,7 @@ def check(intent):
  assert re.fullmatch(r'/(data|mnt|backup)/[A-Za-z0-9._/-]+',str(cache)) and '..' not in cache.parts
  assert cache.is_absolute() and str(cache)==intent['teacher_warmup_cache']
  assert intent['launch_services'] is False and intent['target_updates']==200
+ assert intent['gpu_placement_policy']=='launch_time_four_idle_excluding_auxiliary_v1' and intent['gpu_placement_bound'] is False
 def teacher_storage(intent,create_parent=False):
  cache=Path(intent['teacher_warmup_cache']);assert cache.resolve()==cache and not cache.is_symlink()
  existing=cache if cache.exists() else cache.parent
@@ -316,7 +318,8 @@ for row in rows:
  assert target.stat().st_size==row['bytes'] and sha(target)==row['sha256'] and sha(origin)==row['sha256']
 deployment=dict(schema_version=1,role='fresh_a800_common_deployment_intent',deployment_id=intent['deployment_id'],
  created_unix=intent['created_unix'],host='baai-a800',base=str(base),source_commit=intent['source_commit'],
- source_sha256=intent['source_sha256'],inputs=rows,training_world_size=4,training_physical_indices=[0,1,2,3],
+ source_sha256=intent['source_sha256'],inputs=rows,training_world_size=4,training_physical_indices=None,
+ gpu_placement_policy=intent['gpu_placement_policy'],gpu_placement_bound=False,
  auxiliary_physical_indices=[5,6],target_updates=200,same_process_after_five=True,
  initial_probes_source_base=intent['initial_probes_source_base'],
  remote_canonical_source_base=str(baseline),remote_original_intent_sha256=intent['baseline_intent_sha256'])
@@ -531,9 +534,11 @@ assert budget['ppo_mini_batch_size']==128 and budget['per_rank_log_prob_micro_ba
 assert (128//4)//2==16
 for path in (base/'checkpoints',base/'artifacts/question-probe',base/'cache'):
  assert str(path).startswith('/data/') and path.resolve()==path
+from reproduction.common8.native_allocation import bind_idle_local_placement
+run=bind_idle_local_placement(base);placement=published_deploy.launch_placement(run)
 once(base/'preparation/qprobe-independent-review.json',review)
 once(base/'logs/qprobe-launch-claim.json',dict(deployment_id=intent['deployment_id'],run_id=run['run_id'],
- review_sha256=sha(base/'preparation/qprobe-independent-review.json'),claimed_unix=time.time(),no_automatic_retry=True))
+ review_sha256=sha(base/'preparation/qprobe-independent-review.json'),claimed_unix=time.time(),no_automatic_retry=True,**placement))
 payload['intent']=read(base/'preparation/deployment-intent.json')
 sys.stdin=io.StringIO(json.dumps(payload));exec(payload['launch_code'])
 '''
@@ -572,7 +577,7 @@ def stage(args):
         initial_probes_source_base=args.initial_probes_source_base or INITIAL_PROBES,
         teacher_warmup_cache=str(validate_teacher_cache(args.teacher_warmup_cache or TEACHER_CACHE)),
         bundle_bytes=bundle.stat().st_size, bundle_sha256=digest(bundle), target_updates=200,
-        launch_services=False, created_unix=time.time())
+        launch_services=False, gpu_placement_policy=PLACEMENT_POLICY,gpu_placement_bound=False,created_unix=time.time())
     write_once(handle, validate_intent(intent))
     data = io.BytesIO()
     with tarfile.open(fileobj=data, mode='w') as archive:
