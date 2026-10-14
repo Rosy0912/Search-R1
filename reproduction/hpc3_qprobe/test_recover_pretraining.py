@@ -1,6 +1,7 @@
 import subprocess
 import unittest
 from unittest.mock import patch
+from reproduction.hpc3_qprobe import recover_pretraining as recovery
 
 from reproduction.hpc3_qprobe.recover_pretraining import read_terminal_job, validate_original_submission, FAILED_COMMIT
 
@@ -14,6 +15,13 @@ class TerminalReadbackTests(unittest.TestCase):
         validate_original_submission(actual)
         for key,value in [('job','716883'),('status','UNKNOWN_OUTCOME'),('source_commit','wrong')]:
             with self.subTest(key=key),self.assertRaises(ValueError):validate_original_submission(dict(actual,**{key:value}))
+
+    def test_failed_recovery_has_its_own_successful_submission_schema(self):
+        with patch.multiple(recovery,JOB='717607',FAILED_COMMIT='1552de146c2dd44e4fd40eb94b27839ac8648ef1'):
+            actual=dict(job='717607',returncode=0,commit=recovery.FAILED_COMMIT)
+            validate_original_submission(actual)
+            for key,value in [('job','717554'),('returncode',1),('commit','wrong')]:
+                with self.assertRaises(ValueError):validate_original_submission(dict(actual,**{key:value}))
 
     def test_aged_out_job_requires_current_exact_accounting(self):
         missing=subprocess.CompletedProcess([],1,'','Invalid job id specified')

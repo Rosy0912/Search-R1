@@ -22,8 +22,42 @@ JOB='717554'
 
 
 def validate_original_submission(prior):
-    if prior.get('job')!=JOB or prior.get('status')!='REPLACEMENT_HELD' or prior.get('source_commit')!=FAILED_COMMIT:
-        raise ValueError('Missing original actual held submission binding')
+    if JOB=='717554':
+        accepted=prior.get('status')=='REPLACEMENT_HELD' and prior.get('source_commit')==FAILED_COMMIT
+    else:
+        accepted=prior.get('returncode')==0 and prior.get('commit')==FAILED_COMMIT
+    if prior.get('job')!=JOB or not accepted:raise ValueError('Missing actual own submission binding')
+
+
+def select_failed_job(job):
+    global JOB,FAILED,TARGET,FAILED_COMMIT
+    if job=='717554':return
+    if job!='717607':raise ValueError('Only the two actually observed pretraining failures are supported')
+    JOB=job
+    FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717554-20261014')
+    TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery717607-20261014')
+    FAILED_COMMIT='1552de146c2dd44e4fd40eb94b27839ac8648ef1'
+
+
+def diagnostic_gate(commit):
+    if JOB!='717607':return None
+    root=ROOT/'preparation/gpu-inventory717607'
+    receipt=json.loads((root/'submission.json').read_text())
+    if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
+    proof=json.loads((root/('job-'+receipt['job'])/'accepted.json').read_text())
+    detail=fields(proof['actual_job_detail'])
+    original=ROOT/'source'/receipt['commit']
+    repaired=ROOT/'source'/commit
+    if proof['accepted'] is not True or proof['job_id']!=receipt['job'] or proof['uid']!=14090 or proof['loaded_model'] is not False:
+        raise ValueError('Actual single GPU XML/CUDA diagnostic not accepted')
+    if detail['Command']!=str(original/'reproduction/hpc3_qprobe/gpu_inventory_diagnostic.sh'):
+        raise ValueError('Actual GPU diagnostic source entry differs')
+    name='reproduction/common8/native_allocation.py'
+    if hashlib.sha256((original/name).read_bytes()).digest()!=hashlib.sha256((repaired/name).read_bytes()).digest():
+        raise ValueError('Repaired actual GPU query implementation differs from successful diagnostic')
+    state=subprocess.check_output(['sacct','-nP','-j',receipt['job'],'-X','--format=JobID,State,ExitCode,UID'],text=True,timeout=30).strip()
+    if state!=receipt['job']+'|COMPLETED|0:0|14090':raise ValueError('Actual diagnostic has not completed successfully')
+    return dict(receipt=receipt,accepted=proof,actual_terminal=state)
 
 
 def read_terminal_job(preserved_detail):
@@ -58,7 +92,8 @@ def terminal():
         QOS='formal-user',WorkDir=str(FAILED),Restarts='0',
         Command=str(ROOT/'source'/FAILED_COMMIT/'reproduction/hpc3_qprobe/train.sh'))
     if any(actual.get(k)!=v for k,v in expected.items()):raise ValueError('Not the actual failed own pretraining job')
-    prior=json.loads((ROOT/'preparation/account-transition-submission.json').read_text())
+    prior_path=ROOT/'preparation/account-transition-submission.json' if JOB=='717554' else FAILED/'preparation/training-submission.json'
+    prior=json.loads(prior_path.read_text())
     validate_original_submission(prior)
     run=json.loads((FAILED/'logs/run-manifest.json').read_text())
     if run['source_commit']!=FAILED_COMMIT or run['completed_updates']!=0 or run['training_world_size']!=4:
@@ -67,7 +102,9 @@ def terminal():
                  'pipeline-status.json','search-g1-common8-training.log'):
         if (FAILED/'logs'/name).exists():raise ValueError('Pipeline work already claimed; use full-state recovery instead')
     log=FAILED/'logs'/('training-'+JOB+'.log')
-    if 'validate_native_four' not in log.read_text() or 'AssertionError' not in log.read_text():
+    text=log.read_text()
+    known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text)
+    if not known:
         raise ValueError('Known actual allocation failure absent')
     for name,record in preserved['files'].items():
         if name.startswith('logs/') and hashlib.sha256((FAILED/name).read_bytes()).hexdigest()!=record['sha256']:
@@ -77,7 +114,8 @@ def terminal():
 
 def fresh(commit):
     actual=terminal()
-    intent=ROOT/'preparation/recovery717554-prepare-intent.json'
+    diagnostic=diagnostic_gate(commit)
+    intent=ROOT/'preparation'/('recovery'+JOB+'-prepare-intent.json')
     if intent.exists() or TARGET.exists():raise ValueError('Recovery preparation already attempted; inspect instead of replaying')
     proof=json.loads((ROOT/'preparation'/('source-'+commit+'-verification.json')).read_text())
     source=ROOT/'source'/commit
@@ -98,13 +136,14 @@ def fresh(commit):
     publish(TARGET/'preparation/personal-storage-authorization.json',policy)
     publish(TARGET/'preparation/recovery-source-binding.json',dict(source_commit=commit,source=str(source),
         target=str(TARGET),failed_job=JOB,failure=actual,source_files=len(proof['files']),
-        training_world_size=4,actor_micro_batch_per_rank=4,feature_cache_reused=True,
+        training_world_size=4,actor_micro_batch_per_rank=4,feature_cache_reused=True,actual_gpu_query_diagnostic=diagnostic,
         optimizer_writes_before_recovery=0,teacher_labels_before_recovery=0))
     return dict(status='FRESH_FAILED_PRETRAINING_RECOVERY_PREPARED',target=str(TARGET),commit=commit)
 
 
 def submit(commit):
     actual=terminal()
+    diagnostic_gate(commit)
     binding=json.loads((TARGET/'preparation/recovery-source-binding.json').read_text())
     source=ROOT/'source'/commit
     if binding['source_commit']!=commit or (TARGET/'repo').resolve()!=source or (TARGET/'source'/commit).resolve()!=source:
@@ -141,4 +180,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    args=parser.parse_args();print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)
+    parser.add_argument('--failed-job',choices=('717554','717607'),default='717554')
+    args=parser.parse_args();select_failed_job(args.failed_job)
+    print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)
