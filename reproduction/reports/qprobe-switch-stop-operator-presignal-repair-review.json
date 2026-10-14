@@ -1,0 +1,62 @@
+{
+  "acceptance_limits": [
+    "Recovery may be invoked only after this repair is committed/published and the current readiness preconditions pass.",
+    "The reviewer did not query A800; absence of remote stop markers and live exact producer remain enforced runtime checks.",
+    "Any later transport uncertainty consumes the new claim and does not authorize another recovery."
+  ],
+  "approved": true,
+  "approved_repair": {
+    "actual_driver_rows_may_omit_execution_id": true,
+    "checkpoint_paths_preserved": true,
+    "cleanup_after_signal_still_requires_actual_verification": true,
+    "driver_row_run_id_must_match": true,
+    "immutable_remote_stop_intent_is_published_before_signal": true,
+    "new_algorithm_review_and_publication_readiness_gate_preserved": true,
+    "only_exact_pipeline_pidfd_sigterm": true,
+    "original_run_execution_source_pid_birth_binding_unchanged": true,
+    "present_execution_id_must_match": true,
+    "rejects_transport_timeout_as_recovery_basis": true,
+    "requires_exact_original_producer_alive": true,
+    "requires_no_remote_stop_intent_and_no_remote_signal_receipt": true,
+    "requires_original_exit1_empty_results_and_exact_keyerror": true,
+    "separate_exclusive_local_recovery_claim": true
+  },
+  "compared_published_operator_commit": "b51ccc3d90af16d67e27b8ff94554490a1cd6c5c",
+  "evidence_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-a800-code-ready-verified.json": "82dac83052b59b94e71500d577f0cb1d1b214bc6e663a8b211ac57ecc29d7454",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-once.json": "854619e7630201408249c5886dc8bd938776b4fed692eb4e8098c7388e10b11a",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-once.result.json": "574c1f7aca4af2dd03b339909db31ad89becc24e167af568a8d65f0e7348b169",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-switch-6a262-local-stop-once.stderr": "5bb0080154f0a39cccbaf81e47e3c5f13c08491919e3c8886a302e9f4c3d3cd2",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-human-intent.json": "cbb53423b20f319a58d80a7fceca88f75685a622ca304c811d5ae57799856aaa"
+  },
+  "exact_target": {
+    "execution_id": "140e43d2243d49a99d88f77399f263b8",
+    "pid": 2635844,
+    "run_id": "6a26247f538b4145a24b156e79fb04d1",
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "start_ticks": 602743013
+  },
+  "implementation_actor": "/root",
+  "independent": true,
+  "original_failure": {
+    "exception": "KeyError: 'execution_id'",
+    "exit_code": 1,
+    "original_claim_target_base": "/data/shaoshitong/Search-G1-a800-fresh200-6047f7f9674b49fdad718a256ab3db95",
+    "original_remote_line": "  assert row['run_id']==run['run_id'] and row['execution_id']==run['execution_id']",
+    "remote_traceback_line": 47,
+    "results": [],
+    "source_location_precedes_immutable_stop_intent_and_signal": true
+  },
+  "remote_actions_performed": false,
+  "reviewed_unix": 1791960980.352461,
+  "reviewer": "/root/qprobe_warmup_independent_review",
+  "role": "a800_exact_current_pipeline_presignal_repair_independent_review",
+  "runtime_acceptance": false,
+  "schema_version": 1,
+  "scope": "targeted static source review and local preserved failure evidence; exact known pre-signal schema failure only",
+  "signals_sent_by_reviewer": false,
+  "source_file_sha256": "b7fb41513b4490c4af1a1255aa4a77196dc3b1f0242bb884824a90fa6840c260",
+  "source_modified_by_reviewer": false,
+  "source_path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_controlled_human_stop.py",
+  "unresolved_material_findings": []
+}

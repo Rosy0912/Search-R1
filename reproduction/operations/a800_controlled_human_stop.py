@@ -58,6 +58,10 @@ assert producer==run['pipeline_identity']
 assert (producer['pid'],producer['start_ticks'],producer['sid'],producer['uid'])==(p['pid'],p['ticks'],p['pid'],os.getuid())
 assert (launch['pid'],launch['start_ticks'],launch['sid'])==(p['pid'],p['ticks'],p['pid'])
 ledger=read('logs/process-ledger.json');assert ledger['run_id']==run['run_id']
+if p.get('known_pre_signal_schema_failure'):
+ assert not (base/'preparation/human-qprobe-switch-stop-intent.json').exists()
+ assert not (base/'logs/human-qprobe-switch-stop-signal.json').exists()
+ assert same(producer) and identity(producer['pid'])['state'] not in ('Z','X')
 births={name:dict(leader=job['leader'],ledger=job['ledger']) for name,job in ledger['jobs'].items()}
 updates=[];path=base/'logs/actual-updates.jsonl';partial_update_tail=False
 if path.exists():
@@ -67,7 +71,10 @@ if path.exists():
  if partial_update_tail:lines=lines[:-1]
  for line in lines:
   row=json.loads(line)
-  assert row['run_id']==run['run_id'] and row['execution_id']==run['execution_id']
+  # This published driver format binds run_id. Its execution is already
+  # bound by the run, launch, claim and owned ledger above; an explicit
+  # execution field, when present, must still agree.
+  assert row['run_id']==run['run_id'] and row.get('execution_id',run['execution_id'])==run['execution_id']
   updates.append({k:row[k] for k in ('step','opportunities_processed','actual_optimizer_writes')})
 checkpoints=[str(x.relative_to(base)) for x in (base/'checkpoints').rglob('global_step_*') if x.is_dir()]
 snapshot=dict(role='explicit_human_current_pipeline_stop_intent',run_id=run['run_id'],execution_id=run['execution_id'],
@@ -94,6 +101,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--human-intent', type=Path, required=True)
     parser.add_argument('--code-ready-receipt', type=Path, required=True)
+    parser.add_argument('--recover-known-pre-signal-failure', action='store_true')
     args = parser.parse_args()
     instruction = json.loads(args.human_intent.read_text())
     assert instruction['existing_run_id'] == RUN
@@ -129,6 +137,17 @@ def main():
         human_reply=instruction['explicit_human_reply'],human_reply_recorded_unix=instruction['reply_recorded_unix'],
         human_instruction_sha256=hashlib.sha256(args.human_intent.read_bytes()).hexdigest())
     claim = ROOT/'preparation/qprobe-switch-6a262-local-stop-once.json'
+    if args.recover_known_pre_signal_failure:
+        # Only this proven schema failure occurred before the remote immutable
+        # stop intent or any signal. Never use this for a transport timeout.
+        original = json.loads(claim.with_name(claim.stem+'.result.json').read_text())
+        error_text = claim.with_suffix('.stderr').read_text()
+        assert original['exit_code'] == 1 and original['results'] == []
+        assert "KeyError: 'execution_id'" in error_text
+        assert instruction['existing_training_stopped'] is False
+        payload['known_pre_signal_schema_failure'] = True
+        payload['original_failure_stderr_sha256'] = hashlib.sha256(error_text.encode()).hexdigest()
+        claim = claim.with_name('qprobe-switch-6a262-local-stop-after-known-pre-signal-failure-once.json')
     with claim.open('x') as f:json.dump(dict(payload=payload,claimed_unix=time.time(),no_automatic_retry=True),f);f.flush();os.fsync(f.fileno())
     spec = importlib.util.spec_from_file_location('immutable_a800_deploy',RUNTIME/'reproduction/a800_common/deploy.py')
     module = importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
