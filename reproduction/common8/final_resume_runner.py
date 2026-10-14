@@ -244,6 +244,15 @@ def _write_once(path, value):
         os.fsync(stream.fileno())
 
 
+def finalize_result(path, value):
+    path = Path(path)
+    if path.exists():
+        if path.is_symlink() or json.loads(path.read_text()) != value:
+            raise ValueError('Existing final result differs from complete journal')
+        return
+    _write_once(path, value)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--binding', required=True)
@@ -268,7 +277,7 @@ def main():
     try:
         task = ray.remote(run_final)
         result = ray.get(task.remote(config, binding, args.source_base, args.journal))
-        _write_once(Path(args.journal)/'final-result.json', result)
+        finalize_result(Path(args.journal)/'final-result.json', result)
     finally:
         ray.shutdown()
 

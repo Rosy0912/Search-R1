@@ -8,7 +8,7 @@ import hashlib
 import json
 from unittest.mock import patch
 from pathlib import Path
-from reproduction.common8.final_resume_runner import file_sha, validate_binding, final_config, resolved_document
+from reproduction.common8.final_resume_runner import file_sha, validate_binding, final_config, resolved_document, finalize_result
 
 
 class Document(dict):
@@ -78,6 +78,14 @@ class BindingTests(unittest.TestCase):
 
     def test_bound_artifacts_accept_without_gpu_imports(self):
         validate_binding(self.binding, self.config)
+
+    def test_complete_result_reentry_is_idempotent_and_rejects_changes(self):
+        path = self.root/'final-result.json'
+        value = dict(qa_count=51713, correct=27000)
+        finalize_result(path, value)
+        finalize_result(path, value)
+        with self.assertRaises(ValueError):
+            finalize_result(path, dict(qa_count=51713, correct=27001))
 
     def test_previous_checkpoint_rejected(self):
         wrong = dict(self.binding, checkpoint_step=5)
