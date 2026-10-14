@@ -196,8 +196,8 @@ def main():
         err.seek(0);stderr=err.read(64*1024)
         result['bounded_stderr_sha256']=hashlib.sha256(stderr).hexdigest()
         diagnostic=stderr.decode(errors='replace')
-        result['remote_exception_frames']=[dict(file=Path(match.group(1)).name,line=int(match.group(2)),function=match.group(3))
-            for match in re.finditer(r'File "([^"\n]+)", line ([0-9]+), in ([A-Za-z0-9_<>]+)',diagnostic)][-8:]
+        result['remote_exception_frames']=[dict(file=Path(match.group(1)).name[:160],line=int(match.group(2)),function=match.group(3)[:96])
+            for match in re.finditer(r'^[ \t]*File "([^"\n]+)", line ([0-9]+), in ([A-Za-z0-9_<>]+)[ \t]*$',diagnostic,re.MULTILINE)][-8:]
         types=re.findall(r'^([A-Za-z][A-Za-z0-9_]*(?:Error|Exception))(?::|$)',diagnostic,re.MULTILINE)
         result['remote_exception_type']=types[-1] if types else None
     result['observation']=None
