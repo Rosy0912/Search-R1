@@ -123,7 +123,7 @@ def verify(run, log, expected_job, *, group='C1-root-only'):
         native5=audit['native5'],sixth_real_generation_observed=True,
         restoration_links=audit.get('restoration_links',[]),
         discarded_after_restored_boundary=audit.get('discarded_after_restored_boundary',[]),
-        limits='Fresh or explicitly archived same-host/config/source continuation; full native bytes and observed restoration receipts, not arbitrary cross-host/vLLM bitwise restart proof.')
+        limits='Fresh or explicitly archived frozen-config/source continuation, with bound host transport when applicable; full native bytes and observed restoration receipts, not hardware/vLLM bitwise rollout equivalence.')
 
 
 def main():

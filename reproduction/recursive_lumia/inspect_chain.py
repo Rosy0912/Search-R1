@@ -131,8 +131,22 @@ def inspect_chain(run, chain_path, hash_native=False, query=None):
         if progress not in physical_progress:
             raise ValueError('Archived boundary lacks the actual parent completed-round record')
         restored = json.loads((Path(segment['output']) / 'native-resumed.json').read_text())
+        transport = None
+        if segment['entry']['host'] != parent['entry']['host']:
+            transport = load_bound(chain['attempts'][index]['transport'])
+            binding_text = transport['binding_original_text']
+            if (hashlib.sha256(binding_text.encode()).hexdigest() != transport['binding_sha256']
+                    or json.loads(binding_text) != transport['binding']
+                    or transport['binding']['parent_entry_sha256'] != archives[index-1]['entry_sha256']):
+                raise ValueError('Transport binding bytes or exact parent entry changed')
+            events = []
+            for line in segment['log_text'].splitlines():
+                if 'LUMIA_NATIVE_TRANSPORT=' in line:
+                    events.append(json.JSONDecoder().raw_decode(line.split('LUMIA_NATIVE_TRANSPORT=', 1)[1])[0])
+            if events != [transport]:
+                raise ValueError('Actual launch log does not contain the exact transport receipt')
         link = validate_link(parent['entry'], segment['entry'], manifest, restored,
-                             archived['manifest_path'], archived['manifest_sha256'])
+                             archived['manifest_path'], archived['manifest_sha256'], transport)
         if progress['optimizer_calls_per_rank'] != link['actual_adam_per_rank']:
             raise ValueError('Restored Adam total differs from the actual saved progress')
         links.append(link)

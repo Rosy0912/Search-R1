@@ -25,13 +25,13 @@ class ChainEvidence(unittest.TestCase):
             source_commit='a' * 40, data_identity='data')
         (self.run / 'receipts/configuration.json').write_text(json.dumps(self.config))
 
-    def attempt(self, job, rows, resume=None):
+    def attempt(self, job, rows, resume=None, host='gpu-4090-3'):
         out = self.run / 'output' / ('attempt-' + str(job) * 32)
         out.mkdir()
         for name in ('fresh-state', 'attempt-results'):
             (out / name).mkdir()
         entry = dict(run_id='run', group='C1-root-only', source_commit=self.config['source_commit'],
-            config_sha256=self.config['config_sha256'], host='gpu-4090-3', uid=1066,
+            config_sha256=self.config['config_sha256'], host=host, uid=1066,
             pid=100 + job, tick=1000 + job, allocation=str(job), output=str(out), resume_manifest=resume)
         (self.run / 'receipts/current-entry.json').write_text(json.dumps(entry))
         identity = dict(job_id=str(job), run_id='run', code_commit=self.config['source_commit'],
@@ -63,7 +63,7 @@ class ChainEvidence(unittest.TestCase):
         archived = archive(self.run, log, str(job), lambda _: '%d|jmzhang|RUNNING|0:0|\n' % job)
         return entry, out, dict(path=archived['archive'], sha256=archived['archive_sha256'])
 
-    def fixture(self):
+    def fixture(self, transport=False):
         parent, old, parent_ref = self.attempt(1, [(1,20,20), (2,20,40)])
         directory = self.run / 'checkpoints/native-rolling/global_step_1'
         directory.mkdir(parents=True)
@@ -81,7 +81,8 @@ class ChainEvidence(unittest.TestCase):
             optimizer_calls_per_rank={str(i):20 for i in range(8)})
         (old / 'completed-outers.jsonl').write_text(json.dumps(progress) + '\n')
         boundary_ref = capture_boundary(self.run, path, sha(path))
-        child, new, child_ref = self.attempt(2, [(2,13,33), (3,20,53)], resume=str(path))
+        child, new, child_ref = self.attempt(2, [(2,13,33), (3,20,53)], resume=str(path),
+            host='gpu-l40s-1' if transport else 'gpu-4090-3')
         restored = dict(status='ABLATION_CURRENT_CONDITION_NATIVE_STATE_RESTORED',
             completed_outer=1, next_outer=2, parent_manifest=str(path), parent_manifest_sha256=sha(path),
             workers=[dict(rank=i, actual_state_equal=True, scheduler_step=1,
@@ -89,12 +90,44 @@ class ChainEvidence(unittest.TestCase):
         (new / 'native-resumed.json').write_text(json.dumps(restored))
         chain = dict(version=1, run_id='run', attempts=[dict(entry=parent_ref),
                      dict(entry=child_ref, parent_boundary=boundary_ref)])
+        if transport:
+            binding = dict(parent_host=parent['host'], target_host=child['host'], parent_job='1',
+                frozen_source_commit=self.config['source_commit'], manifest=str(path), manifest_sha256=sha(path),
+                parent_entry_sha256=json.loads(Path(parent_ref['path']).read_text())['entry_sha256'],
+                **{k:child[k] for k in ('run_id','group','config_sha256')})
+            binding_path = self.run/'binding.json'
+            binding_path.write_text(json.dumps(binding))
+            evidence = dict(allocation='2', host=child['host'], uid=1066, binding=binding,
+                binding_original_text=binding_path.read_text(), binding_sha256=sha(binding_path))
+            evidence_path = self.run/'transport.json'
+            evidence_path.write_text(json.dumps(evidence))
+            with (self.run/'job-2.log').open('a') as stream:
+                stream.write('LUMIA_NATIVE_TRANSPORT='+json.dumps(evidence)+'\n')
+            chain['attempts'][1]['transport'] = dict(path=str(evidence_path),sha256=sha(evidence_path))
         chain_path = self.run / 'receipts/attempt-chain.json'
         chain_path.write_text(json.dumps(chain))
         return old, new, chain_path, path
 
     def query(self, _):
         return '1|jmzhang|TIMEOUT|0:0|\n2|jmzhang|RUNNING|0:0|\n'
+
+    def test_bound_host_transport_still_requires_actual_full_restoration(self):
+        old,new,chain,path = self.fixture(transport=True)
+        result = inspect_chain(self.run,chain,query=self.query)
+        self.assertEqual(result['completed_rounds'],3)
+        self.assertEqual(result['actual_adam_per_rank']['0'],53)
+        self.assertEqual(result['restoration_links'][0]['transport']['host'],'gpu-l40s-1')
+        restored_path = new/'native-resumed.json'
+        restored = json.loads(restored_path.read_text())
+        restored['workers'][0]['actual_state_equal'] = False
+        restored_path.write_text(json.dumps(restored))
+        with self.assertRaises(ValueError): inspect_chain(self.run,chain,query=self.query)
+
+    def test_transport_without_exact_launch_log_is_rejected(self):
+        old,new,chain,path = self.fixture(transport=True)
+        log = self.run/'job-2.log'
+        log.write_text('\n'.join(x for x in log.read_text().splitlines() if 'LUMIA_NATIVE_TRANSPORT=' not in x)+'\n')
+        with self.assertRaises(ValueError): inspect_chain(self.run,chain,query=self.query)
 
     def test_reads_real_rank_files_and_discards_unsaved_parent_round(self):
         old, new, chain, path = self.fixture()

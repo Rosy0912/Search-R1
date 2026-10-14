@@ -6,13 +6,26 @@ them; no fresh-only completion gate is relaxed by importing this module.
 """
 
 
-def validate_link(parent_entry, child_entry, manifest, restored, manifest_path, manifest_sha256):
-    stable = ('run_id', 'group', 'source_commit', 'config_sha256', 'host')
+def validate_link(parent_entry, child_entry, manifest, restored, manifest_path, manifest_sha256, transport=None):
+    stable = ('run_id', 'group', 'source_commit', 'config_sha256')
     if (any(parent_entry[k] != child_entry[k] for k in stable)
             or str(parent_entry['allocation']) == str(child_entry['allocation'])
             or child_entry['resume_manifest'] != manifest_path
             or parent_entry['output'] == child_entry['output']):
-        raise ValueError('Native continuation must link distinct attempts of the same frozen run/host')
+        raise ValueError('Native continuation must link distinct attempts of the same frozen run')
+    if parent_entry['host'] != child_entry['host']:
+        if transport is None:
+            raise ValueError('A host change requires separately verified explicit transport evidence')
+        binding = transport['binding']
+        if (str(transport['allocation']) != str(child_entry['allocation'])
+                or transport['host'] != child_entry['host'] or transport['uid'] != 1066
+                or binding['parent_host'] != parent_entry['host']
+                or binding['target_host'] != child_entry['host']
+                or str(binding['parent_job']) != str(parent_entry['allocation'])
+                or binding['frozen_source_commit'] != parent_entry['source_commit']
+                or binding['manifest'] != manifest_path or binding['manifest_sha256'] != manifest_sha256
+                or any(binding[k] != child_entry[k] for k in ('run_id', 'group', 'config_sha256'))):
+            raise ValueError('Transport evidence does not bind these exact parent/child attempts')
     identity = manifest['identity']
     step = identity['completed_step']
     if (manifest['status'] != 'COMPLETE_SAME_WORLD_STATE_SAVED'
@@ -52,7 +65,7 @@ def validate_link(parent_entry, child_entry, manifest, restored, manifest_path, 
     return dict(parent_job=str(parent_entry['allocation']), child_job=str(child_entry['allocation']),
         completed_outer=step, next_outer=step + 1, actual_adam_per_rank=writes,
         manifest_path=manifest_path, manifest_sha256=manifest_sha256,
-        limits='Requires separately verified manifest bytes, frozen runtime source and physical attempt records; no cross-host or vLLM bitwise equivalence claim.')
+        transport=transport, limits='Requires separately verified manifest bytes, frozen runtime source and physical attempt records; no hardware/vLLM bitwise rollout equivalence claim.')
 
 
 def merge_rounds(segments, links):
