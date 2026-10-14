@@ -32,19 +32,20 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job not in ('717607','717637','717698','717765'):raise ValueError('Only actually observed own startup failures are supported')
+    if job not in ('717607','717637','717698','717765','717827'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698'}[job]
+    parent={'717607':'717554','717637':'717607','717698':'717637','717765':'717698','717827':'717765'}[job]
     FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
     FAILED_COMMIT={'717607':'1552de146c2dd44e4fd40eb94b27839ac8648ef1',
         '717637':'f30895d421e190bdb13334e9ad6f718cb394d787',
         '717698':'7bf7a30fd530f0741c4deadf7d89788ca0070c0f',
-        '717765':'1e0ac4e588faa7811f0aeabb1c9b3a9e28f0012e'}[job]
+        '717765':'1e0ac4e588faa7811f0aeabb1c9b3a9e28f0012e',
+        '717827':'a75e0c944e2bbae284e52ce9b9f8bf909ab89564'}[job]
 
 
 def diagnostic_gate(commit):
-    if JOB not in ('717607','717637','717698','717765'):return None
+    if JOB not in ('717607','717637','717698','717765','717827'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -104,10 +105,34 @@ def terminal():
         raise ValueError('Actual failed run differs or already trained')
     forbidden=['training-launch-claim.json','search-g1-common8-training.log',
                'actual-updates.jsonl','actual-attempts.jsonl']
-    if JOB not in ('717698','717765'):forbidden+=['model-initial.log']
-    if JOB not in ('717637','717698','717765'):forbidden+=['process-ledger.json','native-allocation-admission.json','pipeline-status.json']
+    if JOB not in ('717698','717765','717827'):forbidden+=['model-initial.log']
+    if JOB not in ('717637','717698','717765','717827'):forbidden+=['process-ledger.json','native-allocation-admission.json','pipeline-status.json']
     for name in forbidden:
         if (FAILED/'logs'/name).exists():raise ValueError('Pipeline work already claimed; use full-state recovery instead')
+    if JOB=='717827':
+        shadow=FAILED/'failure-cleanup717827'
+        cleanup=json.loads((shadow/'complete.json').read_text())
+        claim=json.loads((FAILED/'preparation/cleanup717827-submission.json').read_text())
+        terminal_cleanup=subprocess.check_output(['sacct','-nP','-j',claim['job'],'-X','--format=JobID,State,ExitCode,UID,NodeList'],text=True).strip()
+        if claim['returncode']!=0 or terminal_cleanup!=claim['job']+'|COMPLETED|0:0|14090|ACD1-67':raise ValueError('Actual own cleanup job incomplete')
+        if cleanup['cleaned'] is not True or cleanup['run_id']!=run['run_id'] or cleanup['failed_job']!=JOB or cleanup['cleanup_job']!=claim['job']:
+            raise ValueError('Original failed native tmpfs was not closed')
+        stage=json.loads((FAILED/'logs/pipeline-status.json').read_text())
+        if stage['stage']!='OWNED_CLEANUP_FAILED' or 'pidfd_open' not in stage['error']:raise ValueError('Not observed old-kernel cleanup failure')
+        ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
+        if set(ledger['jobs'])!={'gpu-preflight','model-initial','retrieval-stage','retriever','initial-calibration'}:raise ValueError('Unexpected pipeline work before recovery')
+        for n in ('gpu-preflight','model-initial','retrieval-stage'):
+            if ledger['jobs'][n]['state']!='STOPPED' or ledger['jobs'][n]['exit_code']!=0:raise ValueError('Earlier actual startup admissions differ')
+        if ledger['jobs']['initial-calibration']['exit_code']!=1:raise ValueError('Actual failed calibration required')
+        log=(FAILED/'logs/initial-calibration.log').read_text()
+        if "ModuleNotFoundError: No module named 'joblib'" not in log:raise ValueError('Not observed missing CPU probe dependency')
+        retrieval=json.loads((FAILED/'logs/retrieval-admission.json').read_text())
+        if retrieval['accepted'] is not True or retrieval['shard_count']!=4 or retrieval['run_id']!=run['run_id']:raise ValueError('Original native4 retriever admission differs')
+        for rank in range(4):
+            model=json.loads((FAILED/'logs/model-smoke-initial'/('rank-'+str(rank)+'.json')).read_text())
+            if model['accepted'] is not True or model['actual_optimizer_writes']!=0:raise ValueError('Actor writes before fresh reset')
+        repaired=json.loads((shadow/'logs/process-ledger.json').read_text())
+        if repaired['run_id']!=run['run_id'] or any(j['state']!='STOPPED' for j in repaired['jobs'].values()):raise ValueError('Cleanup ledger not quiescent')
     if JOB in ('717637','717698','717765'):
         cleanup=json.loads((FAILED/'logs/cleanup-status.json').read_text())
         ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
@@ -144,7 +169,7 @@ def terminal():
                 raise ValueError('Not the actual retriever default-eight CUDA probe failure')
     log=FAILED/'logs'/('training-'+JOB+'.log')
     text=log.read_text()
-    component={'717637':'gpu-preflight failed','717698':'model-initial failed','717765':'retriever exited during endpoint readiness'}.get(JOB)
+    component={'717637':'gpu-preflight failed','717698':'model-initial failed','717765':'retriever exited during endpoint readiness','717827':'initial-calibration failed'}.get(JOB)
     known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else (component in text if component else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text))
     if not known:
         raise ValueError('Known actual allocation failure absent')
@@ -222,6 +247,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698','717765','717827'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)

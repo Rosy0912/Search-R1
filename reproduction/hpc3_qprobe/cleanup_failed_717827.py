@@ -4,6 +4,8 @@ Slurm must already have terminated the job. Preserve original logs/claims:
 cleanup uses a shadow ledger and checks all recorded readers are quiescent.
 """
 import json
+import argparse
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -44,4 +46,37 @@ def main():
     publish(SHADOW/'complete.json',value);print(json.dumps(value),flush=True)
 
 
-if __name__=='__main__':main()
+def submit(commit):
+    assert os.getuid()==14090
+    root=FAILED.parents[0]/'qprobe-teacher-warmup200-20261014'
+    source=root/'source'/commit
+    verification=json.loads((root/'preparation'/('source-'+commit+'-verification.json')).read_text())
+    assert verification['status']=='PUBLISHED_SOURCE_FULL_SHA_PASS' and verification['commit']==commit
+    for n,h in verification['files'].items():assert hashlib.sha256((source/n).read_bytes()).hexdigest()==h
+    proof=json.loads((FAILED/'failed-job-717827/terminal-and-files.json').read_text())
+    assert subprocess.check_output(['sacct','-nP','-j','717827','-X','--format=JobID,State,ExitCode,UID,NodeList'],text=True).strip()=='717827|FAILED|1:0|14090|ACD1-67'
+    for n,h in proof['files'].items():assert hashlib.sha256((FAILED/n).read_bytes()).hexdigest()==h['sha256']
+    intent=FAILED/'preparation/cleanup717827-submit-claim.json';receipt=FAILED/'preparation/cleanup717827-submission.json'
+    assert not SHADOW.exists() and not intent.exists() and not receipt.exists(),'Inspect existing cleanup claim instead of repeating'
+    command=['sbatch','--parsable','--account=jxu957','--qos=formal-user','--partition=acd_ue',
+        '--nodelist=ACD1-67','--nodes=1','--ntasks=1','--cpus-per-task=1','--mem=1G','--gres=none',
+        '--time=00:10:00','--job-name=qprobe-cleanup717827','--export=NONE',
+        '--output='+str(FAILED/'logs/cleanup717827-%j.log'),str(source/'reproduction/hpc3_qprobe/cleanup_failed_717827.sh'),str(source)]
+    test=subprocess.run(command[:1]+['--test-only']+command[1:],capture_output=True,text=True,timeout=30)
+    assert test.returncode==0,test.stderr
+    publish(intent,dict(commit=commit,command=command,failed_job='717827',epoch=time.time()))
+    (SHADOW/'logs').mkdir(parents=True)
+    for n in ('run-manifest.json','process-ledger.json','corpus-cache-claim.json','retrieval-staging-claim.json'):
+        shutil.copyfile(FAILED/'logs'/n,SHADOW/'logs'/n)
+    result=subprocess.run(command,capture_output=True,text=True,timeout=30)
+    v=dict(commit=commit,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr,epoch=time.time())
+    if result.returncode==0:
+        v['job']=result.stdout.strip().split(';')[0];assert v['job'].isdecimal()
+    publish(receipt,v);assert result.returncode==0,result.stderr
+    return v
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--submit-commit');a=p.parse_args()
+    if a.submit_commit:print(json.dumps(submit(a.submit_commit)),flush=True)
+    else:main()
