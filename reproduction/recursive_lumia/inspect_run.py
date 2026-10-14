@@ -23,11 +23,12 @@ def read_jsonl(path):
     return [json.loads(line) for line in raw.splitlines() if line.strip()]
 
 
-def verify_rank(record, run, identity, outer):
+def verify_rank(record, run, identity, outer, output=None):
+    output = run/'output' if output is None else output
     rank = record['rank']
     direct = record['direct_rank_record']
     path = Path(direct['path'])
-    if path.parent != run/'output/fresh-state' or path.is_symlink() or sha(path) != direct['sha256']:
+    if path.parent != output/'fresh-state' or path.is_symlink() or sha(path) != direct['sha256']:
         raise ValueError('Direct rank evidence is missing, modified or outside the run')
     actual = json.loads(path.read_text())
     if any(actual[key] != value for key,value in identity.items()):
@@ -50,7 +51,7 @@ def verify_rank(record, run, identity, outer):
     norms = [e['gradient_preclip'] for e in ledger if e['actual_writes']]
     if any(value is None or not math.isfinite(value) for value in norms):
         raise ValueError('A committed update lacks a finite observed gradient norm')
-    audit_path = run/'output/rank-audit'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}.json"
+    audit_path = output/'rank-audit'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}.json"
     losses = []
     if outer in (5,50,100,150,200):
         audit = json.loads(audit_path.read_text())
@@ -58,7 +59,7 @@ def verify_rank(record, run, identity, outer):
                 or audit['successful_optimizer_calls'] != writes or audit['existing_grad_norms'] != norms):
             raise ValueError('Sparse Tree rank audit differs from actual updates')
         for call in range(writes):
-            tail_path = run/'output/rank-audit/ratio-tail'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}-optimizer-{call:02d}.json"
+            tail_path = output/'rank-audit/ratio-tail'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}-optimizer-{call:02d}.json"
             tail = json.loads(tail_path.read_text())
             if tail['optimizer_call'] != call+1 or tail['outer_step'] != outer or tail['rank'] != rank:
                 raise ValueError('Successful-write loss record belongs to another update')
@@ -107,12 +108,26 @@ def checkpoint(run, identity, hash_native):
     return result
 
 
+def evidence_namespace(run, config):
+    if config.get('protocol') != 'recursive_mechanism_ablation150_v1':
+        return run/'output', json.loads((run/'receipts/train-start.json').read_text())['job']
+    entry = json.loads((run/'receipts/current-entry.json').read_text())
+    output = Path(entry['output'])
+    if (output.parent != run/'output' or output.resolve() != output or output.is_symlink()
+            or re.fullmatch(r'attempt-[0-9a-f]{32}',output.name) is None
+            or any(entry[k] != config[k] for k in ('run_id','source_commit','config_sha256','group'))):
+        raise ValueError('Ablation evidence namespace does not match its current entry')
+    if entry.get('resume_manifest'):
+        raise ValueError('Resumed evidence needs linked ancestry; this audit verifies fresh runs only')
+    return output, entry['allocation']
+
+
 def inspect(run, log_path, hash_native=False):
     run = Path(run).resolve()
     config = json.loads((run/'receipts/configuration.json').read_text())
-    start = json.loads((run/'receipts/train-start.json').read_text())
-    fresh = json.loads((run/'output/fresh-initialization.json').read_text())
-    identity = dict(job_id=str(start['job']), run_id=config['run_id'], code_commit=config['source_commit'],
+    output, job = evidence_namespace(run,config)
+    fresh = json.loads((output/'fresh-initialization.json').read_text())
+    identity = dict(job_id=str(job), run_id=config['run_id'], code_commit=config['source_commit'],
                     config_sha256=config['config_sha256'],data_identity=config['data_identity'])
     if any(fresh[key] != value for key,value in identity.items()):
         raise ValueError('Fresh receipt and run configuration disagree')
@@ -128,12 +143,12 @@ def inspect(run, log_path, hash_native=False):
         if values.get('training/actual_outer_updates') == int(match.group(1)):
             round_metrics[int(match.group(1))] = values
     attempts = []
-    for path in sorted((run/'output/attempt-results').glob('attempt-*.json')):
+    for path in sorted((output/'attempt-results').glob('attempt-*.json')):
         value = json.loads(path.read_text());outer = value['accepted_outer']
         ranks = value['all_rank_result']['ranks']
         if len(ranks) != 8 or {r['rank'] for r in ranks} != set(range(8)):
             raise ValueError('Completed attempt lacks eight physical ranks')
-        verified = [verify_rank(r,run,identity,outer) for r in ranks]
+        verified = [verify_rank(r,run,identity,outer,output) for r in ranks]
         if len({r['actual_adam_writes'] for r in verified}) != 1:
             raise ValueError('Actual Adam writes differ across ranks')
         attempts.append(dict(outer=outer,attempt=value['attempt_id'], ranks=verified,
@@ -157,7 +172,7 @@ def inspect(run, log_path, hash_native=False):
     five_writes = len(first5) == 5 and all(r['actual_adam_writes_per_rank'] > 0 for r in first5)
     finite = len(first5) == 5 and all(r['reported_pg_loss_finite'] is True
         and all(rank['all_observed_loss_finite'] is not False for rank in r['ranks']) for r in first5)
-    return dict(at=time.time(), run=str(run), identity=identity, completed_rounds=len(attempts),
+    return dict(at=time.time(), run=str(run), output=str(output), identity=identity, completed_rounds=len(attempts),
         zero_write_rounds=sum(r['actual_adam_writes_per_rank'] == 0 for r in attempts),attempts=attempts,
         native5=boundary,sixth_real_generation_observed=bool(sixth),sixth_first_evidence=sixth[0] if sixth else None,
         first5_each_has_real_adam_writes=five_writes,first5_observed_loss_all_finite=finite,

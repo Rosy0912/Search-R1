@@ -9,7 +9,7 @@ from .inspect_run import inspect, read_jsonl, verify_rank
 class RuntimeEvidenceTest(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
-        self.run=Path(self.tmp.name)
+        self.run=Path(self.tmp.name).resolve()
         (self.run/'receipts').mkdir();(self.run/'output').mkdir()
         self.identity=dict(job_id='1',run_id='run',code_commit='source',config_sha256='config',data_identity='data')
         (self.run/'receipts/configuration.json').write_text(json.dumps(dict(run_id='run',source_commit='source',config_sha256='config',data_identity='data')))
@@ -26,6 +26,32 @@ class RuntimeEvidenceTest(unittest.TestCase):
     def test_partial_audit_line_is_not_evidence(self):
         path=self.run/'audit.jsonl';path.write_text('{"complete":true}\n{"incomplete":')
         self.assertEqual(read_jsonl(path),[{'complete':True}])
+
+    def ablation_entry(self):
+        path=self.run/'receipts/configuration.json';config=json.loads(path.read_text())
+        config.update(protocol='recursive_mechanism_ablation150_v1',group='C1-root-only')
+        path.write_text(json.dumps(config))
+        output=self.run/'output'/('attempt-'+'a'*32);output.mkdir()
+        (output/'fresh-initialization.json').write_text(json.dumps(self.identity))
+        entry={k:config[k] for k in ('run_id','source_commit','config_sha256','group')}
+        entry.update(output=str(output),allocation='1',resume_manifest=None)
+        path=self.run/'receipts/current-entry.json';path.write_text(json.dumps(entry))
+        return path,entry,output
+
+    def test_ablation_uses_receipt_bound_attempt_namespace(self):
+        _,_,output=self.ablation_entry()
+        result=inspect(self.run,self.log)
+        self.assertEqual(result['output'],str(output))
+        self.assertEqual(result['completed_rounds'],0)
+        self.assertFalse(result['initial_acceptance_verified'])
+
+    def test_resumed_or_foreign_ablation_namespace_is_not_fresh_evidence(self):
+        path,entry,_=self.ablation_entry()
+        entry['resume_manifest']='/prior/native/manifest.json';path.write_text(json.dumps(entry))
+        with self.assertRaisesRegex(ValueError,'ancestry'):inspect(self.run,self.log)
+        entry['resume_manifest']=None;entry['output']=str(self.run/'foreign'/('attempt-'+'b'*32))
+        path.write_text(json.dumps(entry))
+        with self.assertRaisesRegex(ValueError,'namespace'):inspect(self.run,self.log)
 
     def test_direct_rank_byte_change_is_rejected(self):
         root=self.run/'output/fresh-state';root.mkdir()
