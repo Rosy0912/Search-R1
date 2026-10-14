@@ -193,7 +193,13 @@ def main():
         except (OSError,subprocess.TimeoutExpired) as failure:
             result.update(exit_code=None,status='TIMEOUT_OR_TRANSPORT_UNKNOWN',failure_type=type(failure).__name__)
         result.update(stdout_bytes=out.tell(),stderr_bytes=err.tell());out.seek(0);raw=out.read(128*1024+1)
-        err.seek(0);result['bounded_stderr_sha256']=hashlib.sha256(err.read(64*1024)).hexdigest()
+        err.seek(0);stderr=err.read(64*1024)
+        result['bounded_stderr_sha256']=hashlib.sha256(stderr).hexdigest()
+        diagnostic=stderr.decode(errors='replace')
+        result['remote_exception_frames']=[dict(file=Path(match.group(1)).name,line=int(match.group(2)),function=match.group(3))
+            for match in re.finditer(r'File "([^"\n]+)", line ([0-9]+), in ([A-Za-z0-9_<>]+)',diagnostic)][-8:]
+        types=re.findall(r'^([A-Za-z][A-Za-z0-9_]*(?:Error|Exception))(?::|$)',diagnostic,re.MULTILINE)
+        result['remote_exception_type']=types[-1] if types else None
     result['observation']=None
     if result['exit_code']==0:
         try:result['observation']=observation(raw,(args.expected_run,args.expected_execution,intent['source_commit']))
