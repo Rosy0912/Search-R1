@@ -174,6 +174,14 @@ def main():
     rel = lambda pin:str(Path(pin['path']).relative_to(workspace)) if Path(pin['path']).is_relative_to(workspace) else pin['path']
     common = dict(status='TRAINING_RUNNING' if next_outer else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         phase='TRAINING_RUNNING' if next_outer else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
+        health=(f'Full{n}/native{n} complete; actual PID{rs["MainPID"]}/Invocation{rs["InvocationID"]}; '
+            + (f'outer{next_outer} continues in the same instance; ' if next_outer else f'final phase {(final or {}).get("kind")}; ')
+            + f'second progress outer{p2["actual_completed_outer_from_attempt_results"]}; '
+            + f'progress errors={bool(p2.get("errors"))}; terminal observed={bool(not active or second.get("run_result") is not None or p2.get("terminal"))}.'),
+        current_observation_status=(f'ACTUAL_FULL{n}_NEXT{next_outer}_PROGRESS_CONFIRMED' if next_outer
+                                    else f'ACTUAL_FULL{n}_FINAL_PHASE_CONFIRMED'),
+        current_remote_health_known=True,
+        unit=core.UNIT,main_pid=int(rs['MainPID']),invocation_id=rs['InvocationID'],
         source_commit=core.SOURCE,current_outer=n,last_confirmed_outer=n,last_confirmed_chain_outer=n,
         actual_optimizer_completed_outer=n,new_completed_outer=n-5,last_durable_completed_outer=n,
         latest_native_checkpoint_outer=n,latest_native_manifest_sha256=native['manifest_sha256'],
@@ -217,7 +225,7 @@ def main():
         candidate_cost_extension_latest_complete_outer=n,candidate_cost_extension_latest_part=rel(part_pin),
         candidate_cost_extension_latest_part_sha256=part_pin['sha256'],initial_state_fallback_rates=rates,
         current_branch_fallback_rates_receipt=rel(rates_pin),current_branch_fallback_rates_receipt_sha256=rates_pin['sha256'],
-        current_systemd=ps,actual_training_progress=p2,finalized_progress_input_bindings=proof['snapshots'],
+        current_systemd=dict(ps, InvocationID=rs['InvocationID']),actual_training_progress=p2,finalized_progress_input_bindings=proof['snapshots'],
         recent_iteration_metrics=second.get('iteration_metrics'),latest_guard=second.get('latest_guard'),
         current_native_manifest_history=watcher or None,native_manifest_history=watcher or None,
         native_watcher_systemd=core.state(resource2['watcher_systemd']) if resource2.get('watcher_systemd') is not None else None,
