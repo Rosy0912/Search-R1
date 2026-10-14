@@ -1,0 +1,293 @@
+{
+  "change_since_delivered_anchor": {
+    "anchor_observed_unix": 1791955992.566837,
+    "anchor_role": "actual_delivered6a262_formalhour2_anchor",
+    "completed_outers_delta": 2,
+    "previous_completed_outers": 3,
+    "previous_returned_adam_writes_cumulative_per_rank": 75,
+    "returned_adam_writes_delta_per_rank": 43
+  },
+  "deployment_id": "6047f7f9674b49fdad718a256ab3db95",
+  "existing_development512": {
+    "correct_count": 91,
+    "em": 0.177734375,
+    "evaluation_checked_unix": 1791957857.1997197,
+    "f1": 0.2374496259740666,
+    "final51713": {
+      "em": null,
+      "f1": null,
+      "status": "unknown_not_extracted"
+    },
+    "new_evaluation_performed_for_report": false,
+    "question_count": 512,
+    "scalar_receipt_checked_unix": 1791959808.5091121,
+    "source_correct": {
+      "hotpotqa": 40,
+      "nq": 51
+    },
+    "source_counts": {
+      "hotpotqa": 256,
+      "nq": 256
+    },
+    "source_em": {
+      "hotpotqa": 0.15625,
+      "nq": 0.19921875
+    },
+    "stage64": {
+      "em": null,
+      "f1": null,
+      "scope": "Stage64 metrics were not extracted from these receipts; this does not claim that an artifact is absent.",
+      "status": "unknown_not_extracted"
+    },
+    "step": 5
+  },
+  "existing_first_five_acceptance": {
+    "accepted": true,
+    "actor_probe_roundtrip_accepted": true,
+    "changed_parameter_count": 434,
+    "checkpoint_step": 5,
+    "finite_all_saved_tensors": true,
+    "independently_verified_saved_tensor_count": 435,
+    "validated_tensor_count": 435,
+    "whole200_acceptance": false
+  },
+  "gpu": {
+    "exclusive_owned_model_peak_mib": null,
+    "new_completed_window_max_sample_gap_seconds": 2.6054022312164307,
+    "new_completed_window_max_training_sampled_peak_mib": 53207,
+    "new_completed_window_samples": 866,
+    "node_pipeline_lifetime_max_sample_gap_seconds": 2.879866123199463,
+    "node_pipeline_lifetime_max_training_sampled_peak_mib": 58063,
+    "node_pipeline_lifetime_sampled_peak_mib": {
+      "0": 57509,
+      "1": 58063,
+      "2": 57605,
+      "3": 57947,
+      "5": 18925,
+      "6": 37978
+    },
+    "node_pipeline_lifetime_samples": 5515,
+    "outer_gpu_windows": [
+      {
+        "actual_optimizer_writes": 20,
+        "begin_uncovered_seconds": 1.7565412521362305,
+        "begin_unix": 1791954735.8035412,
+        "complete_uncovered_seconds": 1.5916469097137451,
+        "complete_unix": 1791955704.613519,
+        "maximum_query_duration_seconds": 0.23135042190551758,
+        "maximum_sample_gap_seconds": 2.2321395874023438,
+        "opportunities_processed": 20,
+        "physical_device_sampled_peak_mib": [
+          {
+            "assignment": "training",
+            "physical_index": 0,
+            "sampled_peak_mib": 52665
+          },
+          {
+            "assignment": "training",
+            "physical_index": 1,
+            "sampled_peak_mib": 53147
+          },
+          {
+            "assignment": "training",
+            "physical_index": 2,
+            "sampled_peak_mib": 53207
+          },
+          {
+            "assignment": "training",
+            "physical_index": 3,
+            "sampled_peak_mib": 53111
+          },
+          {
+            "assignment": "auxiliary",
+            "physical_index": 5,
+            "sampled_peak_mib": 18443
+          },
+          {
+            "assignment": "auxiliary",
+            "physical_index": 6,
+            "sampled_peak_mib": 17913
+          }
+        ],
+        "sample_count": 453,
+        "status": "observed",
+        "step": 4
+      },
+      {
+        "actual_optimizer_writes": 20,
+        "begin_uncovered_seconds": 1.7140777111053467,
+        "begin_unix": 1791956460.1598547,
+        "complete_uncovered_seconds": 0.9226512908935547,
+        "complete_unix": 1791957343.9857495,
+        "maximum_query_duration_seconds": 0.6045267581939697,
+        "maximum_sample_gap_seconds": 2.6054022312164307,
+        "opportunities_processed": 20,
+        "physical_device_sampled_peak_mib": [
+          {
+            "assignment": "training",
+            "physical_index": 0,
+            "sampled_peak_mib": 50343
+          },
+          {
+            "assignment": "training",
+            "physical_index": 1,
+            "sampled_peak_mib": 49753
+          },
+          {
+            "assignment": "training",
+            "physical_index": 2,
+            "sampled_peak_mib": 49753
+          },
+          {
+            "assignment": "training",
+            "physical_index": 3,
+            "sampled_peak_mib": 49759
+          },
+          {
+            "assignment": "auxiliary",
+            "physical_index": 5,
+            "sampled_peak_mib": 18407
+          },
+          {
+            "assignment": "auxiliary",
+            "physical_index": 6,
+            "sampled_peak_mib": 17933
+          }
+        ],
+        "sample_count": 413,
+        "status": "observed",
+        "step": 5
+      }
+    ],
+    "physical_device_snapshot_at_observation": [
+      {
+        "assignment": "training",
+        "physical_index": 0,
+        "total_mib": 81920,
+        "used_mib": 50813,
+        "util_percent": 99
+      },
+      {
+        "assignment": "training",
+        "physical_index": 1,
+        "total_mib": 81920,
+        "used_mib": 50909,
+        "util_percent": 100
+      },
+      {
+        "assignment": "training",
+        "physical_index": 2,
+        "total_mib": 81920,
+        "used_mib": 50909,
+        "util_percent": 100
+      },
+      {
+        "assignment": "training",
+        "physical_index": 3,
+        "total_mib": 81920,
+        "used_mib": 50813,
+        "util_percent": 100
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "assignment": "auxiliary",
+        "physical_index": 6,
+        "total_mib": 81920,
+        "used_mib": 17413,
+        "util_percent": 0
+      }
+    ],
+    "scope": "Physical-device sampled occupancy. Lifetime includes pipeline/service activity; completed windows span min four-rank BEGIN to max four-rank COMPLETE and exclude pre-BEGIN preload. Neither is an exclusive model-memory peak or an individual optimizer.step peak.",
+    "snapshot_unix": 1791959612.83575
+  },
+  "identity": {
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-6047f7f9674b49fdad718a256ab3db95",
+    "execution_id": "140e43d2243d49a99d88f77399f263b8",
+    "run_id": "6a26247f538b4145a24b156e79fb04d1",
+    "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c"
+  },
+  "new_completed_reward_window": {
+    "count": 2,
+    "earlier_failed_or_other_run_rewards_included": false,
+    "mean": 0.19219718128442764,
+    "mean_delta": -0.018401190638542175,
+    "outer4_scalar_provenance": "Parent task supplied the previously measured scalar; it is not included in these three local excerpt receipts.",
+    "outer5_scalar_provenance": "Crosschecked against the hour3 observation latest actual update scalar.",
+    "previous_delivered_window_mean": 0.21059837192296982,
+    "range_max": 0.20604972541332245,
+    "range_min": 0.17834463715553284,
+    "reward_mode": "search_g1",
+    "rewards": [
+      0.17834463715553284,
+      0.20604972541332245
+    ],
+    "steps": [
+      4,
+      5
+    ]
+  },
+  "observation": {
+    "observed_at_asia_shanghai": "2026-10-14T14:33:33.677566+08:00",
+    "observed_unix": 1791959613.6775658,
+    "pipeline_alive_at_observation": true,
+    "pipeline_birth_matches_at_observation": true,
+    "pipeline_stage_at_observation": "GRPO_1_TO_200",
+    "scope": "Historical existing-run observation at the stated timestamp; this local report does not establish later current state.",
+    "subsequent_current_liveness_verified": false
+  },
+  "production": {
+    "commit_performed": false,
+    "hourly_anchor_advanced": false,
+    "local_receipts_read_only": true,
+    "published": false,
+    "remote_mutation_performed": false,
+    "remote_query_performed_for_report": false
+  },
+  "progress": {
+    "all_four_rank_counters_agree": true,
+    "completed_outer_opportunities_per_rank": 100,
+    "completed_outers": 5,
+    "partial_outer": 6,
+    "partial_outer_opportunities_target_per_rank": 20,
+    "partial_processed_opportunities_per_rank": 18,
+    "partial_returned_adam_writes_per_rank": 18,
+    "processed_opportunities_cumulative_per_rank": 118,
+    "returned_adam_writes_cumulative_per_rank": 118,
+    "skipped_opportunities_cumulative_per_rank": 0,
+    "target_outers": 200
+  },
+  "provenance": {
+    "existing_scalar_artifact_sha256": {
+      "logs/actor-probe-state-roundtrip-5.json": "f807d6bb1738d8d08b3ece4b465930932d2a041879fac85b7024f5f881444c7d",
+      "logs/five-updates-acceptance.json": "94cec9f913aeefb29a9f598b2f99ce0aa7c428c8b94aab6bfa83dd48095743b9",
+      "logs/formal-inline-development-after.json": "b672207e0d94da811d34bdf1be36c00d64c1bf72e97a6b0517d6f66e356b7ee7"
+    },
+    "handle_sha256": "e45cd6acae971b974c80ce7a53ffdc41759a6f571254ec31eaec3c57e00e26cc",
+    "identity_snapshot_sha256": "cb7078db557b479b466e93328a52a7c3e125a951cb34bd949b85912137bf236f",
+    "input_receipt_sha256": {
+      "actor-probes-ten-6a262-existing-five-scalar-before-human-switch.json": "44eca950ea049cd285f172d71b913852b20aa55f4e14757a783e1860eb268f42",
+      "actor-probes-ten-6a262-hour3-window-observation.json": "41403ddcad3a873c05134fcd696f1561112a242b44ab5f2bb8f75bb7533f7d7b",
+      "hourly-anchor.json": "3bc49900325049113f5b0a2435b1d869ddcfde61b50446df026c7bbf27edaea9"
+    },
+    "remote_reader_sha256": "f5d4d391e339c44e0019817accdc435e72e257f3739234aeb0e9ed9b5d1b6f39",
+    "route_source_sha256": "342f98b636cfcde7860054e7721ae0cd9c97180dbfabc60c20ec8398ae78cad6",
+    "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad"
+  },
+  "report_index": 3,
+  "role": "actor_probe_6a262_formal_hour3_sanitized_scalar_report",
+  "sanitization": {
+    "full_process_or_optimizer_ledgers_retained": false,
+    "full_source_map_retained": false,
+    "question_ids_retained": false,
+    "questions_answers_or_per_question_rows_retained": false,
+    "scalar_hash_identity_scope_only": true
+  },
+  "schema_version": 1,
+  "training_world_size": 4
+}
