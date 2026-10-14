@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "completed_outer": 1,
+  "consumed_lr": 0.0,
+  "driver_four_rank_agreement": true,
+  "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+  "firstfive_native_accepted": false,
+  "fork_turns": "none",
+  "four_rank_scheduler_kinds": [
+    "BEGIN",
+    "COMMIT_PREPARED",
+    "COMPLETE"
+  ],
+  "fullstate_accepted": false,
+  "goal_accepted": false,
+  "next_lr": 1.7543859649122805e-08,
+  "processed_opportunities": 20,
+  "rank_replicas_counted_once": true,
+  "receipt_sha256": "64371325c3e9b3283575c2961e3236e32be7148fa5afbae7b3276f8c1413fc63",
+  "returned_adam": 20,
+  "reviewed_unix": 1791939445.3436139,
+  "reviewer": "/root/first_outer_counting_local_check",
+  "role": "independent_local_actual_first_outer_scalar_review",
+  "run_id": "a9be0ee91ff942349a26caf372e22a27",
+  "scheduler_advances": 1,
+  "scope": "Independent local existing scalar/hash/source inspection only; no SSH, tests, mutation or additional evaluation.",
+  "skipped_opportunities": 0,
+  "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c"
+}
