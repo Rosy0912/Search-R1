@@ -33,6 +33,7 @@ LINE_LIMIT=128*1024
 deadline=time.monotonic()+65
 spent=0
 metadata_files=[]
+documents={};ledgers={}
 class Unknown(Exception):pass
 def need(value,reason):
  if not value:raise Unknown(reason)
@@ -75,10 +76,13 @@ def snapshot(path,limit,append=False,tail=False,record=True):
 def budget_bytes(path,limit):
  raw,_=snapshot(path,limit,record=False);need(raw is not None,'required_source_missing');return raw
 def document(relative,limit=SMALL_LIMIT):
+ if (relative,limit) in documents:return documents[(relative,limit)]
  raw,info=snapshot(base/relative,limit)
  if raw is None:return None,None
- value=json.loads(raw);need(type(value) is dict,'metadata_object');return value,info
+ value=json.loads(raw);need(type(value) is dict,'metadata_object')
+ documents[(relative,limit)]=(value,info);return value,info
 def rows(relative,tail=False):
+ if (relative,tail) in ledgers:return ledgers[(relative,tail)]
  raw,info=snapshot(base/relative,LEDGER_LIMIT,append=True,tail=tail)
  if raw is None:return None,None
  leading=raw.find(b'\n')+1 if info['scan_start_byte'] else 0
@@ -91,7 +95,7 @@ def rows(relative,tail=False):
  for line in prefix.split(b'\n')[:-1]:
   check();need(0<len(line)<=LINE_LIMIT and len(values)<20000,'line_or_row_limit')
   value=json.loads(line);need(type(value) is dict,'ledger_object');values.append(value)
- info['complete_line_count']=len(values);return values,info
+ info['complete_line_count']=len(values);ledgers[(relative,tail)]=(values,info);return values,info
 def scalar(value):
  return value if value is None or type(value) is bool or number(value) else None
 def select(value,names):return {name:scalar(value.get(name)) for name in names}
@@ -169,6 +173,7 @@ def reward_window():
   prior_after=after;prior_index=index
  need(payload['after_step']<=len(observed),'requested_anchor_ahead_of_complete_prefix')
  globals()['complete_updates']=updates
+ globals()['closed_attempts']=by_attempt
  fresh=observed[payload['after_step']:];values=[row['reward_mean'] for row in fresh]
  return dict(status='observed',recorded_complete_outers=len(observed),after_complete_step=payload['after_step'],
   newly_complete_steps=[row['step'] for row in fresh],new_complete_rows=fresh,
@@ -176,6 +181,97 @@ def reward_window():
   window_min=min(values) if values else None,window_max=max(values) if values else None,
   complete_prefix_sha256=info['complete_prefix_sha256'],partial_final_status=info['partial_final_status'],
   scope='returned whole formal outer rows once per four-rank collective; no partial attempt is included')
+def opportunity_counts():
+ need(closed_attempts is not None and complete_updates is not None,'closed_attempt_prefix_unknown')
+ closed=sorted(closed_attempts.values(),key=lambda item:item['attempt_index'])
+ need([item['attempt_index'] for item in closed]==list(range(1,len(closed)+1)),'closed_attempt_sequence')
+ need(sum(item['complete_outer'] is True for item in closed)==len(complete_updates),'driver_prefixes_not_same_snapshot')
+ results=[];signatures=[];partial_files=False
+ for rank in range(4):
+  values,info=rows('logs/optimizer-rank-'+str(rank)+'.jsonl')
+  need(values is not None and info['scan_from_start'],'opportunity_prefix_missing_or_not_from_start')
+  groups=[];signature=[];writes=0
+  for row in values:
+   need(row.get('run_id')==run['run_id'] and type(row.get('rank')) is int and row['rank']==rank,'opportunity_row_identity')
+   if row.get('kind')!='OPPORTUNITY':continue
+   context=row['context'];aid=context['attempt_id'];ordinal=context['attempt_index'];outer=context['logical_update']
+   gate_sha=hash_value(context['behavior_probability_gate_sha256'])
+   need(type(aid) is str and re.fullmatch('[0-9a-f]{32}',aid) and integer(ordinal,1) and integer(outer,1) and outer<=200,'opportunity_context')
+   if not groups or groups[-1]['attempt_id']!=aid:
+    need(ordinal==len(groups)+1 and aid not in {item['attempt_id'] for item in groups},'opportunity_attempt_sequence')
+    groups.append(dict(attempt_id=aid,attempt_index=ordinal,logical_update=outer,processed=0,successful_adam=0,
+     optimizer_writes_before=writes,optimizer_writes_after=writes,behavior_probability_gate_sha256=gate_sha))
+   group=groups[-1];index=row['opportunity_index'];before=row['optimizer_writes_before'];after=row['optimizer_writes_after'];wrote=row['optimizer_write_succeeded']
+   need(group['attempt_index']==ordinal and group['logical_update']==outer and type(index) is int and
+    index==group['processed']<20 and context['minibatch_index']==index and context['prior_optimizer_writes']==before and
+    row['processed'] is True and type(wrote) is bool and integer(before) and integer(after) and before==writes and after-before==int(wrote),
+    'opportunity_sequence_or_cumulative_write')
+   need(row['status'] in (('written','written_with_post_guard') if wrote else ('skipped_guard',)),'opportunity_status')
+   need(group['behavior_probability_gate_sha256']==gate_sha,'attempt_behavior_gate_changed')
+   group['processed']+=1;group['successful_adam']+=int(wrote);group['optimizer_writes_after']=after;writes=after
+   signature.append([aid,ordinal,outer,index,before,after,wrote,row['status'],gate_sha])
+  for attempt in closed:
+   ordinal=attempt['attempt_index'];need(ordinal<=len(groups),'closed_attempt_opportunities_not_yet_visible')
+   group=groups[ordinal-1]
+   need(group['attempt_id']==attempt['attempt_id'] and group['logical_update']==attempt['logical_update'] and
+    group['processed']==attempt['opportunities_processed'] and group['successful_adam']==attempt['optimizer_writes_this_attempt'] and
+    group['optimizer_writes_before']==attempt['optimizer_writes_before'] and group['optimizer_writes_after']==attempt['optimizer_writes_after'],
+    'opportunities_disagree_with_closed_attempt')
+   if attempt['complete_outer'] is True:
+    update=complete_updates[attempt['logical_update']-1]
+    need(update['attempt_id']==group['attempt_id'] and update['behavior_probability_gate_sha256']==group['behavior_probability_gate_sha256'],
+     'opportunity_gate_differs_from_returned_complete_update')
+  need(len(groups) in (len(closed),len(closed)+1),'more_than_one_unclosed_attempt')
+  partial=groups[-1] if len(groups)>len(closed) else None
+  if partial:need(partial['logical_update']==len(complete_updates)+1,'partial_logical_outer')
+  processed=sum(group['processed'] for group in groups);successful=sum(group['successful_adam'] for group in groups)
+  need(successful==writes,'cumulative_adam_not_from_initial_zero')
+  partial_files=partial_files or info['partial_final_bytes']>0
+  signatures.append(digest(canonical(signature)))
+  results.append(dict(rank=rank,complete_prefix_processed=processed,complete_prefix_successful_adam=successful,
+   complete_prefix_skip=processed-successful,current_partial=partial,prefix_sha256=info['complete_prefix_sha256'],
+   partial_final_status=info['partial_final_status']))
+ agreement=len(set(signatures))==1
+ return dict(status='observed' if agreement and not partial_files else 'unknown',
+  reason=None if agreement and not partial_files else 'four_rank_prefixes_disagree' if not agreement else 'incomplete_final_row',
+  four_rank_complete_prefix_agreement=agreement,per_rank=results,
+  cumulative_processed=results[0]['complete_prefix_processed'] if agreement and not partial_files else None,
+  cumulative_successful_adam=results[0]['complete_prefix_successful_adam'] if agreement and not partial_files else None,
+  cumulative_skip=results[0]['complete_prefix_skip'] if agreement and not partial_files else None,
+  current_partial=results[0]['current_partial'] if agreement and not partial_files else None,
+  scope='from-start newline-complete OPPORTUNITY receipts including closed and current unclosed attempts; four replicas counted once; no tail-derived cumulative count')
+def runtime_status():
+ stage,_=document('logs/pipeline-status.json');ledger,_=document('logs/process-ledger.json',8*1024*1024)
+ need(stage is not None and ledger is not None and stage['run_id']==ledger['run_id']==run['run_id'],'runtime_status_identity')
+ need(type(stage['stage']) is str and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',stage['stage']),'pipeline_stage_schema')
+ jobs=ledger['jobs'];need(type(jobs) is dict and len(jobs)<=32,'job_count_limit')
+ output=[];error_paths=[]
+ for name,job in jobs.items():
+  need(type(name) is str and re.fullmatch('[A-Za-z0-9][A-Za-z0-9_.-]{0,63}',name) and
+   type(job['state']) is str and re.fullmatch('[A-Z][A-Z0-9_]{0,63}',job['state']),'job_name_or_state')
+  code=job.get('exit_code');need(code is None or type(code) is int,'job_exit_code')
+  output.append(dict(name=name,state=job['state'],exit_code=code,leader=process(job['leader'])))
+  if (code is not None and code!=0) or job['state']=='CLEANUP_FAILED':error_paths.append(Path(job['log']))
+ if stage['stage'] in ('FAILED','OWNED_CLEANUP_FAILED'):error_paths.append(base/'logs/deployment-pipeline.log')
+ error=stage.get('error');error_type=re.match(r'^([A-Za-z][A-Za-z0-9_]*(?:Error|Exception))\(',error) if type(error) is str else None
+ diagnostics=[]
+ for path in list(dict.fromkeys(error_paths))[:4]:
+  path.relative_to(base/'logs');raw,info=snapshot(path,8192,append=True,tail=True)
+  if raw is None:diagnostics.append(dict(status='missing'));continue
+  lines=[]
+  for line in raw.decode(errors='replace').splitlines():
+   line=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]','',line)
+   line=re.sub(r'^\((?:TaskRunner|ActorRolloutRefWorker|WorkerDict|RayWorker) pid=[0-9]+\)\s*','',line)
+   lines.append(line)
+  text='\n'.join(lines)
+  frames=[dict(file=Path(match.group(1)).name[:160],line=int(match.group(2)),function=match.group(3)[:96]) for match in
+   re.finditer(r'^[ \t]*File "([^"\n]+)", line ([0-9]+), in ([A-Za-z0-9_<>]+)[ \t]*$',text,re.MULTILINE)][-8:]
+  classes=re.findall(r'^([A-Za-z][A-Za-z0-9_]*(?:Error|Exception))(?::|$)',text,re.MULTILINE)
+  diagnostics.append(dict(status='observed',file=path.name[:160],bounded_tail_sha256=info['scanned_sha256'],
+   frames=frames,exception_type=classes[-1][:96] if classes else None))
+ return dict(status='observed',pipeline_stage=stage['stage'],pipeline_status_unix=scalar(stage.get('unix')),jobs=output,
+  recorded_error_present=error is not None,recorded_error_type=error_type.group(1)[:96] if error_type else None,
+  failure_diagnostics=diagnostics,scope='existing pipeline/job status and exact leader births; bounded exception locations/classes only on recorded failure, never error messages or source lines')
 def scores():
  result={}
  for relative,split in (('logs/latest-stage-identity.json','stage'),('logs/latest-validation-identity.json','validation'),
@@ -287,8 +383,9 @@ try:
   run['budget']['ppo_micro_batch_size']==16 and run.get('question_probe') is not None,'micro4_qprobe_contract')
  need(type(payload['after_step']) is int and 0<=payload['after_step']<=200,'after_step')
  source_map_sha=digest(canonical(run['source_sha256']));run_manifest_sha=digest(budget_bytes(base/'logs/run-manifest.json',1024*1024))
- complete_updates=None
+ complete_updates=None;closed_attempts=None
  result['births']=births();result['reward_window']=section(reward_window)
+ result['runtime_status']=section(runtime_status);result['opportunity_counts']=section(opportunity_counts)
  result['scores']=section(scores);result['native_first_five']=section(native_five)
  result['latest_head_commit']=section(head_commit)
  result['checkpoint_head_metadata']=section(checkpoint_metadata);result['gpu_samples']=section(gpu_samples)
