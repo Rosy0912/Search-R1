@@ -78,7 +78,7 @@ def fixed_publish(base,mirrors,name,raw):
 def local_module(path,name):
  spec=importlib.util.spec_from_file_location(name,path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
-def completed_pin(base,index,outer,local):
+def completed_pin(base,index,outer,local,supplemental_poll=None):
  rows=[r for r in index['effective_rows'] if r['outer']==outer and r.get('effective_history') is True]
  if not rows:return None
  if len(rows)!=1 or rows[0]['source_commit']!=SOURCE:raise ValueError('Credited outer does not have the fixed778 source')
@@ -93,6 +93,11 @@ def completed_pin(base,index,outer,local):
   if block['source_inputs'].get(name)!=binding:raise ValueError('Credited block source binding differs from immutable input')
  if e['source']!=SOURCE or full.get('config_sha256')!=CONFIG or full.get('run')!=RUN or full.get('unit')!=UNIT or poll.get('experiment_origin')!='fresh':raise ValueError('Expected own fixed778/config355 fresh-origin chain')
  controller=e['controller']
+ supplement=None
+ if supplemental_poll is not None:
+  sn,captured,sb=local.supplemental_controller_input(base,{'file':str(supplemental_poll)},e)
+  if controller and controller!=captured:raise ValueError('Supplement conflicts with original FULL controller ledger')
+  controller=captured;supplement={'file':sn,'bytes':sb['bytes'],'sha256':sb['sha256']}
  if controller.get('status')!='TRAINING_ROLLOUT_COST_COMPLETE' or controller.get('candidate_outer')!=outer or controller.get('code_commit')!=SOURCE or controller.get('config_sha256')!=CONFIG:raise ValueError('No matching completed controller ledger')
  attempt=controller.get('attempt_id')
  if not isinstance(attempt,int) or attempt!=outer:raise ValueError('Unexpected fixed778 attempt mapping')
@@ -106,6 +111,7 @@ def completed_pin(base,index,outer,local):
   'full_outer_receipt':full_name,'full_outer_receipt_sha256':e['bindings'][full_name]['sha256'],
   'native_metadata_readback':e['native_name'],'native_metadata_readback_sha256':e['bindings'][e['native_name']]['sha256'],
   'native_manifest_sha256':full['native_manifest_sha256'],'immutable_local_inputs':e['bindings'],
+  **({'supplemental_controller_poll':supplement} if supplement is not None else {}),
   'experiment_origin':'fresh','origin_scope':'Fresh experiment ancestry:0bef outer1,ba9 outer2..5,778 native5 continuation outer6 onward;not a new base-state reset or an exact executor equivalence claim.'}
 
 def register(base,mirrors,info):
@@ -122,7 +128,7 @@ def collect_extension(args):
  base=args.base.resolve(strict=True);index=json.loads((base/'PER_OUTER_METRICS_COMPACT.json').read_bytes());mirrors=[Path(x) for x in index['mirrors']]
  local=local_module(Path(__file__).with_name('append_nested_local_costs.py'),'local_cost_bindings');ssh=None;known=[];pending=[]
  for outer in range(args.first_outer,args.last_outer+1):
-  pin=completed_pin(base,index,outer,local)
+  pin=completed_pin(base,index,outer,local,args.supplemental_controller_poll)
   if pin is None:
    pending.append(outer);print(json.dumps({'outer':outer,'status':'SKIPPED_NOT_ACTUALLY_CREDITED','remote_read':False,'candidate_cost':None}),flush=True);continue
   index_name='CANDIDATE_COST_EXTENSION_OUTER'+format(outer,'04d')+'.json'
@@ -146,6 +152,9 @@ def collect_extension(args):
     'gpu_cost':'Physical shared8GPU capacity is not actual GPU-active cost or exclusive billing.'}
    if item.get('status')!='ACTUAL_COMPLETED_CANDIDATE_SCALARS_AGGREGATED':
     print(json.dumps({'outer':outer,'status':item.get('status'),'error':item.get('error'),'candidate_cost':None,'registered':False}),flush=True);pending.append(outer);continue
+   if pin.get('supplemental_controller_poll') is not None:
+    e=local.actual_inputs(base,base/pin['full_outer_receipt']);_,captured,_=local.supplemental_controller_input(base,pin['supplemental_controller_poll'],e)
+    if any(captured.get(key)!=val for key,val in item['rollouts'][0]['rollout_controller_cost'].items()):raise ValueError('Actual stable controller differs from supplemental poll')
    part_raw=small(item);fixed_publish(base,mirrors,part_name,part_raw)
   if item.get('status')!='ACTUAL_COMPLETED_CANDIDATE_SCALARS_AGGREGATED':raise ValueError('Existing candidate part is not complete;not reused as known')
   info={'outer':outer,'file':part_name,'bytes':len(part_raw),'sha256':digest(part_raw),'status':item['status'],'source_commit':SOURCE,'config_sha256':CONFIG,'audit_file':pin['audit']['path']}
@@ -172,8 +181,9 @@ def collect_extension(args):
 
 def main():
  ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--base',type=Path,required=True);ap.add_argument('--pins',type=Path);ap.add_argument('--ssh-helper',type=Path,required=True)
- ap.add_argument('--first-outer',type=int,default=3);ap.add_argument('--last-outer',type=int,default=19);args=ap.parse_args()
+ ap.add_argument('--first-outer',type=int,default=3);ap.add_argument('--last-outer',type=int,default=19);ap.add_argument('--supplemental-controller-poll',type=Path);args=ap.parse_args()
  args.base=args.base.resolve(strict=True)
+ if args.supplemental_controller_poll is not None and (args.first_outer!=args.last_outer or args.first_outer<20):raise ValueError('Explicit supplemental controller poll requires one credited extension outer')
  if (args.first_outer,args.last_outer)==(3,19):
   existing=args.base/'CANDIDATE_COST_BACKFILL_THROUGH19.json'
   if existing.exists():

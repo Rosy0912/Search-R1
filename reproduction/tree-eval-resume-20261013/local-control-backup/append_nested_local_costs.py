@@ -149,6 +149,24 @@ def actual_inputs(base, receipt_path):
             "ranks": ranks, "bindings": bindings, "resource_ref": resource_ref}
 
 
+def supplemental_controller_input(base, reference, evidence):
+    name, poll, binding = local_input(base, reference["file"], reference.get("sha256"))
+    if reference.get("bytes") is not None and binding["bytes"] != reference["bytes"]:
+        raise ValueError("Supplemental controller poll bytes differ")
+    full, step = evidence["full"], evidence["step"]
+    if poll.get("source_commit") != evidence["source"] or poll.get("run") != full["run"] or poll.get("unit") != full["unit"] or poll.get("experiment_origin") != "fresh":
+        raise ValueError("Supplemental controller poll source/run/unit/origin differs")
+    if not numeric(poll.get("epoch")) or not numeric(evidence["poll"].get("epoch")) or poll["epoch"] > evidence["poll"]["epoch"]:
+        raise ValueError("Supplemental controller poll must precede its immutable FULL observation")
+    found = [c for c in poll.get("rollout_cost", []) if c.get("candidate_outer") == step]
+    if len(found) != 1:
+        raise ValueError("Supplemental controller poll must contain exactly one matching outer")
+    controller = found[0]
+    if controller.get("status") != "TRAINING_ROLLOUT_COST_COMPLETE" or controller.get("attempt_id") != step or controller.get("completed_outer_before") != step - 1 or controller.get("code_commit") != evidence["source"] or controller.get("config_sha256") != full.get("config_sha256"):
+        raise ValueError("Supplemental controller identity/completion differs")
+    return name, controller, binding
+
+
 def new_row(index, evidence):
     e = evidence
     step, source, full, p, n = e["step"], e["source"], e["full"], e["poll"], e["native"]
@@ -570,9 +588,21 @@ def join_candidate_backfill(args, index, rows):
                     raise ValueError("Candidate extension immutable receipt/poll/native SHA join differs")
                 if pin.get("full_outer_receipt_sha256") != evidence["bindings"][evidence["full_name"]]["sha256"] or pin.get("native_metadata_readback_sha256") != evidence["bindings"][evidence["native_name"]]["sha256"]:
                     raise ValueError("Candidate extension FULL/native SHA differs")
+                supplement = pin.get("supplemental_controller_poll")
+                if supplement is not None:
+                    sn, captured, sb = supplemental_controller_input(base, supplement, evidence)
+                    if any(captured.get(key) != val for key, val in controller.items()):
+                        raise ValueError("Supplemental controller differs from actual remote stable ledger")
+                    original = evidence["controller"]
+                    if original and any(original.get(key) != val for key, val in controller.items()):
+                        raise ValueError("Supplement conflicts with original FULL controller evidence")
+                    if not original:
+                        row["rollout_controller_cost"] = copy.deepcopy(captured)
+                        row["statistics_scope"]["controller_ledger_question_rows"] = captured.get("question_rows")
+                    row["supplemental_controller_cost_evidence"] = {"source_file": sn, "source_sha256": sb["sha256"], "bytes": sb["bytes"], "scope": "Earlier COMPLETE sampling evidence only; completion/update credit remains bound to original FULL/native. Applied to this cumulative memory copy only; old scalar blocks and snapshots remain unchanged."}
             for field in ("candidate_outcomes", "candidate_round_controller_ledger"):
                 row["candidate_cost_detail"][field] = {"source_file": info["file"], "source_sha256": info["sha256"], "json_selector": "rollouts[0]." + field}
-            applied.append({"outer": outer, "source_commit": row["source_commit"], "config_sha256": config, "file": info["file"], "sha256": info["sha256"], "audit_file_sha256": audit["sha256"], "audit_file_bytes": audit["bytes"]})
+            applied.append({"outer": outer, "source_commit": row["source_commit"], "config_sha256": config, "file": info["file"], "sha256": info["sha256"], "audit_file_sha256": audit["sha256"], "audit_file_bytes": audit["bytes"], **({"supplemental_controller_poll": pin["supplemental_controller_poll"]} if kind == "extension20_200" and pin.get("supplemental_controller_poll") is not None else {})})
     return {"status": "APPLIED_FIXED_LOCAL_BACKFILL" if sources else "NO_LOCAL_BACKFILL_INDEX", "index_file": path.name,
             "index_sha256": args.candidate_backfill_sha256 if path.exists() else None, "bound_indexes": index_bindings,
             "extension_input_list_snapshot": registry_binding, "applied_outers": [v["outer"] for v in applied], "inputs": applied,
