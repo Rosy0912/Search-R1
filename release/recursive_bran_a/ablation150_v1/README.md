@@ -57,3 +57,21 @@ The study additionally records actual parent wait0 and confirmed GPU-context
 release before the next condition. Normal matched numerical guards retain the
 original consumed-round/separate-Adam accounting; programming errors fail visibly
 and preserve committed native state for an independent repair.
+
+The isolated entry also installs the receipt-bound checkpoint namespace repair
+from `ablation150_guard_recovery_v1`: native audit output lives in
+`base/output/attempt-*`, while native checkpoints live in `base/checkpoints`.
+This changes no optimizer, objective, guard threshold, or sampling contract.
+
+`receipts/explicit-recovery.json` is an owner-bound operational request. A
+`ZERO_WRITE_SAVED_BATCH` request accepts only the proved first namespace refusal:
+all eight workers recorded zero Adam writes and scheduler0, and the original
+prepared2560-row actor batch and consumed driver snapshot remain intact. The
+independent entry reloads the configured official model and observes empty Adam,
+restores the saved driver/cursor/tree RNG, and executes that prepared actor batch
+once before advancing to the next cohort. It does not claim restoration of
+unsaved worker CUDA RNG or vLLM executor state. A later interrupted run requires
+its own explicit complete native boundary, not this one-time zero-write scope.
+
+Current report scope follows the human override: aggregate EM only; no A
+checkpoint replay, question-pair comparison, or bootstrap inference.

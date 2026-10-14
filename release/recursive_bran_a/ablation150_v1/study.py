@@ -101,17 +101,32 @@ def run(args):
                 known[group] = accepted
                 replace_json(state_path, state)
                 continue
-            from .unstarted_retry import check
-            retry_proof = check(group_base, old)
+            request_path = group_base / 'receipts' / 'explicit-recovery.json'
+            request = json.loads(request_path.read_text()) if request_path.is_file() else None
+            if request is not None:
+                if (request['previous_pid'], request['previous_tick'], request['previous_uid']) != (old['pid'], old['tick'], old['uid']):
+                    raise ValueError('Explicit recovery is not the current exact failed owner')
+                if request['kind'] == 'ZERO_WRITE_SAVED_BATCH':
+                    entry_flags = ['--zero-write-manifest', request['manifest'], '--zero-write-sha256', request['sha256']]
+                elif request['kind'] == 'COMPLETE_NATIVE_BOUNDARY':
+                    entry_flags = ['--resume-manifest', request['manifest'], '--resume-sha256', request['sha256']]
+                else:
+                    raise ValueError('Unknown explicit recovery kind')
+                retry_proof = None
+                state['explicit_recovery'] = dict(group=group, request=request, time=time.time())
+            else:
+                from .unstarted_retry import check
+                retry_proof = check(group_base, old)
+                entry_flags = ['--retry-unstarted']
+                state['unstarted_retry'] = dict(group=group, proof=retry_proof, time=time.time())
             preserved_wait = group_base / 'receipts' / ('actual-parent-wait-pid-' + str(old['pid']) + '.json')
             if not preserved_wait.exists():
                 preserved_wait.write_bytes((group_base / 'receipts' / 'actual-parent-wait.json').read_bytes())
             preserved_entry = group_base / 'receipts' / ('entry-pid-' + str(old['pid']) + '.json')
             if not preserved_entry.exists():
                 preserved_entry.write_bytes((group_base / 'receipts' / 'current-entry.json').read_bytes())
-            entry_flags = ['--retry-unstarted']
-            state['unstarted_retry'] = dict(group=group, proof=retry_proof, time=time.time())
         state['current'] = group
+        state['status'] = 'ACTIVE'
         replace_json(state_path, state)
         env = dict(os.environ, RBA_ABLATION_BASE=str(group_base), RBA_ABLATION_SOURCE_COMMIT=args.source_commit)
         print('ABLATION_STUDY_START_GROUP=' + json.dumps(dict(group=group, time=time.time())), flush=True)

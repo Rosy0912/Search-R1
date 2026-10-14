@@ -19,6 +19,13 @@ def execute(args):
         raise ValueError('All eight authorized physical cards are required')
     previous = base / 'receipts' / 'current-entry.json'
     retry_proof = None
+    zero_write_manifest = getattr(args, 'zero_write_manifest', None)
+    zero_write_sha = getattr(args, 'zero_write_sha256', None)
+    if zero_write_manifest:
+        if not zero_write_sha or args.resume_manifest or args.retry_unstarted:
+            raise ValueError('Zero-write batch recovery requires only its explicit failed manifest and SHA')
+    elif zero_write_sha:
+        raise ValueError('No zero-write SHA without its failed manifest')
     if previous.exists():
         old = json.loads(previous.read_text())
         proc = Path('/proc') / str(old['pid'])
@@ -31,7 +38,7 @@ def execute(args):
                 raise ValueError('Pre-initialization retry cannot also claim native resume')
             from .unstarted_retry import check
             retry_proof = check(base, old)
-        elif not args.resume_manifest:
+        elif not args.resume_manifest and not zero_write_manifest:
             raise ValueError('Existing group needs an explicit native checkpoint; do not reset Adam')
     elif args.retry_unstarted:
         raise ValueError('No previous exact failed entry exists to retry')
@@ -51,6 +58,9 @@ def execute(args):
         RECURSIVE_A_H100_FRESH_PROFILE='1', RECURSIVE_A_OMIT_FULL_BETA='1',
         RECURSIVE_A_GUARD_ROUND_PROGRESS='1', TREE_LIGHTWEIGHT_CANDIDATE_REWARD='1',
         RECURSIVE_A_SPARSE_DETAILS='1', PYTHONDONTWRITEBYTECODE='1')
+    if zero_write_manifest:
+        os.environ.update(RECURSIVE_ABLATION_ZERO_WRITE_MANIFEST=str(Path(zero_write_manifest).resolve()),
+                          RECURSIVE_ABLATION_ZERO_WRITE_SHA256=zero_write_sha)
     if args.resume_manifest:
         if not args.resume_sha256:
             raise ValueError('Explicit resume requires exact manifest SHA')
@@ -70,6 +80,7 @@ def execute(args):
         config_sha256=record['config_sha256'], source_commit=record['source_commit'],
         entry_source_commit=os.environ.get('RBA_ABLATION_ENTRY_COMMIT', record['source_commit']),
         resume_manifest=args.resume_manifest, retry_unstarted_proof=retry_proof,
+        zero_write_manifest=zero_write_manifest, zero_write_sha256=zero_write_sha,
         allocation=os.environ['SLURM_JOB_ID'])
     replace_json(previous, entry)
     print('ABLATION_ENTRY_START=' + json.dumps(entry, sort_keys=True), flush=True)
@@ -113,6 +124,8 @@ def main():
     parser.add_argument('--resume-manifest')
     parser.add_argument('--resume-sha256')
     parser.add_argument('--retry-unstarted', action='store_true')
+    parser.add_argument('--zero-write-manifest')
+    parser.add_argument('--zero-write-sha256')
     raise SystemExit(execute(parser.parse_args()))
 
 

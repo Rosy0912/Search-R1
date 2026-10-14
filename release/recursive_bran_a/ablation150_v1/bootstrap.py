@@ -64,10 +64,13 @@ def _native_resume(module):
 
     def enabled(environ=None):
         values = os.environ if environ is None else environ
-        return bool(values.get(PREFIX + 'RESUME_MANIFEST')) or original_enabled(environ)
+        return bool(values.get(PREFIX + 'RESUME_MANIFEST') or values.get(PREFIX + 'ZERO_WRITE_MANIFEST')) or original_enabled(environ)
 
     def validate(config=None, environ=None):
         values = os.environ if environ is None else environ
+        if values.get(PREFIX + 'ZERO_WRITE_MANIFEST'):
+            from release.recursive_bran_a.ablation150_zero_write_recovery_v1.recovery import validate_entry
+            return validate_entry(config, values)
         if not values.get(PREFIX + 'RESUME_MANIFEST'):
             return original_validate(config, environ)
         from .native_resume import manifest
@@ -78,12 +81,17 @@ def _native_resume(module):
         return True
 
     def load(worker):
+        if os.environ.get(PREFIX + 'ZERO_WRITE_MANIFEST'):
+            raise ValueError('Zero-write recovery uses live verified official-empty-Adam initialization, not a missing worker snapshot')
         if not os.environ.get(PREFIX + 'RESUME_MANIFEST'):
             return original_load(worker)
         from .native_resume import load_worker
         return load_worker(worker)
 
     def migrate(trainer):
+        if os.environ.get(PREFIX + 'ZERO_WRITE_MANIFEST'):
+            from release.recursive_bran_a.ablation150_zero_write_recovery_v1.recovery import migrate_trainer
+            return migrate_trainer(trainer)
         if not os.environ.get(PREFIX + 'RESUME_MANIFEST'):
             return original_migrate(trainer)
         from .native_resume import migrate_trainer
@@ -91,6 +99,16 @@ def _native_resume(module):
 
     module.enabled, module.validate_entry = enabled, validate
     module.load_worker, module.migrate_trainer = load, migrate
+
+
+def _partial_worker(module):
+    from release.recursive_bran_a.ablation150_guard_recovery_v1.bootstrap import install_into
+    install_into(module)
+
+
+def _partial_driver(module):
+    from release.recursive_bran_a.ablation150_guard_recovery_v1.bootstrap import install_driver_into
+    install_driver_into(module)
 
 
 class _TrainingLogger:
@@ -166,6 +184,8 @@ CALLBACKS = {
     'search_r1.baselines.runtime_audit': _runtime_environment,
     'search_r1.baselines.tree_current_chain_resume': _native_resume,
     'search_r1.baselines.rollout': _rollout,
+    'search_r1.baselines.partial_worker_state': _partial_worker,
+    'search_r1.baselines.tree_partial_state': _partial_driver,
     'verl.trainer.ppo.ray_trainer': _trainer,
 }
 
