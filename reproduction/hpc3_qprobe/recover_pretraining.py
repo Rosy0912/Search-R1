@@ -32,16 +32,18 @@ def validate_original_submission(prior):
 def select_failed_job(job):
     global JOB,FAILED,TARGET,FAILED_COMMIT
     if job=='717554':return
-    if job not in ('717607','717637'):raise ValueError('Only actually observed own startup failures are supported')
+    if job not in ('717607','717637','717698'):raise ValueError('Only actually observed own startup failures are supported')
     JOB=job
-    parent='717554' if job=='717607' else '717607'
+    parent={'717607':'717554','717637':'717607','717698':'717637'}[job]
     FAILED=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+parent+'-20261014')
     TARGET=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-4gpu-jxu957-recovery'+job+'-20261014')
-    FAILED_COMMIT='1552de146c2dd44e4fd40eb94b27839ac8648ef1' if job=='717607' else 'f30895d421e190bdb13334e9ad6f718cb394d787'
+    FAILED_COMMIT={'717607':'1552de146c2dd44e4fd40eb94b27839ac8648ef1',
+        '717637':'f30895d421e190bdb13334e9ad6f718cb394d787',
+        '717698':'7bf7a30fd530f0741c4deadf7d89788ca0070c0f'}[job]
 
 
 def diagnostic_gate(commit):
-    if JOB not in ('717607','717637'):return None
+    if JOB not in ('717607','717637','717698'):return None
     root=ROOT/'preparation/gpu-inventory717607'
     receipt=json.loads((root/'submission.json').read_text())
     if receipt['returncode']!=0:raise ValueError('Actual GPU diagnostic submission failed')
@@ -99,27 +101,40 @@ def terminal():
     run=json.loads((FAILED/'logs/run-manifest.json').read_text())
     if run['source_commit']!=FAILED_COMMIT or run['completed_updates']!=0 or run['training_world_size']!=4:
         raise ValueError('Actual failed run differs or already trained')
-    forbidden=['training-launch-claim.json','search-g1-common8-training.log','model-smoke-initial.log',
+    forbidden=['training-launch-claim.json','search-g1-common8-training.log',
                'actual-updates.jsonl','actual-attempts.jsonl']
-    if JOB!='717637':forbidden+=['process-ledger.json','native-allocation-admission.json','pipeline-status.json']
+    if JOB!='717698':forbidden+=['model-initial.log']
+    if JOB not in ('717637','717698'):forbidden+=['process-ledger.json','native-allocation-admission.json','pipeline-status.json']
     for name in forbidden:
         if (FAILED/'logs'/name).exists():raise ValueError('Pipeline work already claimed; use full-state recovery instead')
-    if JOB=='717637':
+    if JOB in ('717637','717698'):
         cleanup=json.loads((FAILED/'logs/cleanup-status.json').read_text())
         ledger=json.loads((FAILED/'logs/process-ledger.json').read_text())
         stage=json.loads((FAILED/'logs/pipeline-status.json').read_text())
         if cleanup['cleaned'] is not True or cleanup['run_id']!=run['run_id'] or ledger['run_id']!=run['run_id']:
             raise ValueError('Actual own synthetic preflight cleanup not accepted')
-        if set(ledger['jobs'])!={'gpu-preflight'} or ledger['jobs']['gpu-preflight']['state']!='STOPPED':
+        names={'gpu-preflight'} if JOB=='717637' else {'gpu-preflight','model-initial'}
+        if set(ledger['jobs'])!=names or any(ledger['jobs'][name]['state']!='STOPPED' for name in names):
             raise ValueError('Other pipeline work or live owned process exists')
-        if stage['stage']!='FAILED' or stage['error']!="AssertionError('gpu-preflight failed; see project log')":
-            raise ValueError('Not the observed synthetic compilation failure')
-        preflight=(FAILED/'logs/gpu-preflight.log').read_text()
-        if 'FileNotFoundError' not in preflight or '/cache/triton/' not in preflight:
-            raise ValueError('Actual shared-cache compilation failure absent')
+        failed_component='gpu-preflight' if JOB=='717637' else 'model-initial'
+        if stage['stage']!='FAILED' or stage['error']!="AssertionError('"+failed_component+" failed; see project log')":
+            raise ValueError('Not the observed startup failure')
+        if JOB=='717637':
+            preflight=(FAILED/'logs/gpu-preflight.log').read_text()
+            if 'FileNotFoundError' not in preflight or '/cache/triton/' not in preflight:
+                raise ValueError('Actual shared-cache compilation failure absent')
+        else:
+            if ledger['jobs']['gpu-preflight'].get('exit_code')!=0 or ledger['jobs']['model-initial'].get('exit_code')!=1:
+                raise ValueError('Actual successful mechanics and failed model-only smoke required')
+            smoke=(FAILED/'logs/model-initial.log').read_text()
+            if 'COMMON8_MODEL_PARITY_REJECTED=' not in smoke or 'Actual initial actor/reference/vLLM parity rejected' not in smoke:
+                raise ValueError('Not the actual pre-Adam cross-backend model smoke failure')
+            if run['behavior_probability_policy']!='sampling_journal_no_extra_hf_forward' or run['precision_profile']!='native4_bf16_varlen_fp32_master':
+                raise ValueError('Failed model smoke does not have the original bound BF16 journal policy')
     log=FAILED/'logs'/('training-'+JOB+'.log')
     text=log.read_text()
-    known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else ('gpu-preflight failed' in text if JOB=='717637' else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text))
+    component={'717637':'gpu-preflight failed','717698':'model-initial failed'}.get(JOB)
+    known=('validate_native_four' in text and 'AssertionError' in text) if JOB=='717554' else (component in text if component else ('--query-gpu=index,uuid,memory.total,minor_number' in text and 'CalledProcessError' in text))
     if not known:
         raise ValueError('Known actual allocation failure absent')
     for name,record in preserved['files'].items():
@@ -196,6 +211,6 @@ def submit(commit):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('prepare','submit'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--failed-job',choices=('717554','717607','717637'),default='717554')
+    parser.add_argument('--failed-job',choices=('717554','717607','717637','717698'),default='717554')
     args=parser.parse_args();select_failed_job(args.failed_job)
     print(json.dumps({'prepare':fresh,'submit':submit}[args.mode](args.commit)),flush=True)
