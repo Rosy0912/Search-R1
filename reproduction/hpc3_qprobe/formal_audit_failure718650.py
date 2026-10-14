@@ -216,17 +216,25 @@ def verify_saved_prefix():
 def archive():
     value = metadata()
     need(not ARCHIVE.exists(), 'ALREADY_ATTEMPTED_INSPECT_DO_NOT_REPLAY')
-    ARCHIVE.mkdir(mode=0o770)
-    publish(ARCHIVE / 'terminal.json', value)
     inventory = []
+    aliases={BASE/'preparation'/name:ROOT/'preparation'/name for name in
+             ('features-ready.json','official-model-manifest.json')}
     for folder in ('logs', 'preparation', 'artifacts', 'teacher-warmup-cache', 'checkpoints'):
         for path in sorted((BASE / folder).rglob('*')):
-            s = path.lstat()
-            need(not stat.S_ISLNK(s.st_mode), 'SYMLINK_EVIDENCE_REQUIRES_SEPARATE_AUDIT')
+            logical=path;s = path.lstat();alias={}
+            if stat.S_ISLNK(s.st_mode):
+                need(path in aliases and path.resolve()==aliases[path] and s.st_uid==OWNER,
+                     'UNREGISTERED_EVIDENCE_ALIAS')
+                alias=dict(alias_path=str(path),alias_target=os.readlink(path),
+                    alias_inode=s.st_ino,alias_mtime_ns=s.st_mtime_ns)
+                path=aliases[path];s=path.lstat()
+                need(stat.S_ISREG(s.st_mode),'REGISTERED_ALIAS_NOT_REGULAR')
             if not stat.S_ISREG(s.st_mode): continue
             need(s.st_uid == OWNER, 'NONOWNED_EVIDENCE')
-            inventory.append(dict(path=str(path),relative_path=str(path.relative_to(BASE)),
-                inode=s.st_ino,device=s.st_dev,bytes=s.st_size,mtime_ns=s.st_mtime_ns))
+            inventory.append(dict(path=str(path),relative_path=str(logical.relative_to(BASE)),
+                inode=s.st_ino,device=s.st_dev,bytes=s.st_size,mtime_ns=s.st_mtime_ns,**alias))
+    ARCHIVE.mkdir(mode=0o770)
+    publish(ARCHIVE / 'terminal.json', value)
     publish(ARCHIVE / 'inventory.json',dict(files=inventory,bytes=sum(row['bytes'] for row in inventory)))
     files = []; verified = 0
     for index,row in enumerate(inventory):
@@ -239,6 +247,11 @@ def archive():
         s = path.stat()
         need((s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns) ==
              (row['device'],row['inode'],row['bytes'],row['mtime_ns']), 'EVIDENCE_CHANGED_DURING_READ')
+        if 'alias_path' in row:
+            alias=Path(row['alias_path']);a=alias.lstat()
+            need(stat.S_ISLNK(a.st_mode) and (a.st_ino,a.st_mtime_ns)==
+                 (row['alias_inode'],row['alias_mtime_ns']) and os.readlink(alias)==row['alias_target'] and
+                 alias.resolve()==path,'REGISTERED_ALIAS_CHANGED_DURING_READ')
         if row['bytes'] <= 16*2**20:
             target = ARCHIVE / 'small-evidence' / row['relative_path']
             target.parent.mkdir(parents=True,exist_ok=True)

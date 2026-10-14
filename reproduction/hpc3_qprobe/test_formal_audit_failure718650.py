@@ -16,7 +16,7 @@ class FailurePreservationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'EXACT_FAILED_OWNER_ALLOCATION_REQUIRED'):
                 audit.terminal('|'.join(row)+'\n')
 
-    def preserve(self, corrupt=False):
+    def preserve(self, corrupt=False, alias=False):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         base=Path(temp.name);checkpoint=base/'checkpoints/actor/global_step_5'
         checkpoint.mkdir(parents=True)
@@ -25,8 +25,13 @@ class FailurePreservationTests(unittest.TestCase):
         proof=dict(files_sha256={'state.bin':'0'*64 if corrupt else sha})
         (checkpoint/'complete.json').write_text(json.dumps(proof))
         original={str(p):p.read_bytes() for p in checkpoint.iterdir()}
+        root=base/'shared-source'
+        if alias:
+            (root/'preparation').mkdir(parents=True);(base/'preparation').mkdir()
+            target=root/'preparation/features-ready.json';target.write_text('{"actual_feature_ready":true}')
+            (base/'preparation/features-ready.json').symlink_to(target)
         with patch.multiple(audit,BASE=base,CHECKPOINT=checkpoint,ARCHIVE=base/'failed-job',
-                            OWNER=payload.stat().st_uid), \
+                            OWNER=payload.stat().st_uid,ROOT=root), \
                 patch.object(audit,'metadata',return_value={'completed_pair_available':False}), \
                 patch.object(audit,'verify_saved_prefix',return_value={'actual_cuda_restore_accepted':False}):
             if corrupt:
@@ -40,7 +45,13 @@ class FailurePreservationTests(unittest.TestCase):
                 self.assertFalse(saved['completed_pair_available'])
                 self.assertFalse(saved['cpu_state_validation_pending'])
                 self.assertFalse(saved['saved_prefix_cpu_validation']['actual_cuda_restore_accepted'])
-                self.assertEqual(saved['full_read_bytes'],sum(len(x) for x in original.values()))
+                self.assertEqual(saved['full_read_bytes'],sum(len(x) for x in original.values())+
+                                 (target.stat().st_size if alias else 0))
+                if alias:
+                    rows=[row for row in saved['files'] if 'alias_path' in row]
+                    self.assertEqual(len(rows),1)
+                    self.assertEqual(rows[0]['path'],str(target))
+                    self.assertEqual(rows[0]['full_read_sha256'],hashlib.sha256(target.read_bytes()).hexdigest())
                 self.assertEqual((base/'failed-job/small-evidence/checkpoints/actor/global_step_5/state.bin').read_bytes(),
                                  payload.read_bytes())
                 with self.assertRaisesRegex(ValueError,'ALREADY_ATTEMPTED_INSPECT_DO_NOT_REPLAY'):
@@ -52,6 +63,18 @@ class FailurePreservationTests(unittest.TestCase):
 
     def test_changed_checkpoint_preserves_failure_but_cannot_complete(self):
         self.preserve(corrupt=True)
+
+    def test_registered_existing_preparation_alias_is_read_and_bound(self):
+        self.preserve(alias=True)
+
+    def test_unknown_symlink_is_rejected_before_creating_archive(self):
+        with tempfile.TemporaryDirectory() as root:
+            base=Path(root);(base/'logs').mkdir()
+            (base/'logs/unknown.json').symlink_to('/etc/passwd')
+            with patch.multiple(audit,BASE=base,ARCHIVE=base/'failed-job'), \
+                    patch.object(audit,'metadata',return_value={}):
+                with self.assertRaisesRegex(ValueError,'UNREGISTERED_EVIDENCE_ALIAS'):audit.archive()
+            self.assertFalse((base/'failed-job').exists())
 
 
 if __name__=='__main__':unittest.main()
