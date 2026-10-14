@@ -1,0 +1,368 @@
+{
+  "GPU_sampler_maxgap_seconds": 2.590879201889038,
+  "GPU_sampler_samples": 2669,
+  "checked_unix": 1791942381.688274,
+  "complete_outers": 2,
+  "complete_outers_returned_adam": 40,
+  "compute_apps": [
+    {
+      "after": {
+        "pid": 2461370,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659390,
+        "state": "R",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2461370,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659390,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 0,
+      "gpu_uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+      "matching_jobs": [
+        "trainer"
+      ],
+      "pid": 2461370,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 51288
+    },
+    {
+      "after": {
+        "pid": 2536960,
+        "read_status": "read",
+        "sid": 2536960,
+        "start_ticks": 602119484,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2536960,
+        "read_status": "read",
+        "sid": 2536960,
+        "start_ticks": 602119484,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "foreign_to_run_ledger",
+      "gpu_index": 0,
+      "gpu_uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+      "matching_jobs": [],
+      "pid": 2536960,
+      "reason": "stable_live_birth_absent_from_full_sampled_run_ledger",
+      "used_memory_mib": 17946
+    },
+    {
+      "after": {
+        "pid": 2461785,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659999,
+        "state": "R",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2461785,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659999,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 1,
+      "gpu_uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+      "matching_jobs": [
+        "trainer"
+      ],
+      "pid": 2461785,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 51384
+    },
+    {
+      "after": {
+        "pid": 2518448,
+        "read_status": "read",
+        "sid": 2518448,
+        "start_ticks": 601998711,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2518448,
+        "read_status": "read",
+        "sid": 2518448,
+        "start_ticks": 601998711,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "foreign_to_run_ledger",
+      "gpu_index": 1,
+      "gpu_uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+      "matching_jobs": [],
+      "pid": 2518448,
+      "reason": "stable_live_birth_absent_from_full_sampled_run_ledger",
+      "used_memory_mib": 1142
+    },
+    {
+      "after": {
+        "pid": 2461786,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659999,
+        "state": "R",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2461786,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601659999,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 2,
+      "gpu_uuid": "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+      "matching_jobs": [
+        "trainer"
+      ],
+      "pid": 2461786,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 51384
+    },
+    {
+      "after": {
+        "pid": 2461787,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601660000,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2461787,
+        "read_status": "read",
+        "sid": 2459314,
+        "start_ticks": 601660000,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 3,
+      "gpu_uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9",
+      "matching_jobs": [
+        "trainer"
+      ],
+      "pid": 2461787,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 51734
+    },
+    {
+      "after": {
+        "pid": 2445816,
+        "read_status": "read",
+        "sid": 2445816,
+        "start_ticks": 601589919,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2445816,
+        "read_status": "read",
+        "sid": 2445816,
+        "start_ticks": 601589919,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 5,
+      "gpu_uuid": "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b",
+      "matching_jobs": [
+        "retriever"
+      ],
+      "pid": 2445816,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 17878
+    },
+    {
+      "after": {
+        "pid": 2445816,
+        "read_status": "read",
+        "sid": 2445816,
+        "start_ticks": 601589919,
+        "state": "S",
+        "uid": 0
+      },
+      "before": {
+        "pid": 2445816,
+        "read_status": "read",
+        "sid": 2445816,
+        "start_ticks": 601589919,
+        "state": "S",
+        "uid": 0
+      },
+      "classification": "owned",
+      "gpu_index": 6,
+      "gpu_uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7",
+      "matching_jobs": [
+        "retriever"
+      ],
+      "pid": 2445816,
+      "reason": "stable_live_birth_in_full_run_ledger",
+      "used_memory_mib": 17404
+    }
+  ],
+  "dev512": null,
+  "do_not_subtract_current_foreign_values_to_claim_own_cumulative_peak": true,
+  "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+  "final51713": null,
+  "foreign_to_ledger_not_identified_human_owner": true,
+  "fullstate_reload_accepted": false,
+  "goal_complete": false,
+  "gpu_rows": [
+    {
+      "compute_app_count": 2,
+      "compute_memory_total_mib": 69234,
+      "device_minus_compute_memory_mib": 83,
+      "foreign_to_run_ledger_compute_memory_mib": 17946,
+      "gpu_utilization_percent": 100,
+      "index": 0,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 51288,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 69317,
+      "uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83"
+    },
+    {
+      "compute_app_count": 2,
+      "compute_memory_total_mib": 52526,
+      "device_minus_compute_memory_mib": 83,
+      "foreign_to_run_ledger_compute_memory_mib": 1142,
+      "gpu_utilization_percent": 100,
+      "index": 1,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 51384,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 52609,
+      "uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40"
+    },
+    {
+      "compute_app_count": 1,
+      "compute_memory_total_mib": 51384,
+      "device_minus_compute_memory_mib": 77,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 100,
+      "index": 2,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 51384,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 51461,
+      "uuid": "GPU-19f588c3-3f42-a910-5f9a-21687befed5b"
+    },
+    {
+      "compute_app_count": 1,
+      "compute_memory_total_mib": 51734,
+      "device_minus_compute_memory_mib": 77,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 100,
+      "index": 3,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 51734,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 51811,
+      "uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+    },
+    {
+      "compute_app_count": 1,
+      "compute_memory_total_mib": 17878,
+      "device_minus_compute_memory_mib": 9,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 5,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 17878,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 17887,
+      "uuid": "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b"
+    },
+    {
+      "compute_app_count": 1,
+      "compute_memory_total_mib": 17404,
+      "device_minus_compute_memory_mib": 9,
+      "foreign_to_run_ledger_compute_memory_mib": 0,
+      "gpu_utilization_percent": 0,
+      "index": 6,
+      "memory_accounting": "NVML device/app values are successive samples; their residual is not proof of foreign occupancy",
+      "owned_compute_memory_mib": 17404,
+      "total_memory_mib": 81920,
+      "unknown_compute_app_count": 0,
+      "unknown_compute_memory_mib": 0,
+      "used_memory_mib": 17413,
+      "uuid": "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7"
+    }
+  ],
+  "hourly_anchor_advanced": false,
+  "immutable_runtime_source": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "native_firstfive_accepted": false,
+  "new_completed_reward_window": {
+    "change": 0.024645596742630005,
+    "count": 1,
+    "latest": 0.2257394790649414,
+    "max": 0.2257394790649414,
+    "mean": 0.2257394790649414,
+    "min": 0.2257394790649414,
+    "previous_complete_mean": 0.2010938823223114,
+    "steps": [
+      2
+    ]
+  },
+  "next_normal_monitor_not_before_unix": 1791943717.4653559,
+  "no_signals_or_restart_or_model_diagnostic": true,
+  "node": {
+    "boot_id": "7d4870bf-2de6-4d42-97aa-7369803bf3e4",
+    "hostname": "job-20e13974-c420-4074-a464-68e93738cfc0-master-0",
+    "uid": 0
+  },
+  "node_peak_has_external_to_run_contexts": true,
+  "normal_observation_sha256": "29f3bdb746631b004d3bbdea454ef79d7313b799a9863374e2339e4583b4bda2",
+  "ownership_observation_sha256": "94755366dad03fbd8277f9322cb4d5fd57282babb6a93009a2a10b00915e23bf",
+  "ownership_snapshot_unix": 1791942273.2242522,
+  "partial_next_outer_adam": 9,
+  "partial_next_outer_processed": 9,
+  "processed_opportunities": 49,
+  "rank_replicas_counted_once": true,
+  "returned_adam": 49,
+  "reward_latest": 0.2257394790649414,
+  "reward_latest_step": 2,
+  "reward_mode": "search_g1",
+  "role": "actual_A9_ordinary2_complete_and_current_GPU_ownership",
+  "run_id": "a9be0ee91ff942349a26caf372e22a27",
+  "sampled_node_peak_mib": {
+    "0": 69317,
+    "1": 57733,
+    "2": 57595,
+    "3": 57787,
+    "5": 18911,
+    "6": 38080
+  },
+  "skipped_opportunities": 0,
+  "stage64": null,
+  "target": 200,
+  "training_counter_snapshot_unix": 1791941917.4653559
+}
