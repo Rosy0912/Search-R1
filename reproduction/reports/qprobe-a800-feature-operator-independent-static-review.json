@@ -1,0 +1,61 @@
+{
+  "acceptance_limits": [
+    "Operator must be committed/published before invoking it; this receipt accepts the current source bytes.",
+    "The reviewer did not query A800 or assert that old cleanup has finished; the runtime verifier must pass.",
+    "Feature completion requires the actual canonical169028 cache/readback and successful child exit; submission, PID survival or first progress line are insufficient.",
+    "A launch timeout consumes the same exclusive claims and requires inspection, never another launch."
+  ],
+  "accepted_controls": {
+    "actual_old_pid_birth_session_cuda_context_and_private_cache_cleanup_verified_before_launch": true,
+    "child_pid_birth_recorded_before_wait_and_actual_exit_persisted": true,
+    "cleanup_path_checks_no_torch_import": true,
+    "exact_operator_commit_bytes_required_before_actions": true,
+    "local_and_remote_exclusive_launch_claims": true,
+    "no_automatic_retry_or_signal_or_cleanup_by_feature_operator": true,
+    "only_published_gpu6_precompute_wrapper_runs": true,
+    "original_clean_c4_repo_and_cleanup_verifier_bytes_checked": true,
+    "prepared_run_intent_source_model_host_placement_and_zero_updates_checked": true,
+    "progress_and_exit_observations_bound_to_run_and_source": true,
+    "supervisor_detached_in_private_session_with_logs": true,
+    "tensors_models_and_cache_outputs_remain_remote": true,
+    "wrapper_checks_actual_nvml_to_cuda_uuid_and_canonical_169028_feature_count": true
+  },
+  "approved": true,
+  "exact_target": {
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18",
+    "old_execution_id": "140e43d2243d49a99d88f77399f263b8",
+    "old_run_id": "6a26247f538b4145a24b156e79fb04d1",
+    "old_source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+    "physical_feature_gpu": 6,
+    "protected_physical_indices": [
+      4,
+      7
+    ],
+    "source_commit": "bf4b88d04c166951691029b18d05d91ece7c7054"
+  },
+  "implementation_actor": "/root",
+  "independent": true,
+  "models_executed": false,
+  "remote_actions_performed": false,
+  "reviewed_files_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/a800/owned_processes.py": "df83d747f3b86a187eb2dc4267ac146a6afeab7338f274ab5ecd8e7de9e2969e",
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/common8/actor_probe_owned_cleanup.py": "fabd931dbb0ce6051df224a35bbe59fadacb6ad65e5911efb135421fb59af7de",
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/common8/actor_probe_rank_tail.py": "4444dd0284be53154659636d67ba8332147d7d40615102339308328a6e7d9c66",
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/common8/policy_calibration_plan.py": "f2903ba01b35582de6092c57cd35f059b504a1a549fd435ca3ba4adc4cd6b608",
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/reproduction/common8/run_pipeline.py": "bda51f6a062081d27bfc3e56b844bc682af54e95cea5c12015b79ecde6cdc7aa",
+    "/Users/shaoshitong/Documents/Search-G1/actor-probes-ten/search_g1/actor_probe_recovery.py": "e66914e0f76b16b829b71dfc0eac687a8c6a020126a53732c335e86059e5ec0b",
+    "/Users/shaoshitong/Documents/Search-G1/qprobe-teacher-warmup-a800/reproduction/a800_common/deploy.py": "c1512efd74268662f94b4a446df0cd6c3cdcaabd83d2ef2f65df698d35f3cd52",
+    "/Users/shaoshitong/Documents/Search-G1/qprobe-teacher-warmup-a800/reproduction/a800_common/precompute_qprobe.py": "d168eebc565d4855bb27b6305bb6f62477756bb162654e5479f656831548a562",
+    "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py": "88b53fa9e74374396935096cf23f895940192ff4cbc4649a67b95673271e86be"
+  },
+  "reviewed_unix": 1791961654.11856,
+  "reviewer": "/root/qprobe_warmup_independent_review",
+  "role": "a800_qprobe_feature_operator_independent_static_review",
+  "runtime_acceptance": false,
+  "schema_version": 1,
+  "scope": "static exact prepared-target feature-operator review and necessary published cleanup/precompute dependencies",
+  "signals_sent_by_reviewer": false,
+  "source_file_sha256": "88b53fa9e74374396935096cf23f895940192ff4cbc4649a67b95673271e86be",
+  "source_path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_feature_operator.py",
+  "unresolved_material_findings": []
+}
