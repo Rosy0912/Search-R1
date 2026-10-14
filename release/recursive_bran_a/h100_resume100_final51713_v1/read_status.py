@@ -9,5 +9,5 @@ if p.exists():
 status=json.loads((f/'status.json').read_text())
 manifest={name:hashlib.sha256((f/name).read_bytes()).hexdigest() for name in launch['payload_manifest']};assert manifest==launch['payload_manifest']
 config=json.loads((b/'receipts/configuration.json').read_text());assert hashlib.sha256(Path(config['config']).read_bytes()).hexdigest()==config['config_sha256']
-result=dict(time=time.time(),watcher_process=proc,status=status,status_age=time.time()-status['time'],config_sha256=config['config_sha256'],final_scoring_started=(f/'evaluation-launch.json').exists(),actual_final_exit_present=(f/'actual-final-exit.json').exists(),watcher_log_tail=(f/'watcher.log').read_text(errors='replace')[-2000:],disk_free_bytes=shutil.disk_usage(b).free,payload_manifest_stable=True)
+result=dict(time=time.time(),watcher_process=proc,status=status,status_age=time.time()-status['time'],config_sha256=config['config_sha256'],final_scoring_started=(f/'evaluation-launch.json').exists(),actual_final_exit_present=(f/'evaluation-actual-exit.json').exists(),watcher_log_tail=(f/'watcher.log').read_text(errors='replace')[-2000:],disk_free_bytes=shutil.disk_usage(b).free,payload_manifest_stable=True)
 print(json.dumps(result))
