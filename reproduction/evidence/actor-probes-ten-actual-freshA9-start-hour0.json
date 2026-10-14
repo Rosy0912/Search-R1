@@ -1,0 +1,110 @@
+{
+  "actor_probe_fit0_pending": true,
+  "actual_training_never_started_proves_zero_counters": true,
+  "capacity_peak_not_carried_into_run": true,
+  "complete_outers": 0,
+  "dev512": null,
+  "execution_id": "4872adb6212e478fa23fdbc71b812cb9",
+  "final51713": null,
+  "first_observation_file_sha256": "c2108f2f716aadb636bd6c0e95311e5c8a99a03076047dc6111b48cfabc1c8fa",
+  "formal_report_delivered": false,
+  "hourly_anchor_advanced": false,
+  "inherited_training_state": false,
+  "initial_model": "officialfresh",
+  "launch_receipt_sha256": "15489d54e4a0692ab968d25d8d09418234a2d72c0509b34575b2a725ae7ecb15",
+  "native_algorithm_accepted": false,
+  "native_first_full_iteration_accepted": false,
+  "new_Adam_delta": 0,
+  "new_complete_delta": 0,
+  "new_reward": {
+    "change": null,
+    "latest": null,
+    "mean": null,
+    "range": null,
+    "window_count": 0
+  },
+  "new_skips_delta": 0,
+  "owned_capacity_holders_actually_exited_and_CUDA_drained": true,
+  "owned_retrieval_log_bytes": 0,
+  "owned_retrieval_stage_identity": {
+    "alive": true,
+    "birth_matches": true,
+    "pid": 2444513,
+    "start_ticks": 601582374,
+    "state": "R"
+  },
+  "owned_retrieval_stage_state": "STARTED",
+  "pair_release_file_sha256": "60ec6d763686b72ef4228218841c3b397516f83eaefa8add73c3316a405c57d4",
+  "pipeline_identity": {
+    "alive_with_birth_verified": true,
+    "pid": 2444274,
+    "start_ticks": 601580894
+  },
+  "pipeline_sampler_file_bytes": 14338,
+  "pipeline_sampler_latest_unix": 1791936251.6993904,
+  "pipeline_sampler_maximum_gap_seconds": 2.1964495182037354,
+  "pipeline_sampler_sample_count": 10,
+  "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+  "pipeline_stage_unix": 1791936232.4192142,
+  "pipeline_startup_GPU_latest": [
+    {
+      "physical_index": 0,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "physical_index": 1,
+      "used_mib": 505,
+      "util_percent": 0
+    },
+    {
+      "physical_index": 2,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "physical_index": 3,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "physical_index": 5,
+      "used_mib": 4,
+      "util_percent": 0
+    },
+    {
+      "physical_index": 6,
+      "used_mib": 4,
+      "util_percent": 0
+    }
+  ],
+  "pipeline_startup_sampled_peak_mib": {
+    "0": 4,
+    "1": 505,
+    "2": 4,
+    "3": 505,
+    "5": 4,
+    "6": 4
+  },
+  "pipeline_startup_samples_are_training_peak": false,
+  "predecessor200_scores_separate": true,
+  "probe_refresh_complete_interval": 10,
+  "processed_opportunities": 0,
+  "resource_blocker_resolved_before_launch": true,
+  "retained_capacity_count_now": 0,
+  "reward_schedule": "G1 complete1..100; binaryEM complete101..200",
+  "role": "actual_freshA9_first_launch_initial_pipeline_flow_and_duehour_scalar",
+  "run_id": "a9be0ee91ff942349a26caf372e22a27",
+  "skips": 0,
+  "snapshot_unix": 1791936252.8395624,
+  "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "stage64": null,
+  "successful_Adam": 0,
+  "trainer_started": false,
+  "training_GPU_peak": null,
+  "training_claimed": false,
+  "training_log_exists": false,
+  "true_foreign_signals_sent": false,
+  "two_independent_detached_actor_heads": true,
+  "zero_counter_basis": "Actualsame-runtrainerclaimfalse andtraininglogabsent; pipelineonlybeganretrieval; notparsedmissingledgerzero"
+}
