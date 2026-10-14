@@ -70,7 +70,8 @@ def assert_formal_run(run):
         assert size == 4 and run['training_world_size'] == 4
         assert execution_job_id(run) is None
     else:
-        assert run.get('execution_backend', 'slurm') == 'slurm' and size == 8
+        assert run.get('execution_backend', 'slurm') == 'slurm'
+        assert size == 8 or (size == 4 and run.get('execution_site') == 'hpc3')
     budget = run['budget']
     assert budget['contract_kind'] == CONTRACT_KIND and budget['profile']=='common8'
     assert budget['model_id']=='Qwen/Qwen2.5-3B-Instruct' and budget['model_revision']==run['model_revision']

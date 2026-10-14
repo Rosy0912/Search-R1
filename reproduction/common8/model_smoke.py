@@ -47,8 +47,10 @@ def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
     return result
 
 
-def aggregate(proofs, run_id, job_id, phase, ids, uuids):
-    assert len(proofs) == 8
+def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
+    size=len(uuids)
+    assert size in (4,8) and len(proofs) == size
+    per_rank=64//size
     all_ids = []
     config_hashes = set()
     for rank, proof in enumerate(proofs):
@@ -59,10 +61,10 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids):
         assert proof['separate_actor_logprob_entrypoint'] is True
         assert 0 <= proof['internal_separate_logprob_max_abs'] <= LOGPROB_ATOL
         assert proof['sync_load_format'] == 'dtensor'
-        verify_precision(proof['runtime_precision'])
-        assert len(proof['question_ids']) == 8
+        verify_precision(proof['runtime_precision'],run)
+        assert len(proof['question_ids']) == per_rank
         assert proof['parity']['tolerance'] == LOGPROB_ATOL
-        assert len(proof['parity']['valid_tokens_per_question']) == 8
+        assert len(proof['parity']['valid_tokens_per_question']) == per_rank
         assert all(n > 0 for n in proof['parity']['valid_tokens_per_question'])
         assert all(0 <= proof['parity'][k] <= LOGPROB_ATOL for k in
                    ('actor_reference_max_abs', 'actor_vllm_max_abs'))
@@ -108,12 +110,14 @@ def main(base, phase):
     run, job, allocation = binding(base)
     assert memory_bytes(job['TRES']) >= 512 * 2**30, 'Use the full native allocation for actual model work'
     assert os.environ['SEARCH_G1_PROFILE'] == 'common8' and 'WG_PREFIX' not in os.environ
+    from reproduction.common8.topology import world_size
+    size=world_size(run);per_rank=64//size
     rank = int(os.environ['LOCAL_RANK'])
-    assert int(os.environ['RANK']) == rank and int(os.environ['WORLD_SIZE']) == 8
-    assert torch.cuda.device_count() == 8
+    assert int(os.environ['RANK']) == rank and int(os.environ['WORLD_SIZE']) == size
+    assert torch.cuda.device_count() == size
     from reproduction.common8.native_allocation import cuda_uuids
     assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
-    assert cuda_uuids() == allocation['actual_cuda_runtime_uuids']
+    assert cuda_uuids(size) == allocation['actual_cuda_runtime_uuids']
     torch.cuda.set_device(rank)
     dist.init_process_group('nccl', timeout=datetime.timedelta(seconds=600))
     precision = None
@@ -156,7 +160,7 @@ def main(base, phase):
                              max_prompt_length=config.data.max_prompt_length, truncation='error',
                              cache_dir=str(base / 'cache/model-smoke-data'))
         assert len(dataset) == 64
-        indices = list(range(rank * 8, (rank + 1) * 8))
+        indices = list(range(rank * per_rank, (rank + 1) * per_rank))
         batch = collate_fn([dataset[i] for i in indices])
         prompts = DataProto.from_dict(tensors={k: batch[k] for k in ('input_ids', 'attention_mask', 'position_ids')},
                                      meta_info={'do_sample': False, 'recompute_log_prob': True,
@@ -207,7 +211,7 @@ def main(base, phase):
         runtime_precision = precision.snapshot()
         precision_error = None
         try:
-            verify_precision(runtime_precision)
+            verify_precision(runtime_precision,run)
         except (AssertionError, KeyError) as failure:
             precision_error = repr(failure)
         collective(precision_error is None, 'Actual common8 FP32 runtime precision rejected: ' + str(precision_error))
@@ -215,7 +219,7 @@ def main(base, phase):
             assert coexistence(base, run, job) == services, 'Resident services changed across the smoke'
         proof = dict(accepted=True, run_id=run['run_id'], slurm_job_id=job['JobId'], phase=phase,
                      rank=rank, cuda_uuid=allocation['actual_cuda_runtime_uuids'][rank],
-                     question_ids=ids[rank*8:(rank+1)*8], stage_sha256=record['sha256'],
+                     question_ids=ids[rank*per_rank:(rank+1)*per_rank], stage_sha256=record['sha256'],
                      resolved_config_sha256=config_hash, actual_optimizer_writes=0,
                      actual_grpo_updates=0, sync_calls=len(sync_calls), sync_load_format=sync_calls[0],
                      separate_actor_logprob_entrypoint=True,
@@ -228,10 +232,10 @@ def main(base, phase):
             json.dump(proof, f, indent=2); f.flush(); os.fsync(f.fileno())
         dist.barrier()
         if rank == 0:
-            proofs = [json.loads((root / f'rank-{r}.json').read_text()) for r in range(8)]
-            aggregate(proofs, run['run_id'], job['JobId'], phase, ids, allocation['actual_cuda_runtime_uuids'])
+            proofs = [json.loads((root / f'rank-{r}.json').read_text()) for r in range(size)]
+            aggregate(proofs, run['run_id'], job['JobId'], phase, ids, allocation['actual_cuda_runtime_uuids'],run)
             final = dict(accepted=True, run_id=run['run_id'], slurm_job_id=job['JobId'], phase=phase,
-                         ranks=proofs, rank_file_sha256={str(r): digest(root / f'rank-{r}.json') for r in range(8)},
+                         ranks=proofs, rank_file_sha256={str(r): digest(root / f'rank-{r}.json') for r in range(size)},
                          scope=proof['scope'], actual_grpo_updates=0)
             with (root / 'complete.json').open('x') as f:
                 json.dump(final, f, indent=2); f.flush(); os.fsync(f.fileno())

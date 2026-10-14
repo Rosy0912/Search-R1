@@ -8,8 +8,10 @@ from search_g1.numerics import require_finite
 from search_g1.gradient_clipping import clip_global_l2
 from reproduction.common8.scheduler import constant_scheduler
 
-rank=int(os.environ['LOCAL_RANK']);assert rank in range(8)
-assert os.environ['SLURM_JOB_ID'] and torch.cuda.device_count()==8
+from reproduction.common8.topology import world_size
+world=world_size()
+rank=int(os.environ['LOCAL_RANK']);assert rank in range(world)
+assert os.environ['SLURM_JOB_ID'] and torch.cuda.device_count()==world
 root=Path(os.environ['SEARCH_G1_GPU_PREFLIGHT_DIR'])
 def collective_check(ok, message):
  value=torch.tensor([int(bool(ok))],device='cuda',dtype=torch.int32)
@@ -18,8 +20,8 @@ def collective_check(ok, message):
 torch.cuda.set_device(rank)
 dist.init_process_group('nccl',timeout=datetime.timedelta(seconds=180))
 try:
- assert dist.get_world_size()==8
- value=torch.tensor([float(rank)],device='cuda');dist.all_reduce(value);assert value.item()==28
+ assert dist.get_world_size()==world
+ value=torch.tensor([float(rank)],device='cuda');dist.all_reduce(value);assert value.item()==world*(world-1)//2
  a=torch.randn(128,128,device='cuda',dtype=torch.bfloat16);assert torch.isfinite(a@a).all()
  def computation(z):return z.sin()+z.cos()
  z=torch.arange(1024,device='cuda',dtype=torch.float32)/1000
@@ -64,7 +66,7 @@ try:
  except RuntimeError:rejected=True
  collective_check(rejected, 'empty rank was not rejected')
  dist.barrier()
- proof=dict(accepted=True,rank=rank,world_size=8,slurm_job_id=os.environ['SLURM_JOB_ID'],
+ proof=dict(accepted=True,rank=rank,world_size=world,slurm_job_id=os.environ['SLURM_JOB_ID'],
   visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),nccl=True,bf16=True,cuda_jit=True,
   fsdp_cpu_offload=True,global_l2_upstream_equivalence=True,large_finite_l2=True,
   one_rank_nan_rejected_without_gradient_mutation=True,empty_rank_collective_rejection=True,
@@ -74,7 +76,7 @@ try:
   json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())
  dist.barrier()
  if rank==0:
-  proofs=[json.loads((root/f'rank-{r}.json').read_text()) for r in range(8)]
+  proofs=[json.loads((root/f'rank-{r}.json').read_text()) for r in range(world)]
   assert all(p['accepted'] is True and p['rank']==r and p['slurm_job_id']==os.environ['SLURM_JOB_ID'] for r,p in enumerate(proofs))
-  print('EIGHT_RANK_MECHANICS_ACCEPTED',flush=True)
+  print('NATIVE_RANK_MECHANICS_ACCEPTED',flush=True)
 finally:dist.destroy_process_group()

@@ -29,16 +29,16 @@ def fields(text):
     return result
 
 
-def allocated_indices(detail, node):
+def allocated_indices(detail, node, count=8):
     line=next((line for line in detail.splitlines() if 'Nodes='+node+' ' in line), '')
     m=re.search(r'GRES=gpu:(?:h100:)?(\d+)\(IDX:([^)]*)\)',line)
-    assert m and int(m.group(1))==8, 'Actual Slurm allocation does not contain eight GPUs'
+    assert count in (4,8) and m and int(m.group(1))==count, 'Actual Slurm allocation GPU count differs'
     indices=[]
     for item in m.group(2).split(','):
         if '-' in item:
             lo,hi=map(int,item.split('-'));indices.extend(range(lo,hi+1))
         else:indices.append(int(item))
-    assert len(indices)==8 and len(set(indices))==8, 'Invalid actual Slurm GPU indices'
+    assert len(indices)==count and len(set(indices))==count, 'Invalid actual Slurm GPU indices'
     return indices
 
 
@@ -93,6 +93,21 @@ def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated,
     return True
 
 
+def validate_native_four(job, node, visible, active_jobs, gpu_rows, applications, allocated, actual_cuda_uuids):
+    """Four real reserved GPUs; foreign allocations may use other UUIDs only."""
+    assert job['JobState']=='RUNNING' and job['NodeList']==node and job['NumNodes']=='1'
+    assert job['TresPerNode'] in ('gres:gpu:h100:4','gres:gpu:4','gres/gpu:4')
+    assert job['JobId'] in active_jobs and len(visible)==len(set(visible))==4
+    physical={int(row[0]):row[1].strip() for row in gpu_rows}
+    assert len(physical)==len(gpu_rows) and len(set(physical.values()))==len(physical)
+    assert len(allocated)==len(set(allocated))==4 and set(allocated)<=set(physical)
+    expected=[physical[int(token)] if token.isdecimal() else token for token in visible]
+    assigned={physical[index] for index in allocated}
+    assert len(set(expected))==4 and set(expected)==assigned and actual_cuda_uuids==expected
+    assert all(row[0].strip() not in assigned for row in applications), 'Assigned GPUs have foreign compute applications'
+    return True
+
+
 def admit(base):
     run=json.loads((base/'logs/run-manifest.json').read_text())
     if run.get('execution_backend','slurm')=='ssh_local':
@@ -107,7 +122,9 @@ def admit(base):
     job=fields(detail)
     from reproduction.common8.shared_slurm import POLICY as SHARED_POLICY
     sharing=run.get('slurm_gpu_sharing_policy')==SHARED_POLICY
-    allocated=[] if sharing else allocated_indices(detail,node)
+    from reproduction.common8.topology import world_size
+    size=world_size(run)
+    allocated=[] if sharing else allocated_indices(detail,node,size)
     assert job['JobId']==job_id
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     active=subprocess.check_output(['squeue','-h','-w',node,'-t','RUNNING,COMPLETING','-o','%i'],text=True).split()
@@ -115,8 +132,8 @@ def admit(base):
     rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
     raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
     applications=[r for r in csv.reader(io.StringIO(raw_apps)) if r]
-    assert torch.cuda.device_count()==8
-    actual=cuda_uuids()
+    assert torch.cuda.device_count()==size
+    actual=cuda_uuids(size)
     cohosts = run.get('shared_gpu_cohosts')
     allowed = None
     if cohosts is not None:
@@ -132,6 +149,9 @@ def admit(base):
                 assert all(current[k]==birth[k] for k in ('JobId','StartTime','NodeList','Command'))
                 assert current['JobState'] in ('RUNNING','COMPLETING')
         validate_shared(job,node,visible,active,rows,applications,actual,allowed,run)
+    elif size==4:
+        assert run.get('execution_site')=='hpc3' and cohosts is None
+        validate_native_four(job,node,visible,active,rows,applications,allocated,actual)
     else:
         validate(job,node,visible,active,rows,applications,allocated,actual,allowed)
     memory_raw = subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used,memory.free',
@@ -143,7 +163,7 @@ def admit(base):
         actual_allocation_detail=detail,physical_gpu_inventory=rows,active_node_jobs=active,
         foreign_compute_applications=applications,shared_gpu_policy=run.get('shared_gpu_policy'),
         bound_cohosts=cohosts,actual_memory_inventory=memory_rows,checked_unix=time.time(),
-        scope='native allocation and actual UUID mapping before project GPU work; bound foreign processes preserved under explicit shared policy; not model/GRPO acceptance')
+        training_world_size=size, scope='native allocation and actual UUID mapping before project GPU work; not model/GRPO acceptance')
     if sharing:
         proof.update(slurm_gpu_sharing_policy=SHARED_POLICY,slurm_reserved_gpu_count=0,
             actual_shared_physical_indices=list(range(8)),

@@ -2,12 +2,13 @@
 
 BF16_PROFILE = 'bf16_policy_fp32_master'
 NATIVE_BF16_PROFILE = 'native8_bf16_varlen_fp32_master'
+NATIVE4_BF16_PROFILE = 'native4_bf16_varlen_fp32_master'
 SAMPLING_JOURNAL_POLICY = 'sampling_journal_no_extra_hf_forward'
 
 
 def bf16_policy(run):
     profile = run.get('precision_profile')
-    assert profile in (None, BF16_PROFILE, NATIVE_BF16_PROFILE), 'Unknown policy precision profile'
+    assert profile in (None, BF16_PROFILE, NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE), 'Unknown policy precision profile'
     if profile == BF16_PROFILE:
         assert run.get('execution_backend') == 'ssh_local' and run.get('training_world_size') == 4
         return True
@@ -15,12 +16,17 @@ def bf16_policy(run):
         assert run.get('training_world_size') == 8 and run.get('execution_backend') == 'slurm'
         assert run.get('actor_micro_batch_per_rank') == 2 and run.get('vllm_gpu_memory_utilization') == 0.1
         return True
+    if profile == NATIVE4_BF16_PROFILE:
+        assert run.get('training_world_size') == 4 and run.get('execution_backend') == 'slurm'
+        assert run.get('execution_site') == 'hpc3'
+        assert run.get('actor_micro_batch_per_rank') == 4 and run.get('vllm_gpu_memory_utilization') == 0.1
+        return True
     return False
 
 
 def remove_padding(run):
     bf16_policy(run)
-    return run.get('precision_profile') == NATIVE_BF16_PROFILE
+    return run.get('precision_profile') in (NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE)
 
 
 def overrides(run):

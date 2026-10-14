@@ -4,7 +4,8 @@ BASE="${1:?explicit remote run base required}"
 COMMIT="${2:?immutable source commit required}"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT"
 export QPROBE_SOURCE="$BASE/source/$COMMIT" SEARCH_G1_PROFILE=common8
-export SEARCH_G1_EXECUTION_PROFILE=native8_bf16_varlen_fp32_master
+export SEARCH_G1_TRAINING_WORLD_SIZE=4
+export SEARCH_G1_EXECUTION_PROFILE=native4_bf16_varlen_fp32_master
 export PATH="$BASE/env/bin:$PATH" HF_HOME="$BASE/cache/hf" XDG_CACHE_HOME="$BASE/cache"
 export TMPDIR="$BASE/tmp" TRITON_CACHE_DIR="$BASE/cache/triton"
 export TORCH_EXTENSIONS_DIR="$BASE/cache/torch-extensions" TORCHINDUCTOR_CACHE_DIR="$BASE/cache/inductor"

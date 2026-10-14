@@ -98,9 +98,9 @@ class Pipeline:
             self.train_script='reproduction/a800_common/train.sh'
             include=run['python_headers']
         else:
-            self.visible=os.environ['CUDA_VISIBLE_DEVICES'].split(',');assert len(self.visible)==8
-            self.allowed=ALLOWED;self.device_tokens=dict(enumerate(self.visible))
-            self.training_gpus=ALLOWED;self.retriever_gpus=ALLOWED;self.probe_gpus=[7]
+            self.visible=os.environ['CUDA_VISIBLE_DEVICES'].split(',');assert len(self.visible)==self.world
+            self.allowed=tuple(range(self.world));self.device_tokens=dict(enumerate(self.visible))
+            self.training_gpus=self.allowed;self.retriever_gpus=self.allowed;self.probe_gpus=[self.world-1]
             self.train_script='reproduction/common8/train.sh'
             include=str(base/'bootstrap-tools/python-dev/usr/include/python3.10')+':'+str(base/'bootstrap-tools/python-dev/usr/include')
         self.env=dict(os.environ,SEARCH_G1_PROFILE='common8',SEARCH_G1_BASE=str(base),SEARCH_G1_TRAINING_WORLD_SIZE=str(self.world),PYTHONPATH=str(self.repo),PATH=str(Path(self.python).parent)+':'+os.environ['PATH'],
@@ -333,15 +333,15 @@ class Pipeline:
             c=self.start('initial-probe-adoption',command,self.training_gpus)
             self.wait('initial-probe-adoption',c)
     def fresh_mechanics_admission(self):
-        self.stage('EIGHT_RANK_MECHANICS')
+        self.stage('NATIVE_RANK_MECHANICS',training_world_size=self.world)
         root=self.base/'logs/eight-rank-mechanics';root.mkdir(exist_ok=False)
-        p=self.start('gpu-preflight',[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','reproduction/common8/gpu_preflight.py'],ALLOWED,{'SEARCH_G1_GPU_PREFLIGHT_DIR':str(root)})
+        p=self.start('gpu-preflight',[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node='+str(self.world),'reproduction/common8/gpu_preflight.py'],self.training_gpus,{'SEARCH_G1_GPU_PREFLIGHT_DIR':str(root)})
         self.wait('gpu-preflight',p,900)
-        proofs=[json.loads((root/f'rank-{rank}.json').read_text()) for rank in range(8)]
+        proofs=[json.loads((root/f'rank-{rank}.json').read_text()) for rank in range(self.world)]
         assert all(p['accepted'] is True and p['rank']==r and p['slurm_job_id']==os.environ['SLURM_JOB_ID'] for r,p in enumerate(proofs))
         self.stage('INITIAL_ACTOR_REFERENCE_ROLLOUT_SMOKE')
         smoke=self.smoke('initial')
-        publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],mechanics_sha256={str(r):digest(root/f'rank-{r}.json') for r in range(8)},model_smoke_sha256=digest(smoke),actual_grpo_updates=0))
+        publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],mechanics_sha256={str(r):digest(root/f'rank-{r}.json') for r in range(self.world)},model_smoke_sha256=digest(smoke),actual_grpo_updates=0,training_world_size=self.world))
     def execute(self, export_port):
         sampler=None;success=False;finished_stage=None
         try:
@@ -360,21 +360,21 @@ class Pipeline:
             self.stage('STAGING_SAME_CLUSTER_ORIGINAL_RETRIEVAL')
             p=self.start('retrieval-stage',[self.python,'-m','reproduction.common8.stage_retrieval','--base',str(self.base),'--port',str(export_port)],[])
             self.wait('retrieval-stage',p)
-            self.stage('STARTING_ORIGINAL_EIGHT_SHARD_FAISS')
+            self.stage('STARTING_ORIGINAL_FLAT_FAISS')
             libs=list((self.base/'env/lib/python3.10/site-packages/nvidia').glob('*/lib'))+[self.base/'env/lib/python3.10/site-packages/torch/lib']
-            p=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],ALLOWED,{'PYTHONPATH':str(self.base/'retriever-gpu-lib')+':'+str(self.repo),'LD_LIBRARY_PATH':':'.join(map(str,libs))})
+            p=self.start('retriever',[self.python,'-m','reproduction.common8.retriever'],self.retriever_gpus,{'PYTHONPATH':str(self.base/'retriever-gpu-lib')+':'+str(self.repo),'LD_LIBRARY_PATH':':'.join(map(str,libs))})
             health=self.endpoint('retriever',p,'18010/health')
-            assert health['ok'] is True and health['run_id']==self.run['run_id'] and health['shard_count']==8
+            assert health['ok'] is True and health['run_id']==self.run['run_id'] and health['shard_count']==len(self.retriever_gpus)
             assert health['slurm_job_id']==os.environ['SLURM_JOB_ID']
             admission=self.base/'logs/retrieval-admission.json';assert health['admission_sha256']==digest(admission)
             # HTTP path itself must return the same actual stage64 documents/scores.
             from reproduction.common8.http_retrieval import admit_http
             admit_http(self.base)
-            self.run['probe_visible_device']=self.visible[7]
-            self.run['probe_logical_ordinal']=7
+            self.run['probe_visible_device']=self.visible[self.world-1]
+            self.run['probe_logical_ordinal']=self.world-1
             publish(self.base/'logs/run-manifest.json',self.run)
             self.initial_probe_calibration()
-            e=self.start('probe-server',[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port','18012'],[7])
+            e=self.start('probe-server',[self.python,'probe_server.py','--manifest',str(self.base/'artifacts/live/manifest.json'),'--port','18012'],self.probe_gpus)
             health=self.endpoint('probe-server',e,'18012/health');assert health['ok'] is True
             released=self.endpoint('probe-server',e,'18012/suspend','post',{'version':health['version']})
             assert released['suspended'] is True and released['allocated_bytes_after_release']<256*1024*1024
@@ -391,7 +391,7 @@ class Pipeline:
                 totals={int(r[0]):int(r[1]) for r in gpu_rows('index,memory.total')}
                 assert set(self.max_used)==self.physical_indices and all(0<=v<=totals[i] for i,v in self.max_used.items())
                 publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],slurm_job_id=os.environ['SLURM_JOB_ID'],model_smoke_sha256=digest(smoke),sampled_peak_mib=self.max_used,occupancy_policy='monitor_only',sampled_peak_fraction_stop_limit=None,scope='actual initial/coexistence sampled occupancy; not full 2560-trajectory peak or a training-stop criterion'))
-            a=self.start('probe-admission',[self.python,'-m','reproduction.common8.probe_admission'],[7]);self.wait('probe-admission',a,300)
+            a=self.start('probe-admission',[self.python,'-m','reproduction.common8.probe_admission'],self.probe_gpus);self.wait('probe-admission',a,300)
             finished_stage=self.train_and_verify()
             success=True
         except Exception as error:

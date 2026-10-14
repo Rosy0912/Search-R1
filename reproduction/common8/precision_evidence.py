@@ -92,7 +92,28 @@ class PrecisionObservation:
         self.model.compute_logits = self.original_logits
 
 
-def verify_precision(proof):
+def verify_precision(proof, run=None):
+    if run is not None:
+        from reproduction.common8.precision_contract import bf16_policy
+        if bf16_policy(run):
+            for role in ('actor','reference'):
+                row=proof['roles'][role]
+                assert row['forward_calls']>0 and row['autocast_states']==[True]
+                assert row['parameter_dtypes']==['torch.float32']
+                expected='torch.bfloat16' if role=='actor' else 'torch.float32'
+                assert row['compute_parameter_dtypes']==[expected]
+                assert row['activation_dtypes']==[expected]
+                assert row['buffer_dtypes']==['torch.float32']
+                assert row['logit_dtypes']==['torch.bfloat16']
+                mixed=('torch.bfloat16','torch.float32','torch.float32') if role=='actor' else ('None',)*3
+                assert tuple(row[key] for key in ('mixed_parameter_dtype','mixed_reduce_dtype','mixed_buffer_dtype'))==mixed
+            row=proof['rollout']
+            assert row['forward_calls']>0 and row['logits_calls']>0 and row['cache_tensor_count']>0
+            assert row['autocast_states']==[False]
+            for key in ('parameter_dtypes','hidden_dtypes','cache_dtypes','logit_dtypes'):
+                assert row[key]==['torch.bfloat16'],(key,row[key])
+            assert isinstance(row['attention_backend'],str) and row['attention_backend']
+            return True
     assert proof['torch_matmul_allow_tf32'] is False and proof['torch_cudnn_allow_tf32'] is False
     for role in ('actor', 'reference'):
         row = proof['roles'][role]

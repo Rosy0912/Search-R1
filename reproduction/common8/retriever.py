@@ -76,7 +76,8 @@ def main(base):
         assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
         actual_gpu_uuids=cuda_uuids()
         assert actual_gpu_uuids == allocation['actual_cuda_runtime_uuids']
-        shard_count=8;job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
+        from reproduction.common8.topology import world_size
+        shard_count=world_size(run);job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
         create,extract=create_cache,extract_corpus
     assert faiss.get_num_gpus() == torch.cuda.device_count() == shard_count
     assert Path(faiss.__file__).resolve().is_relative_to(gpu_lib.resolve())

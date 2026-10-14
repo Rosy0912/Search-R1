@@ -134,13 +134,19 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
+    if execution_site=='hpc3':result['execution_site']='hpc3'
     if os.environ.get('SEARCH_G1_EXECUTION_PROFILE'):
-        from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE, SAMPLING_JOURNAL_POLICY
-        assert os.environ['SEARCH_G1_EXECUTION_PROFILE'] == NATIVE_BF16_PROFILE and (restore_receipt or execution_site=='hpc3')
-        result.update(precision_profile=NATIVE_BF16_PROFILE, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
-            execution_backend='slurm', training_world_size=8,
+        from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE, SAMPLING_JOURNAL_POLICY
+        size=int(os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE','8'))
+        assert size in (4,8) and (size==8 or execution_site=='hpc3')
+        profile=NATIVE_BF16_PROFILE if size==8 else NATIVE4_BF16_PROFILE
+        assert os.environ['SEARCH_G1_EXECUTION_PROFILE'] == profile and (restore_receipt or execution_site=='hpc3')
+        result.update(precision_profile=profile, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
+            execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=2 if size==8 else 4,
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
         result['budget'].update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
+        from reproduction.common8.formal_contract import formal_mathematics
+        result['budget'].update(formal_mathematics(result))
     if execution_site=='hpc3':
         result['execution_site']='hpc3'
         from reproduction.common8.topology import validate_base
@@ -150,7 +156,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         if restore_source.get('status')==PAIR_STATUS:
             # This CLI is the native eight-rank route. Four-rank local sources
             # use the local preparation entry; changing shard layout is forbidden.
-            assert restore_source['world_size']==8, 'Use matching four-rank local preparation for this pair'
+            assert restore_source['world_size']==result['training_world_size'], 'Checkpoint shard layout must match actual native topology'
             import copy
             result['budget']=copy.deepcopy(restore_parent['budget'])
             for key in ('training_world_size','actor_micro_batch_per_rank','precision_profile',

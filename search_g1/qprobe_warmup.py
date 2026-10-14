@@ -46,14 +46,17 @@ def moments(vector):
     return count, count / GROUP_SIZE, math.sqrt(count * (GROUP_SIZE-count) / 20)
 
 
-def verify_frozen(before, after):
+def verify_frozen(before, after, expected_world_size=8):
+    if type(expected_world_size) is not int or expected_world_size not in (4,8):
+        raise ValueError('WARMUP_INVALID_BOUND_WORKER_TOPOLOGY')
     before=sorted(before,key=lambda x:x['rank']);after=sorted(after,key=lambda x:x['rank'])
     keys=('rank','parameter_sha256','optimizer_sha256','scheduler_sha256','actual_optimizer_writes','completed_outer')
-    if [x['rank'] for x in before] != list(range(8)) or [x['rank'] for x in after] != list(range(8)) or any(
+    if [x['rank'] for x in before] != list(range(expected_world_size)) or [x['rank'] for x in after] != list(range(expected_world_size)) or any(
             {k:a[k] for k in keys} != {k:b[k] for k in keys} or a['actual_optimizer_writes'] or a['completed_outer']
             for a,b in zip(before,after)):
         raise ValueError('WARMUP_TEACHER_MODEL_OR_OPTIMIZER_WAS_NOT_FROZEN')
-    return dict(before=before,after=after,actual_eight_rank_frozen_readback=True)
+    return dict(before=before,after=after,actual_frozen_rank_readback=True,actual_world_size=expected_world_size,
+                actual_eight_rank_frozen_readback=expected_world_size==8)
 
 
 class TeacherCache:
@@ -90,7 +93,7 @@ class TeacherCache:
             raise ValueError('WARMUP_INCOMPLETE_CHUNK')
         if self.identity.get('teacher_frozen_evidence_required'):
             frozen=value['frozen_workers']
-            verify_frozen(frozen['before'],frozen['after'])
+            verify_frozen(frozen['before'],frozen['after'],self.identity.get('training_world_size',8))
         expected = self.identity['questions'][index*CHUNK_SIZE:(index+1)*CHUNK_SIZE]
         ids = set()
         for question, group in zip(expected, value['groups']):
@@ -180,7 +183,7 @@ def run(trainer, manager, runtime, stream):
         non_tensors={'candidate_original_question':np.array([x[1] for x in rows], dtype=object),
                      'candidate_stable_id':np.array([x[2] for x in rows], dtype=object)})
     identity = dict(schema=1, model_revision=manifest['model_revision'],
-        teacher_frozen_evidence_required=True,
+        teacher_frozen_evidence_required=True,training_world_size=manifest.get('training_world_size',8),
         model_files_sha256=manifest['initial_model_sha256'],
         train_parquet_sha256=manifest['input_sha256']['train.parquet'],
         data_manifest_sha256=manifest['budget']['common_manifest_sha256'],
@@ -210,7 +213,7 @@ def run(trainer, manager, runtime, stream):
             if raw_path.exists():
                 raw = torch.load(raw_path, map_location='cpu', weights_only=False)
                 output, generation_id, contracts = raw['output'], raw['identity'], raw['contracts']
-                frozen=raw['frozen_workers'];verify_frozen(frozen['before'],frozen['after'])
+                frozen=raw['frozen_workers'];verify_frozen(frozen['before'],frozen['after'],identity['training_world_size'])
                 if raw['question_bindings'] != identity['questions'][ordinals[0]:ordinals[-1]+1]:
                     raise ValueError('WARMUP_UNCOMMITTED_REAL_ROLLOUT_QUESTIONS_DIFFER')
             else:
@@ -225,7 +228,7 @@ def run(trainer, manager, runtime, stream):
                 _complete_generation(output, generation_id)
                 contracts = _contracts(trainer, output, manifest)
                 chunk_after=trainer.actor_rollout_wg.capture_frozen_teacher_boundary(str(boundary/('chunk-%02d'%chunk)))
-                frozen=verify_frozen(before_workers,chunk_after)
+                frozen=verify_frozen(before_workers,chunk_after,identity['training_world_size'])
                 atomic_save(raw_path, dict(output=output, identity=generation_id, contracts=contracts,
                     frozen_workers=frozen,
                     question_bindings=identity['questions'][ordinals[0]:ordinals[-1]+1]))
@@ -253,9 +256,9 @@ def run(trainer, manager, runtime, stream):
         head_path.parent.mkdir(parents=True, exist_ok=True)
         head_receipt = runtime.head.save(head_path, actor_snapshot_id=manifest['run_id']+':0')
         after_workers = trainer.actor_rollout_wg.capture_frozen_teacher_boundary(str(boundary/'after'))
-        verify_frozen(before_workers,after_workers)
+        verify_frozen(before_workers,after_workers,identity['training_world_size'])
         restored = trainer.actor_rollout_wg.restore_frozen_teacher_rng(str(boundary/'before'))
-        if len(restored) != 8 or not all(x['rng_equal'] for x in restored):
+        if len(restored) != identity['training_world_size'] or not all(x['rng_equal'] for x in restored):
             raise ValueError('WARMUP_DID_NOT_RESTORE_INDEPENDENT_ACTOR_RNG_BOUNDARY')
         result = dict(status='FROZEN_TEACHER_WARMUP_HEAD_READY', cache_receipt=proof,
             reused_questions=reused, fitted_questions=fitted['bootstrap_groups'],
