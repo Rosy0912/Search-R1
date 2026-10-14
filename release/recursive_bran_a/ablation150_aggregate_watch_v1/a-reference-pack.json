@@ -1,0 +1,213 @@
+{
+  "aggregate_summary_sha256": "231e80743ea6fec17878fd2d60783c3697be16380637c8328de9cd05ef2a66cc",
+  "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+  "milestones": {
+    "100": {
+      "dev512": {
+        "count": 512,
+        "f1": 0.5466424851190478,
+        "hits": 236,
+        "hotpot": {
+          "count": 256,
+          "em": 0.52734375,
+          "f1": 0.5783017113095239,
+          "hits": 135
+        },
+        "nq": {
+          "count": 256,
+          "em": 0.39453125,
+          "f1": 0.5149832589285716,
+          "hits": 101
+        }
+      },
+      "outer": 100,
+      "recorded_boundary_scalars": {
+        "actor/lr": 1e-06,
+        "actor/lr_before_outer": 1e-06,
+        "actor/scheduler_step_after_outer": 100.0,
+        "actor/scheduler_step_before_outer": 99.0,
+        "rollout/generated_tokens": 804966.0,
+        "rollout/raw_emitted_tokens": 804966.0,
+        "timing_s/adv": 11.220376789569855,
+        "timing_s/gen": 538.4788877582178,
+        "timing_s/ref": 10.954787529073656,
+        "timing_s/save_checkpoint": 8.540228009223938e-07,
+        "timing_s/stage_testing": 4.295259714126587e-06,
+        "timing_s/step": 1475.1044636107981,
+        "timing_s/testing": 639.7565359966829,
+        "timing_s/update_actor": 219.59589208383113,
+        "training/actual_adam_calls_per_rank": 2000.0,
+        "training/actual_outer_updates": 100.0,
+        "training/attempt_id": 100.0,
+        "training/consumed_sampling_rounds": 100.0,
+        "training/normal_guard_rounds": 0.0,
+        "training/optimizer_write_rounds": 100.0,
+        "training/refused_attempts": 0.0,
+        "training/zero_write_sampling_rounds": 0.0
+      },
+      "source": {
+        "captured_line_hash_convention": "UTF-8 of exact retained line string, without line terminator",
+        "captured_line_sha256": "5db7b7d7ed04d543c9433a716040745e3f614b2fdea80550acea4fc8a59ea96e",
+        "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+        "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/logs/training.log",
+        "new_inference": false
+      }
+    },
+    "150": {
+      "dev512": {
+        "count": 512,
+        "f1": 0.5693095858134921,
+        "hits": 246,
+        "hotpot": {
+          "count": 256,
+          "em": 0.5390625,
+          "f1": 0.6025204613095239,
+          "hits": 138
+        },
+        "nq": {
+          "count": 256,
+          "em": 0.421875,
+          "f1": 0.5360987103174604,
+          "hits": 108
+        }
+      },
+      "outer": 150,
+      "recorded_boundary_scalars": {
+        "actor/lr": 1e-06,
+        "actor/lr_before_outer": 1e-06,
+        "actor/scheduler_step_after_outer": 150.0,
+        "actor/scheduler_step_before_outer": 149.0,
+        "rollout/generated_tokens": 938036.0,
+        "rollout/raw_emitted_tokens": 938036.0,
+        "timing_s/adv": 16.129358695819974,
+        "timing_s/gen": 697.5979827838019,
+        "timing_s/ref": 13.900893998332322,
+        "timing_s/save_checkpoint": 1.9827857613563538e-06,
+        "timing_s/stage_testing": 1.5772879123687744e-05,
+        "timing_s/step": 1733.4094061162323,
+        "timing_s/testing": 677.8579317135736,
+        "timing_s/update_actor": 253.14226273354143,
+        "training/actual_adam_calls_per_rank": 3000.0,
+        "training/actual_outer_updates": 150.0,
+        "training/attempt_id": 150.0,
+        "training/consumed_sampling_rounds": 150.0,
+        "training/normal_guard_rounds": 0.0,
+        "training/optimizer_write_rounds": 150.0,
+        "training/refused_attempts": 0.0,
+        "training/zero_write_sampling_rounds": 0.0
+      },
+      "source": {
+        "captured_line_hash_convention": "UTF-8 of exact retained line string, without line terminator",
+        "captured_line_sha256": "13400b2b9d2db189f9b61c08dfff65381ec193b4b3d5ce1dcd1df52060aa4866",
+        "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+        "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/logs/training.log",
+        "new_inference": false
+      }
+    },
+    "5": {
+      "dev512": {
+        "count": 512,
+        "f1": 0.2506663069679139,
+        "hits": 96,
+        "hotpot": {
+          "count": 256,
+          "em": 0.1640625,
+          "f1": 0.2004618779339663,
+          "hits": 42
+        },
+        "nq": {
+          "count": 256,
+          "em": 0.2109375,
+          "f1": 0.3008707360018614,
+          "hits": 54
+        }
+      },
+      "outer": 5,
+      "recorded_boundary_scalars": {
+        "actor/lr": 8.771929824561403e-08,
+        "actor/lr_before_outer": 7.017543859649122e-08,
+        "actor/scheduler_step_after_outer": 5.0,
+        "actor/scheduler_step_before_outer": 4.0,
+        "rollout/generated_tokens": 823617.0,
+        "rollout/raw_emitted_tokens": 823617.0,
+        "timing_s/adv": 11.536676481366158,
+        "timing_s/gen": 506.69774331338704,
+        "timing_s/ref": 10.482818650081754,
+        "timing_s/save_checkpoint": 9.872019290924072e-07,
+        "timing_s/stage_testing": 7.3229894042015076e-06,
+        "timing_s/step": 1550.2230439959094,
+        "timing_s/testing": 750.9191756695509,
+        "timing_s/update_actor": 207.7076744446531,
+        "training/actual_adam_calls_per_rank": 100.0,
+        "training/actual_outer_updates": 5.0,
+        "training/attempt_id": 5.0,
+        "training/consumed_sampling_rounds": 5.0,
+        "training/normal_guard_rounds": 0.0,
+        "training/optimizer_write_rounds": 5.0,
+        "training/refused_attempts": 0.0,
+        "training/zero_write_sampling_rounds": 0.0
+      },
+      "source": {
+        "captured_line_hash_convention": "UTF-8 of exact retained line string, without line terminator",
+        "captured_line_sha256": "eb27d6ad7d1b3a2916daa2475a6952c38c91586aed9b40113a9574b1b713514e",
+        "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+        "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/logs/training.log",
+        "new_inference": false
+      }
+    },
+    "50": {
+      "dev512": {
+        "count": 512,
+        "f1": 0.4735448795995672,
+        "hits": 199,
+        "hotpot": {
+          "count": 256,
+          "em": 0.390625,
+          "f1": 0.4382254464285714,
+          "hits": 100
+        },
+        "nq": {
+          "count": 256,
+          "em": 0.38671875,
+          "f1": 0.5088643127705629,
+          "hits": 99
+        }
+      },
+      "outer": 50,
+      "recorded_boundary_scalars": {
+        "actor/lr": 8.771929824561403e-07,
+        "actor/lr_before_outer": 8.596491228070175e-07,
+        "actor/scheduler_step_after_outer": 50.0,
+        "actor/scheduler_step_before_outer": 49.0,
+        "rollout/generated_tokens": 742030.0,
+        "rollout/raw_emitted_tokens": 742030.0,
+        "timing_s/adv": 11.469255688600242,
+        "timing_s/gen": 510.51107796188444,
+        "timing_s/ref": 11.41344026941806,
+        "timing_s/save_checkpoint": 1.9408762454986572e-06,
+        "timing_s/stage_testing": 1.3620592653751373e-05,
+        "timing_s/step": 1536.614219375886,
+        "timing_s/testing": 733.3291178522632,
+        "timing_s/update_actor": 214.50670808926225,
+        "training/actual_adam_calls_per_rank": 1000.0,
+        "training/actual_outer_updates": 50.0,
+        "training/attempt_id": 50.0,
+        "training/consumed_sampling_rounds": 50.0,
+        "training/normal_guard_rounds": 0.0,
+        "training/optimizer_write_rounds": 50.0,
+        "training/refused_attempts": 0.0,
+        "training/zero_write_sampling_rounds": 0.0
+      },
+      "source": {
+        "captured_line_hash_convention": "UTF-8 of exact retained line string, without line terminator",
+        "captured_line_sha256": "d8d326616651274b45ab184ca28759b46b905304186715dbf9dae10056107c53",
+        "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+        "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/logs/training.log",
+        "new_inference": false
+      }
+    }
+  },
+  "new_inference": false,
+  "protocol": "retained_A_native_aggregate_pack_v1",
+  "scope": "Only the four existing A native aggregate evaluation records, across original and native-resumed entries; no single fabricated config/run identity"
+}
