@@ -28,6 +28,9 @@ def main():
     tokenizer_recovery = BASE/'final51713-tokenizer-recovery-v1'
     if (tokenizer_recovery/'evaluation-launch.json').exists():
         CONTROL = tokenizer_recovery
+    worker_recovery = BASE/'final51713-worker-recovery-v1'
+    if (worker_recovery/'evaluation-launch.json').exists():
+        CONTROL = worker_recovery
     plan = load(CONTROL / 'execution-plan.json')
     launch = load(CONTROL / 'evaluation-launch.json')
     terminal = load(CONTROL / 'evaluation-actual-exit.json')

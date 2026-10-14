@@ -70,6 +70,9 @@ def audit(base=BASE):
     tokenizer_recovery = base/'final51713-tokenizer-recovery-v1'
     if (tokenizer_recovery/'evaluation-launch.json').exists():
         folder = tokenizer_recovery
+    worker_recovery = base/'final51713-worker-recovery-v1'
+    if (worker_recovery/'evaluation-launch.json').exists():
+        folder = worker_recovery
     plan_path = folder / 'execution-plan.json'
     exit_path = folder / 'evaluation-actual-exit.json'
     if not plan_path.exists() or not exit_path.exists():
