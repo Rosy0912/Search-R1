@@ -68,5 +68,10 @@
     "label": "C2-random-final-after-C1",
     "job": "138665",
     "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-random-final-after-C1-138665.log"
+  },
+  {
+    "label": "idle-3090-collective-diagnostic-no-training",
+    "job": "138666",
+    "log": null
   }
 ]
