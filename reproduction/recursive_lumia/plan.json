@@ -3,7 +3,7 @@
   "upstream_commit": "a1059feecae846df67c297225ab3566d54bef38f",
   "original_scientific_reference": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
   "seed": 42,
-  "hardware": "single node, eight NVIDIA L40S per training arm",
+  "hardware": "single node eight GPUs: original on L40S; curriculum on RTX6000 Ada when idle under expanded resource authorization. Hardware difference must accompany comparisons.",
   "arms": {
     "original": {"outer_rounds": 200, "final51713": true},
     "curriculum": {"outer_rounds": 150, "final51713": false}

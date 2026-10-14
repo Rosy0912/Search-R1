@@ -11,7 +11,7 @@ def main():
     from omegaconf import OmegaConf
     base=Path(sys.argv[1]).resolve();arm=sys.argv[2];run=base/'runs'/arm
     r=json.loads((run/'receipts/configuration.json').read_text())
-    aliases={'node10':'gpu-l40s-1','node11':'gpu-l40s-2'}
+    aliases={'node9':'gpu-ada6000-2','node10':'gpu-l40s-1','node11':'gpu-l40s-2'}
     assert os.environ.get('SLURM_JOB_ID') and aliases.get(os.environ['SLURM_JOB_NODELIST'])==r['host']==socket.gethostname().split('.')[0]
     assert os.getuid()==1066
     assert hashlib.sha256(Path(r['config']).read_bytes()).hexdigest()==r['config_sha256']

@@ -1,0 +1,30 @@
+{
+  "authorization": "Expanded persistent user goal: retain E, use available servers to accelerate the two main arms; complete the referenced mechanism and single-factor study, preserving full scope until verified results and reports exist.",
+  "preserve": ["E1395 original training and evaluation", "running original recursive-A job and immutable source", "other users and unrelated experiments"],
+  "main_arms": ["original recursive-A200", "dynamic-question plus unchanged recursive-A150"],
+  "primary_main_comparison": "native dev512 at equal outer150; report different hardware and all screening costs",
+  "conditional_future": "adaptive branch-position selection only after main-arm evidence; it is distinct from fixed early/uniform/late parameter ablations",
+  "ablation_order": [
+    {"label": "C1-root-only", "outer": 150, "change": "Only root may be a parent; unchanged reward acceptance/backoff/fill"},
+    {"label": "C2-uniform-final", "outer": 150, "change": "Build unchanged reward-guided tree, retain root plus four actual non-root records uniformly without replacement using independent final-selection RNG"},
+    {"label": "budget5", "outer": 150, "change": "Continuation budget5 excluding root"},
+    {"label": "budget10", "reuse": "matched original-A150"},
+    {"label": "budget20", "outer": 150, "change": "Continuation budget20 excluding root"},
+    {"label": "position-early", "outer": 150, "change": "Frozen published early-position distribution only"},
+    {"label": "position-uniform", "reuse": "matched original-A150"},
+    {"label": "position-late", "outer": 150, "change": "Frozen published late-position distribution only"},
+    {"label": "depth1", "reuse": "matched C1-root-only150"},
+    {"label": "depth2", "outer": 150, "change": "Maximum lineage generation2 only"},
+    {"label": "depth4", "reuse": "matched original-A150; target5 root-included makes generation4 nonbinding"}
+  ],
+  "new_unique_ablation_runs_before_verified_reuse": 7,
+  "sequence": "C1 then C2; only then parameter conditions. Never add an ordinary independent-sampling arm or duplicate a proved matching condition.",
+  "hardware_preference": "Authorized eight-H100 resource when actually accessible. Author repository paths/job IDs do not establish access or ownership.",
+  "fixed_contract": "Official Qwen2.5-3B-Instruct@aa8e725; fresh Adam per condition;512 questions,target5,mini128,epochs1,globalmicro16,20 opportunities/rank,LR1e-6,warmup57,scheduler200; original BF16/FP32,mu,advantage,clip.2,gradclip1,zeroKL/entropy,maxturn4,lengths2048/4096/500/500,no forced final answer",
+  "milestones": [5,50,100,150],
+  "initial_acceptance": "Five complete finite training rounds with actual Adam records and checkpoint, then observable sixth-round production; continue automatically150",
+  "recovery": "Immutable published source, independent deployment, actual complete parameter/Adam/scheduler/RNG/cursor boundary; no hot edits, cold restart masquerading as resume, or stopping unrelated jobs",
+  "deliverables": ["150-round curves", "matched-round EM and per-question pairing where underlying predictions exist", "actual generated tokens and allocated GPU-hours including screening/failures", "implemented/published/deployed/actually-complete distinction"],
+  "upstream_evidence_at_scope_capture": {"C1": "Published first5 report only; not independently observed live and not150 completion", "A150": "Published aggregate246/512; lacks paired prediction records in the inspected report"},
+  "completion": "All requested unique runs or evidence-backed matched reuse, required first5+sixth observations, complete milestone results, comparison/cost report; currently incomplete"
+}
