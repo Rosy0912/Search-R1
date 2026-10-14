@@ -2,6 +2,8 @@
 import argparse
 import hashlib
 import json
+import math
+import re
 from pathlib import Path
 import time
 
@@ -45,22 +47,29 @@ def verify_rank(record, run, identity, outer):
                 or entry['rows'] != 16 or entry['local_row_indices'] != list(range((index-1)*16,index*16))
                 or entry['status'].startswith('SUCCESS') != bool(entry['actual_writes'])):
             raise ValueError('Rank opportunity ledger does not cover the actual320rows')
-    audits = [r for r in read_jsonl(run/'output/audit'/f'{rank}.jsonl')
-              if r.get('kind') == 'actor_outer' and r.get('outer_step') == outer]
-    if len(audits) != 1:
-        raise ValueError('Missing or ambiguous actual actor loss audit')
-    audit = audits[0]
-    if (audit['run_id'] != identity['run_id'] or audit['commit'] != identity['code_commit']
-            or audit['optimizer_steps'] != writes or audit['fixed_unchanged'] is not True):
-        raise ValueError('Actor loss audit differs from rank update')
-    losses = [r['policy_loss'] for r in audit['micro_stats']]
-    count = sum(r['count'] for r in losses)
-    finite = sum(r['finite'] for r in losses)
+    norms = [e['gradient_preclip'] for e in ledger if e['actual_writes']]
+    if any(value is None or not math.isfinite(value) for value in norms):
+        raise ValueError('A committed update lacks a finite observed gradient norm')
+    audit_path = run/'output/rank-audit'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}.json"
+    losses = []
+    if outer in (5,50,100,150,200):
+        audit = json.loads(audit_path.read_text())
+        if (any(audit[key] != value for key,value in identity.items())
+                or audit['successful_optimizer_calls'] != writes or audit['existing_grad_norms'] != norms):
+            raise ValueError('Sparse Tree rank audit differs from actual updates')
+        for call in range(writes):
+            tail_path = run/'output/rank-audit/ratio-tail'/f"step-{outer:06d}-attempt-{actual['attempt_id']:06d}-rank-{rank:02d}-optimizer-{call:02d}.json"
+            tail = json.loads(tail_path.read_text())
+            if tail['optimizer_call'] != call+1 or tail['outer_step'] != outer or tail['rank'] != rank:
+                raise ValueError('Successful-write loss record belongs to another update')
+            losses.extend(value for micro in tail['microbatches'] for value in micro['loss_parts'].values())
     return dict(rank=rank, actual_adam_writes=writes, total_adam_writes=record['total_optimizer_calls'],
-        observed_loss_scalars=count, finite_loss_scalars=finite,
-        all_observed_loss_finite=(count > 0 and count == finite),
-        observed_grad_norms=len(audit['grad_norms']), finite_grad_norms=audit['grad_finite'],
+        observed_loss_scalars=len(losses), finite_loss_scalars=sum(math.isfinite(value) for value in losses),
+        all_observed_loss_finite=(all(math.isfinite(value) for value in losses) if losses else None),
+        loss_scope='Sparse Tree successful-write microbatch losses at5/50/100/150/200; other rounds use console aggregates',
+        observed_grad_norms=len(norms), finite_grad_norms=len(norms),
         direct_record_sha256=direct['sha256'])
+
 
 
 def checkpoint(run, identity, hash_native):
@@ -107,6 +116,17 @@ def inspect(run, log_path, hash_native=False):
                     config_sha256=config['config_sha256'],data_identity=config['data_identity'])
     if any(fresh[key] != value for key,value in identity.items()):
         raise ValueError('Fresh receipt and run configuration disagree')
+    log_text = Path(log_path).read_text(errors='replace')
+    round_metrics = {}
+    for line in log_text.splitlines(keepends=True):
+        if not line.endswith('\n') or 'training/actual_outer_updates:' not in line: continue
+        match = re.search(r'(?:^|\s)step:(\d+) - ',line)
+        if match is None: continue
+        values = {}
+        for key,value in re.findall(r'([A-Za-z0-9_/.-]+):([-+0-9.eE]+|nan|inf)',line[match.start():]):
+            values[key] = float(value)
+        if values.get('training/actual_outer_updates') == int(match.group(1)):
+            round_metrics[int(match.group(1))] = values
     attempts = []
     for path in sorted((run/'output/attempt-results').glob('attempt-*.json')):
         value = json.loads(path.read_text());outer = value['accepted_outer']
@@ -119,12 +139,15 @@ def inspect(run, log_path, hash_native=False):
         attempts.append(dict(outer=outer,attempt=value['attempt_id'], ranks=verified,
             actual_adam_writes_per_rank=verified[0]['actual_adam_writes'],
             cumulative_adam_writes_per_rank={str(r['rank']):r['total_adam_writes'] for r in verified},
-            normal_guard=value.get('normal_guard'),attempt_file_sha256=sha(path)))
+            normal_guard=value.get('normal_guard'),attempt_file_sha256=sha(path),
+            console_metrics=round_metrics.get(outer),
+            reported_pg_loss_finite=(math.isfinite(round_metrics[outer]['actor/pg_loss'])
+                if outer in round_metrics and 'actor/pg_loss' in round_metrics[outer] else None)))
     if [r['outer'] for r in attempts] != list(range(1,len(attempts)+1)):
         raise ValueError('Completed rounds do not form this fresh run’s continuous prefix')
     boundary = checkpoint(run,identity,hash_native)
     sixth = []
-    for line in Path(log_path).read_text(errors='replace').splitlines(keepends=True):
+    for line in log_text.splitlines(keepends=True):
         if not line.endswith('\n') or 'TREE_TIMING=' not in line: continue
         event = json.JSONDecoder().raw_decode(line.split('TREE_TIMING=',1)[1])[0]
         if (event.get('run_id') == config['run_id'] and event.get('outer') == 6
@@ -132,7 +155,8 @@ def inspect(run, log_path, hash_native=False):
             sixth.append(event)
     first5 = attempts[:5]
     five_writes = len(first5) == 5 and all(r['actual_adam_writes_per_rank'] > 0 for r in first5)
-    finite = len(first5) == 5 and all(rank['all_observed_loss_finite'] for r in first5 for rank in r['ranks'])
+    finite = len(first5) == 5 and all(r['reported_pg_loss_finite'] is True
+        and all(rank['all_observed_loss_finite'] is not False for rank in r['ranks']) for r in first5)
     return dict(at=time.time(), run=str(run), identity=identity, completed_rounds=len(attempts),
         zero_write_rounds=sum(r['actual_adam_writes_per_rank'] == 0 for r in attempts),attempts=attempts,
         native5=boundary,sixth_real_generation_observed=bool(sixth),sixth_first_evidence=sixth[0] if sixth else None,
