@@ -12,6 +12,7 @@ import uuid
 from pathlib import Path
 
 from reproduction.a800.probe_admission import calibrated_version
+from reproduction.a800_common import qprobe_adoption_source_delta as qprobe_sources
 from reproduction.common8 import adopt_initial_probes as artifacts
 from reproduction.common8.formal_contract import assert_formal_run
 from reproduction.common8.freeze_calibration_plan import _unstarted
@@ -36,6 +37,7 @@ LOCAL_HELPERS = frozenset((
 ))
 RAY_ENTRY = 'verl/trainer/main_ppo_eco.py'
 BF16_SOURCE_DELTA = 'reproduction/a800_common/bf16-adoption-source-delta.json'
+QPROBE_SOURCE_DELTA = qprobe_sources.DELTA_PATH
 BF16_DELTA_SOURCE_FILES = frozenset((
     'verl/workers/actor/dp_actor.py',
     'reproduction/common8/behavior_probability.py',
@@ -175,6 +177,20 @@ def source_changed_allowed(name, previous, current, run, old):
     """
     _check(previous == old['source_sha256'] and current == run['source_sha256'],
            'Source comparison is not the complete bound manifests')
+    if run.get('question_probe') is not None:
+        # The legacy BF16 document describes an earlier target. A question-
+        # probe target instead binds every changed path to the pinned published
+        # question-probe baseline plus explicitly assigned integration edits.
+        # Local helpers do not bypass this complete comparison in this route.
+        base = Path(__file__).resolve().parents[3]
+        path = artifacts._owned_file(base / 'repo' / QPROBE_SOURCE_DELTA, base)
+        _check(digest(path) == current.get(QPROBE_SOURCE_DELTA),
+               'Question-probe adoption delta differs from the target source snapshot')
+        changes = qprobe_sources.validate(artifacts._read(path), previous, current, run, old)
+        if name == QPROBE_SOURCE_DELTA:
+            _check(name not in previous, 'Question-probe delta replaced an original bound file')
+            return True
+        return name in changes
     if name in LOCAL_HELPERS:
         return True
     if not _bf16_reuse(run, old) or name not in BF16_DELTA_SOURCE_FILES | {BF16_SOURCE_DELTA}:
@@ -421,6 +437,8 @@ def adopt(base, source_base):
         allowed_training_precision_budget_changes=budget_changes_allowed(run, old),
         training_precision_source_delta_sha256=(run['source_sha256'].get(BF16_SOURCE_DELTA)
             if _bf16_reuse(run, old) else None),
+        question_probe_source_delta_sha256=(run['source_sha256'].get(QPROBE_SOURCE_DELTA)
+            if run.get('question_probe') is not None else None),
         live_manifest_sha256=digest(live_dir / 'manifest.json'),
         target_archive=str(round_dir / 'version-manifest.json'),
         target_archive_sha256=digest(round_dir / 'version-manifest.json'),

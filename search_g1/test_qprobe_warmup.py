@@ -9,10 +9,62 @@ import math
 import os
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
-from search_g1.qprobe_warmup import TeacherCache, moments, verify_frozen, QUESTIONS, CHUNK_SIZE, STATUS
+from search_g1.qprobe_warmup import (
+    TeacherCache, moments, verify_frozen, teacher_identity, QUESTIONS, CHUNK_SIZE, STATUS,
+)
 from search_g1.qprobe_features import sha_file
+
+
+class ScoringProvenanceTests(unittest.TestCase):
+    def setUp(self):
+        from search_g1.qprobe_runtime import strict_scoring_sources
+        self.sources = strict_scoring_sources()
+        self.manifest = dict(run_id='old-teacher-run', model_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1',
+            training_world_size=4, initial_model_sha256={'config.json': 'a'*64},
+            input_sha256={'train.parquet': 'b'*64}, budget={'common_manifest_sha256': 'c'*64},
+            retriever_version='immutable-index', source_sha256=self.sources)
+        self.settings = dict(feature_spec_sha='d'*64, sampling_config={'temperature': 1.0},
+            agent_config={'max_response_length': 500}, max_turns=4, seed=20261013,
+            questions=[dict(qid='question', question_hash='e'*64)])
+        self.trainer = SimpleNamespace(config=SimpleNamespace(max_turns=4,
+            data=SimpleNamespace(max_start_length=2048, max_prompt_length=4096,
+                max_response_length=500, max_obs_length=500),
+            retriever=SimpleNamespace(topk=3, url='http://127.0.0.1:18010/retrieve')))
+        self.output = SimpleNamespace(meta_info={'behavior_sampling': {'temperature': 1.0, 'top_p': 1.0}})
+
+    def test_changed_strict_vector_extractor_invalidates_cache_and_online_protocol(self):
+        from search_g1.qprobe_runtime import _contracts
+        old_identity = teacher_identity(self.manifest, **self.settings)
+        old_protocol = _contracts(self.trainer, self.output, self.manifest)
+        changed_sources = dict(self.sources, **{'search_g1/mixed_runtime.py': 'f'*64})
+        with patch('search_g1.qprobe_runtime.strict_scoring_sources', return_value=changed_sources):
+            # A stale prepared source cannot be asserted as the newly loaded scorer.
+            with self.assertRaisesRegex(ValueError, 'ACTUAL_STRICT_SCORER_DIFFERS'):
+                teacher_identity(self.manifest, **self.settings)
+            new_manifest = dict(self.manifest, source_sha256=changed_sources)
+            changed_identity = teacher_identity(new_manifest, **self.settings)
+            changed_protocol = _contracts(self.trainer, self.output, new_manifest)
+        self.assertNotEqual(old_identity, changed_identity)
+        self.assertNotEqual(old_protocol['strict_scoring_contract_sha'], changed_protocol['strict_scoring_contract_sha'])
+        self.assertEqual(old_protocol['sampling_contract_sha'], changed_protocol['sampling_contract_sha'])
+        self.assertEqual(old_protocol['retriever_version'], changed_protocol['retriever_version'])
+        self.assertEqual(old_identity['scorer_sources']['search_g1/mixed_runtime.py'],
+            sha_file(Path(__file__).with_name('mixed_runtime.py')))
+
+    def test_identical_official_teacher_namespace_survives_fresh_run_identity(self):
+        from search_g1.qprobe_runtime import _contracts
+        fresh = dict(self.manifest, run_id='new-fresh-run', checkpoint_dir='/data/new-run/checkpoints',
+            initial_model='/data/relocated-official-model', completed_updates=0)
+        self.assertEqual(teacher_identity(self.manifest, **self.settings), teacher_identity(fresh, **self.settings))
+        old = _contracts(self.trainer, self.output, self.manifest)
+        new = _contracts(self.trainer, self.output, fresh)
+        for key in ('sampling_contract_sha', 'strict_scoring_contract_sha', 'retriever_version'):
+            self.assertEqual(old[key], new[key])
+        self.assertNotEqual(old['run_id'], new['run_id'])
 
 
 class MomentTests(unittest.TestCase):
@@ -53,14 +105,25 @@ class MomentTests(unittest.TestCase):
                 for i in range(QUESTIONS)]
             cold=torch.nn.functional.cross_entropy(head.predict(features)['logits'],counts).item()
             actor_rng=torch.get_rng_state().clone()
-            fit=head.bootstrap(labels,features,actor_outer=0,actor_snapshot_id='synthetic-frozen-teacher:0')
+            fit=head.bootstrap(labels,features,actor_outer=0,actor_snapshot_id='new-fresh-run:0')
             self.assertEqual(fit['bootstrap_groups'],QUESTIONS)
             self.assertEqual(len(head.replay_labels),QUESTIONS)
             self.assertEqual({x['correct_count'] for x in head.replay_labels},set(range(6)))
             self.assertEqual((head.completed_outer,head.update_count),(0,0))
+            self.assertEqual(head.actor_snapshot_id,'new-fresh-run:0')
+            self.assertEqual({x['run_id'] for x in head.replay_labels},{'synthetic-run'})
+            self.assertEqual({x['source_outer'] for x in head.replay_labels},{0})
             self.assertTrue(head.optimizer.state)
             self.assertTrue(torch.equal(actor_rng,torch.get_rng_state()))
             self.assertLess(torch.nn.functional.cross_entropy(head.predict(features)['logits'],counts).item(),cold)
+            with tempfile.TemporaryDirectory() as temp:
+                path=Path(temp)/'head.pt'
+                receipt=head.save(path,actor_snapshot_id='new-fresh-run:0')
+                restored=OnlineQProbe.load(path,expected_actor_snapshot_id='new-fresh-run:0',
+                    expected_feature_spec_sha=head.feature_spec_sha,expected_checkpoint_sha=receipt['checkpoint_sha'])
+                self.assertEqual((restored.completed_outer,restored.update_count),(0,0))
+                self.assertEqual(restored.actor_snapshot_id,'new-fresh-run:0')
+                self.assertEqual({x['run_id'] for x in restored.replay_labels},{'synthetic-run'})
         finally:torch.set_num_threads(threads)
 
 

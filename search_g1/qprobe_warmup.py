@@ -59,6 +59,27 @@ def verify_frozen(before, after, expected_world_size=8):
                 actual_eight_rank_frozen_readback=expected_world_size==8)
 
 
+def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_config,
+                     max_turns, seed, questions):
+    """A reusable official-teacher namespace, independent of a fresh run's ID."""
+    from search_g1.qprobe_runtime import strict_scoring_sources
+    scorer_sources = strict_scoring_sources()
+    if any(manifest['source_sha256'].get(name) != sha for name, sha in scorer_sources.items()):
+        raise ValueError('WARMUP_ACTUAL_STRICT_SCORER_DIFFERS_FROM_BOUND_SOURCE')
+    return dict(schema=2, model_revision=manifest['model_revision'],
+        teacher_frozen_evidence_required=True, training_world_size=manifest.get('training_world_size',8),
+        model_files_sha256=manifest['initial_model_sha256'],
+        train_parquet_sha256=manifest['input_sha256']['train.parquet'],
+        data_manifest_sha256=manifest['budget']['common_manifest_sha256'],
+        retriever_version=manifest['retriever_version'], feature_spec_sha=feature_spec_sha,
+        sampling_config=sampling_config, agent_config=agent_config, max_turns=max_turns,
+        seed=seed, questions=questions, scorer_sources=scorer_sources,
+        rollout_sources={name:value for name,value in manifest['source_sha256'].items()
+            if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
+                'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
+                'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
+
+
 class TeacherCache:
     def __init__(self, root, identity):
         self.root = Path(root).resolve()
@@ -182,23 +203,12 @@ def run(trainer, manager, runtime, stream):
     parents = DataProto.from_dict(tensors={'qprobe_source_index':torch.tensor([x[0] for x in rows])},
         non_tensors={'candidate_original_question':np.array([x[1] for x in rows], dtype=object),
                      'candidate_stable_id':np.array([x[2] for x in rows], dtype=object)})
-    identity = dict(schema=1, model_revision=manifest['model_revision'],
-        teacher_frozen_evidence_required=True,training_world_size=manifest.get('training_world_size',8),
-        model_files_sha256=manifest['initial_model_sha256'],
-        train_parquet_sha256=manifest['input_sha256']['train.parquet'],
-        data_manifest_sha256=manifest['budget']['common_manifest_sha256'],
-        retriever_version=manifest['retriever_version'], feature_spec_sha=runtime.feature_spec_sha,
+    identity = teacher_identity(manifest, feature_spec_sha=runtime.feature_spec_sha,
         sampling_config=OmegaConf.to_container(trainer.config.actor_rollout_ref.rollout, resolve=True),
         agent_config={k: getattr(trainer.config.data, k) for k in (
             'max_start_length','max_prompt_length','max_response_length','max_obs_length')},
         max_turns=trainer.config.max_turns, seed=runtime.config['seed'],
-        questions=[dict(qid=qid, question_hash=question_text_sha(q)) for _,q,qid in rows],
-        scorer_sources={name: manifest['source_sha256'][name] for name in (
-            'search_g1/signals.py','search_r1/qa_protocol.py','verl/utils/reward_score/qa_em.py')},
-        rollout_sources={name:value for name,value in manifest['source_sha256'].items()
-            if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
-                'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
-                'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
+        questions=[dict(qid=qid, question_hash=question_text_sha(q)) for _,q,qid in rows])
     cache = TeacherCache(cache_path, identity)
     try:
         reused = 0

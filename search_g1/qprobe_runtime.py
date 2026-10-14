@@ -33,6 +33,14 @@ def _document_sha(value):
                                     ensure_ascii=False).encode()).hexdigest()
 
 
+def strict_scoring_sources():
+    """Pin the complete strict-vector extractor as well as its scorer helpers."""
+    repo = Path(__file__).resolve().parents[1]
+    return {name: _sha(repo / name) for name in (
+        "search_g1/mixed_runtime.py", "search_g1/signals.py",
+        "search_r1/qa_protocol.py", "verl/utils/reward_score/qa_em.py")}
+
+
 def _write_json(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -470,9 +478,6 @@ def _retriever_contract(config, run):
 
 
 def _contracts(trainer, output, run):
-    from search_g1 import signals
-    from search_r1 import qa_protocol
-    from verl.utils.reward_score import qa_em
     if not output.meta_info.get("behavior_sampling"):
         raise RuntimeError("Question-probe labels lack the actual generation sampling contract")
     sampling = dict(output.meta_info["behavior_sampling"])
@@ -481,8 +486,7 @@ def _contracts(trainer, output, run):
         **{name: getattr(config.data, name, None) for name in
            ("max_start_length", "max_prompt_length", "max_response_length", "max_obs_length")})
     # Pin the scorer itself, rather than labelling shaped reward as strict EM.
-    scoring = {name: _sha(module.__file__) for name, module in
-               (("signals", signals), ("qa_protocol", qa_protocol), ("qa_em", qa_em))}
+    scoring = dict(source_sha256=strict_scoring_sources())
     scoring.update(target="strict_terminal_em", responses_per_question=5, std_ddof=1)
     scoring["common_data_manifest_sha256"] = run["budget"]["common_manifest_sha256"]
     return dict(run_id=run["run_id"], sampling_contract_sha=_document_sha(sampling),

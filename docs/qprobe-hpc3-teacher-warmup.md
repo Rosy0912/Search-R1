@@ -16,6 +16,17 @@ zero labels. Cache identity pins exact questions, model files, sampling settings
 scorer source, feature namespace and retrieval version. Full SHA readback is
 required before reuse; accepted chunks are never regenerated on restart.
 
+Reuse the same verified remote teacher-cache path from a fresh run directory.
+The cache namespace pins `search_g1/mixed_runtime.py`, which implements the
+strict EM vector extraction, together with its scorer helpers; the online head
+uses the same source hashes in its scoring contract. Older cache schemas without
+this evidence require a separate cache namespace. Fresh runs retain the cached
+teacher trajectory and sampling-run identities, then fit and bind a new head to
+the current fresh actor at outer0. Actor checkpoints and optimizer state are not
+inherited from the cache. Warmup boundary, initial-head and ready receipts are
+once-only run outputs; relaunch after failure uses a fresh output namespace and
+the same accepted teacher chunks.
+
 The warmup head bootstrap fits **all 5120 groups**, without the legacy historical
 bootstrap cap of512. It uses the existing six-count classification and mean/std
 auxiliary objective. Warmup is one additional collection outer, not an actor
