@@ -17,7 +17,8 @@ def main():
         'release/recursive_bran_a/ablation150_storage_v1'], text=True).splitlines()
     paths += ['release/recursive_bran_a/ablation150_reports_v1/report.py',
               'release/recursive_bran_a/ablation150_v1/contracts.py',
-              'release/recursive_bran_a/ablation150_v1/__init__.py']
+              'release/recursive_bran_a/ablation150_v1/__init__.py',
+              'release/recursive_bran_a/ablation150_infra/analysis_cli.py']
     files = {name: base64.b64encode(subprocess.check_output(
         ['git', 'show', f'{commit}:{name}'])).decode() for name in paths}
     payload = base64.b64encode(gzip.compress(json.dumps(dict(commit=commit, files=files)).encode())).decode()
