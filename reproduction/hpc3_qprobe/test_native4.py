@@ -27,7 +27,8 @@ class NativeFourTests(unittest.TestCase):
     def test_actual_hydra_resolution_keeps_global_512_g5_and_mini128(self):
         with tempfile.TemporaryDirectory() as root:
             base,run=test_configuration.ConfigurationTests().fixture(root)
-            run.update(self.binding());run['budget'].update(formal_mathematics(run))
+            run.update(self.binding());run['budget']['world_size']=4
+            run['budget'].update(formal_mathematics(run))
             (base/'logs/run-manifest.json').write_text(json.dumps(run))
             _,cfg,_=configuration.resolved(base)
             self.assertEqual((cfg.trainer.n_gpus_per_node,cfg.data.train_batch_size,

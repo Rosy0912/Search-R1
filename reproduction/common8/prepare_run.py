@@ -144,7 +144,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         result.update(precision_profile=profile, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
             execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=2 if size==8 else 4,
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
-        result['budget'].update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
+        result['budget'].update(world_size=size,compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
         from reproduction.common8.formal_contract import formal_mathematics
         result['budget'].update(formal_mathematics(result))
     if execution_site=='hpc3':

@@ -136,7 +136,7 @@ def submit_training(base,commit):
         if (base/'repo').resolve()!=source:raise ValueError('Immutable run source already points elsewhere')
     else:(base/'repo').symlink_to(source)
     command=['sbatch','--parsable','--partition=acd_u','--nodes=1','--ntasks=1',
-        '--gres=gpu:8','--exclusive','--cpus-per-task=96','--mem=512G','--time=7-00:00:00',
+        '--gres=gpu:4','--cpus-per-task=48','--mem=512G','--time=7-00:00:00',
         '--job-name=qprobe-warmup200','--export=NONE','--dependency=afterok:'+features['job'],
         '--output='+str(base/'logs/training-%j.log'),'--error='+str(base/'logs/training-%j.log'),
         str(source/'reproduction/hpc3_qprobe/train.sh'),str(base),commit]
