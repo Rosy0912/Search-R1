@@ -36,6 +36,18 @@ def check_failed_readers(base):
     assert actual is None or actual['state']=='Z' or actual['start_ticks']!=creator['start_ticks'], 'Cache creator remains live'
 
 
+def optional_submission_receipt(path,timeout=5.):
+    """A concurrent exclusive writer can expose its name before full JSON."""
+    deadline=time.monotonic()+timeout
+    while True:
+        try:raw=path.read_text()
+        except FileNotFoundError:return None
+        try:return json.loads(raw)
+        except json.JSONDecodeError:
+            if time.monotonic()>=deadline:raise
+            time.sleep(.05)
+
+
 def bind_native_retry_runner(job_id):
     if os.getuid()!=14090:raise ValueError('Actual owner required for native retry binding')
     claim=json.loads((FAILED/'preparation'/(RETRY_STEM+'-submit-claim.json')).read_text())
@@ -50,14 +62,14 @@ def bind_native_retry_runner(job_id):
     # emergency_acd may start the job before sbatch returns or before its
     # receipt becomes visible. The durable pre-submit claim and actual
     # owner-bound Slurm birth are authoritative for this native runner.
-    if receipt_path.exists():
-        receipt=json.loads(receipt_path.read_text())
+    receipt=optional_submission_receipt(receipt_path)
+    if receipt is not None:
         assert receipt['job']==job_id and receipt['commit']==claim['commit']
         assert receipt.get('returncode')==0 or receipt.get('status')=='ACTUAL_SLURM_RECONCILED'
     publish(RETRY_SHADOW/'runner-job-binding.json',dict(kind='NATIVE_RETRY_RUNNER_JOB_BINDING',
         job=job_id,commit=claim['commit'],uid=os.getuid(),actual_job_detail=detail,
         claim_sha256=hashlib.sha256((FAILED/'preparation'/(RETRY_STEM+'-submit-claim.json')).read_bytes()).hexdigest(),
-        submit_receipt_observed=receipt_path.exists(),checked_unix=time.time()))
+        submit_receipt_observed=receipt is not None,checked_unix=time.time()))
 
 
 def main(retry_of=None):

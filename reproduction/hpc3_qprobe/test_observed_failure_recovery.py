@@ -2,6 +2,8 @@
 import json
 from pathlib import Path
 import tempfile
+import threading
+import time
 import unittest
 from unittest.mock import patch
 from reproduction.hpc3_qprobe import observed_startup_failures as observed
@@ -62,6 +64,17 @@ class EmergencyRunnerReceiptRaceTests(unittest.TestCase):
         receipt.write_text(json.dumps(dict(job='other-job',commit=self.claim['commit'],returncode=0)))
         with self.assertRaises(AssertionError):self.bind()
         self.assertFalse((self.shadow/'runner-job-binding.json').exists())
+
+    def test_concurrent_partial_receipt_waits_boundedly_and_permanent_damage_rejects(self):
+        path=self.base/'partial-receipt.json';path.write_text('{"job":')
+        def finish():
+            time.sleep(.08)
+            with path.open('a') as f:f.write('"800000"}')
+        writer=threading.Thread(target=finish);writer.start()
+        self.assertEqual(cleanup.optional_submission_receipt(path,timeout=1),dict(job='800000'))
+        writer.join()
+        path.write_text('{')
+        with self.assertRaises(json.JSONDecodeError):cleanup.optional_submission_receipt(path,timeout=.05)
 
 
 if __name__=='__main__':unittest.main()
