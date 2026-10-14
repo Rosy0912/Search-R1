@@ -1,0 +1,138 @@
+{
+  "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "completed_reward_window": {
+    "count": 1,
+    "latest": 0.2151612937450409,
+    "max": 0.2151612937450409,
+    "mean": 0.2151612937450409,
+    "mean_change": null,
+    "min": 0.2151612937450409,
+    "previous_window_mean": null,
+    "steps": [
+      1
+    ]
+  },
+  "current_complete_outers": 1,
+  "delta_complete_outers": 1,
+  "delta_returned_adam": 21,
+  "delta_skip": 0,
+  "dev512": null,
+  "entropy_and_kl_are_not_ppl": true,
+  "execution_id": "140e43d2243d49a99d88f77399f263b8",
+  "final51713": null,
+  "first_outer_consumed_lr": 0.0,
+  "first_outer_four_rank_scheduler_advances": 1,
+  "first_outer_ledger_sha256": "95a771041913055026517612f2fa952d4aed70bcbf19da56ec1917b95163381b",
+  "fullstate_roundtrip_accepted": false,
+  "goal_complete": false,
+  "gpu_current_node_devices": [
+    {
+      "assignment": "training",
+      "physical_index": 0,
+      "sampled_run_peak_mib": 55051,
+      "total_mib": 81920,
+      "used_mib": 50027,
+      "util_percent": 100
+    },
+    {
+      "assignment": "training",
+      "physical_index": 1,
+      "sampled_run_peak_mib": 55147,
+      "total_mib": 81920,
+      "used_mib": 50271,
+      "util_percent": 100
+    },
+    {
+      "assignment": "training",
+      "physical_index": 2,
+      "sampled_run_peak_mib": 55645,
+      "total_mib": 81920,
+      "used_mib": 50123,
+      "util_percent": 100
+    },
+    {
+      "assignment": "training",
+      "physical_index": 3,
+      "sampled_run_peak_mib": 55051,
+      "total_mib": 81920,
+      "used_mib": 50027,
+      "util_percent": 100
+    },
+    {
+      "assignment": "auxiliary",
+      "physical_index": 5,
+      "sampled_run_peak_mib": 18925,
+      "total_mib": 81920,
+      "used_mib": 17887,
+      "util_percent": 0
+    },
+    {
+      "assignment": "auxiliary",
+      "physical_index": 6,
+      "sampled_run_peak_mib": 37978,
+      "total_mib": 81920,
+      "used_mib": 17413,
+      "util_percent": 0
+    }
+  ],
+  "gpu_max_sampling_gap_seconds": 2.3237950801849365,
+  "gpu_optimizer_window_peak": null,
+  "gpu_owned_model_peak": null,
+  "gpu_pipeline_node_peaks_mib": {
+    "0": 55051,
+    "1": 55147,
+    "2": 55645,
+    "3": 55051,
+    "5": 18925,
+    "6": 37978
+  },
+  "gpu_sample_count": 1678,
+  "gpu_scope": "physical-node sampled occupancy over this run pipeline including startup/calibration; exclusive owned-model and optimizer-window peaks not separately verified",
+  "hourly_anchor_advanced": false,
+  "inherited_training_state": false,
+  "native_firstfive_accepted": false,
+  "new_EM_F1_evaluation_count": 0,
+  "next_learning_rate": 1.7543859649122805e-08,
+  "no_new_test_baseline_model_diagnostic_extra_eval_restart_or_hotpatch": true,
+  "observation_sha256": "df8ec21cc7afb453e26f6ef66e3f873636c1faf0a4b8acafe6f33c099754e811",
+  "observed_exception_count": 0,
+  "observed_unix": 1791951424.4636986,
+  "partial_second_outer": {
+    "processed_opportunities": 1,
+    "returned_adam": 1,
+    "skips": 0,
+    "total_opportunities": 20,
+    "verifiable_inflight": null
+  },
+  "prior_A9_lost_unsaved_adam": 60,
+  "prior_A9_lost_unsaved_outers": 3,
+  "prior_A9_updates_retained_in_new200": 0,
+  "prior_delivered_anchor": {
+    "complete_outers": 0,
+    "delivered_unix": 1791947821.3156748,
+    "returned_adam": 0,
+    "sha256": "7ef6071cb6cadb830a890aa38a596e5a92615dd7c65d662d3a696e58085c5829",
+    "skip": 0
+  },
+  "probe_parameter_ownership": "independent_binary_heads_only",
+  "probe_refresh_interval_complete_outers": 10,
+  "probe_representation_source": "actor_detached_binary_heads_v1",
+  "probe_version": "6a26247f538b4145a24b156e79fb04d1:0:ec472f2b3155478fa0938cfa5857cb91",
+  "processed_opportunities_cumulative_count_once": 21,
+  "returned_adam_cumulative_count_once": 21,
+  "reward_mode": "search_g1",
+  "reward_schedule": "g1_through100_then_binary",
+  "role": "actual6a262_first_formal_hour_scalar_snapshot_not_yet_delivered",
+  "run_id": "6a26247f538b4145a24b156e79fb04d1",
+  "sameprocess6_accepted": false,
+  "saved_parent_checkpoint": null,
+  "schema_version": 1,
+  "skipped_opportunities_cumulative_count_once": 0,
+  "source_commit": "c4d156de124de7a94652d75858bcbabc8c56083c",
+  "source_map_sha256": "3add1858656b997d8e01b7c55d57b48b73c79ec7a33cbafb774fa29ad8a336ad",
+  "stage64": null,
+  "target_outers": 200,
+  "trainer_observed_birth_live": true,
+  "training_log_bytes": 93340,
+  "training_world_size": 4
+}
