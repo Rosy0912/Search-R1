@@ -1,0 +1,406 @@
+{
+  "completion_scope": {
+    "full200": "Only later original pipeline completion plus final51713 and logs/full-run-acceptance.json/owned cleanup can establish full200 acceptance.",
+    "native_five": "Structural first1..5 training acceptance, not accuracy reproduction success or full200 completion.",
+    "source": [
+      {
+        "line": 278,
+        "path": "reproduction/common8/run_pipeline.py"
+      },
+      {
+        "line": 344,
+        "path": "reproduction/common8/verify_full.py"
+      }
+    ]
+  },
+  "driver_order_at5": [
+    "complete qprobe head5",
+    "canonical stage64",
+    "save HF/full worker-driver-head state and checkpoint integrity",
+    "record actual-update5",
+    "existing canonical dev512-after5",
+    "automatic accept_five_updates",
+    "publish completed pair and post-evaluation boundary",
+    "global_steps advances6"
+  ],
+  "evidence_paths": [
+    {
+      "event": "Existing four-rank complete attempt and actual finite worker evidence",
+      "order": 1,
+      "paths": [
+        "logs/optimizer-rank-{0,1,2,3}.jsonl",
+        "logs/scheduler-rank-{0,1,2,3}.jsonl",
+        "logs/formal-inline-optimizer-step-{0,5}-rank-{0,1,2,3}.json",
+        "logs/behavior-probability-attempt-<attempt_id>.json"
+      ],
+      "required_actual_evidence": "All four rank births/UUIDs/attempts align; complete outer5 processed20 with nonzero actual Adam writes, finite parameters/Adam tensors, correctly linked existing behavior gate. Native first-five consumes initial0 and saved5 finite state proofs. Four replicas count once.",
+      "source": [
+        {
+          "line": 430,
+          "path": "verl/workers/actor/dp_actor.py"
+        },
+        {
+          "line": 521,
+          "path": "verl/workers/actor/dp_actor.py"
+        },
+        {
+          "line": 29,
+          "path": "reproduction/common8/worker_evidence.py"
+        },
+        {
+          "line": 313,
+          "path": "reproduction/common8/scheduler.py"
+        },
+        {
+          "line": 405,
+          "path": "reproduction/common8/formal_inline_safety.py"
+        }
+      ]
+    },
+    {
+      "event": "Question head commits the successful fifth actor outer",
+      "order": 2,
+      "paths": [
+        "artifacts/question-probe/completed/<attempt_id>.json"
+      ],
+      "required_actual_evidence": "question_probe_outer_committed outer5; successful_actor_snapshot_id=34fffb9fe8ad4d75b54b9c9747c256fb:5; prediction_version and new head_version preserved; no completed-head update for aborted actor attempts.",
+      "source": [
+        {
+          "line": 1136,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 191,
+          "path": "search_g1/qprobe_runtime.py"
+        }
+      ]
+    },
+    {
+      "event": "Canonical stage64 evaluation with the same live actor",
+      "order": 3,
+      "paths": [
+        "logs/latest-stage-identity.json",
+        "logs/validation-identities.jsonl"
+      ],
+      "required_actual_evidence": "step5, split stage, exact ordered canonical64 IDs/source rows and stage parquet SHA, nq32+hotpotqa32, genuine generated-answer strictEM and alias-normalized F1. Current live trainer weights; no separate checkpoint reload.",
+      "source": [
+        {
+          "line": 1142,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 449,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 48,
+          "path": "reproduction/common8/validation_identity.py"
+        },
+        {
+          "line": 66,
+          "path": "reproduction/common8/validation_identity.py"
+        }
+      ]
+    },
+    {
+      "event": "Canonical HF actor checkpoint and actual CPU weight integrity readback",
+      "order": 4,
+      "paths": [
+        "checkpoints/search-g1-common8/actor/global_step_5/model.safetensors.index.json",
+        "checkpoints/search-g1-common8/actor/global_step_5/<all referenced safetensors shards>",
+        "checkpoints/search-g1-common8/actor/global_step_5/config.json",
+        "checkpoints/search-g1-common8/actor/global_step_5/complete.json"
+      ],
+      "required_actual_evidence": "All-rank FSDP full-state extraction and barrier; rank0 HF serialization. Actual saved tensor reads check canonical keys/shapes, fresh files, finite tensors and narrowly authenticated tied Qwen embedding/head alias. complete.json run/step5/tensor count/full file hashes; later accept_five independently rechecks and requires actual parameter changes vs official weights.",
+      "source": [
+        {
+          "line": 720,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 655,
+          "path": "verl/workers/fsdp_workers.py"
+        },
+        {
+          "line": 21,
+          "path": "reproduction/profile.py"
+        },
+        {
+          "line": 10,
+          "path": "reproduction/a800/runtime.py"
+        },
+        {
+          "line": 7,
+          "path": "verl/utils/checkpoint_integrity.py"
+        }
+      ]
+    },
+    {
+      "event": "Four rank Adam/scheduler/RNG plus driver/stream state saved",
+      "order": 5,
+      "paths": [
+        "checkpoints/search-g1-common8/actor/global_step_5/training_state/rank-{0,1,2,3}.pt",
+        "checkpoints/search-g1-common8/actor/global_step_5/training_state/driver.pt",
+        "checkpoints/search-g1-common8/actor/global_step_5/training_state/manifest.json",
+        "checkpoints/search-g1-common8/actor/global_step_5/complete.json"
+      ],
+      "required_actual_evidence": "Actual checkpoint=True rank-local optimizer and scheduler state_dict and idle sampling RNG; all four rank/world4 identities and equal write counters. CPU torch.load readback validates Adam step/exp_avg/exp_avg_sq finite, steps match actual writes, scheduler.last_epoch=5, driver.completed_outer=5 and consumed source cursor. Original checkpoint snapshot is after stage64 and before later dev512.",
+      "source": [
+        {
+          "line": 731,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 69,
+          "path": "search_g1/training_state.py"
+        },
+        {
+          "line": 20,
+          "path": "reproduction/common8/runtime.py"
+        }
+      ]
+    },
+    {
+      "event": "Saved question-head version and actor-bound replay/config/RNG",
+      "order": 6,
+      "paths": [
+        "checkpoints/search-g1-common8/actor/global_step_5/training_state/question-probe-state.pt",
+        "checkpoints/search-g1-common8/actor/global_step_5/training_state/question-probe-state.pt.head.pt"
+      ],
+      "required_actual_evidence": "completed_outer5, actor snapshot :5, feature_spec SHA, head_version and exact full file hashes. Later pair publication actually CPU-loads OnlineQProbe, checks head version/outer/replay protocol, finite model/optimizer tensors and feature/replay consistency.",
+      "source": [
+        {
+          "line": 242,
+          "path": "search_g1/qprobe_runtime.py"
+        },
+        {
+          "line": 260,
+          "path": "search_g1/qprobe_runtime.py"
+        },
+        {
+          "line": 54,
+          "path": "reproduction/common8/runtime.py"
+        },
+        {
+          "line": 80,
+          "path": "search_g1/qprobe_checkpoint.py"
+        },
+        {
+          "line": 399,
+          "path": "search_g1/qprobe_model.py"
+        }
+      ]
+    },
+    {
+      "event": "Driver publishes complete fifth outer before native-five acceptance",
+      "order": 7,
+      "paths": [
+        "logs/actual-updates.jsonl"
+      ],
+      "required_actual_evidence": "Ordered complete records1..5, current run, four-rank collective result, attempt IDs/index, actual before/after writes,20 processed opportunities and skip=20-successes. The row5 alone does not claim native-five accepted; acceptance and pair publication occur later.",
+      "source": [
+        {
+          "line": 1167,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 17,
+          "path": "reproduction/common8/update_evidence.py"
+        }
+      ]
+    },
+    {
+      "event": "Existing canonical dev512-after5 evaluation, plus explicit historical official baseline",
+      "order": 8,
+      "paths": [
+        "logs/formal-inline-development-before.json",
+        "logs/formal-inline-development-after.json",
+        "logs/latest-validation-identity.json",
+        "logs/validation-identities.jsonl"
+      ],
+      "required_actual_evidence": "Real current-run step5 generated rows for canonical512, nq256+hotpotqa256, ordered IDs/EM/F1/actions/validation SHA. Before0 is the authenticated historical official-model scalar baseline under reuse_historical: no current-run before0 generation or historical per-question rows are fabricated; comparison paired_same_run=false and accuracy_health_gate=false. No new accuracy/no-drop condition.",
+      "source": [
+        {
+          "line": 1182,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 122,
+          "path": "reproduction/common8/formal_inline_evaluation.py"
+        },
+        {
+          "line": 103,
+          "path": "reproduction/common8/formal_inline_evaluation.py"
+        },
+        {
+          "line": 138,
+          "path": "reproduction/common8/formal_inline_evaluation.py"
+        }
+      ]
+    },
+    {
+      "event": "Automatic native first-five structural acceptance",
+      "order": 9,
+      "paths": [
+        "logs/five-updates-acceptance.json",
+        "logs/search-g1-common8-training.log :: SEARCH_G1_FIVE_UPDATES_ACCEPTED=34fffb9fe8ad4d75b54b9c9747c256fb"
+      ],
+      "required_actual_evidence": "accepted=true only after actual1..5 records, checkpoint SHA/finite/parameter delta, worker budget and scheduler/consumed-LR journal, fixed32-trajectory monitor safety audit, stage64 and dev512 pair, and current actual GPU sample windows all verify.100 processed opportunities per rank over five complete outers; actual successful/skip/retained partial writes reported separately. Monitoring is fixed32 trajectories,200 unique global monitor records, not full2560. GPU samples are sampled node occupancy with observed gaps, not instantaneous/exclusive-model peaks.",
+      "source": [
+        {
+          "line": 1179,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 332,
+          "path": "reproduction/common8/runtime.py"
+        },
+        {
+          "line": 452,
+          "path": "reproduction/common8/formal_inline_safety.py"
+        },
+        {
+          "line": 204,
+          "path": "reproduction/common8/gpu_training_admission.py"
+        }
+      ]
+    },
+    {
+      "event": "Completed actor/question-head pair and post-evaluation RNG boundary",
+      "order": 10,
+      "paths": [
+        "artifacts/question-probe/completed-pairs/global_step_5/source-receipt.json",
+        "artifacts/question-probe/completed-pairs/global_step_5/boundary-driver.pt",
+        "artifacts/question-probe/completed-pairs/global_step_5/boundary-worker-rng/rank-{0,1,2,3}.pt",
+        "artifacts/question-probe/completed-pairs/global_step_5/reward-probe-manifest.json"
+      ],
+      "required_actual_evidence": "QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS; full checkpoint and boundary SHA inventory; world4 rank actual-writes/attempt-history/rejection counters agree with driver; saved scheduler last_epoch5/_step_count6 and optimizer current next-LR match expected_lr(5); saved question head matches live head :5. Boundary RNG captured after dev512. Reward evaluator remains initial0 round0 at5; no binary head10 or extra probe refit. Explicit actual_cuda_restore_accepted=false.",
+      "source": [
+        {
+          "line": 1194,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 131,
+          "path": "search_g1/qprobe_checkpoint.py"
+        },
+        {
+          "line": 56,
+          "path": "search_g1/qprobe_checkpoint.py"
+        },
+        {
+          "line": 192,
+          "path": "search_g1/qprobe_checkpoint.py"
+        }
+      ]
+    },
+    {
+      "event": "Same trainer process enters and completes outer6",
+      "order": 11,
+      "paths": [
+        "logs/actual-updates.jsonl :: step6",
+        "logs/scheduler-rank-{0,1,2,3}.jsonl :: logical_update6",
+        "logs/optimizer-rank-{0,1,2,3}.jsonl :: update6",
+        "logs/process-ledger.json",
+        "logs/training-launch-claim.json"
+      ],
+      "required_actual_evidence": "After native acceptance and completed-pair publication, the same loop increments global_steps to6; no trainer return/relaunch at5. Actual continuation proof requires current same pipeline/trainer and four rank PID/start-tick births, scheduler logical6 BEGIN/COMMIT_PREPARED/COMPLETE, writes_before matching five receipt cumulative counter, and driver complete6. Source order alone is not proof6 has happened.",
+      "source": [
+        {
+          "line": 1185,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 1196,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 1198,
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "line": 286,
+          "path": "reproduction/common8/runtime.py"
+        },
+        {
+          "line": 278,
+          "path": "reproduction/common8/run_pipeline.py"
+        }
+      ]
+    }
+  ],
+  "execution_performed": false,
+  "existing_f7_map_found": false,
+  "latest_algorithm_scope": {
+    "active": "qprobe teacher warmup5120x5, fresh all5120 initial question-head fit,6-class K0..5 head,64 exploration, online successful-outer updates and formal200 actor local4/global16.",
+    "basis": "Latest human qprobe teacher-warmup scope; superseded schemes are not current execution designs.",
+    "reward_evaluator_rounds": [
+      0,
+      50,
+      100,
+      150
+    ],
+    "source": [
+      {
+        "line": 14,
+        "path": "reproduction/common8/formal_contract.py"
+      },
+      {
+        "line": 1190,
+        "path": "verl/trainer/ppo/ray_trainer.py"
+      }
+    ],
+    "superseded": [
+      "old goal100 binary algorithm",
+      "actor-head10 refresh design"
+    ]
+  },
+  "mapped_at_utc": "2026-10-14T13:37:39.464744+00:00",
+  "mapped_unix": 1791985059.464736,
+  "native_five_actual_accepted": null,
+  "new_acceptance_or_evaluation_added": false,
+  "old_nonmatching_maps_not_reused": [
+    "preparation/actor-probes-ten-6a262-firstfive-evidence-map.json",
+    "preparation/actor-probes-ten-A9-existing-firstfive-evidence-map.json"
+  ],
+  "read_scope": {
+    "actor_checkpoint_gpu_reload": "No fresh AutoModel/from_pretrained CUDA/FSDP restart is executed at the native-five boundary. Stage64/dev512 use the same live actor. Saved paired-state receipt explicitly keeps actual_cuda_restore_accepted=false.",
+    "actual_tensor_checks": "Existing native producers stream actual checkpoint tensors with safetensors and CPU torch.load Adam/driver/question-head states; live optimizer finite proof is collective. These are tensor checks performed by the existing run, not just metadata filename checks.",
+    "metadata_only": "A scalar observer may read identity/complete flags/recorded counters/head version/hash inventories. Reading JSON flags does not itself re-run tensor finite checks, score new answers, fully read tensors, prove actual GPU reload or guarantee later200 completion.",
+    "old_C4_helper": "An older C4 helper or its historical verification is not an actual f7 run result and cannot replace current-run five-updates-acceptance or completed-pair identities."
+  },
+  "role": "qprobe_micro4_nativefive_existing_evidence_source_map",
+  "run_scope": {
+    "accumulation": 8,
+    "actor_global_micro": 16,
+    "actor_local_micro": 4,
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-d85691245df24b628b309d50b7e5472a",
+    "execution_id": "6bf23d2d28c94ab095629b795d26dc30",
+    "global_mini": 128,
+    "profile": "common8",
+    "run_id": "34fffb9fe8ad4d75b54b9c9747c256fb",
+    "target_complete_outers": 200,
+    "world_size": 4
+  },
+  "runtime_path": "/Users/shaoshitong/Documents/Search-G1/qprobe-a800-micro4",
+  "same_process6_actual_verified": null,
+  "scheduler_detail": {
+    "required": "All four same worker births; ordered BEGIN/COMMIT_PREPARED/COMPLETE1..5 and actual per-op write links; complete outer5 last_epoch4\u21925, _step_count5\u21926 due to LambdaLR constructor step, one advance only. Consumed write LR equals consumed_lr(5); next optimizer LR equals expected_lr(5). These are required real stored state/journal values, not a present audit readback claim.",
+    "source": [
+      {
+        "line": 166,
+        "path": "reproduction/common8/runtime.py"
+      },
+      {
+        "line": 294,
+        "path": "reproduction/common8/runtime.py"
+      },
+      {
+        "line": 313,
+        "path": "reproduction/common8/scheduler.py"
+      }
+    ]
+  },
+  "scope": "Pure local source-path tracing of already authorized automatic f7 behavior, not another review, test, verifier, model load, remote observation or newly designed acceptance/evaluation. Paths are relative to the current remote run base; source refs are relative to f7 runtime repo. Current existence/content/success of native-five artifacts was not queried.",
+  "source_commit": "f7d9f1488d3c1373098b9401463812b24fe94b63"
+}
