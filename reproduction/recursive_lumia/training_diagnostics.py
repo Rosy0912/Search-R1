@@ -41,6 +41,7 @@ def question(path, config, outer):
 
 def log_prefix_costs(path, end_outer):
     costs = Counter()
+    metrics = {}
     digest = hashlib.sha256()
     actions = 0
     found = False
@@ -56,13 +57,32 @@ def log_prefix_costs(path, end_outer):
                     assert isinstance(value, (float, int)) and math.isfinite(value) and value >= 0
                     costs[key] += value
             match = re.search(r'(?:^|\s)step:(\d+) - ', line)
-            if match and int(match.group(1)) == end_outer:
+            if match:
+                outer = int(match.group(1))
                 actual = re.search(r'training/actual_outer_updates:([0-9.eE+-]+)', line)
-                if actual and float(actual.group(1)) == end_outer:
-                    found = True
-                    break
+                if actual and float(actual.group(1)) == outer:
+                    values = {k: float(v) for k, v in re.findall(
+                        r'([A-Za-z0-9_/.-]+):([-+0-9.eE]+|nan|inf)', line)}
+                    assert outer not in metrics, 'Duplicate completed-round metrics'
+                    counts = {key: values['tree_variance/' + field] for key, field in
+                              [('questions', 'question_count'), ('mixed_groups', 'mixed_question_count'),
+                               ('all_correct_groups', 'exact_reward_one_question_count'),
+                               ('all_wrong_groups', 'exact_reward_zero_question_count')]}
+                    assert all(math.isfinite(x) and x == int(x) and x >= 0 for x in counts.values())
+                    counts = {key: int(value) for key, value in counts.items()}
+                    assert counts['questions'] == 512
+                    assert counts['mixed_groups'] + counts['all_correct_groups'] + counts['all_wrong_groups'] == 512
+                    fraction = counts['mixed_groups'] / 512
+                    assert abs(fraction - values['tree_variance/mixed_reward_question_fraction']) < 1e-12
+                    assert math.isfinite(values['actor/pg_loss'])
+                    metrics[outer] = dict(outer=outer, **counts, mixed_group_fraction=fraction,
+                                          pg_loss=values['actor/pg_loss'])
+                    if outer == end_outer:
+                        found = True
+                        break
     assert found and actions, 'Requested completed-round log boundary missing'
-    return dict(log=str(path), prefix_sha256=digest.hexdigest(), actions=actions,
+    assert set(metrics) == set(range(1, end_outer + 1))
+    return dict(log=str(path), prefix_sha256=digest.hexdigest(), actions=actions, round_metrics=metrics,
                 costs=dict(costs), scope='All recorded action deltas from process start through '
                 'the requested completed-round metrics line, including screening, evaluation, '
                 'padded rows and discarded emissions in that prefix. No shared-prefix token double counting. '
@@ -112,15 +132,29 @@ def collect_arm(base, arm, job, end_outer):
             max_candidate_generation_counts=dict(sorted(Counter(r['max_candidate_generation'] for r in rows).items())),
             batch=str(batch), attempt_sha256=completed[outer],
             ordered_event_manifest_sha256=hashlib.sha256(json.dumps(evidence, sort_keys=True).encode()).hexdigest())
-    assert set(rounds) == set(completed)
-    summary = {key: sum(r[key] for r in rounds.values()) for key in
-               ('questions', 'mixed_groups', 'root_correct', 'final_correct', 'final_leaves',
-                'continuation_attempts', 'accepted_branches', 'fills')}
+    ledger = log_prefix_costs(base / 'logs' / f'{arm}-gpu-r1-{job}.log', end_outer)
+    metrics = ledger.pop('round_metrics')
+    # Full tree events are intentionally retained only at configured milestones.
+    # Cross-check those exact raw records against the all-round training metrics.
+    assert set(rounds) == set(range(5, min(end_outer, 5) + 1)) | {
+        i for i in (50, 100, 150, 200) if i <= end_outer}
+    for outer, raw in rounds.items():
+        logged = metrics[outer]
+        assert logged['mixed_groups'] == raw['mixed_groups']
+        assert logged['all_wrong_groups'] == raw['reward_composition'].get(0, 0)
+        assert logged['all_correct_groups'] == raw['reward_composition'].get(5, 0)
+    for outer, row in metrics.items():
+        row['attempt_sha256'] = completed[outer]
+    summary = {key: sum(r[key] for r in metrics.values()) for key in
+               ('questions', 'mixed_groups', 'all_correct_groups', 'all_wrong_groups')}
     summary['mixed_group_fraction'] = summary['mixed_groups'] / summary['questions']
     return dict(arm=arm, run_id=config['run_id'], source_commit=config['source_commit'],
                 config_sha256=config['config_sha256'], summary=summary,
-                rounds=[rounds[i] for i in sorted(rounds)],
-                recorded_costs=log_prefix_costs(base / 'logs' / f'{arm}-gpu-r1-{job}.log', end_outer))
+                rounds=[metrics[i] for i in sorted(metrics)],
+                raw_event_verified_rounds=[rounds[i] for i in sorted(rounds)],
+                evidence_scope='All-round counts come from completed training metrics. Only listed '
+                'milestones additionally have all 512 raw question event streams cross-checked.',
+                recorded_costs=ledger)
 
 
 def main():
