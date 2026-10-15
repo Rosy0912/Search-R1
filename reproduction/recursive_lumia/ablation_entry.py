@@ -16,7 +16,7 @@ import uuid
 from release.recursive_bran_a.ablation150_v1.contracts import read_receipt, sha
 from .prepare_ablation import BASELINE_CONFIG_SHA, BASELINE_RUN_ID, condition_for
 
-HOSTS = {'node6':'gpu-4090-3', 'node9':'gpu-ada6000-2', 'node10':'gpu-l40s-1', 'node11':'gpu-l40s-2'}
+HOSTS = {'node2':'gpu-3090-1', 'node8':'gpu-ada6000-1', 'node6':'gpu-4090-3', 'node9':'gpu-ada6000-2', 'node10':'gpu-l40s-1', 'node11':'gpu-l40s-2'}
 TERMINAL = {'COMPLETED','FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL',
             'PREEMPTED','BOOT_FAIL','DEADLINE','REVOKED'}
 

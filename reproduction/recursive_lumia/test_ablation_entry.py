@@ -22,6 +22,13 @@ class LumiaEntry(unittest.TestCase):
         validate_allocation(dict(r,host='gpu-4090-3'),dict(e,SLURM_JOB_NODELIST='node6'),
                             1066,'gpu-4090-3')
 
+    def test_new_idle_nodes_match_scheduler_host_identity(self):
+        r,e=self.fixture()
+        for node,host in [('node2','gpu-3090-1'),('node8','gpu-ada6000-1')]:
+            validate_allocation(dict(r,host=host),dict(e,SLURM_JOB_NODELIST=node),1066,host)
+            with self.assertRaises(ValueError):
+                validate_allocation(dict(r,host=host),dict(e,SLURM_JOB_NODELIST='node9'),1066,host)
+
     def test_rejects_wrong_owner_backend_or_devices(self):
         r,e=self.fixture()
         for field,value in [('SLURM_JOB_NODELIST','h100-11'),('CUDA_VISIBLE_DEVICES','0,0,1,2,3,4,5,6'),
