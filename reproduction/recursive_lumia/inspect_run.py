@@ -180,9 +180,20 @@ def inspect(run, log_path, hash_native=False):
         raise ValueError('Completed rounds do not form this fresh run’s continuous prefix')
     boundary = checkpoint(run,identity,hash_native)
     sixth = []
+    malformed_timing_lines = 0
     for line in log_text.splitlines(keepends=True):
         if not line.endswith('\n') or 'TREE_TIMING=' not in line: continue
-        event = json.JSONDecoder().raw_decode(line.split('TREE_TIMING=',1)[1])[0]
+        # Ray output from multiple processes can interleave inside a JSON event.
+        # Such a console fragment is not evidence; preserve the count and require
+        # a separate complete event instead of repairing or trusting the fragment.
+        try:
+            event = json.JSONDecoder().raw_decode(line.split('TREE_TIMING=',1)[1])[0]
+        except json.JSONDecodeError:
+            malformed_timing_lines += 1
+            continue
+        if not isinstance(event, dict):
+            malformed_timing_lines += 1
+            continue
         if (event.get('run_id') == config['run_id'] and event.get('outer') == 6
                 and event.get('event') in ('generation_rpc_complete','trajectory_complete')):
             sixth.append(event)
@@ -193,6 +204,7 @@ def inspect(run, log_path, hash_native=False):
     return dict(at=time.time(), run=str(run), output=str(output), identity=identity, completed_rounds=len(attempts),
         zero_write_rounds=sum(r['actual_adam_writes_per_rank'] == 0 for r in attempts),attempts=attempts,
         native5=boundary,sixth_real_generation_observed=bool(sixth),sixth_first_evidence=sixth[0] if sixth else None,
+        malformed_timing_lines_ignored=malformed_timing_lines,
         first5_each_has_real_adam_writes=five_writes,first5_observed_loss_all_finite=finite,
         initial_acceptance_verified=bool(five_writes and finite and boundary['same_world_reload_verified']
             and boundary['all_native_files_hash_verified'] and sixth),

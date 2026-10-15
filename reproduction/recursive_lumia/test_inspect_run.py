@@ -27,6 +27,21 @@ class RuntimeEvidenceTest(unittest.TestCase):
         path=self.run/'audit.jsonl';path.write_text('{"complete":true}\n{"incomplete":')
         self.assertEqual(read_jsonl(path),[{'complete':True}])
 
+    def test_interleaved_console_fragment_never_counts_as_sixth_round_evidence(self):
+        corrupt = 'TREE_TIMING={"run_id":"run","outer":6,"event":"trajectory_\x1b[32mcomplete"}\n'
+        self.log.write_text(corrupt + 'TREE_TIMING=[]\n')
+        result = inspect(self.run,self.log)
+        self.assertFalse(result['sixth_real_generation_observed'])
+        self.assertFalse(result['initial_acceptance_verified'])
+        self.assertEqual(result['malformed_timing_lines_ignored'],2)
+        valid = dict(run_id='run',outer=6,event='trajectory_complete')
+        self.log.write_text(corrupt + 'TREE_TIMING='+json.dumps(valid)+'\n')
+        result = inspect(self.run,self.log)
+        self.assertTrue(result['sixth_real_generation_observed'])
+        self.assertEqual(result['sixth_first_evidence'],valid)
+        self.assertEqual(result['malformed_timing_lines_ignored'],1)
+        self.assertFalse(result['initial_acceptance_verified'])
+
     def ablation_entry(self):
         path=self.run/'receipts/configuration.json';config=json.loads(path.read_text())
         config.update(protocol='recursive_mechanism_ablation150_v1',group='C1-root-only')
