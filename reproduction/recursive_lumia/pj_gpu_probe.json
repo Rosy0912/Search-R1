@@ -1,0 +1,20 @@
+{
+  "job_name": "rt15-pj-hardware-20261015-v1",
+  "cluster": "cluster-p",
+  "queue": "queue-p-reserved-llmarchitecture",
+  "include": "ecp-pcluster-47a0",
+  "machine_type": "n2ls.ie.i60b",
+  "num_nodes": 1,
+  "gpus_per_task": 8,
+  "cpus_per_task": 16,
+  "memory_per_task": 128,
+  "shm_size_gib": 32,
+  "rdma_name": "ib-cluster-01",
+  "priority": 1,
+  "retry": 0,
+  "no_env": true,
+  "enable_privileged": false,
+  "runtime_python": "/plm-shared/zhangjunming/Workspace/Search-Self-Evolution-20261006-PJ-runtime-v1/native-env/bin/python",
+  "execution_timeout_seconds": 600,
+  "purpose": "Inspect newly available eight-GPU capacity; verify BF16 forward/backward and NCCL. No model training, rollout, evaluation, or ablation."
+}
