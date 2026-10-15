@@ -73,34 +73,46 @@ def verify_rank(record, run, identity, outer, output=None):
 
 
 
-def checkpoint(run, identity, hash_native):
-    root = run/'checkpoints/training_state/global_step_5'
-    result = dict(pre_evaluation_saved=False, post_evaluation_saved=False,
+def checkpoint(run, identity, hash_native, outer=5):
+    if outer not in (5,50,100,150,200):
+        raise ValueError('Checkpoint audit requires a scheduled milestone')
+    root = run/'checkpoints/training_state'/f'global_step_{outer}'
+    result = dict(completed_step=outer, pre_evaluation_saved=False, post_evaluation_saved=False,
                   same_world_reload_verified=False, all_native_files_hash_verified=False)
     for label,path in [('pre',root/'manifest.json'),('post',root/'post-evaluation/manifest.json')]:
         if not path.is_file(): continue
         manifest = json.loads(path.read_text())
         expected = {key:value for key,value in identity.items() if key != 'run_id'}
-        expected['completed_step'] = 5
+        expected['completed_step'] = outer
         if (manifest['status'] != 'COMPLETE_SAME_WORLD_STATE_SAVED'
                 or any(manifest['identity'][key] != value for key,value in expected.items())
                 or len(manifest['worker_states']) != 8
                 or {r['identity']['rank'] for r in manifest['worker_states']} != set(range(8))):
-            raise ValueError('Native5 boundary source or rank coverage differs')
+            raise ValueError('Native boundary source or rank coverage differs')
+        if manifest['driver']['next_step'] != outer+1:
+            raise ValueError('Native driver next-step counter differs')
+        for worker in manifest['worker_states']:
+            if (any(worker['identity'][key] != value for key,value in expected.items())
+                    or worker['identity']['world_size'] != 8
+                    or worker['scheduler_last_epoch'] != outer):
+                raise ValueError('Native worker identity or scheduler boundary differs')
         if label == 'post' and manifest.get('boundary_phase') != 'post-evaluation':
             raise ValueError('Post-evaluation RNG boundary absent')
         for record in manifest['worker_states']+[manifest['driver']]:
             member = Path(record['path'])
             if member.parent != path.parent or member.is_symlink() or not member.is_file():
-                raise ValueError('Native5 file missing or outside the checkpoint')
+                raise ValueError('Native file missing or outside the checkpoint')
             if 'bytes' in record and member.stat().st_size != record['bytes']:
-                raise ValueError('Native5 file size changed')
+                raise ValueError('Native file size changed')
             if hash_native and sha(member) != record['sha256']:
-                raise ValueError('Native5 actual file SHA differs')
+                raise ValueError('Native actual file SHA differs')
         if any(r['full_worker_state_finite'] is not True for r in manifest['worker_states']):
-            raise ValueError('Native5 finite-state evidence absent')
+            raise ValueError('Native finite-state evidence absent')
         result[('pre' if label == 'pre' else 'post')+'_evaluation_saved'] = True
         result[label+'_manifest_sha256'] = sha(path)
+        result[label+'_file_count'] = len(manifest['worker_states'])+1
+        result[label+'_file_bytes'] = sum(Path(r['path']).stat().st_size
+            for r in manifest['worker_states']+[manifest['driver']])
         if label == 'pre':
             result['same_world_reload_verified'] = (manifest['driver']['exact_reload_verified'] is True
                 and all(r['exact_same_world_reload_verified'] is True for r in manifest['worker_states']))
