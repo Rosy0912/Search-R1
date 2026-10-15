@@ -16,6 +16,7 @@ FSDP PPO Trainer with Ray-based single controller.
 This trainer supports model-agonistic model initialization with huggingface
 """
 
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 import uuid
 import time
@@ -832,7 +833,7 @@ class RayPPOTrainer(object):
 
     def _save_complete_training_state(self, boundary_phase=None):
         from search_r1.baselines.training_state import atomic_save, driver_snapshot, restore_driver, digest
-        identity = dict(job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+        identity = dict(job_id=execution_job_id(), code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                         data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                         model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'], completed_step=self.global_steps,
@@ -934,7 +935,7 @@ class RayPPOTrainer(object):
                 config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                 data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                 model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                job_id=execution_job_id(), run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
             atomic_save(self.fresh_initialization_provenance,
                 os.path.join(os.environ['SEARCH_R1_BASELINE_OUTPUT'], 'fresh-initialization.json'), json_format=True)
             if current_chain_resume:

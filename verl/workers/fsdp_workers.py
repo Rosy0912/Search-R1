@@ -16,6 +16,7 @@ The main entry point to run the PPO algorithm
 """
 
 import logging
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 import warnings
 
@@ -77,7 +78,7 @@ def inspect_fresh_worker_state(worker, expected_model_path):
                       config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                       data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                       model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                      job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                      job_id=execution_job_id(), run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
     except Exception as exc:
         error = repr(exc)
     sync_prepare(error, device)
@@ -238,7 +239,7 @@ def fresh200_scheduler_after_actor(worker, data, metrics, scheduler_before_outer
                   config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
                   data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'),
                   model_identity=os.environ.get('SEARCH_R1_MODEL_IDENTITY'),
-                  job_id=os.environ.get('SLURM_JOB_ID'), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
+                  job_id=execution_job_id(required=False), run_id=os.environ.get('SEARCH_R1_BASELINE_RUN_ID'),
                   scope='Direct rank optimizer/scheduler accounting, no probability or quality acceptance')
     io_error = None
     try:

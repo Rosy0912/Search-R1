@@ -24,6 +24,11 @@ def check_local_runtime(config, ray_nodes=None):
             raise ValueError('Direct HKUST runtime identity changed')
         from .preflight import validate_inherited_gpu_leases
         validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
+    elif os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'pj_pt':
+        from .execution_identity import job_id
+        job_id()
+        if os.getuid() != 0 or os.environ.get('SEARCH_R1_PJ_NODE') != expected:
+            raise ValueError('PJ actual node differs from its explicit PT entry')
     elif os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia':
         aliases = {'node2':'gpu-3090-1', 'node8':'gpu-ada6000-1', 'node6': 'gpu-4090-3', 'node9': 'gpu-ada6000-2', 'node10': 'gpu-l40s-1', 'node11': 'gpu-l40s-2'}
         if (os.getuid() != 1066 or not os.environ.get('SLURM_JOB_ID')

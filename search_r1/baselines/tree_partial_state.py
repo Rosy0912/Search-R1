@@ -1,4 +1,5 @@
 """Retain a stopped outer as evidence, without credit, rollback, or auto-resume."""
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 import time
 from pathlib import Path
@@ -14,7 +15,7 @@ def partial_context(trainer):
     outer, completed = trainer.global_steps, trainer.actual_outer_updates
     if type(outer) is not int or type(completed) is not int or outer != completed + 1:
         raise ValueError('Partial context requires the real attempted/completed outer boundary')
-    identity = dict(job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
+    identity = dict(job_id=execution_job_id(), run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
                     code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                     config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                     data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],

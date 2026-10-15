@@ -1,6 +1,7 @@
 """Exclusive, lossless recovery rollout evidence, published before optimization."""
 import gzip
 import json
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 from pathlib import Path
 
@@ -27,7 +28,7 @@ def save_rollouts(batch, tokenizer, step, directory):
     from .tree_guard_continue import evidence_suffix
     directory=Path(directory)/f'outer-{step:06d}{evidence_suffix(batch.meta_info)}'
     directory.mkdir(parents=True,exist_ok=False)
-    identity=dict(outer_step=int(step),job_id=os.environ.get('SLURM_JOB_ID'),
+    identity=dict(outer_step=int(step),job_id=execution_job_id(required=False),
         source=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
         config=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
         data=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'))

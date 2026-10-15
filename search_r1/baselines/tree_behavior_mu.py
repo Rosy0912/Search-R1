@@ -4,6 +4,7 @@ This module assembles only actual retained emission scalars. Tensor rows and
 their row-local provenance must move together through DataProto permutations.
 """
 import copy
+from .execution_identity import provenance_keys
 import math
 import struct
 from types import SimpleNamespace
@@ -45,12 +46,14 @@ def validate_options(options):
 
 
 def runtime_provenance(environ):
-    value = {key: environ.get(key) for key in PROVENANCE_KEYS}
+    value = {key: environ.get(key) for key in provenance_keys(environ, PROVENANCE_KEYS)}
     return validate_provenance(value)
 
 
 def validate_provenance(value):
-    require(isinstance(value, dict) and set(value) == set(PROVENANCE_KEYS) and
+    pj_keys = (set(PROVENANCE_KEYS)-{'SLURM_JOB_ID'}) | {'SEARCH_R1_EXECUTION_BACKEND','SEARCH_R1_JOB_ID'}
+    require(isinstance(value, dict) and (set(value) == set(PROVENANCE_KEYS) or
+            (set(value) == pj_keys and value.get('SEARCH_R1_EXECUTION_BACKEND') == 'pj_pt')) and
             all(isinstance(x, str) and x for x in value.values()),
             'Original six source/config/data/model/run/job values required')
     return copy.deepcopy(value)

@@ -2,6 +2,7 @@
 import hashlib
 import json
 import math
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 import time
 from pathlib import Path
@@ -147,7 +148,7 @@ class TreeRankAudit:
         root.mkdir(parents=True, exist_ok=True)
         target = root / f'step-{self.step:06d}{self.attempt_suffix}-rank-{self.rank:02d}.json'
         record = dict(kind='tree_actor_rank', outer_step=self.step, attempt_id=self.attempt_id, rank=self.rank,
-            world_size=self.world, pid=os.getpid(), job_id=os.environ.get('SLURM_JOB_ID'),
+            world_size=self.world, pid=os.getpid(), job_id=execution_job_id(required=False),
             code_commit=os.environ.get('SEARCH_R1_BASELINE_COMMIT'),
             config_sha256=os.environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256'),
             data_identity=os.environ.get('SEARCH_R1_BASELINE_DATA_IDENTITY'),

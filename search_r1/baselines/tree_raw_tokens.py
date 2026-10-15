@@ -594,8 +594,10 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
     """Called before facade padding, retaining real request IDs and scalar values."""
     settings=capture_native_sampling_settings(sampling_params)
     require(type(native_stopping) is dict,'Actual native effective EOS/stop capture required')
-    provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
-        'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
+    from .execution_identity import provenance_keys
+    keys = ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
+        'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')
+    provenance={key:os.environ.get(key) for key in provenance_keys(os.environ,keys)}
     require(all(isinstance(value,str) and value for value in provenance.values()),
             'Own source/config/data/model/run/job provenance is required for opt-in emission capture')
     rows=[];seen=set()

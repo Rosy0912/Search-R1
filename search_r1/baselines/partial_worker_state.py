@@ -2,6 +2,7 @@
 import copy
 import json
 import os
+from .execution_identity import job_id as execution_job_id
 from pathlib import Path
 import time
 
@@ -42,7 +43,7 @@ def _validated_context(worker,data):
             or identity['attempt_id'] < identity['attempted_outer']
             or data.meta_info.get('baseline_attempt_id') != identity['attempt_id']):
         raise ValueError('Partial attempt identity invalid')
-    if any(identity[key]!=os.environ[env] for key,env in ENV_KEYS.items()):
+    if any(identity[key]!=(execution_job_id() if key=='job_id' else os.environ[env]) for key,env in ENV_KEYS.items()):
         raise ValueError('Partial source/run identity differs from actual worker environment')
     directory=Path(context['directory'])
     own_run=Path(os.environ['SEARCH_R1_BASELINE_OUTPUT']).resolve().parent

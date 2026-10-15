@@ -1,6 +1,7 @@
 """Native-only rolling state plus small, immediately flushed completion evidence."""
 import json
 import math
+from search_r1.baselines.execution_identity import job_id as execution_job_id
 import os
 from pathlib import Path
 import shutil
@@ -21,7 +22,7 @@ def save_rolling(trainer, step):
     from search_r1.baselines.training_state import atomic_save, digest, driver_snapshot
     from search_r1.baselines.tree_guard_continue import accounting
     cfg = trainer.config
-    identity = dict(job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+    identity = dict(job_id=execution_job_id(), code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
         data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
         model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'], completed_step=step,

@@ -151,8 +151,10 @@ def validate_assets_and_retriever(config):
     # The task-owned Lumia CPU service serializes full-index batches. A
     # concurrent run's preflight may wait behind a legitimate batch; retain
     # every response/content check while allowing that bounded queue delay.
-    read_timeout = 600 if (os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia'
-                          and os.environ.get('RECURSIVE_A_LUMIA_FRESH_PROFILE') == '1') else 30
+    read_timeout = 600 if ((os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_lumia'
+                          and os.environ.get('RECURSIVE_A_LUMIA_FRESH_PROFILE') == '1') or
+                          (os.environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'pj_pt'
+                          and os.environ.get('RECURSIVE_A_PJ_FRESH_PROFILE') == '1')) else 30
     response = requests.post(config.retriever.url,
                              json={'queries': ['What is the capital of France?'], 'topk': count,
                                    'return_scores': True}, timeout=(5, read_timeout))

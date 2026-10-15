@@ -20,7 +20,12 @@ def execution_profile_bound(environ=None):
         and bool(environ.get('SLURM_JOB_ID'))
         and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
         and len(environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256', '')) == 64)
-    return lumia or bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
+    pj = (environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'pj_pt'
+        and environ.get('RECURSIVE_A_PJ_FRESH_PROFILE') == '1'
+        and bool(environ.get('SEARCH_R1_JOB_ID')) and not environ.get('SLURM_JOB_ID')
+        and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
+        and len(environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256','')) == 64)
+    return pj or lumia or bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
         environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_h100'
         and environ.get('RECURSIVE_A_H100_FRESH_PROFILE') == '1'
         and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
