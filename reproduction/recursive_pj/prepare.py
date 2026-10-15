@@ -21,7 +21,7 @@ def derive(template,group,base,host,data,model):
     candidate['baselines']['holdout'].update(manifest_path=str(Path(data)/'manifest.json'),data_root=str(data))
     candidate['baselines']['bapo']['stage_validation_files']=str(Path(data)/'stage.parquet')
     candidate['actor_rollout_ref']['model']['path']=str(model)
-    candidate['actor_rollout_ref']['rollout']['model_path']=str(model)
+    candidate['actor_rollout_ref']['ref']['model_path']=str(model)
     candidate['critic']['model']['tokenizer_path']=str(model)
     candidate['reward_model']['model']['input_tokenizer']=str(model)
     candidate['trainer']['experiment_name']='recursive-pj-ablation-'+group
