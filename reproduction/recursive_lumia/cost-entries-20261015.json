@@ -93,5 +93,15 @@
     "label": "C2-after-native-C1",
     "job": "138679",
     "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-after-native-C1-138679.log"
+  },
+  {
+    "label": "C1-resume11-L40S",
+    "job": "138690",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C1-resume11-L40S-138690.log"
+  },
+  {
+    "label": "C2-after-resume11",
+    "job": "138691",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-after-resume11-138691.log"
   }
 ]
