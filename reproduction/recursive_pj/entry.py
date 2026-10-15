@@ -30,8 +30,16 @@ def train(receipt_path):
         env.pop('RECURSIVE_A_LUMIA_FRESH_PROFILE')
         env.update(SEARCH_R1_EXECUTION_BACKEND='pj_pt',SEARCH_R1_JOB_ID=job,
                    SEARCH_R1_PJ_NODE=record['host'],RECURSIVE_A_PJ_FRESH_PROFILE='1')
+        if record.get('resume_manifest'):
+            if record.get('fresh_authorized') is not False: raise ValueError('Resume cannot authorize fresh reset')
+            env.update(RECURSIVE_ABLATION_RESUME_MANIFEST=record['resume_manifest'],
+                RECURSIVE_ABLATION_RESUME_SHA256=record['resume_sha256'],
+                RECURSIVE_ABLATION_PJ_BINDING=str(receipt_path))
         os.environ.update(env)
         from release.recursive_bran_a.ablation150_v1.bootstrap import install,worker_setup
+        if record.get('resume_manifest'):
+            from .resume_transport import install as transport_install,worker_setup
+            transport_install()
         install()
         config=OmegaConf.load(record['config'])
         from search_r1.baselines.preflight import validate_gpu_lease
@@ -40,6 +48,7 @@ def train(receipt_path):
           host=record['host'],scheduler_node=record['scheduler_node'],allocation=job,run_id=record['run_id'],
           group=record['group'],output=str(output),config_sha256=record['config_sha256'],
           source_commit=record['source_commit'],entry_source_commit=record['source_commit'],execution_backend='pj_pt',
+          resume_manifest=record.get('resume_manifest'),parent_job=record.get('parent_job'),parent_source_commit=record.get('parent_source_commit'),
           gpu_hardware=subprocess.check_output(['nvidia-smi','--query-gpu=index,name,uuid,memory.total,driver_version','--format=csv,noheader,nounits'],text=True).splitlines())
         replace_json(base/'receipts/current-entry.json',entry)
         print('PJ_ABLATION_ENTRY='+json.dumps(entry),flush=True)
@@ -76,7 +85,12 @@ def launch(group):
         rows=subprocess.check_output(['nvidia-smi','--query-gpu=index','--format=csv,noheader'],text=True).splitlines()
         assert len(rows)==8
         os.environ['CUDA_VISIBLE_DEVICES']=','.join(x.strip() for x in rows)
-    receipt=prepare(group,os.environ['RECURSIVE_SOURCE_COMMIT'],job,node)
+    if os.environ.get('RECURSIVE_PJ_NATIVE_CONTINUATION')=='1':
+        if group!='budget-5':raise ValueError('Only explicitly bound budget5 continuation is authorized')
+        from .resume_transport import prepare_resume
+        receipt=prepare_resume()
+    else:
+        receipt=prepare(group,os.environ['RECURSIVE_SOURCE_COMMIT'],job,node)
     os.environ['RECURSIVE_ARM']=group
     proxy=subprocess.Popen([sys.executable,'-m','reproduction.recursive_lumia.proxy',str(BASE)])
     try:
