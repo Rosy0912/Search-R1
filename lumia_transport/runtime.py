@@ -21,13 +21,16 @@ def sha(path):
 
 
 def validate(binding, record, env, uid, host):
-    if (binding['version'] != 1 or uid != 1066
+    version = binding['version']
+    parent_valid = (binding['parent_host'] == record['host']
+                    and binding['target_host'] != binding['parent_host']) if version == 1 else (
+        version == 2 and binding.get('configuration_host') == record['host']
+        and binding['parent_host'] in HOSTS.values())
+    if (not parent_valid or uid != 1066
             or not env.get('SLURM_JOB_ID', '').isdigit()
             or binding['target_node'] != env.get('SLURM_JOB_NODELIST')
             or HOSTS.get(binding['target_node']) != host
             or binding['target_host'] != host
-            or binding['parent_host'] != record['host']
-            or binding['target_host'] == binding['parent_host']
             or binding['frozen_source_commit'] != record['source_commit']
             or env.get('RECURSIVE_SOURCE_COMMIT', env.get('SEARCH_R1_BASELINE_COMMIT')) != record['source_commit']
             or any(binding[k] != record[k] for k in ('run_id', 'group', 'config_sha256', 'data_identity'))

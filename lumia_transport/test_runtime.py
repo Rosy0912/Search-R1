@@ -45,6 +45,18 @@ class TransportAdmission(unittest.TestCase):
         self.assertEqual(projected.trainer.n_gpus_per_node, 8)
         with self.assertRaises(ValueError): admit_config(config, 'unbound', 'gpu-l40s-1')
 
+    def test_second_allocation_binds_actual_parent_and_original_config_host(self):
+        args = list(self.values())
+        args[0].update(version=2, configuration_host='gpu-4090-3', parent_host='gpu-l40s-1')
+        self.assertTrue(validate(*args))
+        for field, value in [('configuration_host', 'gpu-l40s-1'),
+                             ('parent_host', 'unknown'), ('version', 3)]:
+            invalid = copy.deepcopy(args)
+            invalid[0][field] = value
+            with self.assertRaises(ValueError): validate(*invalid)
+        args[2]['SLURM_JOB_ID'] = args[0]['parent_job']
+        with self.assertRaises(ValueError): validate(*args)
+
 
 if __name__ == '__main__':
     unittest.main()
