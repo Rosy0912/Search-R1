@@ -103,5 +103,20 @@
     "label": "C2-after-resume11",
     "job": "138691",
     "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/C2-after-resume11-138691.log"
+  },
+  {
+    "label": "parallel-C2-random-final",
+    "job": "138704",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/parallel-C2-random-final-138704.log"
+  },
+  {
+    "label": "parallel-budget-20",
+    "job": "138705",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/parallel-budget-20-138705.log"
+  },
+  {
+    "label": "parallel-budget-5",
+    "job": "138706",
+    "log": "/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1/logs/parallel-budget-5-138706.log"
   }
 ]
