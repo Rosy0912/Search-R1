@@ -10,6 +10,22 @@ class Identity(unittest.TestCase):
         self.assertEqual(provenance_keys(pt,('a','SLURM_JOB_ID')),('a','SEARCH_R1_EXECUTION_BACKEND','SEARCH_R1_JOB_ID'))
         with self.assertRaises(ValueError):job_id(dict(pt,SLURM_JOB_ID='123'))
         with self.assertRaises(ValueError):job_id({'SEARCH_R1_EXECUTION_BACKEND':'pj_pt'})
+    def test_paired_evaluation_records_pt_job(self):
+        import tempfile,json
+        from pathlib import Path
+        from unittest.mock import patch
+        from reproduction.recursive_lumia.paired_evaluation import save_evaluation
+        with tempfile.TemporaryDirectory() as directory:
+            env=dict(SEARCH_R1_EXECUTION_BACKEND='pj_pt',SEARCH_R1_JOB_ID='actual-pt-job',
+              SEARCH_R1_BASELINE_OUTPUT=directory,SEARCH_R1_BASELINE_RUN_ID='run',
+              SEARCH_R1_BASELINE_COMMIT='code',SEARCH_R1_BASELINE_CONFIG_SHA256='config',
+              SEARCH_R1_BASELINE_DATA_IDENTITY='data')
+            with patch.dict('os.environ',env,clear=True):
+                r=save_evaluation([dict(question_id=str(i),em=float(i%2)) for i in range(512)],
+                                  {'val/em/all':.5},5,512)
+            self.assertEqual(r['job'],'actual-pt-job')
+            self.assertEqual(json.loads((Path(directory)/'evaluations/dev512-outer-000005.json').read_text())['em'],.5)
+
     def test_progress_requires_bound_profile(self):
         env=dict(SEARCH_R1_EXECUTION_BACKEND='pj_pt',SEARCH_R1_JOB_ID='pt-name',
           RECURSIVE_A_PJ_FRESH_PROFILE='1',SEARCH_R1_BASELINE_RUN_ID='run',SEARCH_R1_BASELINE_CONFIG_SHA256='a'*64)

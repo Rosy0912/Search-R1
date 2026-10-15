@@ -3,6 +3,7 @@ import hashlib
 import json
 import math
 import os
+from search_r1.baselines.execution_identity import job_id
 from pathlib import Path
 
 
@@ -34,7 +35,7 @@ def save_evaluation(rows, metrics, outer, expected_count):
     record = dict(split=split, completed_outer=int(outer), count=len(rows), em=em,
         rows_sha256=hashlib.sha256(payload.encode()).hexdigest(),
         ordered_ids_sha256=hashlib.sha256(json.dumps(ids, ensure_ascii=False).encode()).hexdigest(),
-        run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'], job=os.environ['SLURM_JOB_ID'],
+        run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'], job=job_id(),
         code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
         config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
         data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
