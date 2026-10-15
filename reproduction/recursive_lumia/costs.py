@@ -56,11 +56,13 @@ def collect(entries):
         state=scheduler['state'];log=entry.get('log')
         # A dependent job has no stdout file until Slurm starts its batch
         # process. This is verified zero work only for an unallocated,
-        # zero-runtime pending job; a missing running/terminal log is an error.
-        unstarted=(state=='PENDING' and scheduler['elapsed_seconds']==0
-            and scheduler['allocated_gpus']==0 and log is not None and not Path(log).exists())
+        # zero-runtime pending or cancelled job. A cancelled job that received
+        # any resources still needs its log; cancellation alone proves nothing.
+        unstarted=((state=='PENDING' or state.split(' by ',1)[0]=='CANCELLED')
+            and scheduler['elapsed_seconds']==0 and not scheduler['allocated_resources']
+            and log is not None and not Path(log).exists())
         tokens=(dict(log=log,recorded_actions=0,failed_actions=0,totals={},
-            scope='Scheduler confirms pending, zero elapsed time and no allocated GPUs; log not created yet.',
+            scope='Scheduler confirms pending or cancelled before allocation, zero elapsed time and no allocated resources; no stdout was created.',
             interrupted_or_inflight_action_may_be_unrecorded=False) if unstarted else action_costs(log))
         row=dict(entry, scheduler=scheduler, tokens=tokens)
         if row['tokens'] is not None:

@@ -37,5 +37,18 @@ class CostEvidenceTest(unittest.TestCase):
                 with patch('subprocess.check_output',return_value=f'3|{state}|10|gres/gpu=8|\n'):
                     with self.assertRaises(FileNotFoundError):collect(entries)
 
+    def test_cancelled_before_allocation_is_zero_but_missing_allocated_log_fails(self):
+        with tempfile.TemporaryDirectory() as directory:
+            entries=[dict(label='cancelled',job='4',log=str(Path(directory)/'never-created.log'))]
+            for state in ('CANCELLED','CANCELLED by 1066'):
+                with patch('subprocess.check_output',return_value=f'4|{state}|0||\n'):
+                    result=collect(entries)
+                self.assertEqual(result['allocated_gpu_hours'],0)
+                self.assertEqual(result['recorded_raw_emitted_tokens'],0)
+                self.assertFalse(result['token_total_is_lower_bound'])
+            for seconds,resources in ((0,'gres/gpu=8'),(0,'cpu=8'),(1,'')):
+                with patch('subprocess.check_output',return_value=f'4|CANCELLED by 1066|{seconds}|{resources}|\n'):
+                    with self.assertRaises(FileNotFoundError):collect(entries)
+
 
 if __name__=='__main__':unittest.main()
