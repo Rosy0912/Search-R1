@@ -1,5 +1,6 @@
 """Bind trained weight bytes to the exact original training tokenizer."""
 import os
+import shutil
 from pathlib import Path
 from .contracts import sha,require
 
@@ -29,7 +30,10 @@ def validate_view(plan,expected_tokenizer_sha):
     for name,digest in expected.items():
         p=view/name;source=(canonical if name in TOKENIZER_FILES else weights)/name
         require(p.is_file() and not p.is_symlink() and sha(p)==digest,'Inference view file differs: '+name)
-        require(os.path.samefile(p,source),'Inference view must hardlink its bound source file: '+name)
+        if name in TOKENIZER_FILES:
+            require(not os.path.samefile(p,source),'Tokenizer must be an independent immutable copy: '+name)
+        else:
+            require(os.path.samefile(p,source),'Inference weights must hardlink their bound source file: '+name)
     return expected
 
 
@@ -44,5 +48,13 @@ def create_view(plan,expected_tokenizer_sha):
     view=Path(plan['inference_model']);view.mkdir(parents=True,exist_ok=False)
     for name in expected:
         source=(canonical if name in TOKENIZER_FILES else weights)/name
-        os.link(source,view/name)
+        if name in TOKENIZER_FILES:
+            # Linking/unlinking a live training tokenizer changes its ctime.
+            # The training SHA guard correctly refuses a concurrent metadata
+            # change; small independent copies avoid modifying that inode.
+            with source.open('rb') as src,(view/name).open('xb') as dst:
+                shutil.copyfileobj(src,dst,8*1024**2)
+                dst.flush();os.fsync(dst.fileno())
+        else:
+            os.link(source,view/name)
     return validate_view(plan,expected_tokenizer_sha)

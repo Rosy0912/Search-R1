@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import tempfile
 import unittest
 from .contracts import sha
@@ -25,7 +26,15 @@ class View(unittest.TestCase):
                 model_files={p.name:sha(p) for p in weights.iterdir()},
                 canonical_tokenizer_files={p.name:sha(p) for p in canonical.iterdir()})
             expected=plan['canonical_tokenizer_files']['tokenizer.json']
+            before={p.name:(p.stat().st_ino,p.stat().st_ctime_ns,p.stat().st_nlink,sha(p))
+                    for p in canonical.iterdir()}
             create_view(plan,expected)
+            after={p.name:(p.stat().st_ino,p.stat().st_ctime_ns,p.stat().st_nlink,sha(p))
+                   for p in canonical.iterdir()}
+            self.assertEqual(before,after)
+            for name in TOKENIZER_FILES:
+                self.assertFalse(os.path.samefile(root/'view'/name,canonical/name))
+            self.assertTrue(os.path.samefile(root/'view/weight.safetensors',weights/'weight.safetensors'))
             self.assertEqual((root/'view/weight.safetensors').read_bytes(),b'learned weights')
             self.assertEqual((weights/'tokenizer.json').read_text(),'serialized export tokenizer.json')
             with self.assertRaises(FileExistsError):create_view(plan,expected)
