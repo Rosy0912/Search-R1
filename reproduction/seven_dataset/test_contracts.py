@@ -8,6 +8,20 @@ from . import contracts as c
 
 
 class Contracts(unittest.TestCase):
+    def test_jsonl_preserves_embedded_unicode_line_separators(self):
+        rows=[{'prediction':'a'+char+'b'} for char in ('\u0085','\u2028','\u2029','\n','\r','\v','\f')]
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'predictions.jsonl'
+            payload=''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in rows)
+            path.write_bytes(payload.encode('utf-8'))
+            self.assertEqual(c.read_prediction_rows(path),rows)
+            path.write_bytes(payload.encode('utf-8')[:-1])
+            with self.assertRaises(ValueError):c.read_prediction_rows(path)
+            path.write_bytes(b'{"prediction":"truncated\n')
+            with self.assertRaises(ValueError):c.read_prediction_rows(path)
+            path.write_bytes(b'\n')
+            with self.assertRaises(ValueError):c.read_prediction_rows(path)
+
     def test_scope_exactly_twenty_one(self):
         accepted=[]
         for g in c.GROUPS:

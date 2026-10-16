@@ -128,6 +128,17 @@ def validate_expected_rows(expected):
     return ids
 
 
+def read_prediction_rows(path):
+    """JSONL is delimited by LF, not Unicode characters inside JSON strings."""
+    rows=[]
+    with Path(path).open('rb') as stream:
+        for line in stream:
+            require(line.endswith(b'\n'),'Unterminated prediction record')
+            require(line.strip(),'Empty prediction record')
+            rows.append(json.loads(line))
+    return rows
+
+
 def accept_rows(rows,expected,checkpoint_identity,em_check):
     validate_expected_rows(expected)
     require(len(rows)==TOTAL,'Incomplete full evaluation')

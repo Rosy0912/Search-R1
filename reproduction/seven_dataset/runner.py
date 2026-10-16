@@ -3,7 +3,7 @@ import json
 import os
 import time
 from pathlib import Path
-from .contracts import TOTAL,DATA_SHA,validate_expected_rows,accept_rows,require,sha
+from .contracts import TOTAL,DATA_SHA,validate_expected_rows,accept_rows,read_prediction_rows,require,sha
 
 
 def worker_setup():
@@ -83,7 +83,7 @@ def run(config,plan,expected):
     try:
         native=trainer._validate()
         require(completed==TOTAL and native['val/qa_count/all']==TOTAL,'Native full evaluation incomplete')
-        rows=[json.loads(line) for line in rows_path.read_text().splitlines()]
+        rows=read_prediction_rows(rows_path)
         report=accept_rows(rows,expected,plan['checkpoint_identity'],em_check)
         require(abs(report['all_question_em']-native['val/em/all'])<1e-12,'Aggregate native EM differs')
         workers=trainer.actor_rollout_wg.seven_frozen_evidence()
