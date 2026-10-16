@@ -2,7 +2,7 @@
 from datetime import timedelta
 import json,os,pathlib,sys,time
 from pathlib import Path
-from .resume_transport import BASE,STAGE,PARENT_JOB,PARENT_SOURCE,CONFIG_SHA,load_inputs,aliases
+from .resume_transport import BASE,STAGE,PARENT_JOB,PARENT_SOURCE,CONFIG_SHA,STEP,load_inputs,aliases
 from reproduction.recursive_lumia.restore_probe import isolate_rank_device
 from release.recursive_bran_a.ablation150_v1.contracts import sha
 
@@ -76,7 +76,7 @@ def run_probe():
         if observed != expected['logical_state_sha256']:
             raise ValueError('Live restored full model/Adam/scheduler/RNG differs from the saved state')
         steps = sorted({int(x['step']) for x in optimizer.state.values()})
-        if steps != [40] or scheduler.last_epoch != 2:
+        if steps != [20*STEP] or scheduler.last_epoch != STEP:
             raise ValueError('Live restored optimizer/scheduler count differs')
         del actual
         local = dict(rank=rank, parent_sha256=expected['sha256'], live_logical_sha256=observed,

@@ -23,8 +23,12 @@ def train(receipt_path):
     assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==8
     with (base/'receipts/entry.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-        assert not (base/'receipts/current-entry.json').exists(),'Existing run requires native recovery; no automatic reset'
-        assert not any((base/'output').iterdir())
+        if record.get('resume_manifest'):
+            from .resume_transport import validate_resume_entry
+            validate_resume_entry(record,base)
+        else:
+            assert not (base/'receipts/current-entry.json').exists(),'Existing run requires native recovery; no automatic reset'
+            assert not any((base/'output').iterdir())
         output=base/'output'/('attempt-'+uuid.uuid4().hex);output.mkdir()
         env=runtime_environment(record,output,receipt_path)
         env.pop('RECURSIVE_A_LUMIA_FRESH_PROFILE')
@@ -48,6 +52,7 @@ def train(receipt_path):
           host=record['host'],scheduler_node=record['scheduler_node'],allocation=job,run_id=record['run_id'],
           group=record['group'],output=str(output),config_sha256=record['config_sha256'],
           source_commit=record['source_commit'],entry_source_commit=record['source_commit'],execution_backend='pj_pt',
+          configuration_receipt=str(receipt_path),
           resume_manifest=record.get('resume_manifest'),parent_job=record.get('parent_job'),parent_source_commit=record.get('parent_source_commit'),
           gpu_hardware=subprocess.check_output(['nvidia-smi','--query-gpu=index,name,uuid,memory.total,driver_version','--format=csv,noheader,nounits'],text=True).splitlines())
         replace_json(base/'receipts/current-entry.json',entry)
@@ -86,8 +91,8 @@ def launch(group):
         assert len(rows)==8
         os.environ['CUDA_VISIBLE_DEVICES']=','.join(x.strip() for x in rows)
     if os.environ.get('RECURSIVE_PJ_NATIVE_CONTINUATION')=='1':
-        if group!='budget-5':raise ValueError('Only explicitly bound budget5 continuation is authorized')
-        from .resume_transport import prepare_resume
+        from .resume_transport import prepare_resume,GROUP
+        if group!=GROUP:raise ValueError('Continuation group differs from explicit profile')
         receipt=prepare_resume()
     else:
         receipt=prepare(group,os.environ['RECURSIVE_SOURCE_COMMIT'],job,node)
