@@ -8,7 +8,8 @@ import threading
 import time
 import urllib.request
 from .contracts import (TOTAL,DATA_SHA,FINAL_SHA,IDS_SHA,sha,digest,require,
-                        validate_manifest,validate_model_files,validate_expected_rows,validate_scheduler_binding)
+                        validate_manifest,validate_model_files,validate_expected_rows,validate_scheduler_binding,
+                        validate_replacement_state)
 
 
 def inspect_inputs(plan):
@@ -105,9 +106,11 @@ def main():
                 'Recovery targets a different model allocation')
         import subprocess
         states=subprocess.check_output(['sacct','-X','-n','-P','-j',plan['replaces_job_id'],
-            '--format=JobIDRaw,State'],text=True)
-        matched=[r.split('|')[1] for r in states.splitlines() if r.startswith(plan['replaces_job_id']+'|')]
-        require(matched==['FAILED'],'Previous evaluation is not exactly verified FAILED')
+            '--format=JobIDRaw,State,ElapsedRaw,Start'],text=True)
+        matched=[r.split('|')[1:4] for r in states.splitlines() if r.startswith(plan['replaces_job_id']+'|')]
+        require(len(matched)==1,'Previous evaluation allocation is ambiguous')
+        state,elapsed,start=matched[0]
+        validate_replacement_state(state,int(elapsed),start,plan.get('replacement_reason'))
         prior_out=Path(prior['output'])
         require(not (prior_out/'progress.json').exists() and
                 (not (prior_out/'predictions.jsonl').exists() or (prior_out/'predictions.jsonl').stat().st_size==0),

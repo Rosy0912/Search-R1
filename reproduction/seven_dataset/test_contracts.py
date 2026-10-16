@@ -8,6 +8,17 @@ from . import contracts as c
 
 
 class Contracts(unittest.TestCase):
+    def test_queued_replacement_requires_never_started_cancelled_allocation(self):
+        c.validate_replacement_state('CANCELLED by 1000',0,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED')
+        c.validate_replacement_state('FAILED',30,'2026-10-16T00:00:00')
+        for state,elapsed,start,reason in [
+            ('RUNNING',0,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED'),
+            ('CANCELLED',1,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED'),
+            ('CANCELLED',0,'2026-10-16T00:00:00','UNSTARTED_DEPENDENCY_BLOCKED'),
+            ('PENDING',0,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED'),
+            ('CANCELLED',0,'Unknown',None),('FAILED',0,'Unknown','other')]:
+            with self.assertRaises(ValueError):c.validate_replacement_state(state,elapsed,start,reason)
+
     def test_jsonl_preserves_embedded_unicode_line_separators(self):
         rows=[{'prediction':'a'+char+'b'} for char in ('\u0085','\u2028','\u2029','\n','\r','\v','\f')]
         with tempfile.TemporaryDirectory() as tmp:
