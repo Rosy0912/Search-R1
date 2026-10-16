@@ -38,6 +38,11 @@ def build(base,group,step,commit,backend):
         evaluation_code_commit=commit,evaluation_run_id=uuid.uuid4().hex,backend=backend,
         job='rt16-seven-'+group.lower().replace('generation','depth')+'-'+str(step)+'-'+cid[:8],
         output=str(base/'seven-evaluations'/cid/'output'))
+    from .model_view import TOKENIZER_FILES
+    canonical=Path(receipt['model']).resolve(strict=True)
+    result.update(canonical_tokenizer=str(canonical),
+        canonical_tokenizer_files={n:sha(canonical/n) for n in TOKENIZER_FILES if (canonical/n).is_file()},
+        inference_model=str(base/'seven-model-views'/cid/commit[:12]))
     validate_manifest(result,manifest)
     return result
 
@@ -47,6 +52,11 @@ def main():
     p.add_argument('--step',type=int,required=True);p.add_argument('--commit',required=True)
     p.add_argument('--backend',choices=['pj_pt','slurm_lumia'],required=True);p.add_argument('--output',required=True)
     a=p.parse_args();value=build(a.base,a.group,a.step,a.commit,a.backend)
+    from .model_view import create_view,validate_view
+    from omegaconf import OmegaConf
+    expected=OmegaConf.load(value['training_config']).baselines.tree.token_preservation.tokenizer_sha256
+    if Path(value['inference_model']).exists():validate_view(value,expected)
+    else:create_view(value,expected)
     with Path(a.output).open('x') as f:json.dump(value,f,indent=2)
     print(json.dumps(dict(status='PLAN_ONLY_NOT_SUBMITTED',path=a.output,job=value['job'],identity=value['checkpoint_identity'])))
 

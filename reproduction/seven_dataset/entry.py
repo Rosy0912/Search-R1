@@ -55,7 +55,13 @@ def inspect_inputs(plan):
         validate_config_dict(archived)
         cfg=OmegaConf.create(projected_original(archived))
     OmegaConf.set_struct(cfg,False)
-    cfg.actor_rollout_ref.model.path=plan['model'];cfg.actor_rollout_ref.ref.model_path=plan['model']
+    inference_model=plan.get('inference_model',plan['model'])
+    if 'inference_model' in plan:
+        from .model_view import validate_view
+        require(Path(plan['canonical_tokenizer']).resolve(strict=True)==Path(receipt['model']).resolve(strict=True),
+                'Canonical tokenizer is not the actual archived training model path')
+        validate_view(plan,cfg.baselines.tree.token_preservation.tokenizer_sha256)
+    cfg.actor_rollout_ref.model.path=inference_model;cfg.actor_rollout_ref.ref.model_path=inference_model
     # All inference search caps and stop/token semantics are retained.
     cfg.data.train_files=str(data/'train.parquet');cfg.data.val_files=str(data/'validation.parquet')
     cfg.data.final_val_files=str(data/'final.parquet')
@@ -89,7 +95,24 @@ def main():
     from omegaconf import OmegaConf
     from search_r1.baselines.preflight import validate_gpu_lease
     base=Path(plan['base']).resolve(strict=True);out=Path(plan['output'])
-    require(out==base/'seven-evaluations'/plan['checkpoint_identity']/'output','Evaluation output namespace differs')
+    expected_root=base/'seven-evaluations'/plan['checkpoint_identity']
+    if 'replaces_job_id' in plan:
+        expected_root=expected_root/('recovery-'+plan['evaluation_code_commit'][:12])
+        previous=Path(plan['previous_submission'])
+        require(sha(previous)==plan['previous_submission_sha256'],'Previous submission identity differs')
+        prior=json.loads(previous.read_text())
+        require(prior['job_id']==plan['replaces_job_id'] and prior['checkpoint_identity']==plan['checkpoint_identity'],
+                'Recovery targets a different model allocation')
+        import subprocess
+        states=subprocess.check_output(['sacct','-X','-n','-P','-j',plan['replaces_job_id'],
+            '--format=JobIDRaw,State'],text=True)
+        matched=[r.split('|')[1] for r in states.splitlines() if r.startswith(plan['replaces_job_id']+'|')]
+        require(matched==['FAILED'],'Previous evaluation is not exactly verified FAILED')
+        prior_out=Path(prior['output'])
+        require(not (prior_out/'progress.json').exists() and
+                (not (prior_out/'predictions.jsonl').exists() or (prior_out/'predictions.jsonl').stat().st_size==0),
+                'Prediction-producing evaluation requires a separate audited result continuation')
+    require(out==expected_root/'output','Evaluation output namespace differs')
     intent=out.parent/'submission-intent.json'
     require(intent.is_file(),'No matching unique submission intent')
     submission_path=out.parent/'submission.json'
@@ -110,7 +133,7 @@ def main():
         SEARCH_R1_BASELINE_DATA_IDENTITY=DATA_SHA,SEARCH_R1_MODEL_IDENTITY=plan['checkpoint_identity'],
         SEARCH_R1_BASELINE_OUTPUT=str(out),SEARCH_R1_BASELINE_AUDIT_DIR=str(out/'audit'),
         SEARCH_R1_TREE_RANK_AUDIT_DIR=str(out/'rank-audit'),SEARCH_R1_PJ_NODE=socket.gethostname().split('.')[0],
-        TREE_COMMON_DATA=plan['data_root'],TREE_INSTRUCT_MODEL=plan['model'],TREE_LINEAR_PREFIX_SCAN='1')
+        TREE_COMMON_DATA=plan['data_root'],TREE_INSTRUCT_MODEL=plan.get('inference_model',plan['model']),TREE_LINEAR_PREFIX_SCAN='1')
     for key in ('RECURSIVE_LUMIA_PAIRED_EVALUATION','RECURSIVE_ABLATION_RESUME_MANIFEST','RECURSIVE_ABLATION_PJ_BINDING'):
         os.environ.pop(key,None)
     (out/'plan.json').write_bytes(Path(args.plan).read_bytes())
@@ -139,6 +162,9 @@ def main():
         check_local_runtime(cfg,ray.nodes())
         report=ray.get(ray.remote(run).remote(cfg,plan,expected))
         validate_model_files(plan)
+        if 'inference_model' in plan:
+            from .model_view import validate_view
+            report['inference_model_files']=validate_view(plan,cfg.baselines.tree.token_preservation.tokenizer_sha256)
         report.update(status='COMPLETE_FULL_51713_ACCEPTED',group=plan['group'],outer=plan['outer'],job=plan['job'],actual_job_id=actual_job,
             checkpoint_identity=plan['checkpoint_identity'],evaluation_code_commit=plan['evaluation_code_commit'],
             evaluation_config_sha256=eval_sha,training_config_sha256=plan['training_config_sha256'],
