@@ -11,14 +11,16 @@ def loss_status(metrics, outer, ranks, milestone_pre_present):
             raise ValueError('Wrong-round or nonfinite aggregate policy loss')
         return dict(pg_loss=metrics['actor/pg_loss'], reported_pg_loss_finite=True,
                     loss_finite=True, loss_evidence='exact_round_console_aggregate',
-                    summary_pending=False)
-    # The optimizer receipt and sparse loss audits precede milestone evaluation;
+                    summary_pending=False, checkpoint_pending=False)
+    # The optimizer receipt and sparse loss audits precede checkpoint saving and
+    # evaluation. Report verified losses separately from checkpoint durability;
     # the aggregate console line is emitted only after evaluation finishes.
-    if (outer in (5,50,100,150,200) and milestone_pre_present and len(ranks)==8
+    if (outer in (5,50,100,150,200) and len(ranks)==8
             and {r['rank'] for r in ranks}==set(range(8))
             and all(r['observed_loss_scalars']>0 and r['all_observed_loss_finite'] is True for r in ranks)):
         return dict(pg_loss=None,reported_pg_loss_finite=None,loss_finite=True,
-                    loss_evidence='all_eight_sparse_microbatch_loss_audits',summary_pending=True)
+                    loss_evidence='all_eight_sparse_microbatch_loss_audits',summary_pending=True,
+                    checkpoint_pending=not milestone_pre_present)
     raise ValueError('Current round lacks finite aggregate or complete milestone loss evidence')
 
 CODE = r'''
