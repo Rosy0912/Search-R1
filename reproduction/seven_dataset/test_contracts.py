@@ -72,6 +72,25 @@ class Contracts(unittest.TestCase):
         self.assertEqual(sum(c.COUNTS.values()),51713)
         self.assertEqual(len(c.COUNTS),7)
 
+    def test_slurm_allocation_requires_exact_submission_binding(self):
+        p=dict(job='seven-model',backend='slurm_lumia',evaluation_code_commit='code')
+        intent=dict(job=p['job'],plan_sha256='sha');submission=dict(intent,job_id='123')
+        env=dict(SEARCH_R1_EXECUTION_BACKEND='slurm_lumia',RECURSIVE_SOURCE_COMMIT='code',
+                 SLURM_JOB_NAME='seven-model',SLURM_JOB_ID='123')
+        self.assertEqual(c.validate_scheduler_binding(p,intent,submission,env,'sha'),'123')
+        with self.assertRaises(ValueError):c.validate_scheduler_binding(p,intent,None,env,'sha')
+        for key,value in [('SLURM_JOB_ID','124'),('SLURM_JOB_NAME','other'),('RECURSIVE_SOURCE_COMMIT','other')]:
+            bad=dict(env);bad[key]=value
+            with self.assertRaises(ValueError):c.validate_scheduler_binding(p,intent,submission,bad,'sha')
+
+    def test_pt_binding_rejects_fabricated_slurm_environment(self):
+        p=dict(job='pt-seven',backend='pj_pt',evaluation_code_commit='code')
+        intent=dict(job=p['job'],plan_sha256='sha')
+        env=dict(SEARCH_R1_EXECUTION_BACKEND='pj_pt',RECURSIVE_SOURCE_COMMIT='code',SEARCH_R1_JOB_ID='pt-seven')
+        self.assertEqual(c.validate_scheduler_binding(p,intent,None,env,'sha'),'pt-seven')
+        env['SLURM_JOB_ID']='123'
+        with self.assertRaises(ValueError):c.validate_scheduler_binding(p,intent,None,env,'sha')
+
     def test_macro_and_micro_are_distinct(self):
         expected,rows=self.rows();result=self.accept(rows,expected)
         self.assertEqual(result['equal_dataset_em'],0.25)

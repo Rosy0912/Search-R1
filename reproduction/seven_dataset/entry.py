@@ -8,7 +8,7 @@ import threading
 import time
 import urllib.request
 from .contracts import (TOTAL,DATA_SHA,FINAL_SHA,IDS_SHA,sha,digest,require,
-                        validate_manifest,validate_model_files,validate_expected_rows)
+                        validate_manifest,validate_model_files,validate_expected_rows,validate_scheduler_binding)
 
 
 def inspect_inputs(plan):
@@ -87,17 +87,17 @@ def main():
         print(json.dumps(dict(status='INPUTS_VERIFIED_NO_INFERENCE',count=len(expected),checkpoint_identity=plan['checkpoint_identity'])))
         return
     from omegaconf import OmegaConf
-    from search_r1.baselines.execution_identity import job_id
     from search_r1.baselines.preflight import validate_gpu_lease
-    require(job_id()==plan['job'] and os.environ.get('RECURSIVE_SOURCE_COMMIT')==plan['evaluation_code_commit'],
-            'Actual scheduler/source identity differs')
-    require(os.environ.get('SEARCH_R1_EXECUTION_BACKEND')==plan['backend'] and plan['backend'] in ('pj_pt','slurm_lumia'),
-            'Unexpected execution backend')
     base=Path(plan['base']).resolve(strict=True);out=Path(plan['output'])
     require(out==base/'seven-evaluations'/plan['checkpoint_identity']/'output','Evaluation output namespace differs')
     intent=out.parent/'submission-intent.json'
-    require(intent.is_file() and json.loads(intent.read_text())['plan_sha256']==sha(args.plan) and
-            json.loads(intent.read_text())['job']==plan['job'],'No matching unique submission intent')
+    require(intent.is_file(),'No matching unique submission intent')
+    submission_path=out.parent/'submission.json'
+    if plan['backend']=='slurm_lumia':
+        deadline=time.monotonic()+120
+        while not submission_path.exists() and time.monotonic()<deadline:time.sleep(1)
+    submission=json.loads(submission_path.read_text()) if submission_path.exists() else None
+    actual_job=validate_scheduler_binding(plan,json.loads(intent.read_text()),submission,os.environ,sha(args.plan))
     require(os.statvfs(base).f_bavail*os.statvfs(base).f_frsize>=408_000_000_000,'Training checkpoint reserve unavailable')
     validate_gpu_lease(cfg)
     out.mkdir(exist_ok=False)
@@ -139,7 +139,7 @@ def main():
         check_local_runtime(cfg,ray.nodes())
         report=ray.get(ray.remote(run).remote(cfg,plan,expected))
         validate_model_files(plan)
-        report.update(status='COMPLETE_FULL_51713_ACCEPTED',group=plan['group'],outer=plan['outer'],job=plan['job'],
+        report.update(status='COMPLETE_FULL_51713_ACCEPTED',group=plan['group'],outer=plan['outer'],job=plan['job'],actual_job_id=actual_job,
             checkpoint_identity=plan['checkpoint_identity'],evaluation_code_commit=plan['evaluation_code_commit'],
             evaluation_config_sha256=eval_sha,training_config_sha256=plan['training_config_sha256'],
             data_manifest_sha256=plan['data_manifest_sha256'],plan_sha256=sha(args.plan),
@@ -149,6 +149,6 @@ def main():
         outcome='COMPLETE_FULL_51713_ACCEPTED'
     finally:
         ray.shutdown();server.shutdown();server.server_close()
-        (out/'entry-exit.json').write_text(json.dumps(dict(status=outcome,job=plan['job'],time=time.time())))
+        (out/'entry-exit.json').write_text(json.dumps(dict(status=outcome,job=plan['job'],actual_job_id=actual_job,time=time.time())))
 
 if __name__=='__main__':main()

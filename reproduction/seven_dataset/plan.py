@@ -25,7 +25,7 @@ def build(base,group,step,commit,backend):
     files=manifest['hf_identity']['files']
     cid=digest(dict(group=group,outer=step,run=receipt['run_id'],
         training_config=identity['config_sha256'],model_files_sha256=digest(files),data=DATA_SHA))
-    retriever=base/'receipts'/('pj-retriever-ready.json' if backend=='pj_pt' else 'retriever-ready.json')
+    retriever=Path(receipt['retriever_receipt'])
     result=dict(protocol='tree_seven_milestone_v1',base=str(base),group=group,outer=step,
         checkpoint_manifest=str(manifest_path),checkpoint_manifest_sha256=sha(manifest_path),
         training_config=str(config),training_config_sha256=identity['config_sha256'],

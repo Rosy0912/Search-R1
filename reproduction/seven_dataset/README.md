@@ -28,6 +28,7 @@ The result records each dataset's correct/count/EM, equal-dataset and all-questi
 EM, prediction hashes and raw emitted tokens. Scheduler GPU cost is reconciled
 after the job exits; the running summary only states an inference-time lower bound.
 
-Validation: nine contract tests, plus native-environment full input validation
-against the retained depth-2 round-50 export. GPU execution remains subject to
+Validation: eleven contract tests, including exact PT/Slurm allocation binding,
+plus native-environment full input validation against retained depth-2 and
+original round-50 exports. GPU execution remains subject to
 the first actual evaluator job's runtime acceptance checks.

@@ -40,6 +40,27 @@ def validate_milestone(group, step):
     require(group in GROUPS and type(step) is int and step in allowed,'Unrequested milestone')
 
 
+def validate_scheduler_binding(plan, intent, submission, environ, plan_sha):
+    """Bind a stable model job name to the scheduler's actual allocation ID."""
+    require(intent['job']==plan['job'] and intent['plan_sha256']==plan_sha,
+            'Submission intent does not bind this plan')
+    require(environ.get('SEARCH_R1_EXECUTION_BACKEND')==plan['backend'] and
+            environ.get('RECURSIVE_SOURCE_COMMIT')==plan['evaluation_code_commit'],
+            'Actual execution backend/source differs')
+    if plan['backend']=='pj_pt':
+        require(not environ.get('SLURM_JOB_ID') and environ.get('SEARCH_R1_JOB_ID')==plan['job'],
+                'PT allocation identity differs')
+        return plan['job']
+    require(plan['backend']=='slurm_lumia','Unsupported scheduler')
+    actual=environ.get('SLURM_JOB_ID','')
+    require(actual.isdigit() and environ.get('SLURM_JOB_NAME')==plan['job'],
+            'Actual Slurm allocation name/ID differs')
+    require(submission is not None and submission['job_id']==actual and
+            submission['job']==plan['job'] and submission['plan_sha256']==plan_sha,
+            'Slurm allocation lacks its exact successful submission receipt')
+    return actual
+
+
 def validate_manifest(plan, manifest):
     validate_milestone(plan['group'],plan['outer'])
     i=manifest['identity'];step=plan['outer']
