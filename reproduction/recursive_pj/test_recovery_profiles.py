@@ -12,6 +12,32 @@ from .migration_job import storage_admission
 
 
 class RecoveryProfiles(unittest.TestCase):
+    def test_prebuilt_aliases_only_change_exact_transport_paths(self):
+        paths={k:str(transport.BASE/'common-data'/(k+'.parquet')) for k in ('train','validation','stage','final')}
+        record=dict(effective_paths=paths,content_identity={'sha256':'same'},manifest={'rows':512})
+        actual=transport.preserve_prebuilt_aliases(record)
+        self.assertEqual(actual['content_identity'],record['content_identity'])
+        self.assertEqual(actual['manifest'],record['manifest'])
+        self.assertEqual(record['effective_paths'],paths)
+        self.assertEqual(actual['effective_paths']['train'],str(transport.OLD_BASE/'common-data/train.parquet'))
+        record['effective_paths']['train']='/different/data.parquet'
+        with self.assertRaises(ValueError):transport.preserve_prebuilt_aliases(record)
+
+    def test_failed_initialization_retry_rejects_any_training_evidence(self):
+        p=profile('budget5-v3')
+        with TemporaryDirectory() as tmp:
+            base=Path(tmp);(base/'receipts').mkdir();output=base/'output/attempt-test';output.mkdir(parents=True)
+            previous=base/'receipts/current-entry.json'
+            previous.write_text(json.dumps(dict(allocation=p['failed_entry_job'],run_id=p['run_id'],output=str(output))))
+            exited=output/'entry-exit.json';exited.write_text(json.dumps(dict(rc=1,error="ValueError('Actual baseline entry config or split differs from reviewed audit identity')")))
+            binding=dict(failed_entry_sha256=transport.sha(previous),failed_exit_sha256=transport.sha(exited))
+            with patch.object(transport,'PROFILE',p):
+                self.assertEqual(transport.validate_previous_entry(base,binding),p['failed_entry_job'])
+                (output/'native-resumed.json').write_text('{}')
+                with self.assertRaises(ValueError):transport.validate_previous_entry(base,binding)
+                (output/'native-resumed.json').unlink();exited.write_text('{}')
+                with self.assertRaises((ValueError,KeyError)):transport.validate_previous_entry(base,binding)
+
     def test_registered_profiles_and_unknown_rejected(self):
         self.assertEqual(profile('depth2-v1')['step'], 56)
         self.assertEqual(profile('budget5-v2')['step'], 2)

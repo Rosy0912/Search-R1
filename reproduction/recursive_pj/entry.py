@@ -116,7 +116,8 @@ def launch(group):
                                 '-m','reproduction.recursive_pj.entry','train',str(receipt)])
         rc=child.wait()
         value=dict(at=time.time(),pid=child.pid,rc=rc,group=group,allocation=job,source=os.environ['RECURSIVE_SOURCE_COMMIT'])
-        with (Path(r['base'])/'receipts/actual-parent-wait.json').open('x') as f:json.dump(value,f,indent=2)
+        wait_name=('actual-parent-wait-'+job+'.json') if r.get('resume_manifest') else 'actual-parent-wait.json'
+        with (Path(r['base'])/'receipts'/wait_name).open('x') as f:json.dump(value,f,indent=2)
         raise SystemExit(rc if rc>=0 else 128-rc)
     finally:
         proxy.terminate();proxy.wait(timeout=30)

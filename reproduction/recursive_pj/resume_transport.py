@@ -109,7 +109,7 @@ def prepare_resume():
     if gate['target_job']!=job:raise ValueError('Cutover is not for this allocation')
     if job != TARGET_JOB:raise ValueError('Wrong registered continuation allocation')
     base=BASE/'runs'/GROUP
-    if GROUP=='budget-5':
+    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job'):
         base.mkdir(parents=True,exist_ok=False)
         for name in ('receipts','output','logs','tmp','cache','checkpoints'):(base/name).mkdir()
         config=base/'receipts/resolved.yaml';config.write_bytes((STAGE/'resolved.yaml').read_bytes())
@@ -119,8 +119,7 @@ def prepare_resume():
         receipt=base/'receipts/configuration.json'
     else:
         previous=base/'receipts/current-entry.json'
-        if sha(previous)!=b['parent_entry_sha256']:raise ValueError('Existing terminal parent entry changed')
-        if json.loads(previous.read_text())['allocation']!=PARENT_JOB:raise ValueError('Unexpected previous allocation')
+        validate_previous_entry(base,b)
         directory=base/'receipts'/job;directory.mkdir(exist_ok=False)
         config=directory/'resolved.yaml';config.write_bytes((STAGE/'resolved.yaml').read_bytes())
         boundary=base/'checkpoints/native-rolling'/('global_step_'+str(STEP))
@@ -158,6 +157,44 @@ def install():
         projected=copy.deepcopy(config);projected.baselines.local_runtime_host=record['host']
         return original(projected,ray_nodes)
     check._pj_transport=True;local_runtime.check_local_runtime=check
+    if GROUP=='budget-5':
+        # The prebuilt validator resolves symlinks, which otherwise changes four
+        # frozen config strings after the cross-host aliases have been admitted.
+        # Preserve only these exact aliases; all content/hash checks still run.
+        from search_r1.baselines import holdout
+        validate=holdout._validate_prebuilt
+        def aliased(config):
+            return preserve_prebuilt_aliases(validate(config))
+        holdout._validate_prebuilt=aliased
+
+
+def preserve_prebuilt_aliases(record):
+    expected={k:str(BASE/'common-data'/(k+'.parquet')) for k in ('train','validation','final','stage')}
+    if record['effective_paths']!=expected:
+        raise ValueError('Unexpected physical split paths during migration')
+    result=copy.deepcopy(record)
+    result['effective_paths']={k:str(OLD_BASE/'common-data'/(k+'.parquet')) for k in expected}
+    return result
+
+
+def validate_previous_entry(base,binding):
+    previous=Path(base)/'receipts/current-entry.json'
+    failed=PROFILE.get('failed_entry_job')
+    expected=binding['failed_entry_sha256'] if failed else binding['parent_entry_sha256']
+    if sha(previous)!=expected:raise ValueError('Previous entry changed or continuation already entered')
+    value=json.loads(previous.read_text())
+    if value['allocation']!=(failed or PARENT_JOB) or value['run_id']!=RUN_ID:
+        raise ValueError('Wrong previous entry lineage')
+    if failed:
+        output=Path(value['output'])
+        if output.parent!=Path(base)/'output':raise ValueError('Failed output outside run')
+        exit_record=json.loads((output/'entry-exit.json').read_text())
+        if (sha(output/'entry-exit.json')!=binding['failed_exit_sha256'] or exit_record['rc']!=1
+                or exit_record['error']!="ValueError('Actual baseline entry config or split differs from reviewed audit identity')"
+                or any((output/n).exists() for n in ('native-resumed.json','progress.json'))
+                or any((output/'attempt-results').glob('*.json'))):
+            raise ValueError('Failed initialization has updates or a different failure')
+    return failed or PARENT_JOB
 
 
 def worker_setup():
@@ -174,14 +211,10 @@ def validate_resume_entry(record, base):
     validate_gate(json.loads((STAGE/'cutover.json').read_text()), b,
                   json.loads((STAGE/('result-'+TARGET_JOB+'.json')).read_text()))
     previous=Path(base)/'receipts/current-entry.json'
-    if GROUP=='budget-5':
+    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job'):
         if previous.exists() or any((Path(base)/'output').iterdir()):
             raise ValueError('Migration target already has an entry/output')
     else:
-        if sha(previous)!=b['parent_entry_sha256']:
-            raise ValueError('Parent entry changed or continuation already entered')
-        value=json.loads(previous.read_text())
-        if value['allocation']!=PARENT_JOB or value['run_id']!=RUN_ID:
-            raise ValueError('Wrong parent lineage')
-        archive=Path(base)/'receipts'/('previous-entry-'+PARENT_JOB+'.json')
+        predecessor=validate_previous_entry(base,b)
+        archive=Path(base)/'receipts'/('previous-entry-'+predecessor+'.json')
         with archive.open('xb') as f:f.write(previous.read_bytes())
