@@ -15,8 +15,13 @@ _original_init = ActorRolloutRefWorker.init_model
 class Hooks:
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def init_model(self):
-        result=_original_init(self)
         import torch
+        if torch.cuda.device_count()!=1:
+            raise RuntimeError('Frozen worker must see exactly one GPU after Ray binding, before model initialization')
+        print('SEVEN_EVAL_WORKER_BINDING='+json.dumps(dict(rank=self.rank,
+            cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
+            visible_device_count=torch.cuda.device_count(),pid=os.getpid())),flush=True)
+        result=_original_init(self)
         for p in self.actor_module_fsdp.parameters():p.requires_grad_(False)
         def forbidden(*args,**kwargs):raise RuntimeError('Optimizer updates forbidden in frozen evaluation')
         self.actor_optimizer.step=forbidden

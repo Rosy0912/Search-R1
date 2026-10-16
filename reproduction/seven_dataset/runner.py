@@ -7,7 +7,8 @@ from .contracts import TOTAL,DATA_SHA,validate_expected_rows,accept_rows,require
 
 
 def worker_setup():
-    from reproduction.seven_dataset import worker
+    from reproduction.seven_dataset.bootstrap import install
+    install()
 
 
 def run(config,plan,expected):
