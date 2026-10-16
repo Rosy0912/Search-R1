@@ -7,6 +7,36 @@ from .costs import action_costs,scheduler_costs,collect
 
 
 class CostEvidenceTest(unittest.TestCase):
+    def test_interleaved_record_preserves_valid_counts_and_completed_job_gap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'log'
+            valid='TREE_ACTION_TIMING='+json.dumps(dict(successful=True,cost_delta=dict(raw_emitted_tokens=100)))+'\n'
+            path.write_text(valid+'TREE_ACTION_TIMING={"successful":true,"broken":"a\x1bb"}\n'+valid)
+            entries=[dict(label='finished',job='1',log=str(path))]
+            with patch('subprocess.check_output',return_value='1|COMPLETED|3600|gres/gpu=8|\n'):
+                result=collect(entries)
+            self.assertEqual(result['recorded_raw_emitted_tokens'],200)
+            self.assertEqual(result['allocated_gpu_hours'],8)
+            self.assertTrue(result['token_total_is_lower_bound'])
+            record=result['entries'][0]['tokens']
+            self.assertEqual(record['malformed_action_records'],1)
+            self.assertEqual(record['malformed_record_examples'][0]['line'],2)
+
+    def test_completed_truncated_ledger_is_not_exhaustive(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'log';path.write_text('TREE_ACTION_TIMING={')
+            with patch('subprocess.check_output',return_value='1|COMPLETED|1|gres/gpu=8|\n'):
+                result=collect([dict(job='1',log=str(path))])
+            self.assertTrue(result['token_total_is_lower_bound'])
+            self.assertEqual(result['entries'][0]['tokens']['incomplete_action_records'],1)
+
+    def test_decodable_invalid_cost_still_fails(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'log'
+            for invalid in (-1,float('nan'),float('inf'),'100'):
+                path.write_text('TREE_ACTION_TIMING='+json.dumps(dict(successful=True,cost_delta=dict(raw_emitted_tokens=invalid)))+'\n')
+                with self.assertRaises(ValueError):action_costs(path)
+
     def test_counts_new_emissions_once_and_drops_unfinished_log_record(self):
         with tempfile.TemporaryDirectory() as directory:
             path=Path(directory)/'log'

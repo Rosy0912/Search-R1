@@ -4,6 +4,7 @@ The action ledger counts new emissions, including discarded/padded work. It is
 not the final training-token total, which includes reused tree prefixes.
 """
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -12,19 +13,33 @@ import time
 
 
 def action_costs(path):
-    totals = {}; actions = 0; failed = 0
+    totals = {}; actions = 0; failed = 0; malformed = 0; incomplete = 0; examples = []
     if path is None: return None
     path = Path(path)
-    for line in path.read_text(errors='replace').splitlines(keepends=True):
-        if not line.endswith('\n') or 'TREE_ACTION_TIMING=' not in line: continue
-        value = json.JSONDecoder().raw_decode(line.split('TREE_ACTION_TIMING=',1)[1])[0]
-        actions += 1; failed += int(not value['successful'])
-        for key, cost in value['cost_delta'].items():
-            if not isinstance(cost,(int,float)) or not math.isfinite(cost) or cost < 0:
-                raise ValueError('Invalid per-action compute ledger')
-            totals[key] = totals.get(key,0)+cost
+    # Multiprocess stdout can interleave or truncate JSON. Account only for
+    # complete decodable actions and make every omitted record visible.
+    with path.open(errors='replace') as stream:
+        for number,line in enumerate(stream,1):
+            if 'TREE_ACTION_TIMING=' not in line: continue
+            if not line.endswith('\n'):
+                incomplete += 1
+                continue
+            try:
+                value = json.JSONDecoder().raw_decode(line.split('TREE_ACTION_TIMING=',1)[1])[0]
+            except json.JSONDecodeError:
+                malformed += 1
+                if len(examples) < 20:
+                    examples.append(dict(line=number,sha256=hashlib.sha256(line.encode()).hexdigest()))
+                continue
+            actions += 1; failed += int(not value['successful'])
+            for key, cost in value['cost_delta'].items():
+                if not isinstance(cost,(int,float)) or not math.isfinite(cost) or cost < 0:
+                    raise ValueError('Invalid per-action compute ledger')
+                totals[key] = totals.get(key,0)+cost
     return dict(log=str(path), recorded_actions=actions, failed_actions=failed, totals=totals,
         scope='Actual recorded action deltas; includes screening and evaluation when present in this log. No inherited-prefix double counting.',
+        malformed_action_records=malformed,incomplete_action_records=incomplete,
+        malformed_record_examples=examples,ledger_gaps_observed=bool(malformed or incomplete),
         interrupted_or_inflight_action_may_be_unrecorded=True)
 
 
@@ -68,7 +83,8 @@ def collect(entries):
         if row['tokens'] is not None:
             # Exit0 is needed for an exhaustive process ledger. A live or
             # cancelled process may have emitted an unfinished action's tokens.
-            row['tokens']['interrupted_or_inflight_action_may_be_unrecorded']=(state != 'COMPLETED' and not unstarted)
+            row['tokens']['interrupted_or_inflight_action_may_be_unrecorded']=(
+                (state != 'COMPLETED' and not unstarted) or row['tokens'].get('ledger_gaps_observed',False))
         rows.append(row)
     return dict(at=time.time(), entries=rows,
         allocated_gpu_hours=sum(row['scheduler']['allocated_gpu_hours'] for row in rows),
