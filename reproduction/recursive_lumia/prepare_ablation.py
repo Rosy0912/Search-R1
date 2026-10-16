@@ -12,7 +12,7 @@ import uuid
 
 from release.recursive_bran_a.ablation150_v1 import EVALUATION_STEPS, PROTOCOL
 from release.recursive_bran_a.ablation150_v1.contracts import (
-    planned_conditions, projected_original, sha, validate_config_dict,
+    options, planned_conditions, projected_original, sha, validate_config_dict,
 )
 
 BASELINE_CONFIG_SHA = '274b6801a78591ca8b28dadcbe68dd0ab46ff5c7b0e4e6be4fc34a82964ceaa0'
@@ -23,6 +23,10 @@ HOSTS = {'gpu-3090-1', 'gpu-ada6000-1', 'gpu-l40s-1', 'gpu-l40s-2', 'gpu-ada6000
 
 
 def condition_for(group):
+    # Explicit new human-authorized experiment. Do not append it to the old
+    # seven-condition batch list, whose archived submitters must stay inert.
+    if group == 'R1-root-anchored-recursive':
+        return options('root_anchored_recursive')
     rows = [r for r in planned_conditions() if r['group'] == group]
     if len(rows) != 1:
         raise ValueError('Unknown published study condition')

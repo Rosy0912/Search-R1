@@ -16,7 +16,7 @@ def sha(path):
 
 
 def options(variant='baseline', budget=10, position='uniform', max_generation=None):
-    if variant not in ('baseline', 'root_only', 'random_final'):
+    if variant not in ('baseline', 'root_only', 'random_final', 'root_anchored_recursive'):
         raise ValueError('Unknown recursive ablation variant')
     if budget not in (5, 10, 20) or position not in ('early', 'uniform', 'late'):
         raise ValueError('Unspecified budget or branch-position condition')
@@ -26,9 +26,14 @@ def options(variant='baseline', budget=10, position='uniform', max_generation=No
         raise ValueError('Mechanism controls cannot silently combine hyperparameters')
     if variant == 'baseline' and sum((budget != 10, position != 'uniform', max_generation is not None)) > 1:
         raise ValueError('Hyperparameter controls must change one factor')
-    return dict(protocol=PROTOCOL, variant=variant, budget=budget, position=position,
-                max_generation=max_generation, selection_seed=42,
-                position_probability='linear_positive_weights_over_legal_preaction_indices')
+    result = dict(protocol=PROTOCOL, variant=variant, budget=budget, position=position,
+                  max_generation=max_generation, selection_seed=42,
+                  position_probability='linear_positive_weights_over_legal_preaction_indices')
+    if variant == 'root_anchored_recursive':
+        result.update(acceptance_reference='initial_root',
+                      branch_boundary='all_preaction_snapshots',
+                      parent_sampling='uniform_accepted')
+    return result
 
 
 def projected_original(config):

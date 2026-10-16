@@ -41,6 +41,26 @@ class MatchedAblationConfig(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate_delta(baseline,result,'C1-root-only','/new','gpu-l40s-1')
 
+    def test_root_anchored_is_explicit_and_preserves_training_contract(self):
+        baseline = self.baseline()
+        group = 'R1-root-anchored-recursive'
+        candidate = derive(baseline, group, '/r1', 'gpu-l40s-1')
+        self.assertEqual(candidate['actor_rollout_ref'], baseline['actor_rollout_ref'])
+        self.assertEqual(candidate['baselines']['tree']['continuation_budget_per_question'], 10)
+        self.assertEqual(candidate['trainer']['actual_update_limit'], 150)
+        condition = candidate['baselines']['recursive_ablation']
+        self.assertEqual(condition['variant'], 'root_anchored_recursive')
+        self.assertEqual(condition['acceptance_reference'], 'initial_root')
+        self.assertEqual(condition['branch_boundary'], 'all_preaction_snapshots')
+        self.assertEqual(condition['parent_sampling'], 'uniform_accepted')
+        self.assertNotIn(group, [row['group'] for row in planned_conditions()])
+        validate_delta(baseline, candidate, group, '/r1', 'gpu-l40s-1')
+        for key in ('acceptance_reference', 'branch_boundary', 'parent_sampling'):
+            changed = copy.deepcopy(candidate)
+            changed['baselines']['recursive_ablation'][key] = 'unregistered'
+            with self.assertRaises(ValueError):
+                validate_delta(baseline, changed, group, '/r1', 'gpu-l40s-1')
+
     def test_reused_conditions_cannot_be_prepared_as_new_training(self):
         for row in planned_conditions():
             if row.get('reuse'):

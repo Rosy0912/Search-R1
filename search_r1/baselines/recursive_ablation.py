@@ -23,7 +23,8 @@ class Options:
     selection_seed: int = 42
 
     def __post_init__(self):
-        if self.variant not in ('baseline', 'root_only', 'random_final'):
+        if self.variant not in ('baseline', 'root_only', 'random_final',
+                                'root_anchored_recursive'):
             raise ValueError('Unknown recursive ablation variant')
         if self.position not in ('uniform', 'early', 'late'):
             raise ValueError('Unknown branch position distribution')
@@ -32,6 +33,9 @@ class Options:
             raise ValueError('max_generation must be null, 1, 2 or 4')
         if type(self.selection_seed) is not int:
             raise ValueError('selection_seed must be an integer')
+        if (self.variant == 'root_anchored_recursive' and
+                (self.position != 'uniform' or self.max_generation is not None)):
+            raise ValueError('Root-anchored recursive requires uniform positions and no depth cap')
 
     @classmethod
     def parse(cls, value):
@@ -71,6 +75,48 @@ def position_distribution(positions, mode):
     return weights, [weight / total for weight in weights]
 
 
+def root_prefix_diagnostics(initial, parent, index):
+    """Passive positional token comparisons; never influence the search.
+
+    A nonroot parent ID alone is not evidence of inheriting a new action.  A
+    step is the executor's exact (action token IDs, observation token IDs) pair;
+    observation-only variation is deliberately distinct from action novelty.
+    """
+    prefix = parent.steps[:index]
+    root_prefix = initial.steps[:index]
+    novel, semantic, observation_only = [], [], []
+    for position, step in enumerate(prefix):
+        if position >= len(root_prefix):
+            novel.append(position)
+            semantic.append(position)
+            continue
+        original = root_prefix[position]
+        if step != original:
+            semantic.append(position)
+        if step[0] != original[0]:
+            novel.append(position)
+        elif step[1] != original[1]:
+            observation_only.append(position)
+
+    def fingerprint(steps):
+        payload = json.dumps(steps, sort_keys=True, separators=(',', ':'),
+                             ensure_ascii=False).encode('utf-8')
+        return hashlib.sha256(payload).hexdigest()
+
+    recursive = parent.generation > 0
+    return dict(parent_generation=parent.generation, genealogical_recursive=recursive,
+                inherited_action_count=len(prefix),
+                inherited_novel_action_count=len(novel), inherited_novel_action_positions=novel,
+                inherited_semantic_difference_count=len(semantic),
+                inherited_semantic_difference_positions=semantic,
+                inherited_observation_only_difference_count=len(observation_only),
+                inherited_observation_only_difference_positions=observation_only,
+                effective_recursive_prefix=recursive and bool(novel),
+                observation_only_recursive_prefix=recursive and not novel and bool(observation_only),
+                parent_prefix_sha256=fingerprint(prefix), root_prefix_sha256=fingerprint(root_prefix),
+                prefix_comparison='positionwise_action_and_observation_token_ids_v1')
+
+
 class Planner(OriginalPlanner):
     """Drop-in constructor for the action-pipelined recursive executor."""
     def __init__(self, initial, rng, emit, target=5, budget=10, *, options=None,
@@ -85,12 +131,29 @@ class Planner(OriginalPlanner):
                           if self.options.variant == 'random_final' else None)
         self.original_final_ids = None
         self._random_final_result = None
+        if self.options.variant == 'root_anchored_recursive':
+            if initial.reward not in (0, 1):
+                raise ValueError('Root-anchored recursive requires a binary root reward')
+            original_emit = emit
+
+            def emit(event, **fields):
+                # ``contrast_accept`` remains the compatible selection source,
+                # but its reference is the initial root, never implicitly the
+                # parent.  This applies to errors, search ends and fill events
+                # as well as successful branch completions.
+                fields.update(acceptance_reference='initial_root',
+                              reference_reward=initial.reward,
+                              reference_trajectory_id=initial.trajectory_id,
+                              root_id=initial.root_id,
+                              ablation_variant='root_anchored_recursive')
+                original_emit(event, **fields)
+
         super().__init__(initial, rng, emit, target=target, budget=budget)
 
     def next_request(self):
         # Crucial: C2 and matching baseline controls use exactly the original
         # candidate tree, original RNG calls, legal boundary and backoff.
-        if (self.options.variant != 'root_only' and
+        if (self.options.variant not in ('root_only', 'root_anchored_recursive') and
                 self.options.max_generation is None and self.options.position == 'uniform'):
             return super().next_request()
         if self.pending is not None:
@@ -106,7 +169,13 @@ class Planner(OriginalPlanner):
                        else self.accepted)
             if self.options.max_generation is not None:
                 parents = [r for r in parents if r.generation < self.options.max_generation]
-            eligible = [(r, legal_positions(r, history)) for r in parents]
+            if self.options.variant == 'root_anchored_recursive':
+                # Every position is an existing executor pre-action snapshot.
+                # Revisit earlier choices even on descendants; do not synthesize
+                # a state or reset the inherited action/token budget.
+                eligible = [(r, (list(range(len(r.snapshots))), 0, {})) for r in parents]
+            else:
+                eligible = [(r, legal_positions(r, history)) for r in parents]
             eligible = [(r, positions) for r, positions in eligible if positions[0]]
             if not eligible:
                 self.reason = 'no_expandable_record'
@@ -128,9 +197,51 @@ class Planner(OriginalPlanner):
         index = self.backoff.pop(0)
         self.attempts += 1
         self.pending = self.parent, index, self.attempts
+        diagnostics = (root_prefix_diagnostics(self.initial, self.parent, index)
+                       if self.options.variant == 'root_anchored_recursive' else {})
         self.emit('branch_start', attempt=self.attempts, parent_id=self.parent.trajectory_id,
-                  action_index=index, boundary=self.boundary, backoff=index != self.start)
+                  action_index=index, boundary=self.boundary, backoff=index != self.start,
+                  **diagnostics)
         return self.pending
+
+    def accept_result(self, child=None, error=None):
+        if self.options.variant != 'root_anchored_recursive':
+            return super().accept_result(child, error)
+        if self.pending is None:
+            raise RuntimeError('No pending continuation request')
+        parent, index, attempt = self.pending
+        if error is not None:
+            self.pending = None
+            self.reason = 'execution_error'
+            self.emit('branch_end', attempt=attempt, status='error', error=repr(error),
+                      parent_id=parent.trajectory_id, parent_generation=parent.generation,
+                      parent_reward=parent.reward)
+            self.end_search('execution_error')
+            return
+        if (child is None or child.parent_id != parent.trajectory_id or
+                child.root_id != parent.root_id or
+                child.generation != parent.generation + 1 or child.reward not in (0, 1) or
+                child.steps[:index] != parent.steps[:index] or
+                child.trajectory_id in {r.trajectory_id for r in self.accepted + self.pool}):
+            # Keep the request pending on validation failure so the unchanged
+            # executor can record the error and reject the entire outer.
+            raise ValueError('Continuation violates identity, generation or prefix')
+        self.pending = None
+        different = child.reward != self.initial.reward
+        child.source = 'contrast_accept' if different else 'same_reward'
+        (self.accepted if different else self.pool).append(child)
+        self.emit('branch_end', attempt=attempt, status='complete', id=child.trajectory_id,
+                  parent_id=parent.trajectory_id, parent_generation=parent.generation,
+                  parent_reward=parent.reward, reward=child.reward, generation=child.generation,
+                  same_reward_as_parent=child.reward == parent.reward,
+                  different_reward_from_root=different,
+                  acceptance_reason=('different_reward_from_initial_root' if different else
+                                     'same_reward_as_initial_root'),
+                  source=child.source, cost=child.cost)
+        if different or not self.backoff:
+            self.end_search('contrast_accept' if different else 'boundary_reached')
+        if different:
+            self.backoff = []
 
     def finish(self):
         if self.options.variant != 'random_final':
