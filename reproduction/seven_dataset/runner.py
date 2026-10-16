@@ -86,6 +86,9 @@ def run(config,plan,expected):
         report=accept_rows(rows,expected,plan['checkpoint_identity'],em_check)
         require(abs(report['all_question_em']-native['val/em/all'])<1e-12,'Aggregate native EM differs')
         workers=trainer.actor_rollout_wg.seven_frozen_evidence()
+        if plan.get('communication_transport'):
+            require(all(w['communication_transport']==plan['communication_transport'] for w in workers),
+                    'Workers did not inherit the verified communication transport')
         require(len(workers)==8 and {w['rank'] for w in workers}==set(range(8)) and
                 len({w['gpu_uuid'] for w in workers})==8 and
                 all(w['checkpoint_identity']==plan['checkpoint_identity'] and w['calls']>0 and

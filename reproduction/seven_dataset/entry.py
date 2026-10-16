@@ -149,6 +149,9 @@ def main():
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
     from release.recursive_bran_a.h100_migration.ray_cli_compat import prepare_click
     prepare_click()
+    from .contracts import communication_transport
+    transport=communication_transport(plan)
+    os.environ.update(transport)
     import ray
     from .runner import run,worker_setup
     started=time.time();outcome='FAILED'
@@ -156,7 +159,7 @@ def main():
         context=ray.init(address='local',num_gpus=8,num_cpus=64,include_dashboard=False,
             object_store_memory=8*1024**3,_node_ip_address='127.0.0.1',_temp_dir='/tmp/seven-'+plan['evaluation_run_id'][:12],
             runtime_env={'worker_process_setup_hook':worker_setup,'env_vars':{k:v for k,v in os.environ.items()
-                if k.startswith(('TREE_','SEARCH_R1_','E1_')) or k in ('PYTHONPATH','TOKENIZERS_PARALLELISM')}})
+                if k.startswith(('TREE_','SEARCH_R1_','E1_','NCCL_')) or k in ('PYTHONPATH','TOKENIZERS_PARALLELISM')}})
         os.environ['RAY_ADDRESS']=context.address_info['gcs_address']
         from search_r1.baselines.local_runtime import check_local_runtime
         check_local_runtime(cfg,ray.nodes())
@@ -168,6 +171,7 @@ def main():
         report.update(status='COMPLETE_FULL_51713_ACCEPTED',group=plan['group'],outer=plan['outer'],job=plan['job'],actual_job_id=actual_job,
             checkpoint_identity=plan['checkpoint_identity'],evaluation_code_commit=plan['evaluation_code_commit'],
             evaluation_config_sha256=eval_sha,training_config_sha256=plan['training_config_sha256'],
+            communication_transport=transport,
             data_manifest_sha256=plan['data_manifest_sha256'],plan_sha256=sha(args.plan),
             inference_wall_gpu_hours_lower_bound=8*(time.time()-started)/3600,
             cost_status='SCHEDULER_ALLOCATION_COST_PENDING_POST_EXIT_AUDIT')

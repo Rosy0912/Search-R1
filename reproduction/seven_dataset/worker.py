@@ -51,6 +51,7 @@ class Hooks:
         if self.actor_optimizer.state or any(p.requires_grad for p in self.actor_module_fsdp.parameters()):
             raise RuntimeError('Unexpected optimizer state or trainable parameters')
         return dict(rank=torch.distributed.get_rank(),gpu_uuid=next(iter(uuids)),
+            communication_transport={k:os.environ[k] for k in ('NCCL_P2P_DISABLE','NCCL_IB_DISABLE') if k in os.environ},
             checkpoint_identity=self._seven_identity,calls=self._seven_calls,
             raw_emitted_tokens=self._seven_tokens,optimizer_states=0,trainable_parameters=0)
 

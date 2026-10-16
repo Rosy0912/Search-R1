@@ -30,6 +30,23 @@ def digest(value):
                                     separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
 
+def communication_transport(plan):
+    """Allow only the exact transport independently exercised on eight GPUs."""
+    transport=plan.get('communication_transport',{})
+    if not transport:return {}
+    require(transport=={'NCCL_P2P_DISABLE':'1','NCCL_IB_DISABLE':'1'},
+            'Unverified communication transport')
+    path=Path(plan['communication_probe'])
+    require(sha(path)==plan['communication_probe_sha256'],'Communication probe changed')
+    proof=json.loads(path.read_text())
+    require(proof['status']=='EIGHT_RANK_COMMUNICATION_PROBE_PASSED' and
+            proof['transport']==transport and {r['rank'] for r in proof['ranks']}==set(range(8)) and
+            all({c['mib'] for c in r['cases']}=={1,64,256} and
+                all(c['broadcast_and_reduce_values_verified'] for c in r['cases'])
+                for r in proof['ranks']), 'Eight-rank communication probe incomplete')
+    return dict(transport)
+
+
 def ids_hash(ids):
     return hashlib.sha256(json.dumps(ids,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
 
