@@ -23,6 +23,13 @@ def checkpoint_root(record, config, environ):
     checkpoints = Path(config['trainer']['default_local_dir'])
     output = Path(environ['SEARCH_R1_BASELINE_OUTPUT'])
     expected = base / 'checkpoints'
+    alias = record.get('checkpoint_storage_alias')
+    if alias:
+        if (record.get('execution_backend') != 'pj_pt' or not record.get('resume_manifest')
+                or str(checkpoints) != alias['configured'] or str(expected) != alias['physical']
+                or checkpoints.resolve() != expected or expected.resolve() != expected):
+            raise ValueError('Unbound checkpoint storage alias')
+        checkpoints = expected
     if (not base.is_absolute() or not checkpoints.is_absolute() or not output.is_absolute()
             or checkpoints != expected or checkpoints.resolve() != base.resolve() / 'checkpoints'
             or output.parent != base / 'output'
@@ -124,8 +131,14 @@ def install_driver_into(module):
         context = original(trainer)
         if not os.environ.get('RECURSIVE_ABLATION_RECEIPT'):
             return context
-        _, checkpoints = _frozen_namespace()
+        record, checkpoints = _frozen_namespace()
         name = Path(context['directory']).name
+        if record.get('checkpoint_storage_alias'):
+            configured = Path(record['checkpoint_storage_alias']['configured']) / 'training_state' / name
+            expected = checkpoints / 'training_state' / name
+            if Path(context['directory']) != configured or configured.resolve() != expected:
+                raise ValueError('Partial context escaped the bound checkpoint storage alias')
+            context = dict(context, directory=str(expected))
         replay = replay_partial_directory(checkpoints, os.environ, context['identity'], name)
         if replay is not None:
             context = dict(context, directory=str(replay))
@@ -133,4 +146,3 @@ def install_driver_into(module):
 
     setattr(partial_context, _MARKER, True)
     module.partial_context = partial_context
-

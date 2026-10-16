@@ -137,6 +137,8 @@ def prepare_resume():
         retriever_receipt=str(retriever),retriever_receipt_sha256=sha(retriever),retriever_url=retrieval['url'],
         cutover_sha256=sha(STAGE/'cutover.json'),probe_sha256=sha(STAGE/('result-'+job+'.json')),
         scope='Same frozen config bytes and full native continuation; actual new source/backend recorded; cross-hardware bitwise future rollouts not claimed.')
+    if GROUP=='budget-5':
+        record['checkpoint_storage_alias']=dict(configured=str(OLD_BASE/'runs'/GROUP/'checkpoints'),physical=str(base/'checkpoints'))
     receipt.write_text(json.dumps(record,indent=2)+'\n');return receipt
 
 
@@ -189,11 +191,23 @@ def validate_previous_entry(base,binding):
         output=Path(value['output'])
         if output.parent!=Path(base)/'output':raise ValueError('Failed output outside run')
         exit_record=json.loads((output/'entry-exit.json').read_text())
+        expected_error=("RayTaskError(ValueError)(ValueError('Ablation output/checkpoint namespaces differ from this exact group receipt'))"
+                        if PROFILE.get('failed_before_actor') else "ValueError('Actual baseline entry config or split differs from reviewed audit identity')")
         if (sha(output/'entry-exit.json')!=binding['failed_exit_sha256'] or exit_record['rc']!=1
-                or exit_record['error']!="ValueError('Actual baseline entry config or split differs from reviewed audit identity')"
-                or any((output/n).exists() for n in ('native-resumed.json','progress.json'))
-                or any((output/'attempt-results').glob('*.json'))):
+                or exit_record['error']!=expected_error or (output/'progress.json').exists()
+                or any((output/'attempt-results').glob('*.json'))
+                or any((output/'fresh-state').glob('*')) or any((output/'rank-audit').glob('*'))):
             raise ValueError('Failed initialization has updates or a different failure')
+        restored=output/'native-resumed.json'
+        if PROFILE.get('failed_before_actor'):
+            state=json.loads(restored.read_text())
+            if (sha(restored)!=binding['failed_restored_sha256'] or state['completed_outer']!=STEP
+                    or state['next_outer']!=STEP+1 or len(state['workers'])!=8
+                    or {w['rank'] for w in state['workers']}!=set(range(8))
+                    or not all(w['actual_state_equal'] and w['actual_total_optimizer_calls']==20*STEP
+                               and w['scheduler_step']==STEP for w in state['workers'])):
+                raise ValueError('Failed pre-actor attempt did not preserve exact parent restoration')
+        elif restored.exists():raise ValueError('Unexpected restore in failed initialization')
     return failed or PARENT_JOB
 
 

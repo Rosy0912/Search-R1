@@ -27,7 +27,7 @@ def native_function(relative_path, name, namespace):
 
 
 def worker_module():
-    namespace = dict(Path=Path, os=os, copy=copy, json=json,
+    namespace = dict(Path=Path, os=os, copy=copy, json=json, execution_job_id=lambda:os.environ['SLURM_JOB_ID'],
         enabled=lambda actor: actor.get('guard_continue_protocol') == GUARD_PROTOCOL,
         PROTOCOL='tree_partial_state_v1',
         IDENTITY_KEYS={'job_id', 'run_id', 'code_commit', 'config_sha256', 'data_identity',
@@ -167,7 +167,7 @@ class NamespaceTests(unittest.TestCase):
 
     def test_exact_first_replay_namespace_keeps_attempt_and_cannot_overwrite_original(self):
         os.environ['RECURSIVE_ABLATION_ZERO_WRITE_MANIFEST'] = '/exact-original/manifest.json'
-        namespace = dict(Path=Path, os=os, enabled=lambda actor: True, PROTOCOL='tree_partial_state_v1')
+        namespace = dict(Path=Path, os=os, execution_job_id=lambda:os.environ['SLURM_JOB_ID'], enabled=lambda actor: True, PROTOCOL='tree_partial_state_v1')
         module = ModuleType('native_partial_driver_under_test')
         module.partial_context = native_function('search_r1/baselines/tree_partial_state.py',
                                                 'partial_context', namespace)
@@ -189,6 +189,34 @@ class NamespaceTests(unittest.TestCase):
         os.environ.pop('RECURSIVE_ABLATION_ZERO_WRITE_MANIFEST')
         with self.assertRaisesRegex(ValueError, 'exact group/checkpoint/attempt'):
             self.repaired()(self.worker, data)
+
+    def test_bound_migration_alias_driver_and_native_worker(self):
+        alias=self.base.parent/'old-host-group';alias.symlink_to(self.base,target_is_directory=True)
+        old_checkpoint=alias/'checkpoints'
+        config=copy.deepcopy(self.config);config['trainer']['default_local_dir']=str(old_checkpoint)
+        with self.assertRaisesRegex(ValueError,'namespaces'):
+            bootstrap.checkpoint_root(self.record,config,self.env)
+        self.record.update(execution_backend='pj_pt',resume_manifest='explicit-parent',
+            checkpoint_storage_alias=dict(configured=str(old_checkpoint),physical=str(self.checkpoints)))
+        self.assertEqual(bootstrap.checkpoint_root(self.record,config,self.env),self.checkpoints)
+        module=ModuleType('migration_native_driver')
+        module.partial_context=native_function('search_r1/baselines/tree_partial_state.py','partial_context',
+            dict(Path=Path,os=os,execution_job_id=lambda:os.environ['SLURM_JOB_ID'],enabled=lambda actor:True,PROTOCOL='tree_partial_state_v1'))
+        trainer=SimpleNamespace(global_steps=1,actual_outer_updates=0,training_attempts=1,
+            config=SimpleNamespace(actor_rollout_ref=SimpleNamespace(actor={}),baselines=SimpleNamespace(training_protocol=TRAINING_PROTOCOL),
+                trainer=SimpleNamespace(default_local_dir=str(old_checkpoint))))
+        bootstrap.install_driver_into(module)
+        context=module.partial_context(trainer)
+        self.assertEqual(context['directory'],str(self.checkpoints/'training_state'/self.name))
+        data=copy.deepcopy(self.data);data.meta_info['tree_partial_context']=context
+        self.assertEqual(self.repaired()(self.worker,data),context)
+        self.record['checkpoint_storage_alias']['physical']=str(self.base.parent/'other/checkpoints')
+        with self.assertRaisesRegex(ValueError,'storage alias'):
+            bootstrap.checkpoint_root(self.record,config,self.env)
+        self.record['checkpoint_storage_alias']['physical']=str(self.checkpoints)
+        outside=self.base.parent/'outside';outside.mkdir();(self.checkpoints/'training_state').symlink_to(outside,target_is_directory=True)
+        with self.assertRaisesRegex(ValueError,'escaped'):
+            module.partial_context(trainer)
 
 
 if __name__ == '__main__':

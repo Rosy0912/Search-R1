@@ -12,6 +12,21 @@ from .migration_job import storage_admission
 
 
 class RecoveryProfiles(unittest.TestCase):
+    def test_pre_actor_retry_requires_exact_restored_boundary_and_no_writes(self):
+        p=profile('budget5-v4')
+        with TemporaryDirectory() as tmp:
+            base=Path(tmp);(base/'receipts').mkdir();out=base/'output/attempt';out.mkdir(parents=True)
+            previous=base/'receipts/current-entry.json';previous.write_text(json.dumps(dict(allocation=p['failed_entry_job'],run_id=p['run_id'],output=str(out))))
+            exited=out/'entry-exit.json';exited.write_text(json.dumps(dict(rc=1,error="RayTaskError(ValueError)(ValueError('Ablation output/checkpoint namespaces differ from this exact group receipt'))")))
+            restored=out/'native-resumed.json';restored.write_text(json.dumps(dict(completed_outer=2,next_outer=3,workers=[dict(rank=i,actual_state_equal=True,actual_total_optimizer_calls=40,scheduler_step=2) for i in range(8)])))
+            binding=dict(failed_entry_sha256=transport.sha(previous),failed_exit_sha256=transport.sha(exited),failed_restored_sha256=transport.sha(restored))
+            with patch.object(transport,'PROFILE',p):
+                self.assertEqual(transport.validate_previous_entry(base,binding),p['failed_entry_job'])
+                (out/'fresh-state').mkdir();(out/'fresh-state/rank.json').write_text('{}')
+                with self.assertRaises(ValueError):transport.validate_previous_entry(base,binding)
+                (out/'fresh-state/rank.json').unlink();restored.write_text('{}')
+                with self.assertRaises(ValueError):transport.validate_previous_entry(base,binding)
+
     def test_prebuilt_aliases_only_change_exact_transport_paths(self):
         paths={k:str(transport.BASE/'common-data'/(k+'.parquet')) for k in ('train','validation','stage','final')}
         record=dict(effective_paths=paths,content_identity={'sha256':'same'},manifest={'rows':512})
