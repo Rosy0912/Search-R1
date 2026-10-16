@@ -18,6 +18,11 @@ def profile(name):
     if name == 'budget5-v4':
         return dict(budget, target_job='rt16-tree-budget5-native-v4', stage='budget5-parent2-v4',
                     failed_entry_job='rt16-tree-budget5-native-v3', failed_before_actor=True)
+    if name == 'budget5-v5':
+        return dict(budget, parent_job='rt16-tree-budget5-native-v4',
+                    parent_source='3eeaac1669870fe1c78932e630541e28beafbcaf', step=48,
+                    target_job='rt16-tree-budget5-native48-v5', stage='budget5-parent48-v5',
+                    existing_run=True)
     if name == 'depth2-v1':
         return dict(group='generation-2', parent_job='rt15-tree-generation-2-v3',
             parent_source='c19dfe02321687e74edaafc19e6c26944095e5f7',

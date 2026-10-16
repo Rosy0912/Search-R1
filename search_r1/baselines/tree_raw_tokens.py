@@ -300,6 +300,7 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
             'Frozen decoder/tokenizer/special-token identity differs')
     special=set(binding['skip_special_token_ids']);decoder=codecs.getincrementaldecoder('utf-8')('replace')
     raw=bytearray();stable='';decoded=[];complete=[];pending_events=[];prefix_hashes=[];invalid_events=[]
+    native_empty_tokens=[]
     # Hash the same JSON string as fingerprint(expected), extending only the
     # stable UTF8 portion. Pending bytes may become a different character later.
     stable_hash=hashlib.sha256(b'"')
@@ -307,9 +308,25 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
         piece=b''
         if token not in special:
             spelling=tokenizer.convert_ids_to_tokens(token)
-            require(isinstance(spelling,str) and spelling and all(x in BYTELEVEL_INVERSE for x in spelling),
-                    'Original token piece is not a provable ByteLevel byte sequence')
-            piece=bytes(BYTELEVEL_INVERSE[x] for x in spelling)
+            if spelling is None:
+                # Qwen's output layer has rows beyond the tokenizer vocabulary.
+                # HF's native decoder omits undefined IDs. Preserve the sampled
+                # ID and its probability; prove only its empty text projection.
+                native=_context.native_prefix_decoder
+                require(native is not None and _context.backend.id_to_token(token) is None,
+                        'Undefined token requires the bound native Qwen decoder')
+                tokenizer._decode_use_source_tokenizer=False
+                before=native(ids[:stop-1],skip_special_tokens=True)
+                after=native(ids[:stop],skip_special_tokens=True)
+                require(native([token],skip_special_tokens=True)=='' and before==after and
+                        before==stable+decoder.getstate()[0].decode('utf-8',errors='replace'),
+                        'Undefined token changes native decoded text')
+                native_empty_tokens.append(dict(token_prefix_length=stop,token_id=token,
+                    native_prefix_sha256=fingerprint(after)))
+            else:
+                require(isinstance(spelling,str) and spelling and all(x in BYTELEVEL_INVERSE for x in spelling),
+                        'Original token piece is not a provable ByteLevel byte sequence')
+                piece=bytes(BYTELEVEL_INVERSE[x] for x in spelling)
         pending_before=decoder.getstate()[0];raw.extend(piece)
         addition=decoder.decode(piece,final=False)
         current=stable+addition
@@ -359,6 +376,8 @@ def _scan_utf8_prefixes(tokenizer,ids,identity,check_native_prefixes=True,_conte
         final_original_utf8_complete=not final_pending,final_original_utf8_valid=not invalid_events,
         final_pending_utf8_hex=final_pending.hex(),final_native_decode_finalized=True,
         final_native_text_sha256=fingerprint(decoded[-1]))
+    if native_empty_tokens:
+        proof['native_undefined_id_empty_projection_checks']=native_empty_tokens
     return decoded,complete,proof
 
 

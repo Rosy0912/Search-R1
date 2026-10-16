@@ -109,7 +109,7 @@ def prepare_resume():
     if gate['target_job']!=job:raise ValueError('Cutover is not for this allocation')
     if job != TARGET_JOB:raise ValueError('Wrong registered continuation allocation')
     base=BASE/'runs'/GROUP
-    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job'):
+    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job') and not PROFILE.get('existing_run'):
         base.mkdir(parents=True,exist_ok=False)
         for name in ('receipts','output','logs','tmp','cache','checkpoints'):(base/name).mkdir()
         config=base/'receipts/resolved.yaml';config.write_bytes((STAGE/'resolved.yaml').read_bytes())
@@ -130,7 +130,7 @@ def prepare_resume():
     record=dict(parent,base=str(base),output=str(base/'output'),config=str(config),source_commit=os.environ['RECURSIVE_SOURCE_COMMIT'],
         model=str(OLD_MODEL) if GROUP=='budget-5' else parent['model'],data=str(OLD_BASE/'common-data') if GROUP=='budget-5' else parent['data'],execution_backend='pj_pt',allocation=job,
         scheduler_node=os.environ['RECURSIVE_PJ_SCHEDULER_NODE'],host=socket.gethostname().split('.')[0],
-        configuration_host=parent['host'],fresh_authorized=False,parent_checkpoint=str(boundary/'manifest.json'),
+        configuration_host=parent.get('configuration_host',parent['host']),fresh_authorized=False,parent_checkpoint=str(boundary/'manifest.json'),
         resume_manifest=str(boundary/'manifest.json'),resume_sha256=b['manifest_sha256'],parent_job=PARENT_JOB,
         parent_source_commit=PARENT_SOURCE,parent_entry_sha256=b['parent_entry_sha256'],
         input_binding=str(STAGE/'inputs.json'),input_binding_sha256=sha(STAGE/'inputs.json'),
@@ -155,7 +155,7 @@ def install():
     if getattr(local_runtime.check_local_runtime,'_pj_transport',False):return
     original=local_runtime.check_local_runtime
     def check(config,ray_nodes=None):
-        if config.baselines.local_runtime_host!=parent['host']:raise ValueError('Frozen configuration host changed')
+        if config.baselines.local_runtime_host!=parent.get('configuration_host',parent['host']):raise ValueError('Frozen configuration host changed')
         projected=copy.deepcopy(config);projected.baselines.local_runtime_host=record['host']
         return original(projected,ray_nodes)
     check._pj_transport=True;local_runtime.check_local_runtime=check
@@ -225,7 +225,7 @@ def validate_resume_entry(record, base):
     validate_gate(json.loads((STAGE/'cutover.json').read_text()), b,
                   json.loads((STAGE/('result-'+TARGET_JOB+'.json')).read_text()))
     previous=Path(base)/'receipts/current-entry.json'
-    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job'):
+    if GROUP=='budget-5' and not PROFILE.get('failed_entry_job') and not PROFILE.get('existing_run'):
         if previous.exists() or any((Path(base)/'output').iterdir()):
             raise ValueError('Migration target already has an entry/output')
     else:

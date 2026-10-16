@@ -12,6 +12,26 @@ from .migration_job import storage_admission
 
 
 class RecoveryProfiles(unittest.TestCase):
+    def test_budget48_parent_is_existing_run_and_preserves_all_state_counters(self):
+        p=profile('budget5-v5')
+        self.assertTrue(p['existing_run'])
+        self.assertEqual(p['step'],48)
+        self.assertEqual(p['parent_job'],profile('budget5-v4')['target_job'])
+        with patch.multiple(transport, GROUP=p['group'], STEP=p['step'],
+                PARENT_JOB=p['parent_job'], PARENT_SOURCE=p['parent_source'],
+                RUN_ID=p['run_id'], CONFIG_SHA=p['config_sha']):
+            b,r,m=NativeTransport().fixture()
+            r.update(group=p['group'],run_id=p['run_id'],source_commit=p['parent_source'],config_sha256=p['config_sha'])
+            b.update(parent_job=p['parent_job'],completed_outer=48)
+            m['identity'].update(job_id=p['parent_job'],code_commit=p['parent_source'],config_sha256=p['config_sha'],completed_step=48)
+            for w in m['worker_states']:
+                w['identity'].update(m['identity'])
+                w.update(actual_total_optimizer_calls=960,scheduler_last_epoch=48)
+            m['driver']['next_step']=49
+            self.assertTrue(transport.validate_inputs(b,r,m))
+            m['driver']['next_step']=3
+            with self.assertRaises(ValueError):transport.validate_inputs(b,r,m)
+
     def test_pre_actor_retry_requires_exact_restored_boundary_and_no_writes(self):
         p=profile('budget5-v4')
         with TemporaryDirectory() as tmp:
@@ -80,7 +100,10 @@ class RecoveryProfiles(unittest.TestCase):
             with self.assertRaises(ValueError):transport.validate_inputs(b,r,m)
 
     def test_reentry_must_match_parent_and_cannot_overwrite_archive(self):
-        p=profile('depth2-v1')
+        self.check_reentry(profile('depth2-v1'))
+        self.check_reentry(profile('budget5-v5'))
+
+    def check_reentry(self,p):
         with TemporaryDirectory() as tmp:
             base=Path(tmp);(base/'receipts').mkdir()
             previous=base/'receipts/current-entry.json'
@@ -89,7 +112,7 @@ class RecoveryProfiles(unittest.TestCase):
             (base/'cutover.json').write_text('{}')
             (base/('result-'+p['target_job']+'.json')).write_text('{}')
             record=dict(fresh_authorized=False,allocation=p['target_job'])
-            with patch.multiple(transport, GROUP=p['group'],PARENT_JOB=p['parent_job'],
+            with patch.multiple(transport, PROFILE=p,GROUP=p['group'],PARENT_JOB=p['parent_job'],
                     RUN_ID=p['run_id'],TARGET_JOB=p['target_job'],STAGE=base), \
                     patch.object(transport,'load_inputs',return_value=(binding,{},{})), \
                     patch.object(transport,'validate_gate'):
