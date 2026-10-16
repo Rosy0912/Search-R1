@@ -141,7 +141,7 @@ def read_prediction_rows(path):
 
 def validate_replacement_state(state, elapsed, start, reason=None):
     if reason == 'UNSTARTED_DEPENDENCY_BLOCKED':
-        require(state.split()[0]=='CANCELLED' and elapsed==0 and start in ('Unknown',''),
+        require(state.split()[0]=='CANCELLED' and elapsed==0 and start in ('Unknown','None',''),
                 'Queued replacement requires cancelled allocation that never started')
     else:
         require(reason is None and state=='FAILED','Failed replacement state differs')

@@ -10,6 +10,7 @@ from . import contracts as c
 class Contracts(unittest.TestCase):
     def test_queued_replacement_requires_never_started_cancelled_allocation(self):
         c.validate_replacement_state('CANCELLED by 1000',0,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED')
+        c.validate_replacement_state('CANCELLED by 1000',0,'None','UNSTARTED_DEPENDENCY_BLOCKED')
         c.validate_replacement_state('FAILED',30,'2026-10-16T00:00:00')
         for state,elapsed,start,reason in [
             ('RUNNING',0,'Unknown','UNSTARTED_DEPENDENCY_BLOCKED'),
