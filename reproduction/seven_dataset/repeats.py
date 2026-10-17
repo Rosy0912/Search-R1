@@ -37,8 +37,8 @@ def validate_repeat(plan, parent, submission):
             and (parent['group'], parent['outer']) in REPEAT_CHECKPOINTS
             and parent['backend'] == 'slurm_lumia' and 'repeat' not in parent,
             'Repeat parent must be an authorized first Lumia evaluation')
-    require(not any(k in parent for k in ('replaces_job_id', 'pj_retired_submission')),
-            'Repeat parent cannot be a replacement plan')
+    require('pj_retired_submission' not in parent,
+            'Repeat parent cannot be a retired PJ plan')
     require(parent.get('repeat_context', {}).get('requested_repeats') == 3
             and parent['repeat_context'].get('candidate_repeat_index') == 1,
             'Parent lacks the fixed three-repeat request')
@@ -53,6 +53,14 @@ def validate_repeat(plan, parent, submission):
             and plan['evaluation_run_id'] != parent['evaluation_run_id'],
             'Repeat must have an independent execution identity')
     root = Path(parent['base']) / 'seven-evaluations' / parent['checkpoint_identity']
+    if 'replaces_job_id' in parent:
+        require(str(parent['replaces_job_id']).isdigit()
+                and re.fullmatch(r'[0-9a-f]{40}', parent['evaluation_code_commit']) is not None
+                and Path(parent.get('previous_submission', '')) == root / 'submission.json'
+                and re.fullmatch(r'[0-9a-f]{64}', parent.get('previous_submission_sha256', '')) is not None
+                and re.fullmatch(r'[0-9a-f]{64}', parent.get('replaces_plan_sha256', '')) is not None,
+                'Replacement parent lineage differs')
+        root = root / ('recovery-' + parent['evaluation_code_commit'][:12])
     require(Path(parent['output']) == root / 'output', 'First evaluation namespace differs')
     require(Path(repeat['parent_submission']) == root / 'submission.json',
             'Repeat references an unrelated submission receipt')
@@ -77,4 +85,14 @@ def inspect_repeat(plan):
             'First evaluation submission changed')
     parent = json.loads(Path(repeat['parent_plan']).read_text())
     submission = json.loads(Path(repeat['parent_submission']).read_text())
+    if 'replaces_job_id' in parent:
+        prior = Path(parent['previous_submission'])
+        require(sha(prior) == parent['previous_submission_sha256'],
+                'Replacement ancestor receipt changed')
+        old = json.loads(prior.read_text())
+        require(old['job_id'] == parent['replaces_job_id']
+                and old['plan_sha256'] == parent['replaces_plan_sha256']
+                and old['checkpoint_identity'] == parent['checkpoint_identity']
+                and old['group'] == parent['group'] and old['outer'] == parent['outer'],
+                'Replacement ancestor identity differs')
     return validate_repeat(plan, parent, submission)

@@ -128,4 +128,39 @@ class RepeatTests(unittest.TestCase):
         with self.assertRaises(ValueError):inspect_repeat(plan)
 
 
+    def test_replacement_parent_repeats_bind_recovery_namespace_and_ancestor(self):
+        old=dict(self.sub);old['job_id']='139019';old['plan_sha256']='9'*64
+        self.sp.write_text(json.dumps(old))
+        parent=copy.deepcopy(self.parent)
+        parent.update(replaces_job_id='139019',previous_submission=str(self.sp),
+            previous_submission_sha256=sha(self.sp),replaces_plan_sha256='9'*64)
+        root=Path(parent['output']).parent/('recovery-'+parent['evaluation_code_commit'][:12])
+        root.mkdir();parent['output']=str(root/'output');parent['job']+='-h1'
+        self.pp.write_text(json.dumps(parent))
+        sub=dict(self.sub,job_id='139020',job=parent['job'],output=parent['output'],plan_sha256=sha(self.pp))
+        sp=root/'submission.json';sp.write_text(json.dumps(sub))
+        plan=copy.deepcopy(parent)
+        plan.update(evaluation_run_id='2'*32,job=repeat_job_name(parent,2),
+                    output=str(root/'repeats'/parent['evaluation_run_id']/'r2'/'output'),
+                    repeat=dict(index=2,count=3,parent_plan=str(self.pp),parent_plan_sha256=sha(self.pp),
+                                parent_submission=str(sp),parent_submission_sha256=sha(sp)))
+        self.assertEqual(inspect_repeat(plan),Path(plan['output']).parent)
+        # Entry must retain the repeat namespace, not redirect it to the first recovery.
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        from . import entry
+        planfile=Path(self.tmp.name)/'repeat.json';planfile.write_text(json.dumps(plan))
+        modules={'omegaconf':SimpleNamespace(OmegaConf=None),
+                 'search_r1.baselines.preflight':SimpleNamespace(validate_gpu_lease=None)}
+        with patch.dict('sys.modules',modules),patch('sys.argv',['entry','--plan',str(planfile)]),patch.object(entry,'inspect_inputs',return_value=(None,[])),patch.object(entry,'run_frozen') as run:
+            entry.main()
+        self.assertEqual(run.call_args.args[-1],Path(plan['output']).parent)
+        bad=copy.deepcopy(plan);bad['previous_submission_sha256']='0'*64
+        with self.assertRaises(ValueError):inspect_repeat(bad)
+        bad=copy.deepcopy(plan);bad['output']=self.plan['output']
+        with self.assertRaises(ValueError):inspect_repeat(bad)
+        old['checkpoint_identity']='0'*64;self.sp.write_text(json.dumps(old))
+        with self.assertRaises(ValueError):inspect_repeat(plan)
+
+
 if __name__ == '__main__':unittest.main()

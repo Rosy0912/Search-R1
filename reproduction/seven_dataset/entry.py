@@ -125,7 +125,7 @@ def main():
                 (not (prior_out/'predictions.jsonl').exists() or (prior_out/'predictions.jsonl').stat().st_size==0),
                 'PJ predictions require audited continuation, not regeneration')
         expected_root=expected_root/('renamed-'+plan['evaluation_code_commit'][:12])
-    if 'replaces_job_id' in plan:
+    if 'replaces_job_id' in plan and repeat_root is None:
         expected_root=expected_root/('recovery-'+plan['evaluation_code_commit'][:12])
         previous=Path(plan['previous_submission'])
         require(sha(previous)==plan['previous_submission_sha256'],'Previous submission identity differs')
