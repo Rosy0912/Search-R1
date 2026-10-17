@@ -78,6 +78,9 @@ def validate_repeat(plan, parent, submission):
 
 
 def inspect_repeat(plan):
+    if 'repeat_recovery' in plan:
+        from .repeat_recovery import inspect_recovery
+        return inspect_recovery(plan)
     repeat = plan['repeat']
     require(sha(repeat['parent_plan']) == repeat['parent_plan_sha256'],
             'First evaluation plan changed')
