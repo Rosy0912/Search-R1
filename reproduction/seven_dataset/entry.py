@@ -180,8 +180,8 @@ def run_frozen(plan,plan_path,cfg,expected,expected_root):
     require(sha(plan['retriever_receipt'])==plan['retriever_receipt_sha256'] and
             retriever['encoder_dtype']==retriever['index_dtype']=='float32' and retriever['validation']['top3_identical'],
             'Retriever identity differs')
-    with urllib.request.urlopen(retriever['url']+'/health',timeout=15) as response:
-        require(json.load(response)['job']==retriever['job'],'Retriever job differs')
+    from .health import wait_retriever_health
+    wait_retriever_health(retriever['url'], retriever['job'])
     from http.server import ThreadingHTTPServer
     from reproduction.recursive_lumia.proxy import Handler
     server=ThreadingHTTPServer(('127.0.0.1',29147),Handler);server.remote=retriever['url']
