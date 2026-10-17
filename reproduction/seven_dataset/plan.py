@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import uuid
-from .contracts import DATA_SHA,IDS_SHA,digest,sha,validate_milestone,validate_manifest
+from .contracts import DATA_SHA,IDS_SHA,digest,sha,validate_milestone,validate_manifest,milestone_job_name
 
 
 def build(base,group,step,commit,backend):
@@ -38,7 +38,7 @@ def build(base,group,step,commit,backend):
         final_content_identity=data_manifest['splits']['final']['content_identity'],
         retriever_receipt=str(retriever),retriever_receipt_sha256=sha(retriever),
         evaluation_code_commit=commit,evaluation_run_id=uuid.uuid4().hex,backend=backend,
-        job='rt16-seven-'+group.lower().replace('generation','depth')+'-'+str(step)+'-'+cid[:8],
+        job=milestone_job_name(group,step,cid,backend),
         output=str(base/'seven-evaluations'/cid/'output'))
     from .model_view import TOKENIZER_FILES
     canonical=assets['model'].resolve(strict=True)

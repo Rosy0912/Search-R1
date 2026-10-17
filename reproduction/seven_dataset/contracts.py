@@ -57,6 +57,19 @@ def validate_milestone(group, step):
     require(group in GROUPS and type(step) is int and step in allowed,'Unrequested milestone')
 
 
+def milestone_job_name(group, step, checkpoint_identity, backend):
+    validate_milestone(group,step)
+    require(len(checkpoint_identity)==64 and all(c in '0123456789abcdef' for c in checkpoint_identity),
+            'Invalid model identity')
+    if backend=='pj_pt':
+        short={'original':'orig','C1-root-only':'c1','C2-random-final':'c2',
+               'budget-5':'b5','budget-20':'b20','generation-2':'d2',
+               'position-early':'early','position-late':'late'}[group]
+        return 'rt17-seven-'+short+'-'+str(step)+'-'+checkpoint_identity[:8]
+    require(backend=='slurm_lumia','Unsupported scheduler')
+    return 'rt16-seven-'+group.lower().replace('generation','depth')+'-'+str(step)+'-'+checkpoint_identity[:8]
+
+
 def validate_scheduler_binding(plan, intent, submission, environ, plan_sha):
     """Bind a stable model job name to the scheduler's actual allocation ID."""
     require(intent['job']==plan['job'] and intent['plan_sha256']==plan_sha,

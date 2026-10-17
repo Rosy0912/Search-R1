@@ -1,6 +1,6 @@
 import unittest
 from .archived_assets import resolve_assets, PJ_BASE, OLD_DATA, OLD_MODEL, PJ_MODEL, BUDGET_RUN
-from .contracts import DATA_SHA
+from .contracts import DATA_SHA, GROUPS, milestone_job_name
 
 
 class ArchivedAssetsTest(unittest.TestCase):
@@ -34,6 +34,18 @@ class ArchivedAssetsTest(unittest.TestCase):
 
     def test_unknown_host_base_rejected(self):
         with self.assertRaises(ValueError):resolve_assets(PJ_BASE+'-other','budget-5','pj_pt',self.record())
+
+    def test_pt_names_fit_actual_api_limit_and_are_unique(self):
+        names=[]
+        for group in GROUPS:
+            for step in ([50] if group.startswith('position-') else [50,100,150]):
+                name=milestone_job_name(group,step,'a'*64,'pj_pt')
+                self.assertLessEqual(len(name),32);names.append(name)
+        self.assertEqual(len(names),len(set(names)))
+
+    def test_lumia_names_unchanged(self):
+        self.assertEqual(milestone_job_name('C2-random-final',150,'a'*64,'slurm_lumia'),
+                         'rt16-seven-c2-random-final-150-aaaaaaaa')
 
 
 if __name__=='__main__':unittest.main()
