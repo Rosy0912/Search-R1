@@ -143,6 +143,14 @@ def main():
         require(not (prior_out/'progress.json').exists() and
                 (not (prior_out/'predictions.jsonl').exists() or (prior_out/'predictions.jsonl').stat().st_size==0),
                 'Prediction-producing evaluation requires a separate audited result continuation')
+    run_frozen(plan,args.plan,cfg,expected,expected_root)
+
+
+def run_frozen(plan,plan_path,cfg,expected,expected_root):
+    """Shared read-only inference runtime; entry-specific input contracts run first."""
+    from omegaconf import OmegaConf
+    from search_r1.baselines.preflight import validate_gpu_lease
+    base=Path(plan['base']).resolve(strict=True);out=Path(plan['output'])
     require(out==expected_root/'output','Evaluation output namespace differs')
     intent=out.parent/'submission-intent.json'
     require(intent.is_file(),'No matching unique submission intent')
@@ -151,7 +159,7 @@ def main():
         deadline=time.monotonic()+120
         while not submission_path.exists() and time.monotonic()<deadline:time.sleep(1)
     submission=json.loads(submission_path.read_text()) if submission_path.exists() else None
-    actual_job=validate_scheduler_binding(plan,json.loads(intent.read_text()),submission,os.environ,sha(args.plan))
+    actual_job=validate_scheduler_binding(plan,json.loads(intent.read_text()),submission,os.environ,sha(plan_path))
     require(os.statvfs(base).f_bavail*os.statvfs(base).f_frsize>=408_000_000_000,'Training checkpoint reserve unavailable')
     validate_gpu_lease(cfg)
     out.mkdir(exist_ok=False)
@@ -167,7 +175,7 @@ def main():
         TREE_COMMON_DATA=plan['data_root'],TREE_INSTRUCT_MODEL=plan.get('inference_model',plan['model']),TREE_LINEAR_PREFIX_SCAN='1')
     for key in ('RECURSIVE_LUMIA_PAIRED_EVALUATION','RECURSIVE_ABLATION_RESUME_MANIFEST','RECURSIVE_ABLATION_PJ_BINDING'):
         os.environ.pop(key,None)
-    (out/'plan.json').write_bytes(Path(args.plan).read_bytes())
+    (out/'plan.json').write_bytes(Path(plan_path).read_bytes())
     retriever=json.loads(Path(plan['retriever_receipt']).read_text())
     require(sha(plan['retriever_receipt'])==plan['retriever_receipt_sha256'] and
             retriever['encoder_dtype']==retriever['index_dtype']=='float32' and retriever['validation']['top3_identical'],
@@ -201,13 +209,19 @@ def main():
             report['inference_model_files']=validate_view(plan,cfg.baselines.tree.token_preservation.tokenizer_sha256)
         report.update(status='COMPLETE_FULL_51713_ACCEPTED',group=plan['group'],outer=plan['outer'],job=plan['job'],actual_job_id=actual_job,
             checkpoint_identity=plan['checkpoint_identity'],evaluation_code_commit=plan['evaluation_code_commit'],
-            evaluation_config_sha256=eval_sha,training_config_sha256=plan['training_config_sha256'],
+            evaluation_config_sha256=eval_sha,training_config_sha256=plan.get('training_config_sha256'),
             communication_transport=transport,
-            data_manifest_sha256=plan['data_manifest_sha256'],plan_sha256=sha(args.plan),
+            data_manifest_sha256=plan['data_manifest_sha256'],plan_sha256=sha(plan_path),
             inference_wall_gpu_hours_lower_bound=8*(time.time()-started)/3600,
             cost_status='SCHEDULER_ALLOCATION_COST_PENDING_POST_EXIT_AUDIT')
         if 'repeat' in plan:
             report['repeat']=plan['repeat']
+        if plan['protocol']=='base_seven_repeats_v1':
+            report.update(protocol=plan['protocol'],baseline_model=plan['baseline_model'],
+                model_revision=plan['model_revision'],repeat_index=plan['repeat_index'],
+                repeat_count=plan['repeat_count'],protocol_identity=plan['protocol_identity'],
+                protocol_template_plan_sha256=plan['template_plan_sha256'],
+                protocol_template_config_sha256=plan['protocol_template_config_sha256'])
         with (out/'summary.json').open('x') as f:json.dump(report,f,indent=2,allow_nan=False);f.flush();os.fsync(f.fileno())
         outcome='COMPLETE_FULL_51713_ACCEPTED'
     finally:
