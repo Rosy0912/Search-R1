@@ -216,12 +216,13 @@ def run_frozen(plan,plan_path,cfg,expected,expected_root):
             cost_status='SCHEDULER_ALLOCATION_COST_PENDING_POST_EXIT_AUDIT')
         if 'repeat' in plan:
             report['repeat']=plan['repeat']
-        if plan['protocol']=='base_seven_repeats_v1':
+        if plan['protocol'] in ('base_seven_repeats_v1','base_seven_pj_migration_v1'):
             report.update(protocol=plan['protocol'],baseline_model=plan['baseline_model'],
                 model_revision=plan['model_revision'],repeat_index=plan['repeat_index'],
                 repeat_count=plan['repeat_count'],protocol_identity=plan['protocol_identity'],
                 protocol_template_plan_sha256=plan['template_plan_sha256'],
                 protocol_template_config_sha256=plan['protocol_template_config_sha256'])
+            if 'migration' in plan:report['migration']=plan['migration']
         with (out/'summary.json').open('x') as f:json.dump(report,f,indent=2,allow_nan=False);f.flush();os.fsync(f.fileno())
         outcome='COMPLETE_FULL_51713_ACCEPTED'
     finally:
