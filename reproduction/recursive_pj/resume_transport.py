@@ -88,7 +88,14 @@ def aliases():
 
 
 def validate_gate(gate,binding,probe):
-    if (gate['parent_job']!=PARENT_JOB or gate['parent_state'] not in ('CANCELLED','COMPLETED','FAILED','TIMEOUT')
+    terminal_states=('CANCELLED','COMPLETED','FAILED','TIMEOUT')
+    if PROFILE.get('storage_protected_parent'):
+        terminal_states=('TERMINATED',)
+        stop_sha=binding.get('protective_stop_sha256')
+        if (not stop_sha or gate.get('protective_stop_sha256')!=stop_sha
+                or binding.get('metadata_sha256',{}).get('protective-stop-intent.json')!=stop_sha):
+            raise ValueError('Storage recovery requires the bound protective-stop evidence')
+    if (gate['parent_job']!=PARENT_JOB or gate['parent_state'] not in terminal_states
             or gate['completed_outer']!=STEP or gate['latest_durable_outer']!=STEP
             or gate['manifest_sha256']!=binding['manifest_sha256']
             or gate['parent_entry_sha256']!=binding['parent_entry_sha256']

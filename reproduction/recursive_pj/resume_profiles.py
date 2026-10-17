@@ -23,6 +23,18 @@ def profile(name):
                     parent_source='3eeaac1669870fe1c78932e630541e28beafbcaf', step=48,
                     target_job='rt16-tree-budget5-native48-v5', stage='budget5-parent48-v5',
                     existing_run=True)
+    if name == 'budget5-storage53-v6':
+        return dict(budget, parent_job='rt16-tree-budget5-native48-v5',
+                    parent_source='e39481e06be5a6e972badf5329eb5c4e7454297e', step=53,
+                    target_job='rt17-tree-budget5-native53-v6', stage='budget5-parent53-v6',
+                    existing_run=True, storage_protected_parent=True)
+    if name == 'depth2-storage105-v2':
+        return dict(group='generation-2', parent_job='rt16-tree-depth2-native56-v1',
+            parent_source='7c57751f53b88f52fef0f033140b1335cf9e7b5a',
+            run_id='4968fc6b0e0c4817a80641f03e95317f',
+            config_sha='c52da22b7dfa12584871bcc6e275209a65ceda9c0432ffab813c43d4eccdf001',
+            step=105, target_job='rt17-tree-depth2-native105-v2', stage='depth2-parent105-v2',
+            existing_run=True, storage_protected_parent=True)
     if name == 'depth2-v1':
         return dict(group='generation-2', parent_job='rt15-tree-generation-2-v3',
             parent_source='c19dfe02321687e74edaafc19e6c26944095e5f7',
