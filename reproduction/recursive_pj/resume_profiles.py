@@ -3,6 +3,16 @@ import os
 
 
 def profile(name):
+    if name == 'budget5-ttt53-v7':
+        return dict(profile('budget5-storage53-v6'), target_job='zhangjunming-ttt-b5-s53-v7',
+                    stage='ttt-budget5-parent53-v7')
+    if name == 'depth2-ttt108-v3':
+        p = profile('depth2-storage105-v2')
+        p.pop('storage_protected_parent')
+        return dict(p, parent_job='rt17-tree-depth2-native105-v2',
+                    parent_source='19b9493fd19184593c7f1c98ef1fc74c06cb67bc',step=108,
+                    target_job='zhangjunming-ttt-d2-s108-v3',stage='ttt-depth2-parent108-v3',
+                    scheduler_deleted_parent=True)
     budget = dict(group='budget-5', parent_job='138706',
         parent_source='bb271db4b5c19555ade5c1afc0b2f287c46e42e2',
         run_id='02ccdba4db9f4e68aacbb7edfa3042ab',

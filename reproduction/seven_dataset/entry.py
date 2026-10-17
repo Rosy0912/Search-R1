@@ -103,6 +103,22 @@ def main():
     from search_r1.baselines.preflight import validate_gpu_lease
     base=Path(plan['base']).resolve(strict=True);out=Path(plan['output'])
     expected_root=base/'seven-evaluations'/plan['checkpoint_identity']
+    if 'pj_retired_submission' in plan:
+        require(plan['backend']=='pj_pt' and 'replaces_job_id' not in plan,'Invalid retired PJ replacement')
+        from .retirement import validate_retirement
+        prior_path=Path(plan['pj_retired_submission'])
+        require(sha(prior_path)==plan['pj_retired_submission_sha256'],'Previous PJ receipt changed')
+        prior=json.loads(prior_path.read_text())
+        require(prior['checkpoint_identity']==plan['checkpoint_identity'] and prior['job']!=plan['job'],
+                'PJ replacement model identity changed')
+        retirement=Path(plan['pj_retirement_evidence'])
+        require(sha(retirement)==plan['pj_retirement_evidence_sha256'],'PJ retirement evidence changed')
+        validate_retirement(json.loads(retirement.read_text()),prior['job'])
+        prior_out=Path(prior['output'])
+        require(not (prior_out/'progress.json').exists() and
+                (not (prior_out/'predictions.jsonl').exists() or (prior_out/'predictions.jsonl').stat().st_size==0),
+                'PJ predictions require audited continuation, not regeneration')
+        expected_root=expected_root/('renamed-'+plan['evaluation_code_commit'][:12])
     if 'replaces_job_id' in plan:
         expected_root=expected_root/('recovery-'+plan['evaluation_code_commit'][:12])
         previous=Path(plan['previous_submission'])

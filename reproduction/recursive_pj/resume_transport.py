@@ -89,6 +89,15 @@ def aliases():
 
 def validate_gate(gate,binding,probe):
     terminal_states=('CANCELLED','COMPLETED','FAILED','TIMEOUT')
+    if PROFILE.get('scheduler_deleted_parent'):
+        terminal_states=('NOT_FOUND_404',)
+        from reproduction.seven_dataset.retirement import validate_retirement
+        evidence=STAGE/'scheduler-retirement.json'
+        expected=binding.get('scheduler_retirement_sha256')
+        if (not expected or sha(evidence)!=expected or gate.get('scheduler_retirement_sha256')!=expected
+                or binding.get('metadata_sha256',{}).get(evidence.name)!=expected):
+            raise ValueError('Missing exact deleted-parent scheduler evidence')
+        validate_retirement(json.loads(evidence.read_text()),PARENT_JOB)
     if PROFILE.get('storage_protected_parent'):
         terminal_states=('TERMINATED',)
         stop_sha=binding.get('protective_stop_sha256')
