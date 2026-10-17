@@ -95,6 +95,10 @@ def inspect_inputs(plan):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--plan',required=True);parser.add_argument('--validate-only',action='store_true')
     args=parser.parse_args();plan=json.loads(Path(args.plan).read_text())
+    repeat_root=None
+    if 'repeat' in plan:
+        from .repeats import inspect_repeat
+        repeat_root=inspect_repeat(plan)
     cfg,expected=inspect_inputs(plan)
     if args.validate_only:
         print(json.dumps(dict(status='INPUTS_VERIFIED_NO_INFERENCE',count=len(expected),checkpoint_identity=plan['checkpoint_identity'])))
@@ -103,6 +107,8 @@ def main():
     from search_r1.baselines.preflight import validate_gpu_lease
     base=Path(plan['base']).resolve(strict=True);out=Path(plan['output'])
     expected_root=base/'seven-evaluations'/plan['checkpoint_identity']
+    if repeat_root is not None:
+        expected_root=repeat_root
     if 'pj_retired_submission' in plan:
         require(plan['backend']=='pj_pt' and 'replaces_job_id' not in plan,'Invalid retired PJ replacement')
         from .retirement import validate_retirement
@@ -200,6 +206,8 @@ def main():
             data_manifest_sha256=plan['data_manifest_sha256'],plan_sha256=sha(args.plan),
             inference_wall_gpu_hours_lower_bound=8*(time.time()-started)/3600,
             cost_status='SCHEDULER_ALLOCATION_COST_PENDING_POST_EXIT_AUDIT')
+        if 'repeat' in plan:
+            report['repeat']=plan['repeat']
         with (out/'summary.json').open('x') as f:json.dump(report,f,indent=2,allow_nan=False);f.flush();os.fsync(f.fileno())
         outcome='COMPLETE_FULL_51713_ACCEPTED'
     finally:
