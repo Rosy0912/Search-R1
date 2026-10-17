@@ -16,6 +16,7 @@ CHANGED={'protocol','base','backend','data_root','retriever_receipt','retriever_
 LINKS={'origin_plan','origin_plan_sha256','origin_submission','origin_submission_sha256',
        'config_export','config_export_sha256','retirement','retirement_sha256'}
 PJ_LINKS={'pj_origin_plan','pj_origin_plan_sha256','pj_retirement','pj_retirement_sha256'}
+FAIL_LINKS={'failed_plan','failed_plan_sha256','startup_failure','startup_failure_sha256'}
 
 
 def read_bound(path,expected):
@@ -24,6 +25,28 @@ def read_bound(path,expected):
 
 
 def validate_migration(plan,parent,submission,export,retirement=None,pj_previous=None,pj_retired=None):
+    if plan['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-auto2':
+        m=plan['migration']
+        require(set(m)==LINKS|PJ_LINKS|FAIL_LINKS,'Missing startup-failure lineage')
+        failed=read_bound(m['failed_plan'],m['failed_plan_sha256'])
+        require(failed['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-auto','Wrong failed allocation')
+        validate_migration(failed,parent,submission,export,retirement,pj_previous,pj_retired)
+        changed={'job','output','evaluation_run_id','evaluation_code_commit','migration'}
+        require({k:v for k,v in plan.items() if k not in changed}=={k:v for k,v in failed.items() if k not in changed}
+                and {k:m[k] for k in LINKS|PJ_LINKS}==failed['migration'],'Startup repair changes frozen inputs')
+        root=Path(failed['output']).parent.parent/'pj-auto-v3'
+        require(Path(plan['output'])==root/'output' and plan['evaluation_run_id']!=failed['evaluation_run_id']
+                and re.fullmatch('[0-9a-f]{32}',plan['evaluation_run_id']) and re.fullmatch('[0-9a-f]{40}',plan['evaluation_code_commit']),
+                'Startup repair needs independent execution namespace')
+        proof=read_bound(m['startup_failure'],m['startup_failure_sha256'])
+        require(proof['job']==failed['job'] and proof['plan_sha256']==m['failed_plan_sha256']
+                and proof['reason']=='MISSING_JOB_INTENT_BEFORE_RUNTIME' and len(proof['observations'])==2,
+                'Failure proof differs')
+        for row in proof['observations']:
+            require(row['state']=='FAILED' and row['uid']==proof['uid'] and row['job']==failed['job'] and
+                    row['output_exists'] is False and row['prediction_bytes']==0 and row['missing_job_intent'] is True and
+                    row['exact_failure_in_log'] is True and row['ray_started'] is False,'Not a zero-inference startup failure')
+        return root
     validate_base_plan(parent,export['template'])
     automatic=plan['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-auto'
     require(set(plan)==set(parent)|{'migration'} and set(plan['migration'])==(LINKS|PJ_LINKS if automatic else LINKS),
@@ -79,6 +102,18 @@ def validate_migration(plan,parent,submission,export,retirement=None,pj_previous
                         row['output_exists'] is False and row['prediction_bytes']==0,
                         'PJ allocation already started or contains output')
     return root
+
+
+def make_pj_submission_intent(plan,plan_sha,params,**audit):
+    """Exercise the real runtime binding before any allocation can be submitted."""
+    from .contracts import validate_scheduler_binding
+    require(params['job_name']==plan['job'] and params['gpus_per_task']==8 and
+            params['cpus_per_task']==64 and params['memory_per_task']==600 and not params.get('include'),
+            'Automatic PJ submission resources or name differ')
+    intent=dict(audit,job=plan['job'],plan_sha256=plan_sha,params=params)
+    env={'SEARCH_R1_EXECUTION_BACKEND':'pj_pt','RECURSIVE_SOURCE_COMMIT':plan['evaluation_code_commit'],'SEARCH_R1_JOB_ID':plan['job']}
+    require(validate_scheduler_binding(plan,intent,None,env,plan_sha)==plan['job'],'Runtime submission binding failed')
+    return intent
 
 
 def mapped_config(plan,export):

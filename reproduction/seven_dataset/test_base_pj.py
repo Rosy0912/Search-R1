@@ -77,3 +77,28 @@ class AutomaticPlacement(unittest.TestCase):
             with self.assertRaises(ValueError):self.validate(p=p)
 
 if __name__=='__main__':unittest.main()
+
+class StartupRepair(unittest.TestCase):
+    def setUp(self):
+        f=AutomaticPlacement();f.setUp();self.addCleanup(f.doCleanups);self.f=f
+        self.plan=copy.deepcopy(f.auto);self.plan.update(job='zhangjunming-ttt-base-r1-auto2',output=f.auto['output'].replace('pj-auto-v2','pj-auto-v3'),evaluation_run_id='f'*32)
+        self.plan['migration'].update(failed_plan='/failed-plan',failed_plan_sha256='f'*64,startup_failure='/failure-proof',startup_failure_sha256='1'*64)
+        self.proof=dict(job=f.auto['job'],uid='failed-uid',plan_sha256='f'*64,reason='MISSING_JOB_INTENT_BEFORE_RUNTIME',observations=[dict(job=f.auto['job'],uid='failed-uid',state='FAILED',output_exists=False,prediction_bytes=0,missing_job_intent=True,exact_failure_in_log=True,ray_started=False) for _ in range(2)])
+        self.addCleanup(patch.stopall);patch.object(m,'read_bound',side_effect=lambda p,h:{'/failed-plan':f.auto,'/failure-proof':self.proof}[p]).start()
+    def validate(self):
+        f=self.f;return m.validate_migration(self.plan,f.parent,f.sub,f.export,f.retired,f.previous,f.pj_retired)
+    def test_exact_startup_failure(self):self.assertEqual(str(self.validate())+'/output',self.plan['output'])
+    def test_rejects_any_inference_or_live_job(self):
+        for key,value in [('state','RUNNING'),('output_exists',True),('prediction_bytes',1),('missing_job_intent',False),('exact_failure_in_log',False),('ray_started',True)]:
+            before=copy.deepcopy(self.proof);self.proof['observations'][0][key]=value
+            with self.assertRaises(ValueError):self.validate()
+            self.proof.clear();self.proof.update(before)
+    def test_rejects_weight_change(self):
+        self.plan['model']='/other'
+        with self.assertRaises(ValueError):self.validate()
+    def test_intent_matches_real_runtime(self):
+        params=dict(job_name=self.plan['job'],gpus_per_task=8,cpus_per_task=64,memory_per_task=600)
+        v=m.make_pj_submission_intent(self.plan,'2'*64,params,at=1)
+        self.assertEqual(v['job'],self.plan['job']);self.assertEqual(v['plan_sha256'],'2'*64)
+        params['job_name']='wrong'
+        with self.assertRaises(ValueError):m.make_pj_submission_intent(self.plan,'2'*64,params)
