@@ -50,4 +50,30 @@ class Migration(unittest.TestCase):
         p=copy.deepcopy(self.plan);p['skip_validation']=True
         with self.assertRaises(ValueError):self.validate(plan=p)
 
+
+class AutomaticPlacement(unittest.TestCase):
+    def setUp(self):
+        f=Migration();f.setUp();self.addCleanup(f.doCleanups)
+        self.parent,self.sub,self.export,self.retired=f.parent,f.sub,f.export,f.retired
+        self.previous=copy.deepcopy(f.plan);self.auto=copy.deepcopy(f.plan)
+        self.auto.update(job='zhangjunming-ttt-base-r1-auto',output=f.plan['output'].replace('/pj-v1/','/pj-auto-v2/'),evaluation_run_id='d'*32)
+        self.auto['migration'].update({k:'e'*64 if k.endswith('sha256') else '/bound/'+k for k in m.PJ_LINKS})
+        self.pj_retired=dict(job=self.previous['job'],uid='uid1',plan_sha256='e'*64,status='TERMINATED_NEVER_STARTED_ZERO_PREDICTIONS',observations=[dict(job=self.previous['job'],uid='uid1',state='TERMINATED',ever_running=False,start_exists=False,log_exists=False,output_exists=False,prediction_bytes=0) for _ in range(2)])
+    def validate(self,p=None,r=None,previous=True):
+        return m.validate_migration(p or self.auto,self.parent,self.sub,self.export,self.retired,self.previous if previous else None,r or self.pj_retired)
+    def test_automatic_valid(self):self.assertEqual(str(self.validate())+'/output',self.auto['output'])
+    def test_automatic_requires_zero_run_and_output(self):
+        for key,value in [('state','PENDING'),('ever_running',True),('start_exists',True),('log_exists',True),('output_exists',True),('prediction_bytes',1),('uid','other')]:
+            r=copy.deepcopy(self.pj_retired);r['observations'][0][key]=value
+            with self.assertRaises(ValueError):self.validate(r=r)
+    def test_automatic_rejects_wrong_lineage(self):
+        for key,value in [('job','other'),('plan_sha256','0'*64),('observations',[])]:
+            r=copy.deepcopy(self.pj_retired);r[key]=value
+            with self.assertRaises(ValueError):self.validate(r=r)
+        with self.assertRaises(ValueError):self.validate(previous=False)
+    def test_automatic_rejects_changed_repeat_or_same_execution(self):
+        for key,value in [('repeat_index',2),('model','/other'),('evaluation_run_id',self.previous['evaluation_run_id'])]:
+            p=copy.deepcopy(self.auto);p[key]=value
+            with self.assertRaises(ValueError):self.validate(p=p)
+
 if __name__=='__main__':unittest.main()

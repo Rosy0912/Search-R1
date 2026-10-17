@@ -15,6 +15,7 @@ CHANGED={'protocol','base','backend','data_root','retriever_receipt','retriever_
          'model','evaluation_code_commit','evaluation_run_id','job','output'}
 LINKS={'origin_plan','origin_plan_sha256','origin_submission','origin_submission_sha256',
        'config_export','config_export_sha256','retirement','retirement_sha256'}
+PJ_LINKS={'pj_origin_plan','pj_origin_plan_sha256','pj_retirement','pj_retirement_sha256'}
 
 
 def read_bound(path,expected):
@@ -22,9 +23,10 @@ def read_bound(path,expected):
     return json.loads(Path(path).read_text())
 
 
-def validate_migration(plan,parent,submission,export,retirement=None):
+def validate_migration(plan,parent,submission,export,retirement=None,pj_previous=None,pj_retired=None):
     validate_base_plan(parent,export['template'])
-    require(set(plan)==set(parent)|{'migration'} and set(plan['migration'])==LINKS,
+    automatic=plan['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-auto'
+    require(set(plan)==set(parent)|{'migration'} and set(plan['migration'])==(LINKS|PJ_LINKS if automatic else LINKS),
             'Unexpected migration fields')
     require({k:v for k,v in plan.items() if k not in CHANGED|{'migration'}}==
             {k:v for k,v in parent.items() if k not in CHANGED},'Migration changes model/data/science/repeat')
@@ -45,8 +47,8 @@ def validate_migration(plan,parent,submission,export,retirement=None):
     require(re.fullmatch('[0-9a-f]{40}',plan['evaluation_code_commit']) is not None
             and re.fullmatch('[0-9a-f]{32}',plan['evaluation_run_id']) is not None
             and plan['evaluation_run_id']!=parent['evaluation_run_id'],'Migration needs new immutable execution identity')
-    root=Path(BASE)/'baseline-seven-evaluations'/parent['checkpoint_identity']/parent['protocol_identity']/('r'+str(parent['repeat_index']))/'pj-v1'
-    require(plan['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-pj'
+    root=Path(BASE)/'baseline-seven-evaluations'/parent['checkpoint_identity']/parent['protocol_identity']/('r'+str(parent['repeat_index']))/('pj-auto-v2' if automatic else 'pj-v1')
+    require(plan['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+('-auto' if automatic else '-pj')
             and Path(plan['output'])==root/'output','PJ repeat namespace differs')
     if retirement is not None:
         require(retirement['job_id']==submission['job_id'] and
@@ -57,6 +59,25 @@ def validate_migration(plan,parent,submission,export,retirement=None):
         for row in retirement['observations']:
             require(row['job_id']==submission['job_id'] and row['active_queue']==[], 'Origin still active')
             validate_replacement_state(row['state'],row['elapsed'],row['start'],'UNSTARTED_DEPENDENCY_BLOCKED')
+    if automatic:
+        require(pj_previous is not None and pj_previous['job']=='zhangjunming-ttt-base-r'+str(parent['repeat_index'])+'-pj' and set(pj_previous['migration'])==LINKS,'Missing or invalid prior PJ plan')
+        validate_migration(pj_previous,parent,submission,export,retirement)
+        require({k:v for k,v in plan.items() if k not in {'job','output','evaluation_code_commit','evaluation_run_id','migration'}}==
+                {k:v for k,v in pj_previous.items() if k not in {'job','output','evaluation_code_commit','evaluation_run_id','migration'}},
+                'Automatic placement changes frozen evaluation inputs')
+        require({k:plan['migration'][k] for k in LINKS}==pj_previous['migration'],'Origin evidence changed')
+        require(plan['evaluation_run_id']!=pj_previous['evaluation_run_id'],'Automatic replacement needs new execution ID')
+        if retirement is not None:
+            require(pj_retired is not None and pj_retired['job']==pj_previous['job'] and
+                    pj_retired['plan_sha256']==plan['migration']['pj_origin_plan_sha256'] and
+                    pj_retired['status']=='TERMINATED_NEVER_STARTED_ZERO_PREDICTIONS' and
+                    len(pj_retired['observations'])==2,'Prior PJ allocation not retired')
+            for row in pj_retired['observations']:
+                require(row['job']==pj_previous['job'] and row['state']=='TERMINATED' and
+                        row['uid']==pj_retired['uid'] and row['ever_running'] is False and
+                        row['start_exists'] is False and row['log_exists'] is False and
+                        row['output_exists'] is False and row['prediction_bytes']==0,
+                        'PJ allocation already started or contains output')
     return root
 
 
@@ -81,7 +102,9 @@ def inspect_pj_base(plan,require_retired=True):
     sub=read_bound(m['origin_submission'],m['origin_submission_sha256'])
     export=read_bound(m['config_export'],m['config_export_sha256'])
     retired=read_bound(m['retirement'],m['retirement_sha256']) if require_retired else None
-    root=validate_migration(plan,parent,sub,export,retired)
+    previous=read_bound(m['pj_origin_plan'],m['pj_origin_plan_sha256']) if 'pj_origin_plan' in m else None
+    pj_retired=read_bound(m['pj_retirement'],m['pj_retirement_sha256']) if 'pj_retirement' in m and require_retired else None
+    root=validate_migration(plan,parent,sub,export,retired,previous,pj_retired)
     validate_model_files(plan)
     data=Path(plan['data_root']);require(sha(data/'manifest.json')==plan['data_manifest_sha256']
         and sha(data/'final.parquet')==FINAL_SHA,'PJ data files differ')
