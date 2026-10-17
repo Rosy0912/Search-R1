@@ -5,6 +5,23 @@ import inspect
 import subprocess
 from pathlib import Path
 
+def optimizer_delta(current, previous):
+    """Check actual adjacent counters; a rollout brake can skip opportunities."""
+    expected=set(range(8))
+    if len(current)!=8 or {r['rank'] for r in current}!=expected:
+        raise ValueError('Incomplete current optimizer ranks')
+    if previous is not None and (len(previous)!=8 or {r['rank'] for r in previous}!=expected):
+        raise ValueError('Incomplete previous optimizer ranks')
+    before={r['rank']:r['total_adam_writes'] for r in previous} if previous is not None else dict.fromkeys(expected,0)
+    for r in current:
+        if (not 0<=r['actual_adam_writes']<=20
+                or r['total_adam_writes']!=before[r['rank']]+r['actual_adam_writes']
+                or r['all_observed_loss_finite'] is False):
+            raise ValueError('Actual optimizer delta/reset or nonfinite loss')
+    if len({r['actual_adam_writes'] for r in current})!=1 or len({r['total_adam_writes'] for r in current})!=1:
+        raise ValueError('Optimizer counters disagree between ranks')
+    return current[0]['actual_adam_writes']
+
 def loss_status(metrics, outer, ranks, milestone_pre_present):
     if 'actor/pg_loss' in metrics:
         if metrics.get('training/actual_outer_updates') != outer or not math.isfinite(metrics['actor/pg_loss']):
@@ -38,10 +55,14 @@ for group,job,label in [('original','138650','original-gpu-r1'),('C1-root-only',
   assert str(entry['allocation'])==job and out.parent==run/'output'
   assert all(entry[k]==cfg[k] for k in ('run_id','source_commit','config_sha256','group'))
  identity=dict(job_id=job,run_id=cfg['run_id'],code_commit=cfg['source_commit'],config_sha256=cfg['config_sha256'],data_identity=cfg['data_identity'])
- path=sorted((out/'attempt-results').glob('attempt-*.json'))[-1];v=json.loads(path.read_text());outer=v['accepted_outer']
+ paths=sorted((out/'attempt-results').glob('attempt-*.json'));path=paths[-1];v=json.loads(path.read_text());outer=v['accepted_outer']
  ranks=v['all_rank_result']['ranks'];assert len(ranks)==8 and {r['rank'] for r in ranks}==set(range(8))
  verified=[verify_rank(r,run,identity,outer,out) for r in ranks]
- assert all(r['actual_adam_writes']==20 and r['total_adam_writes']==20*outer and r['all_observed_loss_finite'] is not False for r in verified)
+ previous=None
+ if outer>1:
+  prior=json.loads(paths[-2].read_text());assert prior['accepted_outer']==outer-1
+  previous=[verify_rank(r,run,identity,outer-1,out) for r in prior['all_rank_result']['ranks']]
+ writes=optimizer_delta(verified,previous)
  log=b/'logs'/(label+'-'+job+'.log');metrics={};last_event=None;tail=''
  for cap in (8*1024**2,32*1024**2):
   with log.open('rb') as f:
@@ -62,12 +83,12 @@ for group,job,label in [('original','138650','original-gpu-r1'),('C1-root-only',
   if 'actor/pg_loss' in metrics:break
  pre=run/'checkpoints/training_state'/('global_step_'+str(outer))/'manifest.json'
  loss=loss_status(metrics,outer,verified,pre.is_file())
- groups[group]=dict(outer=outer,identity=identity,actual_adam_writes_per_rank=20,ranks=verified,**loss,attempt_sha256=sha(path),receipt_mtime=path.stat().st_mtime,log_bytes=log.stat().st_size,log_mtime=log.stat().st_mtime,log_read_limit=cap,last_event=last_event,recent_error_lines=[l[-300:] for l in tail.splitlines()[-150:] if any(x in l for x in ('Traceback','Disk quota exceeded','OutOfMemoryError'))])
+ groups[group]=dict(outer=outer,identity=identity,actual_adam_writes_per_rank=writes,cumulative_counter_evidence='adjacent_hashed_rank_records',ranks=verified,**loss,attempt_sha256=sha(path),receipt_mtime=path.stat().st_mtime,log_bytes=log.stat().st_size,log_mtime=log.stat().st_mtime,log_read_limit=cap,last_event=last_event,recent_error_lines=[l[-300:] for l in tail.splitlines()[-150:] if any(x in l for x in ('Traceback','Disk quota exceeded','OutOfMemoryError'))])
 print(json.dumps(dict(at=time.time(),groups=groups,scope='Latest completed physical ranks and bounded console metrics; historical proofs retained separately.')))
 '''
 
 if __name__ == '__main__':
-    r = subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=12','lumia','python3 -'], input='import math\n'+inspect.getsource(loss_status)+'\n'+CODE, text=True, capture_output=True, timeout=55)
+    r = subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=12','lumia','python3 -'], input='import math\n'+inspect.getsource(optimizer_delta)+'\n'+inspect.getsource(loss_status)+'\n'+CODE, text=True, capture_output=True, timeout=55)
     if r.returncode:
         raise RuntimeError(r.stderr[-2000:])
     value=json.loads(r.stdout)
