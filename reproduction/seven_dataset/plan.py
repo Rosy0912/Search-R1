@@ -19,7 +19,9 @@ def build(base,group,step,commit,backend):
         entry=json.loads((run/'receipts/current-entry.json').read_text())
         receipt_path=Path(entry['configuration_receipt']);receipt=json.loads(receipt_path.read_text())
         config=Path(receipt['config'])
-    data=Path(receipt['data'])
+    from .archived_assets import resolve_assets
+    assets,asset_binding=resolve_assets(base,group,backend,receipt)
+    data=assets['data']
     data_manifest=json.loads((data/'manifest.json').read_text())
     model=run/'checkpoints/actor'/('global_step_'+str(step))
     files=manifest['hf_identity']['files']
@@ -39,7 +41,8 @@ def build(base,group,step,commit,backend):
         job='rt16-seven-'+group.lower().replace('generation','depth')+'-'+str(step)+'-'+cid[:8],
         output=str(base/'seven-evaluations'/cid/'output'))
     from .model_view import TOKENIZER_FILES
-    canonical=Path(receipt['model']).resolve(strict=True)
+    canonical=assets['model'].resolve(strict=True)
+    if asset_binding:result['archived_asset_resolution']=asset_binding
     result.update(canonical_tokenizer=str(canonical),
         canonical_tokenizer_files={n:sha(canonical/n) for n in TOKENIZER_FILES if (canonical/n).is_file()},
         inference_model=str(base/'seven-model-views'/cid/commit[:12]))

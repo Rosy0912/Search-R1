@@ -27,6 +27,12 @@ def inspect_inputs(plan):
     require(receipt['run_id']==plan['training_run_id'] and receipt['config_sha256']==plan['training_config_sha256']
             and receipt.get('group',receipt.get('arm'))==plan['group'],'Configuration/run/group binding changed')
     require(receipt['data_identity']==DATA_SHA,'Training data identity differs')
+    from .archived_assets import resolve_assets
+    assets,asset_binding=resolve_assets(plan['base'],plan['group'],plan['backend'],receipt)
+    require(plan.get('archived_asset_resolution',{})==asset_binding,
+            'Archived asset resolution differs from registered migration')
+    require(Path(plan['data_root']).resolve(strict=True)==assets['data'].resolve(strict=True),
+            'Evaluation data path differs from archived training assets')
     model_digest=validate_model_files(plan)
     expected_identity=digest(dict(group=plan['group'],outer=plan['outer'],run=plan['training_run_id'],
         training_config=plan['training_config_sha256'],model_files_sha256=model_digest,data=DATA_SHA))
@@ -59,7 +65,7 @@ def inspect_inputs(plan):
     inference_model=plan.get('inference_model',plan['model'])
     if 'inference_model' in plan:
         from .model_view import validate_view
-        require(Path(plan['canonical_tokenizer']).resolve(strict=True)==Path(receipt['model']).resolve(strict=True),
+        require(Path(plan['canonical_tokenizer']).resolve(strict=True)==assets['model'].resolve(strict=True),
                 'Canonical tokenizer is not the actual archived training model path')
         validate_view(plan,cfg.baselines.tree.token_preservation.tokenizer_sha256)
     cfg.actor_rollout_ref.model.path=inference_model;cfg.actor_rollout_ref.ref.model_path=inference_model
