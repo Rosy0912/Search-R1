@@ -4,8 +4,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from .contracts import sha
-from .repeats import validate_repeat, inspect_repeat
+from .contracts import sha, milestone_job_name
+from .repeats import validate_repeat, inspect_repeat, repeat_job_name
 
 
 class RepeatTests(unittest.TestCase):
@@ -76,6 +76,56 @@ class RepeatTests(unittest.TestCase):
         with self.assertRaises(Exception):inspect_repeat(p)
         p=copy.deepcopy(self.plan);p['repeat']['unbounded_count']=True
         with self.assertRaises(Exception):inspect_repeat(p)
+
+    def ablation(self, group, outer, index=2):
+        parent=copy.deepcopy(self.parent)
+        parent.update(group=group,outer=outer,
+            job=milestone_job_name(group,outer,parent['checkpoint_identity'],'slurm_lumia'))
+        sub=dict(self.sub,group=group,outer=outer,job=parent['job'])
+        plan=copy.deepcopy(self.plan)
+        plan.update(group=group,outer=outer,job=repeat_job_name(parent,index))
+        plan['repeat']['index']=index
+        plan['output']=plan['output'].replace('/r2/','/r'+str(index)+'/')
+        return plan,parent,sub
+
+    def test_authorized_remaining_ablations_both_repeats(self):
+        for group,outer in [('budget-5',100),('budget-5',150),
+                            ('budget-20',150),('generation-2',150)]:
+            for index in (2,3):
+                with self.subTest(group=group,outer=outer,index=index):
+                    plan,parent,sub=self.ablation(group,outer,index)
+                    self.assertEqual(validate_repeat(plan,parent,sub).name,'r'+str(index))
+
+    def test_prior_completed_checkpoints_remain_out_of_repeat_scope(self):
+        for group,outer in [('original',150),('C1-root-only',150),('C2-random-final',150),
+                            ('budget-5',50),('budget-20',100),('generation-2',100),
+                            ('position-early',50),('position-late',50)]:
+            with self.subTest(group=group,outer=outer):
+                with self.assertRaises(ValueError):validate_repeat(*self.ablation(group,outer))
+
+    def test_ablation_repeat_cannot_change_science_or_parent(self):
+        plan,parent,sub=self.ablation('generation-2',150)
+        for field,value in [('training_config_sha256','0'*64),('model_files',{}),
+                            ('group','budget-5'),('backend','pj_pt')]:
+            changed=copy.deepcopy(plan);changed[field]=value
+            with self.subTest(field=field):
+                with self.assertRaises(ValueError):validate_repeat(changed,parent,sub)
+        with self.assertRaises(ValueError):validate_repeat(plan,parent,dict(sub,group='budget-5'))
+        for field in ('replaces_job_id','pj_retired_submission'):
+            changed=copy.deepcopy(parent);changed[field]='old'
+            with self.assertRaises(ValueError):validate_repeat(plan,changed,sub)
+        for index in (1,4,5,True):
+            with self.assertRaises(ValueError):repeat_job_name(parent,index)
+
+    def test_ablation_on_disk_parent_and_submission_binding(self):
+        plan,parent,sub=self.ablation('budget-5',100)
+        self.pp.write_text(json.dumps(parent));sub['plan_sha256']=sha(self.pp)
+        self.sp.write_text(json.dumps(sub))
+        plan['repeat'].update(parent_plan_sha256=sha(self.pp),parent_submission_sha256=sha(self.sp))
+        self.assertEqual(inspect_repeat(plan).name,'r2')
+        sub['outer']=150;self.sp.write_text(json.dumps(sub))
+        plan['repeat']['parent_submission_sha256']=sha(self.sp)
+        with self.assertRaises(ValueError):inspect_repeat(plan)
 
 
 if __name__ == '__main__':unittest.main()

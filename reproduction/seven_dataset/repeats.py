@@ -1,4 +1,4 @@
-"""Bind requested original200 repeats to an existing first full evaluation.
+"""Bind authorized repeats to an existing first full evaluation.
 
 Only submission identity and output location differ. This does not change
 generation, scoring, model views, data, or the original milestone entry.
@@ -7,7 +7,20 @@ import json
 from pathlib import Path
 import re
 
-from .contracts import require, sha
+from .contracts import require, sha, milestone_job_name
+
+
+REPEAT_CHECKPOINTS = frozenset({('original', 200), ('budget-5', 100),
+                              ('budget-5', 150), ('budget-20', 150),
+                              ('generation-2', 150)})
+
+
+def repeat_job_name(parent, index):
+    require(type(index) is int and index in (2, 3), 'Unrequested repeat index')
+    name = milestone_job_name(parent['group'], parent['outer'],
+                              parent['checkpoint_identity'], parent['backend'])
+    prefix, suffix = name.rsplit('-', 1)
+    return prefix + '-r' + str(index) + '-' + suffix
 
 
 def validate_repeat(plan, parent, submission):
@@ -20,9 +33,10 @@ def validate_repeat(plan, parent, submission):
             and type(repeat['count']) is int and repeat['count'] == 3,
             'Only requested repeats two and three are authorized')
     require(parent['protocol'] == 'tree_seven_milestone_v1'
-            and parent['group'] == 'original' and parent['outer'] == 200
+            and type(parent['outer']) is int
+            and (parent['group'], parent['outer']) in REPEAT_CHECKPOINTS
             and parent['backend'] == 'slurm_lumia' and 'repeat' not in parent,
-            'Repeat parent must be the original200 first evaluation')
+            'Repeat parent must be an authorized first Lumia evaluation')
     require(not any(k in parent for k in ('replaces_job_id', 'pj_retired_submission')),
             'Repeat parent cannot be a replacement plan')
     require(parent.get('repeat_context', {}).get('requested_repeats') == 3
@@ -43,7 +57,7 @@ def validate_repeat(plan, parent, submission):
     require(Path(repeat['parent_submission']) == root / 'submission.json',
             'Repeat references an unrelated submission receipt')
     require(submission['checkpoint_identity'] == parent['checkpoint_identity']
-            and submission['group'] == 'original' and submission['outer'] == 200
+            and submission['group'] == parent['group'] and submission['outer'] == parent['outer']
             and submission['job'] == parent['job']
             and submission['output'] == parent['output']
             and submission['plan'] == repeat['parent_plan']
@@ -51,8 +65,7 @@ def validate_repeat(plan, parent, submission):
             and str(submission['job_id']).isdigit(), 'First submission binding differs')
     expected = root / 'repeats' / parent['evaluation_run_id'] / ('r' + str(index))
     require(Path(plan['output']) == expected / 'output', 'Repeat output namespace differs')
-    require(plan['job'] == 'zhangjunming-ttt-e-orig-200-r' + str(index)
-            + '-' + parent['checkpoint_identity'][:4], 'Repeat job identity differs')
+    require(plan['job'] == repeat_job_name(parent, index), 'Repeat job identity differs')
     return expected
 
 
