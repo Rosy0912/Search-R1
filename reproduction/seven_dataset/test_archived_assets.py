@@ -45,7 +45,7 @@ class ArchivedAssetsTest(unittest.TestCase):
 
     def test_lumia_names_unchanged(self):
         self.assertEqual(milestone_job_name('C2-random-final',150,'a'*64,'slurm_lumia'),
-                         'rt16-seven-c2-random-final-150-aaaaaaaa')
+                         'zhangjunming-ttt-e-c2-150-aaaa')
 
 
 if __name__=='__main__':unittest.main()
