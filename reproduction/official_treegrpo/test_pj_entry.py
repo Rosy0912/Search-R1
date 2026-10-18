@@ -6,7 +6,7 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
-from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler,validate_submission_params,validate_gate
+from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,COMPILER,validate_spec,validate_scheduler,validate_submission_params,validate_gate
 from .contract import recipe,JOB as OLD_JOB,UPSTREAM,MODEL_REVISION,MANIFEST_SHA
 
 
@@ -19,7 +19,7 @@ trainer.total_training_steps=180 \\
 max_turns=3 \\
 '''
         self.plan=dict(protocol='official_treegrpo_pj_inspected_replacement_v1',job=JOB,
-            root=ROOT+'/runs/fair-replacement-v3',upstream_source=ROOT+'/deployment-pj-v1/upstream',
+            root=ROOT+'/runs/fair-replacement-v4',upstream_source=ROOT+'/deployment-pj-v1/upstream',
             upstream_commit=UPSTREAM,model_revision=MODEL_REVISION,model=BASE+'/assets/model',
             model_files=MODEL_FILES,data=BASE+'/common-data',data_manifest_sha256=MANIFEST_SHA,
             required_versions=VERSIONS,allocation=dict(gpus=8,cpus=48,memory_gib=512,
@@ -33,12 +33,19 @@ max_turns=3 \\
             startup_recovery=dict(job='zhangjunming-ttt-treegrpo-pj-v2',
                 uid='f51ffc58-4fdf-418d-914a-6b8c2220010f',
                 status='FAILED_BEFORE_SCIENTIFIC_TRAINING_DNS_API_CHECK',
-                scientific_updates=0,scientific_worker_not_started=True))
+                scientific_updates=0,scientific_worker_not_started=True),compiler=COMPILER,
+            triton_recovery=dict(job='zhangjunming-ttt-treegrpo-pj-v3',uid='e1a5b140-62ac-4e66-aad7-199d7cb42668',status='FAILED_FIRST_ROLLOUT_TRITON_SYSTEM_PTXAS13_2_BEFORE_ADAM',scientific_updates=0,native_absent=True))
         self.plan['overrides']=[v.replace('='+OLD_JOB,'='+JOB) for v in recipe(self.script,
             self.plan['model'],self.plan['data'],self.plan['root'],self.plan['retriever'])]
 
     def test_frozen_science_and_allocation(self):
         self.assertEqual(validate_spec(self.plan,self.script),Path(self.plan['root']))
+
+    def test_unverified_compiler_or_updated_failed_parent_rejected(self):
+        p=copy.deepcopy(self.plan);p['compiler']['sha256']='other'
+        with self.assertRaises(AssertionError):validate_spec(p,self.script)
+        p=copy.deepcopy(self.plan);p['triton_recovery']['scientific_updates']=1
+        with self.assertRaises(AssertionError):validate_spec(p,self.script)
 
     def test_scientific_change_rejected(self):
         p=copy.deepcopy(self.plan);p['overrides']=[s.replace('lr=1e-6','lr=2e-6') for s in p['overrides']]

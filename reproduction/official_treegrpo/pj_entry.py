@@ -10,7 +10,8 @@ from .contract import UPSTREAM, MODEL_REVISION, MANIFEST_SHA, JOB as OLD_JOB, sh
 
 BASE = '/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-20261015-v1'
 ROOT = BASE + '/official-treegrpo'
-JOB = 'zhangjunming-ttt-treegrpo-pj-v3'
+JOB = 'zhangjunming-ttt-treegrpo-pj-v4'
+COMPILER = dict(path=ROOT+'/env/lib/python3.12/site-packages/triton/backends/nvidia/bin/ptxas', sha256='94dda54a1673940d56d3072c64ef7aacb125a1e64394586e10f77a7a5ff0ff87', version='12.4')
 MODEL_FILES = {
     'config.json': 'eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b',
     'generation_config.json': 'ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9',
@@ -29,7 +30,7 @@ VERSIONS = {'torch':'2.6.0','vllm':'0.8.5.post1','transformers':'4.51.3',
 def validate_spec(plan, script):
     assert plan['protocol'] == 'official_treegrpo_pj_inspected_replacement_v1'
     assert plan['job'] == JOB and len(JOB) <= 32
-    assert plan['root'] == ROOT+'/runs/fair-replacement-v3'
+    assert plan['root'] == ROOT+'/runs/fair-replacement-v4'
     assert plan['upstream_source'] == ROOT+'/deployment-pj-v1/upstream'
     assert plan['upstream_commit'] == UPSTREAM and plan['model_revision'] == MODEL_REVISION
     assert plan['model'] == BASE+'/assets/model' and plan['model_files'] == MODEL_FILES
@@ -52,6 +53,10 @@ def validate_spec(plan, script):
     assert startup['uid']=='f51ffc58-4fdf-418d-914a-6b8c2220010f'
     assert startup['status']=='FAILED_BEFORE_SCIENTIFIC_TRAINING_DNS_API_CHECK'
     assert startup['scientific_updates']==0 and startup['scientific_worker_not_started'] is True
+    failed=plan['triton_recovery']
+    assert failed['job']=='zhangjunming-ttt-treegrpo-pj-v3' and failed['uid']=='e1a5b140-62ac-4e66-aad7-199d7cb42668'
+    assert failed['status']=='FAILED_FIRST_ROLLOUT_TRITON_SYSTEM_PTXAS13_2_BEFORE_ADAM' and failed['scientific_updates']==0 and failed['native_absent']
+    assert plan['compiler']==COMPILER
     expected = [v.replace('='+OLD_JOB,'='+JOB) for v in recipe(
         script,plan['model'],plan['data'],plan['root'],plan['retriever'])]
     assert plan['overrides'] == expected, 'Official scientific recipe changed'
@@ -100,6 +105,11 @@ def verify(plan):
     inspected=json.loads(Path(startup['receipt']).read_text())
     for key in ['job','uid','status','scientific_updates','scientific_worker_not_started']:
         assert inspected[key]==startup[key],key
+    failed=plan['triton_recovery'];assert sha(failed['receipt'])==failed['receipt_sha256']
+    incident=json.loads(Path(failed['receipt']).read_text())
+    for key in ['job','uid','status','scientific_updates','native_absent']:assert incident[key]==failed[key],key
+    assert sha(COMPILER['path'])==COMPILER['sha256']
+    assert 'release 12.4,' in subprocess.check_output([COMPILER['path'],'--version'],text=True)
     assert sha(plan['retriever_receipt'])==plan['retriever_receipt_sha256']
     ready=json.loads(Path(plan['retriever_receipt']).read_text());assert ready['url']==plan['retriever']
     assert sha(plan['runtime_preflight'])==plan['runtime_preflight_sha256']
@@ -144,10 +154,13 @@ def run(planfile):
     assert not subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).strip(), 'Do not preempt other GPU processes'
     assert not (root/'checkpoints').exists()
     with (root/'entry-once.json').open('x') as f:json.dump(dict(at=time.time(),scheduler=actual,gpus=inv,plan_sha256=sha(planfile),fresh_initialization_after_failed_unsaved_run=True),f,indent=2)
+    os.environ['TRITON_PTXAS_PATH']=COMPILER['path']
     os.environ['CUDA_VISIBLE_DEVICES']=','.join(s.split(',')[0].strip() for s in inv)
     os.environ['TREEGRPO_AUDIT_DIR']=str(root/'audit')
     os.environ['PYTHONPATH']=str(src)+':'+plan['wrapper_source']
     sys.path.insert(0,str(src));os.chdir(src)
+    # A fresh subprocess tests the selected compiler on all eight devices, then frees its contexts.
+    subprocess.run([sys.executable,'-m','reproduction.official_treegrpo.pj_compiler_smoke',str(root/'compiler-smoke.json')],check=True,timeout=120)
     from hydra import compose,initialize_config_dir
     from omegaconf import OmegaConf
     with initialize_config_dir(config_dir=str(src/'verl/trainer/config'),version_base=None):
@@ -156,6 +169,9 @@ def run(planfile):
     import urllib.request
     ready=json.loads(Path(plan['retriever_receipt']).read_text())
     with urllib.request.urlopen(ready['url']+'/health',timeout=20) as r:assert json.load(r)['job']==ready['job']
+    import ray
+    assert not ray.is_initialized()
+    ray.init(runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'true','NCCL_DEBUG':'WARN','TRITON_PTXAS_PATH':COMPILER['path']}})
     import runpy
     sys.argv=['main_ppo_format_ts']+plan['overrides']
     runpy.run_module('verl.trainer.main_ppo_format_ts',run_name='__main__')
