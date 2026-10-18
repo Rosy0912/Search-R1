@@ -32,6 +32,9 @@ def output_root(plan):
 
 
 def validate_searchr1_plan(plan,template):
+    if 'node_recovery' in plan:
+        from .searchr1_node_recovery import inspect_node_recovery
+        return inspect_node_recovery(plan,template)
     if 'repeat_recovery' in plan:
         from .searchr1_recovery import inspect_recovery
         return inspect_recovery(plan,template)
