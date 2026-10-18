@@ -14,6 +14,18 @@ ALLOCATION = dict(gpus=8, cpus=64, memory_gib=900, time='7-00:00:00')
 OLD_SOURCE = 'c65bfee308d758707325992e3c6267f43a65f9ef'
 
 
+def old_terminal():
+    # Completed jobs may be purged from squeue's numeric-ID lookup. A successful
+    # exact-name query plus the exact sacct row distinguishes that from errors.
+    assert not subprocess.check_output(['squeue','-h','--name=zhangjunming-7b-original-0',
+        '-o','%i|%j|%T'],text=True).strip()
+    rows=subprocess.check_output(['sacct','-X','-n','-P','-j','139101',
+        '--format=JobIDRaw,JobName%100,State,ElapsedRaw,ExitCode,AllocTRES%250'],text=True).strip().split('|')
+    assert rows[:3]==['139101','zhangjunming-7b-original-0','OUT_OF_MEMORY']
+    assert rows[4]=='0:125' and 'gres/gpu=8' in rows[5]
+    return rows
+
+
 def validate(plan, old):
     from omegaconf import OmegaConf
     validate_plan(old)
@@ -44,11 +56,7 @@ def verify(plan):
     failure=json.loads(Path(plan['failure_proof']).read_text())
     assert failure['job']=='139101' and failure['complete_native_manifest_absent']
     assert failure['status']=='OUT_OF_MEMORY_DURING_FULL_STATE_SAVE_AT5_NO_COMPLETE_RESUME'
-    assert not subprocess.check_output(['squeue','-h','-j','139101'],text=True).strip()
-    rows=subprocess.check_output(['sacct','-X','-n','-P','-j','139101',
-        '--format=JobIDRaw,JobName%100,State,ElapsedRaw,ExitCode,AllocTRES%250'],text=True).strip().split('|')
-    assert rows[:3]==['139101','zhangjunming-7b-original-0','OUT_OF_MEMORY']
-    assert int(rows[3])==failure['elapsed_seconds'] and rows[4]=='0:125' and 'gres/gpu=8' in rows[5]
+    rows=old_terminal();assert int(rows[3])==failure['elapsed_seconds']
     for n,h in plan['wrapper_files'].items():assert sha(Path(plan['source'])/n)==h,n
     # All algorithm, optimizer, snapshot and model code stays byte-identical.
     prior=json.loads(Path(old['source_manifest']).read_text())

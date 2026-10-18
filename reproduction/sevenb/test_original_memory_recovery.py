@@ -4,12 +4,24 @@ from pathlib import Path
 import subprocess
 import unittest
 import os
+from unittest.mock import patch
 from . import test_contract
 from .contract import ROOT,make_config,model_path
 from .original_memory_recovery import JOB,RUN,ALLOCATION,OLD_SOURCE,validate
+from .original_memory_recovery import old_terminal
 
 
 class MemoryRecovery(unittest.TestCase):
+    def test_completed_job_name_query_and_exact_terminal(self):
+        row='139101|zhangjunming-7b-original-0|OUT_OF_MEMORY|10477|0:125|cpu=64,gres/gpu=8,mem=600G|'
+        with patch('subprocess.check_output',side_effect=['',row]) as call:
+            self.assertEqual(old_terminal()[3],'10477')
+            self.assertIn('--name=zhangjunming-7b-original-0',call.call_args_list[0].args[0])
+
+    def test_scheduler_error_is_not_zero(self):
+        with patch('subprocess.check_output',side_effect=subprocess.CalledProcessError(1,'squeue')):
+            with self.assertRaises(subprocess.CalledProcessError):old_terminal()
+
     def plans(self):
         from omegaconf import OmegaConf
         old=test_contract.Contracts().plan('original',0)
