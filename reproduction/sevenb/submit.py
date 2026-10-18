@@ -45,7 +45,8 @@ def submit(planfile):
         'rc=$?','echo "$rc" > '+q(str(root/'exit.code')),'exit "$rc"',''])
     cmd=['sbatch','--parsable','--hold','--no-requeue','--account=lumia','--qos=normal','--ntasks=1',
         '--job-name='+job,'--output='+str(root/'slurm-%j.log'),'--nodes=1','--gres=gpu:8',
-        '--cpus-per-task=64','--mem=600G','--time=3-00:00:00']
+        '--cpus-per-task=64','--mem=600G',
+        '--time='+('7-00:00:00' if plan['kind']=='original' else '3-00:00:00')]
     if plan['node']=='node8':cmd+=['--partition=ADA6000','--nodelist=node8']
     elif plan['node']=='node11':cmd+=['--partition=L40S','--nodelist=node11']
     else:cmd+=['--partition=ADA6000,L40S']
