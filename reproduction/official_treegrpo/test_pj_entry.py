@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import unittest
 from unittest.mock import patch
-from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler
+from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler,validate_submission_params
 from .contract import recipe,JOB as OLD_JOB,UPSTREAM,MODEL_REVISION,MANIFEST_SHA
 
 
@@ -16,13 +16,17 @@ trainer.total_training_steps=180 \\
 max_turns=3 \\
 '''
         self.plan=dict(protocol='official_treegrpo_pj_inspected_replacement_v1',job=JOB,
-            root=ROOT+'/runs/fair-replacement-v1',upstream_source=ROOT+'/deployment-pj-v1/upstream',
+            root=ROOT+'/runs/fair-replacement-v2',upstream_source=ROOT+'/deployment-pj-v1/upstream',
             upstream_commit=UPSTREAM,model_revision=MODEL_REVISION,model=BASE+'/assets/model',
             model_files=MODEL_FILES,data=BASE+'/common-data',data_manifest_sha256=MANIFEST_SHA,
             required_versions=VERSIONS,allocation=dict(gpus=8,cpus=48,memory_gib=512,
                 machine_type='n2ls.ie.i60b',gpu_model='A100',gpu_memory_gib=80),
             old_failure=dict(job_id='139034',state='FAILED',exit_code='1',complete_iterations=55,native_checkpoint_absent=True),
-            actual_iterations_expected=179,no_auto_retry=True,retriever='http://shared:8000')
+            actual_iterations_expected=179,no_auto_retry=True,retriever='http://shared:8000',
+            intended_node=None,no_hostname_affinity=True,
+            placement_recovery=dict(job='zhangjunming-ttt-treegrpo-pj-v1',
+                uid='e078d102-57e4-4ed1-a359-610671e4e42b',
+                status='TERMINATED_NEVER_STARTED_ZERO_GPU_EXECUTION',allocated_seconds=0,entry_absent=True))
         self.plan['overrides']=[v.replace('='+OLD_JOB,'='+JOB) for v in recipe(self.script,
             self.plan['model'],self.plan['data'],self.plan['root'],self.plan['retriever'])]
 
@@ -52,6 +56,14 @@ max_turns=3 \\
             with self.assertRaises(AssertionError):validate_scheduler(self.plan,i,s,dict(a,uid='other'))
             os.environ['SLURM_JOB_ID']='made-up'
             with self.assertRaises(AssertionError):validate_scheduler(self.plan,i,s,a)
+
+    def test_explicit_hostname_affinity_and_executed_prior_block(self):
+        params=dict(job_name=JOB,num_nodes=1,gpus_per_task=8,cpus_per_task=48,
+                    memory_per_task=512,retry=0,no_env=True)
+        validate_submission_params(self.plan,params)
+        with self.assertRaises(AssertionError):validate_submission_params(self.plan,dict(params,include='ecp-pcluster-c480'))
+        p=copy.deepcopy(self.plan);p['placement_recovery']['allocated_seconds']=1
+        with self.assertRaises(AssertionError):validate_spec(p,self.script)
 
 
 if __name__=='__main__':unittest.main()

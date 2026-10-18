@@ -10,7 +10,7 @@ from .contract import UPSTREAM, MODEL_REVISION, MANIFEST_SHA, JOB as OLD_JOB, sh
 
 BASE = '/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-20261015-v1'
 ROOT = BASE + '/official-treegrpo'
-JOB = 'zhangjunming-ttt-treegrpo-pj-v1'
+JOB = 'zhangjunming-ttt-treegrpo-pj-v2'
 MODEL_FILES = {
     'config.json': 'eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b',
     'generation_config.json': 'ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9',
@@ -29,7 +29,7 @@ VERSIONS = {'torch':'2.6.0','vllm':'0.8.5.post1','transformers':'4.51.3',
 def validate_spec(plan, script):
     assert plan['protocol'] == 'official_treegrpo_pj_inspected_replacement_v1'
     assert plan['job'] == JOB and len(JOB) <= 32
-    assert plan['root'] == ROOT+'/runs/fair-replacement-v1'
+    assert plan['root'] == ROOT+'/runs/fair-replacement-v2'
     assert plan['upstream_source'] == ROOT+'/deployment-pj-v1/upstream'
     assert plan['upstream_commit'] == UPSTREAM and plan['model_revision'] == MODEL_REVISION
     assert plan['model'] == BASE+'/assets/model' and plan['model_files'] == MODEL_FILES
@@ -41,10 +41,24 @@ def validate_spec(plan, script):
     assert plan['old_failure']['state'] == 'FAILED' and plan['old_failure']['exit_code'] == '1'
     assert plan['old_failure']['complete_iterations'] == 55 and plan['old_failure']['native_checkpoint_absent']
     assert plan['actual_iterations_expected'] == 179 and plan['no_auto_retry'] is True
+    assert plan['intended_node'] is None and plan['no_hostname_affinity'] is True
+    previous=plan['placement_recovery']
+    assert previous['job']=='zhangjunming-ttt-treegrpo-pj-v1'
+    assert previous['uid']=='e078d102-57e4-4ed1-a359-610671e4e42b'
+    assert previous['status']=='TERMINATED_NEVER_STARTED_ZERO_GPU_EXECUTION'
+    assert previous['allocated_seconds']==0 and previous['entry_absent'] is True
     expected = [v.replace('='+OLD_JOB,'='+JOB) for v in recipe(
         script,plan['model'],plan['data'],plan['root'],plan['retriever'])]
     assert plan['overrides'] == expected, 'Official scientific recipe changed'
     return Path(plan['root'])
+
+
+def validate_submission_params(plan, params):
+    assert params['job_name']==plan['job']==JOB
+    assert not params.get('include'), 'PJ explicit hostname affinity is known not to schedule'
+    assert params['num_nodes']==1 and params['gpus_per_task']==8
+    assert params['cpus_per_task']==48 and params['memory_per_task']==512
+    assert params['retry']==0 and params['no_env'] is True
 
 
 def verify(plan):
@@ -62,6 +76,11 @@ def verify(plan):
     assert sys.version_info[:3] == (3,12,9)
     for name,version in VERSIONS.items(): assert metadata.version(name).split('+')[0]==version,name
     for f,h in plan['evidence_files'].items(): assert sha(f)==h,f
+    previous=plan['placement_recovery']
+    assert sha(previous['receipt'])==previous['receipt_sha256']
+    retirement=json.loads(Path(previous['receipt']).read_text())
+    for key in ['job','uid','status','allocated_seconds','entry_absent']:
+        assert retirement[key]==previous[key],key
     assert sha(plan['retriever_receipt'])==plan['retriever_receipt_sha256']
     ready=json.loads(Path(plan['retriever_receipt']).read_text());assert ready['url']==plan['retriever']
     assert sha(plan['runtime_preflight'])==plan['runtime_preflight_sha256']
