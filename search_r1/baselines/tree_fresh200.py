@@ -128,6 +128,11 @@ def validate_recursive_config(config):
         return validate_recursive_config(projected)
     actor,rollout=config.actor_rollout_ref.actor,config.actor_rollout_ref.rollout
     tree,trainer=config.baselines.tree,config.trainer
+    if config.baselines.get('scale_profile') is not None:
+        from reproduction.sevenb.contract import model_contract
+        model_valid = model_contract(config.baselines)
+    else:
+        model_valid = config.baselines.model_revision == REVISION
     if ((tree.roots,tree.leaves,tree.continuation_budget_per_question)!=(1,5,10)
         or leaf_quotas(tree)!=(5,) or rollout.n_agent!=1 or rollout.n!=1
         or (actor.ppo_mini_batch_size,actor.ppo_micro_batch_size,actor.ppo_epochs)!=(128,16,1)
@@ -139,6 +144,6 @@ def validate_recursive_config(config):
         or not actor.get('recursive_document_objective')
         or actor.entropy_coeff!=0 or actor.kl_loss_coef!=0 or config.algorithm.kl_ctrl.kl_coef!=0
         or actor.clip_ratio!=.2 or actor.grad_clip!=1
-        or config.baselines.model_revision!=REVISION or config.max_turns!=4
+        or not model_valid or config.max_turns!=4
         or config.force_final_answer or config.actor_rollout_ref.model.path!=config.actor_rollout_ref.ref.model_path):
         raise ValueError('Recursive document experiment A contract changed')

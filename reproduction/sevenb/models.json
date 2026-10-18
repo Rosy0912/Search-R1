@@ -1,0 +1,179 @@
+{
+  "at": 1792326050.2969558,
+  "models": {
+    "base": {
+      "repo": "Qwen/Qwen2.5-7B-Instruct",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "files": [
+        {
+          "file": "config.json",
+          "bytes": 663,
+          "sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+          "git_blob": "0178295f88afc3c7f279ed284f961f8c1be00654"
+        },
+        {
+          "file": "generation_config.json",
+          "bytes": 243,
+          "sha256": "3a8f9087e486054c8a4a08dae2e5a3ba62e23da212b5b8c08bc42cb983c3459f",
+          "git_blob": "0eb3c536657dcd12626e09eca4b6198c0cbcde1e"
+        },
+        {
+          "file": "merges.txt",
+          "bytes": 1671839,
+          "sha256": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+          "git_blob": "20024bfe7c83998e9aeaf98a0cd6a2ce6306c2f0"
+        },
+        {
+          "file": "model-00001-of-00004.safetensors",
+          "bytes": 3945441440,
+          "sha256": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+          "git_blob": "5e68dcea92e3696ddd4e1d44d9b420a31fe5622c"
+        },
+        {
+          "file": "model-00002-of-00004.safetensors",
+          "bytes": 3864726352,
+          "sha256": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+          "git_blob": "e07e23d4595678a717aaad11eef9bc22056c284a"
+        },
+        {
+          "file": "model-00003-of-00004.safetensors",
+          "bytes": 3864726424,
+          "sha256": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+          "git_blob": "114c07bb791bac8d2b32109b7729ef2f9a489dfe"
+        },
+        {
+          "file": "model-00004-of-00004.safetensors",
+          "bytes": 3556377672,
+          "sha256": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd",
+          "git_blob": "f4841c787f178938010ce784a3ec99e5568524b5"
+        },
+        {
+          "file": "model.safetensors.index.json",
+          "bytes": 27752,
+          "sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028",
+          "git_blob": "14d037fdda5a1311dcc0275003a7a370d84114e6"
+        },
+        {
+          "file": "tokenizer.json",
+          "bytes": 7031645,
+          "sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "git_blob": "443909a61d429dff23010e5bddd28ff530edda00"
+        },
+        {
+          "file": "tokenizer_config.json",
+          "bytes": 7305,
+          "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+          "git_blob": "07bfe0640cb5a0037f9322287fbfc682806cf672"
+        },
+        {
+          "file": "vocab.json",
+          "bytes": 2776833,
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+          "git_blob": "4783fe10ac3adce15ac8f358ef5462739852c569"
+        }
+      ]
+    },
+    "searchr1": {
+      "repo": "PeterJinGo/SearchR1-nq_hotpotqa_train-qwen2.5-7b-it-em-grpo-v0.3",
+      "revision": "7b7b1ec53918968518b297558b36f202b7534be0",
+      "files": [
+        {
+          "file": "added_tokens.json",
+          "bytes": 605,
+          "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+          "git_blob": "482ced4679301bf287ebb310bdd1790eb4514232"
+        },
+        {
+          "file": "config.json",
+          "bytes": 731,
+          "sha256": "53e3c2ae4544e8eb89e5133a6b82eab150b4dad067779247b323a3a994bbbdc2",
+          "git_blob": "d99ea0212d4650790a8007df627df09fffd4eb48"
+        },
+        {
+          "file": "generation_config.json",
+          "bytes": 243,
+          "sha256": "c71477a85f061ff54313cdaad39ead45f00942f4cbbcd9ab07bfc137cb7d38c2",
+          "git_blob": "b829322db44418080b155df152eebf5411ef97dc"
+        },
+        {
+          "file": "merges.txt",
+          "bytes": 1671853,
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+          "git_blob": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7"
+        },
+        {
+          "file": "model-00001-of-00007.safetensors",
+          "bytes": 4976687216,
+          "sha256": "269c723129d1eafde49c4f90e15a6a3fc3b70c909f1b56f34da207f355d82a0e",
+          "git_blob": "f51fd0f4eb82b52130453463e040e79fefb3bb44"
+        },
+        {
+          "file": "model-00002-of-00007.safetensors",
+          "bytes": 4778622352,
+          "sha256": "75ef74e4316692a2a6e9ac0e9d0ac14b57677bb0e341077f225aadcf2ffdbc6c",
+          "git_blob": "467ef142d88cd27416cb38834b3ace6cfc925ce2"
+        },
+        {
+          "file": "model-00003-of-00007.safetensors",
+          "bytes": 4932743960,
+          "sha256": "daee4856638e8a81722cb8fd496ccdf392b1fb6d6bef90b42d4f38eb450b56a5",
+          "git_blob": "89359833c606be49f3fb738a6a3b644ec485b3bd"
+        },
+        {
+          "file": "model-00004-of-00007.safetensors",
+          "bytes": 4932743992,
+          "sha256": "fd0a50e85d9fe8c5b48a8395925122c3333c2a72f30033f658d764afbfc83e31",
+          "git_blob": "3a4c9a9d7ba0d933f1fb4454ed7fa8f9b42a867d"
+        },
+        {
+          "file": "model-00005-of-00007.safetensors",
+          "bytes": 4998852296,
+          "sha256": "d8384a3a3b0ec7d3ad20332e75a24ed6648c1c3886576f0a1c99dd8ae0c234e3",
+          "git_blob": "6b58f7d138a82bcf2624cba4cfdc47358cafaac1"
+        },
+        {
+          "file": "model-00006-of-00007.safetensors",
+          "bytes": 3662865184,
+          "sha256": "ccb1106a39ea90ce7c6305317b9e352e0d20da1acbe82b3230010063ac87676f",
+          "git_blob": "f79bd958fccaabf10d466de4fcfa2b2a70a030c1"
+        },
+        {
+          "file": "model-00007-of-00007.safetensors",
+          "bytes": 2179989632,
+          "sha256": "60933e1dffa6247ac554235955c6f5a74e030cd23c0e8152943207e6d42f6704",
+          "git_blob": "7a4cb1fec8f1ce9b7e53a4942eb044f6554c2d4e"
+        },
+        {
+          "file": "model.safetensors.index.json",
+          "bytes": 27752,
+          "sha256": "3cb581aa586322d386864a9f80d0adbaa1f0f838cc310d7d7670990fa42121be",
+          "git_blob": "6675a7f60ddcadbb24e1994e67e592ba35492ac6"
+        },
+        {
+          "file": "special_tokens_map.json",
+          "bytes": 613,
+          "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+          "git_blob": "ac23c0aaa2434523c494330aeb79c58395378103"
+        },
+        {
+          "file": "tokenizer.json",
+          "bytes": 11421896,
+          "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+          "git_blob": "51ebb3ba93988c73bbd83a3c163a14343fbc5b06"
+        },
+        {
+          "file": "tokenizer_config.json",
+          "bytes": 7336,
+          "sha256": "57fea41fa99fce34f91450643e48b3bfbb078c32c6831a3c06834f122c200510",
+          "git_blob": "895a05f7a8830a0814ae0aeea48c55032f435cd7"
+        },
+        {
+          "file": "vocab.json",
+          "bytes": 2776833,
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+          "git_blob": "4783fe10ac3adce15ac8f358ef5462739852c569"
+        }
+      ]
+    }
+  }
+}
