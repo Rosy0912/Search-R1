@@ -38,11 +38,15 @@ def iteration_patch(text):
 def validate_plan(plan, script):
     size=plan['size'];assert size in REVISIONS
     assert plan['protocol']=='official_branpo_common_initialization_v1'
-    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+'-v1'
+    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+'-v2'
     assert plan['upstream_commit']==UPSTREAM and plan['model_revision']==REVISIONS[size]
     assert plan['versions']==VERSIONS and plan['data_manifest_sha256']==DATA_SHA
     assert plan['expected_actual_iterations']==200 and plan['upstream_labels']==[101,300]
     assert plan['gpus']==8 and plan['no_auto_retry'] is True and plan['no_additional_sft'] is True
+    previous=plan['prior_attempt']
+    assert previous['job_id']==('139121' if size=='3b' else '139122')
+    assert previous['scientific_updates']==0 and previous['raw_policy_tokens']==0
+    assert previous['status']==('FAILED_BEFORE_RAY_INIT_OPTIONAL_RAY_CONFIG_ABSENT' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_BAD_OPTIONAL_CONFIG_ENTRY')
     assert plan['overrides']==training_overrides(script,size,plan['model'],plan['root'])
     assert plan['allocation']==dict(gpus=8,cpus=64,memory_gib=600)
     assert plan['minimum_gpu_memory_mib']==(24000 if size=='3b' else 44000)
@@ -59,6 +63,9 @@ def verify(plan):
         for n,h in plan[group].items():assert sha(base/n)==h,n
     assert len(plan['upstream_files'])==286
     for n,h in plan['model_files'].items():assert sha(Path(plan['model'])/n)==h,n
+    previous=plan['prior_attempt'];assert sha(previous['receipt'])==previous['receipt_sha256']
+    inspected=json.loads(Path(previous['receipt']).read_text())
+    for key in ['job','status','scientific_updates','raw_policy_tokens']:assert inspected[key]==previous[key],key
     assert sha(Path(plan['common'])/'manifest.json')==DATA_SHA
     for n,h in plan['evidence_files'].items():assert sha(n)==h,n
     patch=json.loads(Path(plan['observer_deployment']).read_text())
@@ -83,6 +90,27 @@ def ray_runtime_env(base, environ):
         assert environ.get(name), name
         result['env_vars'][name]=environ[name]
     return result
+
+
+def ray_init_settings(config):
+    return {k:v for k,v in config.ray_init.items() if v is not None} if hasattr(config,'ray_init') else {}
+
+def build_trainer(plan,cfg):
+    from rllm.data import DatasetRegistry
+    data=Path(plan['converted_data_root'])
+    DatasetRegistry._REGISTRY_DIR=str(data/'registry');DatasetRegistry._REGISTRY_FILE=str(data/'registry/dataset_registry.json');DatasetRegistry._DATASET_DIR=str(data/'datasets')
+    train=DatasetRegistry.load_dataset('branpo_common','train');val=DatasetRegistry.load_dataset('branpo_common','validation')
+    assert len(train)==169028 and len(val)==512
+    from rllm.agents.search_r1_agent import SearchR1Agent
+    from rllm.environments.search_r1.search_r1 import SearchR1Env
+    from rllm.rewards.reward_fn import search_r1_reward_fn
+    from rllm.trainer.agent_branch_trainer import AgentTrainer
+    from .retrieval import make_tool
+    env_args=dict(cfg.rllm.env.get('env_args',{}));env_args['max_steps']=env_args.get('max_steps',4)
+    env_args['tool_map']={'local_search':make_tool(plan['retriever'])};env_args['reward_fn']=search_r1_reward_fn
+    trainer=AgentTrainer(agent_class=SearchR1Agent,env_class=SearchR1Env,config=cfg,
+                        train_dataset=train,val_dataset=val,agent_args={},env_args=env_args)
+    return trainer
 
 
 def run(planfile):
@@ -110,24 +138,11 @@ def run(planfile):
         OmegaConf.register_new_resolver('mul',lambda x,y:int(x)*int(y))
     with initialize_config_module(config_module='rllm.trainer.config',version_base=None):
         cfg=compose(config_name='agent_ppo_trainer',overrides=plan['overrides'])
-    from rllm.data import DatasetRegistry
-    data=Path(plan['converted_data_root'])
-    DatasetRegistry._REGISTRY_DIR=str(data/'registry');DatasetRegistry._REGISTRY_FILE=str(data/'registry/dataset_registry.json');DatasetRegistry._DATASET_DIR=str(data/'datasets')
-    train=DatasetRegistry.load_dataset('branpo_common','train');val=DatasetRegistry.load_dataset('branpo_common','validation')
-    assert len(train)==169028 and len(val)==512
-    from rllm.agents.search_r1_agent import SearchR1Agent
-    from rllm.environments.search_r1.search_r1 import SearchR1Env
-    from rllm.rewards.reward_fn import search_r1_reward_fn
-    from rllm.trainer.agent_branch_trainer import AgentTrainer
-    from .retrieval import make_tool
-    env_args=dict(cfg.rllm.env.get('env_args',{}));env_args['max_steps']=env_args.get('max_steps',4)
-    env_args['tool_map']={'local_search':make_tool(plan['retriever'])};env_args['reward_fn']=search_r1_reward_fn
-    trainer=AgentTrainer(agent_class=SearchR1Agent,env_class=SearchR1Env,config=cfg,
-                        train_dataset=train,val_dataset=val,agent_args={},env_args=env_args)
+    trainer=build_trainer(plan,cfg)
     (root/'resolved.yaml').write_text(OmegaConf.to_yaml(cfg,resolve=True))
     import ray
     from rllm.trainer.verl.ray_runtime_env import get_ppo_ray_runtime_env
-    settings={k:v for k,v in cfg.ray_init.items() if v is not None}
+    settings=ray_init_settings(cfg)
     assert not ray.is_initialized()
     ray.init(runtime_env=ray_runtime_env(get_ppo_ray_runtime_env(),os.environ),**settings)
     try:trainer.train()
