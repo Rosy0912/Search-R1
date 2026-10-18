@@ -48,6 +48,20 @@ class NameProofTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             prove_absent(client, NAMES)
 
+    def test_inspected_empty_protobuf_json_fields(self):
+        class Omitted(Fake):
+            def list_training_jobs(self, filter_str, page_size):
+                full = super().list_training_jobs(filter_str, page_size)
+                return full if full['training_jobs'] else {}
+        self.assertEqual(len(prove_absent(Omitted(), NAMES)['exact_jobs']), 6)
+
+    def test_error_object_never_means_empty(self):
+        class Error(Fake):
+            def list_training_jobs(self, filter_str, page_size):
+                return {'error': 'permission denied'}
+        with self.assertRaises(ValueError):
+            prove_absent(Error(), NAMES)
+
     def test_400_is_not_absence(self):
         class Invalid(Fake):
             def get_training_job(self, name):

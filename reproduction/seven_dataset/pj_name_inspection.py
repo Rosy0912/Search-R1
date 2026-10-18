@@ -7,9 +7,13 @@ CONTROL_UID = '33ac6bbf-7e6a-4a66-bcc6-261b66371975'
 
 def exact_list(client, name):
     result = client.list_training_jobs(filter_str='name = ' + json.dumps(name), page_size=100)
-    jobs = result.get('training_jobs')
+    # The inspected protobuf-JSON response omits all three zero-valued fields:
+    # a complete empty exact-name result is {}. Reject unknown response shapes.
+    if not isinstance(result, dict) or set(result) - {'training_jobs', 'total_size', 'next_page_token'}:
+        raise ValueError('Unknown training-job list response')
+    jobs = result.get('training_jobs', [])
     if (not isinstance(jobs, list) or result.get('next_page_token')
-            or result.get('total_size') != len(jobs)
+            or result.get('total_size', 0) != len(jobs)
             or any(job.get('name') != name for job in jobs)):
         raise ValueError('Exact name filter/pagination not independently established')
     return jobs
