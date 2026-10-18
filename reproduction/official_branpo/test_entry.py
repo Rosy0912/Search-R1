@@ -2,7 +2,7 @@ import copy
 import os
 from pathlib import Path
 import unittest
-from .entry import actor_patch,iteration_patch,ray_runtime_env,ray_init_settings,sanitize_nvidia_visibility,prepare_policy_loss_schema,validate_plan,ROOT,VERSIONS
+from .entry import actor_patch,iteration_patch,actor_batch_patch,prepare_actor_metadata,ray_runtime_env,ray_init_settings,sanitize_nvidia_visibility,prepare_policy_loss_schema,validate_plan,ROOT,VERSIONS
 from .contract import training_overrides,UPSTREAM,DATA_SHA,REVISIONS,job_name
 
 class EntryTest(unittest.TestCase):
@@ -44,18 +44,41 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(ray_init_settings(SimpleNamespace()),{})
         self.assertEqual(ray_init_settings(SimpleNamespace(ray_init={'num_cpus':8,'address':None})),{'num_cpus':8})
 
+    def test_actor_metadata_preserves_config_and_existing_identity(self):
+        from types import SimpleNamespace
+        from omegaconf import OmegaConf
+        cfg=OmegaConf.create({'actor_rollout_ref':{'rollout':{'temperature':.95}}})
+        before=OmegaConf.to_container(cfg,resolve=True)
+        batch=SimpleNamespace(meta_info={'batch_id':'frozen','other':[1,2]})
+        prepare_actor_metadata(batch,cfg)
+        self.assertEqual(batch.meta_info,{'batch_id':'frozen','other':[1,2],'temperature':.95})
+        self.assertEqual(OmegaConf.to_container(cfg,resolve=True),before)
+        prepare_actor_metadata(batch,cfg)
+        batch.meta_info['temperature']=1.0
+        with self.assertRaises(AssertionError):prepare_actor_metadata(batch,cfg)
+        for temperature in [0,-1,float('nan'),float('inf'),'0.95']:
+            cfg.actor_rollout_ref.rollout.temperature=temperature
+            with self.assertRaises(AssertionError):prepare_actor_metadata(SimpleNamespace(meta_info={}),cfg)
+
+    def test_only_actor_metadata_bridge_added_to_branch_trainer(self):
+        anchor='                    batch.meta_info["global_token_num"] = torch.sum(batch.batch["attention_mask"], dim=-1).tolist()\n'
+        original='before\n'+anchor+'after\n';patched,extra=actor_batch_patch(original)
+        self.assertEqual(patched.replace(extra,''),original)
+        with self.assertRaises(AssertionError):actor_batch_patch(patched)
+        with self.assertRaises(AssertionError):actor_batch_patch(anchor+anchor)
+
     def test_frozen_science_allocation_and_size_identity(self):
         up=Path(os.environ.get('BRANPO_UPSTREAM','../official-branpo'))
         script=(up/'agent/search/start_branpo_trainer.sh').read_text()
         for size in ['3b','7b']:
             plan=dict(protocol='official_branpo_common_initialization_v1',size=size,
-                job=job_name(size),root=ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v4'),upstream_commit=UPSTREAM,
+                job=job_name(size),root=ROOT+'/runs/'+size+('-v6' if size=='3b' else '-v5'),upstream_commit=UPSTREAM,
                 model_revision=REVISIONS[size],versions=VERSIONS,data_manifest_sha256=DATA_SHA,
                 expected_actual_iterations=200,upstream_labels=[101,300],gpus=8,no_auto_retry=True,
                 no_additional_sft=True,model='/same/init',allocation=dict(gpus=8,cpus=64,memory_gib=600),
                 minimum_gpu_memory_mib=44000,
                 partition='ADA6000,L40S',node=None)
-            plan['prior_attempt']=dict(job_id='139127' if size=='3b' else '139126',scientific_updates=0,raw_policy_tokens=None,status='FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM')
+            plan['prior_attempt']=dict(job_id='139131' if size=='3b' else '139132',scientific_updates=0,raw_policy_tokens=None,status='FAILED_AFTER_FIRST_ROLLOUT_MISSING_ACTOR_TEMPERATURE_METADATA_BEFORE_ADAM')
             if size=='3b':plan['prior_attempt']['raw_policy_tokens']=None
             plan['overrides']=training_overrides(script,size,plan['model'],plan['root'])
             validate_plan(plan,script)

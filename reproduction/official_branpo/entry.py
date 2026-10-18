@@ -1,6 +1,7 @@
 """Independent BranPO allocation, immutable inputs, and official training driver."""
 import importlib.metadata as metadata
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -35,19 +36,39 @@ def iteration_patch(text):
     return text.replace(anchor, anchor + extra), extra
 
 
+def actor_batch_patch(text):
+    """Supply the temperature metadata required by native verl update_policy."""
+    assert 'from reproduction.official_branpo.entry import prepare_actor_metadata' not in text
+    anchor = '                    batch.meta_info["global_token_num"] = torch.sum(batch.batch["attention_mask"], dim=-1).tolist()\n'
+    assert text.count(anchor) == 1
+    extra = ('                    from reproduction.official_branpo.entry import prepare_actor_metadata\n'
+             '                    prepare_actor_metadata(batch, self.config)\n')
+    return text.replace(anchor, extra + anchor), extra
+
+
+def prepare_actor_metadata(batch, config):
+    # Native ActorRolloutRefWorker uses this exact frozen rollout temperature
+    # when preparing log-probability batches. Bypass mode skips that method.
+    value = config.actor_rollout_ref.rollout.temperature
+    assert type(value) in (float, int) and math.isfinite(value) and value > 0
+    if 'temperature' in batch.meta_info:
+        assert batch.meta_info['temperature'] == value, 'Conflicting rollout temperature'
+    batch.meta_info['temperature'] = value
+
+
 def validate_plan(plan, script):
     size=plan['size'];assert size in REVISIONS
     assert plan['protocol']=='official_branpo_common_initialization_v1'
-    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v4')
+    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v6' if size=='3b' else '-v5')
     assert plan['upstream_commit']==UPSTREAM and plan['model_revision']==REVISIONS[size]
     assert plan['versions']==VERSIONS and plan['data_manifest_sha256']==DATA_SHA
     assert plan['expected_actual_iterations']==200 and plan['upstream_labels']==[101,300]
     assert plan['gpus']==8 and plan['no_auto_retry'] is True and plan['no_additional_sft'] is True
     previous=plan['prior_attempt']
-    assert previous['job_id']==('139127' if size=='3b' else '139126')
+    assert previous['job_id']==('139131' if size=='3b' else '139132')
     assert previous['scientific_updates']==0
     assert previous['raw_policy_tokens'] is None
-    assert previous['status']=='FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM'
+    assert previous['status']=='FAILED_AFTER_FIRST_ROLLOUT_MISSING_ACTOR_TEMPERATURE_METADATA_BEFORE_ADAM'
     assert plan['overrides']==training_overrides(script,size,plan['model'],plan['root'])
     assert plan['allocation']==dict(gpus=8,cpus=64,memory_gib=600)
     assert plan['minimum_gpu_memory_mib']==44000
@@ -73,6 +94,8 @@ def verify(plan):
     for f,h in patch['backend_files'].items():assert sha(f)==h,f
     assert patch['only_post_adam_and_post_completed_iteration'] is True
     assert patch['actual_patched_optimizer_cpu_bit_exact'] is True and patch['rng_unchanged'] is True
+    assert patch['metadata_patch_reversal_restores_previous_upstream'] is True
+    assert patch['actual_native_update_policy_cpu_equivalence'] is True
     data=json.loads(Path(plan['converted_data_receipt']).read_text())
     assert data['common_manifest_sha256']==DATA_SHA
     for split,count in [('train',169028),('validation',512)]:
@@ -82,6 +105,7 @@ def verify(plan):
     assert preflight['status']=='PASSED' and preflight['actual_gpu_training'] is False
     assert preflight['actual_worker_visibility_method_checked'] is True
     assert preflight['actual_rollout_correction_helper_cpu_equivalence'] is True
+    assert preflight['actual_native_update_policy_cpu_equivalence'] is True
     assert preflight['overrides']==plan['overrides'] and preflight['model_files']==plan['model_files']
     return root
 
