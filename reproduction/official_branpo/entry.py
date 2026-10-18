@@ -38,15 +38,16 @@ def iteration_patch(text):
 def validate_plan(plan, script):
     size=plan['size'];assert size in REVISIONS
     assert plan['protocol']=='official_branpo_common_initialization_v1'
-    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v4' if size=='3b' else '-v3')
+    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v3')
     assert plan['upstream_commit']==UPSTREAM and plan['model_revision']==REVISIONS[size]
     assert plan['versions']==VERSIONS and plan['data_manifest_sha256']==DATA_SHA
     assert plan['expected_actual_iterations']==200 and plan['upstream_labels']==[101,300]
     assert plan['gpus']==8 and plan['no_auto_retry'] is True and plan['no_additional_sft'] is True
     previous=plan['prior_attempt']
-    assert previous['job_id']==('139125' if size=='3b' else '139124')
-    assert previous['scientific_updates']==0 and previous['raw_policy_tokens']==0
-    assert previous['status']==('FAILED_VLLM_KV_CACHE_MEMORY24GB_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
+    assert previous['job_id']==('139127' if size=='3b' else '139124')
+    assert previous['scientific_updates']==0
+    assert previous['raw_policy_tokens'] is None if size=='3b' else previous['raw_policy_tokens']==0
+    assert previous['status']==('FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
     assert plan['overrides']==training_overrides(script,size,plan['model'],plan['root'])
     assert plan['allocation']==dict(gpus=8,cpus=64,memory_gib=600)
     assert plan['minimum_gpu_memory_mib']==44000
@@ -80,6 +81,7 @@ def verify(plan):
     preflight=json.loads(Path(plan['cpu_preflight']).read_text())
     assert preflight['status']=='PASSED' and preflight['actual_gpu_training'] is False
     assert preflight['actual_worker_visibility_method_checked'] is True
+    assert preflight['actual_rollout_correction_helper_cpu_equivalence'] is True
     assert preflight['overrides']==plan['overrides'] and preflight['model_files']==plan['model_files']
     return root
 
@@ -107,7 +109,17 @@ def sanitize_nvidia_visibility(environ, inventory):
 def ray_init_settings(config):
     return {k:v for k,v in config.ray_init.items() if v is not None} if hasattr(config,'ray_init') else {}
 
+def prepare_policy_loss_schema(config):
+    # The official helper attaches its unchanged algorithm config dynamically.
+    # Relax only this mapping's schema, leaving every effective value intact.
+    from omegaconf import OmegaConf
+    assert config.algorithm.rollout_correction.bypass_mode is True
+    assert config.algorithm.rollout_correction.get('use_policy_gradient',False) is False
+    OmegaConf.set_struct(config.actor_rollout_ref.actor.policy_loss,False)
+
+
 def build_trainer(plan,cfg):
+    prepare_policy_loss_schema(cfg)
     from rllm.data import DatasetRegistry
     data=Path(plan['converted_data_root'])
     DatasetRegistry._REGISTRY_DIR=str(data/'registry');DatasetRegistry._REGISTRY_FILE=str(data/'registry/dataset_registry.json');DatasetRegistry._DATASET_DIR=str(data/'datasets')

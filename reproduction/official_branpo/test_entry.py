@@ -2,7 +2,7 @@ import copy
 import os
 from pathlib import Path
 import unittest
-from .entry import actor_patch,iteration_patch,ray_runtime_env,ray_init_settings,sanitize_nvidia_visibility,validate_plan,ROOT,VERSIONS
+from .entry import actor_patch,iteration_patch,ray_runtime_env,ray_init_settings,sanitize_nvidia_visibility,prepare_policy_loss_schema,validate_plan,ROOT,VERSIONS
 from .contract import training_overrides,UPSTREAM,DATA_SHA,REVISIONS,job_name
 
 class EntryTest(unittest.TestCase):
@@ -31,6 +31,14 @@ class EntryTest(unittest.TestCase):
         self.assertEqual(removed['HIP_VISIBLE_DEVICES'],'wrong')
         with self.assertRaises(AssertionError):sanitize_nvidia_visibility(env,['AMD GPU']*8)
 
+    def test_only_dynamic_policy_loss_schema_opened_without_value_changes(self):
+        from omegaconf import OmegaConf
+        cfg=OmegaConf.create({'algorithm':{'rollout_correction':{'bypass_mode':True,'use_policy_gradient':False}},'actor_rollout_ref':{'actor':{'policy_loss':{'loss_mode':'vanilla'}}}});OmegaConf.set_struct(cfg,True)
+        before=OmegaConf.to_container(cfg,resolve=True);prepare_policy_loss_schema(cfg)
+        self.assertEqual(OmegaConf.to_container(cfg,resolve=True),before)
+        cfg.actor_rollout_ref.actor.policy_loss.rollout_correction=cfg.algorithm.rollout_correction
+        with self.assertRaises(Exception):cfg.actor_rollout_ref.actor.unexpected=1
+
     def test_optional_ray_initialization_matches_official_driver(self):
         from types import SimpleNamespace
         self.assertEqual(ray_init_settings(SimpleNamespace()),{})
@@ -41,13 +49,14 @@ class EntryTest(unittest.TestCase):
         script=(up/'agent/search/start_branpo_trainer.sh').read_text()
         for size in ['3b','7b']:
             plan=dict(protocol='official_branpo_common_initialization_v1',size=size,
-                job=job_name(size),root=ROOT+'/runs/'+size+('-v4' if size=='3b' else '-v3'),upstream_commit=UPSTREAM,
+                job=job_name(size),root=ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v3'),upstream_commit=UPSTREAM,
                 model_revision=REVISIONS[size],versions=VERSIONS,data_manifest_sha256=DATA_SHA,
                 expected_actual_iterations=200,upstream_labels=[101,300],gpus=8,no_auto_retry=True,
                 no_additional_sft=True,model='/same/init',allocation=dict(gpus=8,cpus=64,memory_gib=600),
                 minimum_gpu_memory_mib=44000,
                 partition='ADA6000,L40S' if size=='3b' else 'ADA6000',node=None)
-            plan['prior_attempt']=dict(job_id='139125' if size=='3b' else '139124',scientific_updates=0,raw_policy_tokens=0,status='FAILED_VLLM_KV_CACHE_MEMORY24GB_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
+            plan['prior_attempt']=dict(job_id='139127' if size=='3b' else '139124',scientific_updates=0,raw_policy_tokens=0,status='FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
+            if size=='3b':plan['prior_attempt']['raw_policy_tokens']=None
             plan['overrides']=training_overrides(script,size,plan['model'],plan['root'])
             validate_plan(plan,script)
             for key,value in [('gpus',4),('model_revision','wrong'),('no_additional_sft',False)]:
