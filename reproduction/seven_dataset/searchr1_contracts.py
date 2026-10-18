@@ -32,6 +32,9 @@ def output_root(plan):
 
 
 def validate_searchr1_plan(plan,template):
+    if 'repeat_recovery' in plan:
+        from .searchr1_recovery import inspect_recovery
+        return inspect_recovery(plan,template)
     require(set(plan)==set(INHERITED)|OWN_FIELDS,'Unknown or missing baseline plan fields')
     require(plan['protocol']=='searchr1_seven_repeats_v1' and plan['group']=='Search-R1'
             and type(plan['outer']) is int and plan['outer']==0,'Not the pinned official Search-R1 baseline')
