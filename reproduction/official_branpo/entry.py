@@ -38,20 +38,20 @@ def iteration_patch(text):
 def validate_plan(plan, script):
     size=plan['size'];assert size in REVISIONS
     assert plan['protocol']=='official_branpo_common_initialization_v1'
-    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v3')
+    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+('-v5' if size=='3b' else '-v4')
     assert plan['upstream_commit']==UPSTREAM and plan['model_revision']==REVISIONS[size]
     assert plan['versions']==VERSIONS and plan['data_manifest_sha256']==DATA_SHA
     assert plan['expected_actual_iterations']==200 and plan['upstream_labels']==[101,300]
     assert plan['gpus']==8 and plan['no_auto_retry'] is True and plan['no_additional_sft'] is True
     previous=plan['prior_attempt']
-    assert previous['job_id']==('139127' if size=='3b' else '139124')
+    assert previous['job_id']==('139127' if size=='3b' else '139126')
     assert previous['scientific_updates']==0
-    assert previous['raw_policy_tokens'] is None if size=='3b' else previous['raw_policy_tokens']==0
-    assert previous['status']==('FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
+    assert previous['raw_policy_tokens'] is None
+    assert previous['status']=='FAILED_AFTER_FIRST_ROLLOUT_POLICY_LOSS_SCHEMA_MISSING_BEFORE_ADAM'
     assert plan['overrides']==training_overrides(script,size,plan['model'],plan['root'])
     assert plan['allocation']==dict(gpus=8,cpus=64,memory_gib=600)
     assert plan['minimum_gpu_memory_mib']==44000
-    assert plan['partition']==('ADA6000,L40S' if size=='3b' else 'ADA6000')
+    assert plan['partition']=='ADA6000,L40S'
     assert plan['node'] is None
     return Path(plan['root'])
 
