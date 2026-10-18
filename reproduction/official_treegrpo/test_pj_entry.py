@@ -1,6 +1,9 @@
 import copy
 import os
+import json
 from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler,validate_submission_params,validate_gate
@@ -47,6 +50,29 @@ max_turns=3 \\
         validate_gate(self.plan,sub,gate)
         for altered in [dict(gate,plan_sha256='other'),dict(gate,actual=dict(gate['actual'],state='PENDING')),dict(gate,actual=dict(gate['actual'],uid='other'))]:
             with self.assertRaises(AssertionError):validate_gate(self.plan,sub,altered)
+
+    def test_publisher_waits_running_publishes_once_and_cannot_replay(self):
+        from . import pj_gate
+        from .contract import sha
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);p=dict(self.plan,root=tmp,wrapper_commit='frozen-source')
+            f=root/'plan.json';f.write_text(json.dumps(p));sub=dict(job=JOB,uid='actual-uid',plan_sha256=sha(f))
+            (root/'submission.json').write_text(json.dumps(sub))
+            resources=dict(accelerate_device_count=8,cpu_count=48,memory_gib=512,
+                machine_types=['n2ls.ie.i60b'],accelerate_device_model='A100',accelerate_device_memory_gib=80)
+            pending=dict(uid='actual-uid',name=JOB,status=dict(state='PENDING'))
+            running=dict(uid='actual-uid',name=JOB,status=dict(state='RUNNING'),
+                spec=dict(vc_job=dict(tasks=[dict(replicas=1,resource_spec=resources)])))
+            client=SimpleNamespace(get_training_job=unittest.mock.Mock(side_effect=[pending,running]))
+            module=SimpleNamespace(get_cluster=lambda:SimpleNamespace(client=client))
+            spec=SimpleNamespace(loader=SimpleNamespace(exec_module=lambda m:None))
+            with patch.object(pj_gate.importlib.util,'spec_from_file_location',return_value=spec),patch.object(pj_gate.importlib.util,'module_from_spec',return_value=module),patch.object(pj_gate.time,'sleep'):
+                pj_gate.run(str(f))
+                actual=json.loads((root/'scheduler-release-once.json').read_text())
+                self.assertEqual(actual['actual']['uid'],'actual-uid')
+                self.assertEqual(actual['actual']['state'],'RUNNING')
+                self.assertFalse((root/'scheduler-release.tmp').exists())
+                with self.assertRaises(FileExistsError):pj_gate.run(str(f))
 
     def test_no_missing_native_or_live_parent(self):
         for change in [dict(state='RUNNING'),dict(native_checkpoint_absent=False)]:
