@@ -41,13 +41,13 @@ class EntryTest(unittest.TestCase):
         script=(up/'agent/search/start_branpo_trainer.sh').read_text()
         for size in ['3b','7b']:
             plan=dict(protocol='official_branpo_common_initialization_v1',size=size,
-                job=job_name(size),root=ROOT+'/runs/'+size+'-v3',upstream_commit=UPSTREAM,
+                job=job_name(size),root=ROOT+'/runs/'+size+('-v4' if size=='3b' else '-v3'),upstream_commit=UPSTREAM,
                 model_revision=REVISIONS[size],versions=VERSIONS,data_manifest_sha256=DATA_SHA,
                 expected_actual_iterations=200,upstream_labels=[101,300],gpus=8,no_auto_retry=True,
                 no_additional_sft=True,model='/same/init',allocation=dict(gpus=8,cpus=64,memory_gib=600),
-                minimum_gpu_memory_mib=24000 if size=='3b' else 44000,
-                partition='RTX3090' if size=='3b' else 'ADA6000',node='node2' if size=='3b' else None)
-            plan['prior_attempt']=dict(job_id='139123' if size=='3b' else '139124',scientific_updates=0,raw_policy_tokens=0,status='FAILED_WORKER_INIT_NVIDIA_AMD_VISIBILITY_CONFLICT_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
+                minimum_gpu_memory_mib=44000,
+                partition='ADA6000,L40S' if size=='3b' else 'ADA6000',node=None)
+            plan['prior_attempt']=dict(job_id='139125' if size=='3b' else '139124',scientific_updates=0,raw_policy_tokens=0,status='FAILED_VLLM_KV_CACHE_MEMORY24GB_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
             plan['overrides']=training_overrides(script,size,plan['model'],plan['root'])
             validate_plan(plan,script)
             for key,value in [('gpus',4),('model_revision','wrong'),('no_additional_sft',False)]:
