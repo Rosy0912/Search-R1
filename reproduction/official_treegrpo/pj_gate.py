@@ -13,7 +13,8 @@ def run(planfile):
     plan=json.loads(Path(planfile).read_text());root=Path(plan['root'])
     submission=json.loads((root/'submission.json').read_text())
     assert submission['plan_sha256']==sha(planfile)
-    (root/'scheduler-publisher.once').open('x').write(str(os.getpid()))
+    with (root/'scheduler-publisher.once').open('x') as f:
+        f.write(str(os.getpid()));f.flush();os.fsync(f.fileno())
     s=importlib.util.spec_from_file_location('pt','/plm-shared/zhangjunming/Workspace/mmsearch-hybrid-explore/runs/msjev-pt-probe-20260924/pt_client.py')
     m=importlib.util.module_from_spec(s);s.loader.exec_module(m);client=m.get_cluster().client
     started=time.monotonic()
