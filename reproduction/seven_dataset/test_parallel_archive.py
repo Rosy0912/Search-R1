@@ -26,6 +26,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(combine(target, prefix, proof, paths)['sha256'], self.sha)
         self.assertEqual(target.read_bytes(), self.data)
 
+    def test_complete_four_ranges_from_exclusive_empty_target(self):
+        target=self.root/'empty-target';target.touch(exist_ok=False)
+        prefix=inspect_prefix(target,0);proof=manifest(self.source,0,len(self.data),self.sha)
+        paths=[]
+        for item in proof['ranges']:
+            stream=io.BytesIO();send(self.source,proof['source_fingerprint'],item,stream);stream.seek(0)
+            part=self.root/('zero-'+str(item['index']));receive(part,item,stream);paths.append(str(part))
+        result=combine(target,prefix,proof,paths)
+        self.assertEqual(result['sha256'],self.sha)
+        self.assertEqual(target.read_bytes(),self.data)
+
     def test_incomplete_preserves(self):
         proof = manifest(self.source, 0, len(self.data), self.sha)
         item = proof['ranges'][0]; path = self.root/'part'
