@@ -16,6 +16,15 @@ MAPPED={'base','backend','model','inference_model','canonical_tokenizer','data_r
 EXTRA={'pj_export','pj_export_sha256','repeat_index','repeat_count'}
 
 
+def pj_job_name(group, repeat_index, checkpoint_identity):
+    require(group in ('budget-5','budget-20'),'Unknown final ablation')
+    require(type(repeat_index) is int and repeat_index in (1,2,3),'Only fixed three repeats')
+    require(re.fullmatch('[0-9a-f]{64}',checkpoint_identity) is not None,'Full checkpoint identity required')
+    name='zhangjunming-ttt-'+('b5' if group=='budget-5' else 'b20')+'-150-r'+str(repeat_index)+'-'+checkpoint_identity[:4]
+    require(len(name)<=32,'PJ job name exceeds API limit')
+    return name
+
+
 def validate_export(export):
     parent=export['plan']
     require(export['status']=='LUMIA_FULL_INPUTS_VERIFIED_UNSUBMITTED' and export['questions']==TOTAL,'Unverified origin export')
@@ -38,7 +47,7 @@ def validate_projection(plan,export):
     expected={'model':stage/'model','canonical_tokenizer':stage/'tokenizer','inference_model':stage/'view','checkpoint_manifest':stage/'manifest.json','training_config':stage/'training.yaml','configuration_receipt':stage/'configuration.json','pj_export':stage/'export.json','retriever_receipt':Path(BASE)/'receipts/pj-retriever-ready.json'}
     require(all(Path(plan[k])==v for k,v in expected.items()),'Physical path projection escapes its stage')
     root=Path(BASE)/'ablation-seven-evaluations'/plan['checkpoint_identity']/('r'+str(i))
-    require(Path(plan['output'])==root/'output' and plan['job']=='zhangjunming-ttt-e-'+('b5' if plan['group']=='budget-5' else 'b20')+'-150-r'+str(i)+'-'+plan['checkpoint_identity'][:8]+'-pj','Wrong unique repeat namespace')
+    require(Path(plan['output'])==root/'output' and plan['job']==pj_job_name(plan['group'],i,plan['checkpoint_identity']),'Wrong unique repeat namespace')
     return root
 
 

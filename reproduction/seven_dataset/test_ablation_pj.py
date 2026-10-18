@@ -1,5 +1,5 @@
 import copy,unittest
-from .ablation_pj import BASE,validate_export,validate_projection
+from .ablation_pj import BASE,validate_export,validate_projection,pj_job_name
 from .contracts import digest
 class AblationPJTests(unittest.TestCase):
  def fixture(self):
@@ -7,7 +7,15 @@ class AblationPJTests(unittest.TestCase):
   e=dict(status='LUMIA_FULL_INPUTS_VERIFIED_UNSUBMITTED',questions=51713,plan=parent,plan_sha256=digest(parent),config={'max_turns':4},config_digest=digest({'max_turns':4}),exclusive_claim=dict(group='budget-20',outer=150,destination='pj_pt',repeats=3,exact_scheduler_matches=[],origin_output_absent=True))
   p=copy.deepcopy(parent);stage=BASE+'/ablation-imports/'+'b'*64
   p.update(base=BASE,backend='pj_pt',data_root=BASE+'/common-data',evaluation_run_id='2'*32,evaluation_code_commit='f'*40,repeat_index=1,repeat_count=3,pj_export=stage+'/export.json',pj_export_sha256='f'*64,model=stage+'/model',inference_model=stage+'/view',canonical_tokenizer=stage+'/tokenizer',checkpoint_manifest=stage+'/manifest.json',training_config=stage+'/training.yaml',configuration_receipt=stage+'/configuration.json',retriever_receipt=BASE+'/receipts/pj-retriever-ready.json',retriever_receipt_sha256='e'*64,output=BASE+'/ablation-seven-evaluations/'+'b'*64+'/r1/output',job='zhangjunming-ttt-e-b20-150-r1-bbbbbbbb-pj')
+  p['job']='zhangjunming-ttt-b20-150-r1-bbbb'
   return p,e
+ def test_pj_api_name_limit_and_repeat_uniqueness(self):
+  names={pj_job_name(g,i,'b'*64) for g in ('budget-5','budget-20') for i in (1,2,3)}
+  self.assertEqual(len(names),6)
+  self.assertTrue(all(len(n)<=32 and n.startswith('zhangjunming-ttt-') for n in names))
+ def test_reject_pre_recovery_overlength_name(self):
+  p,e=self.fixture();p['job']='zhangjunming-ttt-e-b20-150-r1-bbbbbbbb-pj'
+  with self.assertRaises(ValueError):validate_projection(p,e)
  def test_exact_projection(self):
   p,e=self.fixture();self.assertTrue(str(validate_projection(p,e)).endswith('/r1'))
  def test_changed_identity(self):
