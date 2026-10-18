@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import unittest
 from unittest.mock import patch
-from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler,validate_submission_params
+from .pj_entry import BASE,ROOT,JOB,MODEL_FILES,VERSIONS,validate_spec,validate_scheduler,validate_submission_params,validate_gate
 from .contract import recipe,JOB as OLD_JOB,UPSTREAM,MODEL_REVISION,MANIFEST_SHA
 
 
@@ -16,7 +16,7 @@ trainer.total_training_steps=180 \\
 max_turns=3 \\
 '''
         self.plan=dict(protocol='official_treegrpo_pj_inspected_replacement_v1',job=JOB,
-            root=ROOT+'/runs/fair-replacement-v2',upstream_source=ROOT+'/deployment-pj-v1/upstream',
+            root=ROOT+'/runs/fair-replacement-v3',upstream_source=ROOT+'/deployment-pj-v1/upstream',
             upstream_commit=UPSTREAM,model_revision=MODEL_REVISION,model=BASE+'/assets/model',
             model_files=MODEL_FILES,data=BASE+'/common-data',data_manifest_sha256=MANIFEST_SHA,
             required_versions=VERSIONS,allocation=dict(gpus=8,cpus=48,memory_gib=512,
@@ -26,7 +26,11 @@ max_turns=3 \\
             intended_node=None,no_hostname_affinity=True,
             placement_recovery=dict(job='zhangjunming-ttt-treegrpo-pj-v1',
                 uid='e078d102-57e4-4ed1-a359-610671e4e42b',
-                status='TERMINATED_NEVER_STARTED_ZERO_GPU_EXECUTION',allocated_seconds=0,entry_absent=True))
+                status='TERMINATED_NEVER_STARTED_ZERO_GPU_EXECUTION',allocated_seconds=0,entry_absent=True),
+            startup_recovery=dict(job='zhangjunming-ttt-treegrpo-pj-v2',
+                uid='f51ffc58-4fdf-418d-914a-6b8c2220010f',
+                status='FAILED_BEFORE_SCIENTIFIC_TRAINING_DNS_API_CHECK',
+                scientific_updates=0,scientific_worker_not_started=True))
         self.plan['overrides']=[v.replace('='+OLD_JOB,'='+JOB) for v in recipe(self.script,
             self.plan['model'],self.plan['data'],self.plan['root'],self.plan['retriever'])]
 
@@ -36,6 +40,13 @@ max_turns=3 \\
     def test_scientific_change_rejected(self):
         p=copy.deepcopy(self.plan);p['overrides']=[s.replace('lr=1e-6','lr=2e-6') for s in p['overrides']]
         with self.assertRaises(AssertionError):validate_spec(p,self.script)
+
+    def test_external_gate_requires_actual_uid_resources_and_plan(self):
+        sub=dict(job=JOB,uid='uid',plan_sha256='sha')
+        gate=dict(plan_sha256='sha',actual=dict(name=JOB,uid='uid',state='RUNNING',resources=self.plan['allocation']))
+        validate_gate(self.plan,sub,gate)
+        for altered in [dict(gate,plan_sha256='other'),dict(gate,actual=dict(gate['actual'],state='PENDING')),dict(gate,actual=dict(gate['actual'],uid='other'))]:
+            with self.assertRaises(AssertionError):validate_gate(self.plan,sub,altered)
 
     def test_no_missing_native_or_live_parent(self):
         for change in [dict(state='RUNNING'),dict(native_checkpoint_absent=False)]:

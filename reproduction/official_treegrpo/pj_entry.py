@@ -10,7 +10,7 @@ from .contract import UPSTREAM, MODEL_REVISION, MANIFEST_SHA, JOB as OLD_JOB, sh
 
 BASE = '/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-20261015-v1'
 ROOT = BASE + '/official-treegrpo'
-JOB = 'zhangjunming-ttt-treegrpo-pj-v2'
+JOB = 'zhangjunming-ttt-treegrpo-pj-v3'
 MODEL_FILES = {
     'config.json': 'eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b',
     'generation_config.json': 'ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9',
@@ -29,7 +29,7 @@ VERSIONS = {'torch':'2.6.0','vllm':'0.8.5.post1','transformers':'4.51.3',
 def validate_spec(plan, script):
     assert plan['protocol'] == 'official_treegrpo_pj_inspected_replacement_v1'
     assert plan['job'] == JOB and len(JOB) <= 32
-    assert plan['root'] == ROOT+'/runs/fair-replacement-v2'
+    assert plan['root'] == ROOT+'/runs/fair-replacement-v3'
     assert plan['upstream_source'] == ROOT+'/deployment-pj-v1/upstream'
     assert plan['upstream_commit'] == UPSTREAM and plan['model_revision'] == MODEL_REVISION
     assert plan['model'] == BASE+'/assets/model' and plan['model_files'] == MODEL_FILES
@@ -47,6 +47,11 @@ def validate_spec(plan, script):
     assert previous['uid']=='e078d102-57e4-4ed1-a359-610671e4e42b'
     assert previous['status']=='TERMINATED_NEVER_STARTED_ZERO_GPU_EXECUTION'
     assert previous['allocated_seconds']==0 and previous['entry_absent'] is True
+    startup=plan['startup_recovery']
+    assert startup['job']=='zhangjunming-ttt-treegrpo-pj-v2'
+    assert startup['uid']=='f51ffc58-4fdf-418d-914a-6b8c2220010f'
+    assert startup['status']=='FAILED_BEFORE_SCIENTIFIC_TRAINING_DNS_API_CHECK'
+    assert startup['scientific_updates']==0 and startup['scientific_worker_not_started'] is True
     expected = [v.replace('='+OLD_JOB,'='+JOB) for v in recipe(
         script,plan['model'],plan['data'],plan['root'],plan['retriever'])]
     assert plan['overrides'] == expected, 'Official scientific recipe changed'
@@ -59,6 +64,15 @@ def validate_submission_params(plan, params):
     assert params['num_nodes']==1 and params['gpus_per_task']==8
     assert params['cpus_per_task']==48 and params['memory_per_task']==512
     assert params['retry']==0 and params['no_env'] is True
+
+
+def validate_gate(plan, submission, gate):
+    assert gate['plan_sha256']==submission['plan_sha256']
+    actual=gate['actual']
+    assert actual['name']==plan['job']==submission['job']==JOB
+    assert actual['uid']==submission['uid'] and actual['state']=='RUNNING'
+    assert actual['resources']==plan['allocation']
+    return actual
 
 
 def verify(plan):
@@ -81,6 +95,11 @@ def verify(plan):
     retirement=json.loads(Path(previous['receipt']).read_text())
     for key in ['job','uid','status','allocated_seconds','entry_absent']:
         assert retirement[key]==previous[key],key
+    startup=plan['startup_recovery']
+    assert sha(startup['receipt'])==startup['receipt_sha256']
+    inspected=json.loads(Path(startup['receipt']).read_text())
+    for key in ['job','uid','status','scientific_updates','scientific_worker_not_started']:
+        assert inspected[key]==startup[key],key
     assert sha(plan['retriever_receipt'])==plan['retriever_receipt_sha256']
     ready=json.loads(Path(plan['retriever_receipt']).read_text());assert ready['url']==plan['retriever']
     assert sha(plan['runtime_preflight'])==plan['runtime_preflight_sha256']
@@ -111,17 +130,14 @@ def run(planfile):
         if time.monotonic()>=deadline:raise TimeoutError('Submission UID receipt absent; no training started')
         time.sleep(.5)
     submission=json.loads((root/'submission.json').read_text())
-    code="""import importlib.util,json
-s=importlib.util.spec_from_file_location('pt','/plm-shared/zhangjunming/Workspace/mmsearch-hybrid-explore/runs/msjev-pt-probe-20260924/pt_client.py')
-m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
-j=m.get_cluster().client.get_training_job(%r)
-t=j['spec']['vc_job']['tasks'];assert len(t)==1 and t[0]['replicas']==1
-r=t[0]['resource_spec']
-v=dict(name=j['name'],uid=j['uid'],state=j['status']['state'],resources=dict(gpus=r['accelerate_device_count'],cpus=r['cpu_count'],memory_gib=r['memory_gib'],machine_type=r['machine_types'][0],gpu_model=r['accelerate_device_model'],gpu_memory_gib=r['accelerate_device_memory_gib']))
-print('ACTUAL='+json.dumps(v))
-""" % JOB
-    queried=subprocess.check_output([plan['sdk_python'],'-c',code],text=True,timeout=60)
-    actual=json.loads(queried.split('ACTUAL=',1)[1]);validate_scheduler(plan,intent,submission,actual)
+    # Compute pods cannot resolve the scheduler API. A single external CPU publisher
+    # checks the actual UID/allocation and atomically releases this exact plan.
+    gatefile=root/'scheduler-release-once.json';deadline=time.monotonic()+120
+    while not gatefile.exists():
+        if time.monotonic()>=deadline:raise TimeoutError('External scheduler release absent; no training started')
+        time.sleep(.5)
+    gate=json.loads(gatefile.read_text());actual=validate_gate(plan,submission,gate)
+    validate_scheduler(plan,intent,submission,actual)
     inv=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,name,memory.total,driver_version','--format=csv,noheader,nounits'],text=True).splitlines()
     assert len(inv)==8 and len({s.split(',')[1].strip() for s in inv})==8
     assert all('A100' in s and float(s.split(',')[3])>=80000 for s in inv)
