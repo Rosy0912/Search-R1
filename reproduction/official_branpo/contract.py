@@ -33,7 +33,7 @@ def digest(value):
 def job_name(size):
     if size not in REVISIONS:
         raise ValueError('Only the requested 3B and 7B comparison sizes are supported')
-    return 'zhangjunming-branpo-' + size + '-v2'
+    return 'zhangjunming-branpo-' + size + '-v3'
 
 
 def task_from_common(row):

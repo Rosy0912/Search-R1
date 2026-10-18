@@ -38,15 +38,15 @@ def iteration_patch(text):
 def validate_plan(plan, script):
     size=plan['size'];assert size in REVISIONS
     assert plan['protocol']=='official_branpo_common_initialization_v1'
-    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+'-v2'
+    assert plan['job']==job_name(size) and plan['root']==ROOT+'/runs/'+size+'-v3'
     assert plan['upstream_commit']==UPSTREAM and plan['model_revision']==REVISIONS[size]
     assert plan['versions']==VERSIONS and plan['data_manifest_sha256']==DATA_SHA
     assert plan['expected_actual_iterations']==200 and plan['upstream_labels']==[101,300]
     assert plan['gpus']==8 and plan['no_auto_retry'] is True and plan['no_additional_sft'] is True
     previous=plan['prior_attempt']
-    assert previous['job_id']==('139121' if size=='3b' else '139122')
+    assert previous['job_id']==('139123' if size=='3b' else '139124')
     assert previous['scientific_updates']==0 and previous['raw_policy_tokens']==0
-    assert previous['status']==('FAILED_BEFORE_RAY_INIT_OPTIONAL_RAY_CONFIG_ABSENT' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_BAD_OPTIONAL_CONFIG_ENTRY')
+    assert previous['status']==('FAILED_WORKER_INIT_NVIDIA_AMD_VISIBILITY_CONFLICT_BEFORE_ADAM' if size=='3b' else 'CANCELLED_NEVER_EXECUTED_KNOWN_GPU_VISIBILITY_CONFLICT')
     assert plan['overrides']==training_overrides(script,size,plan['model'],plan['root'])
     assert plan['allocation']==dict(gpus=8,cpus=64,memory_gib=600)
     assert plan['minimum_gpu_memory_mib']==(24000 if size=='3b' else 44000)
@@ -79,6 +79,7 @@ def verify(plan):
         assert sha(s['tasks'])==s['tasks_sha256'] and sha(s['verl'])==s['verl_sha256']
     preflight=json.loads(Path(plan['cpu_preflight']).read_text())
     assert preflight['status']=='PASSED' and preflight['actual_gpu_training'] is False
+    assert preflight['actual_worker_visibility_method_checked'] is True
     assert preflight['overrides']==plan['overrides'] and preflight['model_files']==plan['model_files']
     return root
 
@@ -89,7 +90,18 @@ def ray_runtime_env(base, environ):
     for name in ['PYTHONPATH','BRANPO_AUDIT_DIR','SLURM_JOB_ID','SLURM_JOB_NAME']:
         assert environ.get(name), name
         result['env_vars'][name]=environ[name]
+    # The assigned devices have been independently verified as NVIDIA. Empty AMD
+    # masks prevent an inherited Slurm/image variable from narrowing CUDA devices.
+    result['env_vars']['ROCR_VISIBLE_DEVICES']=''
+    result['env_vars']['HIP_VISIBLE_DEVICES']=''
     return result
+
+
+def sanitize_nvidia_visibility(environ, inventory):
+    assert len(inventory)==8 and all('NVIDIA' in row for row in inventory)
+    assert environ.get('CUDA_VISIBLE_DEVICES'), 'Preserve the scheduler-assigned CUDA mask'
+    removed={k:environ.pop(k) for k in ['ROCR_VISIBLE_DEVICES','HIP_VISIBLE_DEVICES'] if k in environ}
+    return removed
 
 
 def ray_init_settings(config):
@@ -126,7 +138,8 @@ def run(planfile):
     assert all(float(s.split(',')[-1])>=plan['minimum_gpu_memory_mib'] for s in inv)
     assert not subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True).strip()
     assert not (root/'checkpoints').exists()
-    with (root/'entry-once.json').open('x') as f:json.dump(dict(at=time.time(),job_id=jid,gpus=inv,plan_sha256=sha(planfile)),f,indent=2)
+    removed=sanitize_nvidia_visibility(os.environ,inv)
+    with (root/'entry-once.json').open('x') as f:json.dump(dict(at=time.time(),job_id=jid,gpus=inv,plan_sha256=sha(planfile),removed_amd_visibility_masks=removed,cuda_mask_preserved=os.environ['CUDA_VISIBLE_DEVICES']),f,indent=2)
     os.environ['BRANPO_AUDIT_DIR']=str(root/'audit')
     os.environ['PYTHONPATH']=plan['adapter']+':'+plan['upstream']
     sys.path[:0]=[plan['adapter'],plan['upstream']];os.chdir(plan['upstream'])
