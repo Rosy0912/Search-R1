@@ -81,6 +81,11 @@ def run(planfile):
         from reproduction.seven_dataset.entry import run_frozen
         run_frozen(plan,planfile,cfg,expected,root)
         return
+    run_original(plan,root,cfg)
+
+
+def run_original(plan,root,cfg):
+    from omegaconf import OmegaConf
     # Original method: same resolved scientific recipe and observer environment as 3B.
     out=root/'output';out.mkdir(exist_ok=False)
     config=root/'resolved.yaml';config.write_text(OmegaConf.to_yaml(cfg,resolve=True));h=sha(config)
