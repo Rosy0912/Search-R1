@@ -49,10 +49,10 @@ class ResumeStreamTests(unittest.TestCase):
                 with self.assertRaises(ValueError):receive_suffix(p,inspect_prefix(p,3),6,'0'*64,io.BytesIO(suffix))
                 self.assertEqual(p.read_bytes(), b'abcdef')
 
-    def test_changed_source_rejected(self):
+    def test_changed_source_prefix_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'source'; p.write_bytes(b'abcdef'); e=inspect_prefix(p,3)
-            p.write_bytes(b'abcXYZ'); out=io.BytesIO()
+            p.write_bytes(b'XYZdef'); out=io.BytesIO()
             with self.assertRaises(ValueError):send_suffix(p,e,out)
             self.assertEqual(out.getvalue(), b'')
 
