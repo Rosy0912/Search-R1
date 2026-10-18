@@ -106,6 +106,8 @@ def run(planfile):
     assert '/official-branpo/env/' in verl.__file__, verl.__file__
     from hydra import compose,initialize_config_module
     from omegaconf import OmegaConf
+    if not OmegaConf.has_resolver('mul'):
+        OmegaConf.register_new_resolver('mul',lambda x,y:int(x)*int(y))
     with initialize_config_module(config_module='rllm.trainer.config',version_base=None):
         cfg=compose(config_name='agent_ppo_trainer',overrides=plan['overrides'])
     from rllm.data import DatasetRegistry

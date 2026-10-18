@@ -6,24 +6,25 @@ import sys
 import time
 from .pj_entry import COMPILER
 from .contract import sha
+import triton
+import triton.language as tl
+
+@triton.jit
+def add_seven(x,y,N:tl.constexpr,B:tl.constexpr):
+    offsets=tl.program_id(0)*B+tl.arange(0,B)
+    values=tl.load(x+offsets,offsets<N,other=0)
+    tl.store(y+offsets,values+7,offsets<N)
 
 
 def run(output):
     assert os.environ['TRITON_PTXAS_PATH']==COMPILER['path']
     assert sha(COMPILER['path'])==COMPILER['sha256']
     import torch
-    import triton
-    import triton.language as tl
     from triton.backends.nvidia.compiler import _path_to_binary,ptx_get_version
     selected,version=_path_to_binary('ptxas')
     assert selected==COMPILER['path'] and version=='12.4' and ptx_get_version(version)==84
     assert torch.cuda.device_count()==8
     cpu_rng=torch.get_rng_state().clone()
-    @triton.jit
-    def add_seven(x,y,N:tl.constexpr,B:tl.constexpr):
-        offsets=tl.program_id(0)*B+tl.arange(0,B)
-        values=tl.load(x+offsets,offsets<N,other=0)
-        tl.store(y+offsets,values+7,offsets<N)
     checked=[]
     for device in range(8):
         with torch.cuda.device(device):
