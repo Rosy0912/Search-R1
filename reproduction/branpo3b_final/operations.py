@@ -15,6 +15,16 @@ def zero():
  require(not any(v[1] in names for v in rows+live),'An exact slot is already registered; inspect, never replay')
  return dict(at=time.time(),names=names,sacct_exact=0,squeue_exact=0,positive_control='139135')
 
+
+def require_training_terminal(native):
+ rows=[v.split('|') for v in subprocess.check_output(['sacct','-n','-P','-X','-j',native['job_id'],'--format=JobIDRaw,User,JobName%100,State,ExitCode,AllocTRES%250'],text=True).splitlines() if v.strip()]
+ require(len(rows)==1 and rows[0][:5]==[native['job_id'],'jmzhang',native['job'],'COMPLETED','0:0'],'Actual final training terminal differs')
+ parent=Path(BR)/'runs/3b-150-v1';sub=json.loads((parent/'submission.json').read_text())
+ require(sub['job_id']==native['job_id'] and sub['plan_sha256']==native['plan_sha256'] and sub['source']==TRAIN_SOURCE,'Final training submission differs')
+ require((parent/'exit.code').read_text().strip()=='0' and json.loads((parent/'training-returned.json').read_text())['actual_updates']==150,'Training did not return150')
+ require(sha(sub['plan'])==native['plan_sha256'],'Final training plan changed')
+ return rows[0]
+
 def verify_source(deployment):
  source=Path(deployment['source']);require(source==Path(__file__).resolve().parents[2],'Deployed source path differs')
  for name,h in deployment['source_files'].items():require(sha(source/name)==h,'Source differs: '+name)
@@ -51,7 +61,7 @@ def prepare(deployment,bundle_path):
  values={}
  for name,row in bundle['evidence'].items():
   require(sha(row['path'])==row['sha256'],'Staged evidence SHA changed');values[name]=json.loads(Path(row['path']).read_text())
- native,hf=values['native.json'],values['hf.json'];validate_lineage(values['cold.json'],native,hf,values['export-intent.json'])
+ native,hf=values['native.json'],values['hf.json'];validate_lineage(values['cold.json'],native,hf,values['export-intent.json']);require_training_terminal(native)
  require(bundle['local_all_raw_sha_verified'] is True,'Missing independent local original evidence gate')
  require(not Path(ROOT).exists(),'Existing preparation must be inspected')
  before=zero();Path(ROOT).mkdir(exist_ok=False)
@@ -111,6 +121,7 @@ def submit(index,deployment):
  require(not (r/'submission-intent.json').exists() and not (r/'submission.json').exists(),'Existing intent must be inspected')
  from .entry import inspect
  inspect(plan)
+ bound_native=json.loads(Path(plan['evidence']['native.json']['path']).read_text());require_training_terminal(bound_native)
  q=shlex.quote
  lines=['#!/bin/bash','set -euo pipefail','export PATH='+q(str(Path(RUNTIME).parent))+':"$PATH"','export PYTHONPATH='+q(str(source))+' PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1','export SEARCH_R1_EXECUTION_BACKEND=slurm_lumia RECURSIVE_SOURCE_COMMIT='+q(deployment['commit']),'export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TOKENIZERS_PARALLELISM=false','export VLLM_ATTENTION_BACKEND=XFORMERS VLLM_USE_V1=0 VLLM_WORKER_MULTIPROC_METHOD=spawn','export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4 WANDB_MODE=disabled','unset HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy PYTHONHOME RAY_ADDRESS','cd '+q(str(source)),'ulimit -n 65535','set +e',q(RUNTIME)+' -B -m reproduction.branpo3b_final.launch --plan '+q(str(path)),'rc=$?','echo "$rc" > '+q(str(r/'exit.code')),'exit "$rc"']
  script='\n'.join(lines)+'\n'
