@@ -7,7 +7,7 @@ from .driver import once,search
 
 BASE=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-7B-20261018-v1')
 OLD=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1')
-ROOT=BASE/'reevaluation-official-v2c-20261019'
+ROOT=BASE/'reevaluation-official-v2d-20261019'
 
 def retriever_endpoint(base_url):
  from urllib.parse import urlsplit
@@ -21,8 +21,13 @@ def prepare():
  import pyarrow.parquet as pq
  from transformers import AutoConfig,AutoTokenizer
  from vllm.engine.arg_utils import EngineArgs
- from vllm.platforms.cuda import device_id_to_physical_device_id
- import os,ctypes
+ import os,ctypes,ast,importlib.util
+ # The enclosing native module initializes NVML at import time. Exercise its
+ # actual pure mask parser on the CPU without importing that GPU-only module.
+ native_path=Path(importlib.util.find_spec('vllm').origin).parent/'platforms/cuda.py'
+ definition=next(n for n in ast.parse(native_path.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=='device_id_to_physical_device_id')
+ scope={'os':os};exec(compile(ast.Module(body=[definition],type_ignores=[]),str(native_path),'exec'),scope)
+ device_id_to_physical_device_id=scope['device_id_to_physical_device_id']
  old_mask=os.environ.get('CUDA_VISIBLE_DEVICES')
  try:
   for index in range(8):
