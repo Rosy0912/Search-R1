@@ -28,6 +28,7 @@ class DriverTests(unittest.TestCase):
    calls=[];queries=[];parameter=Parameter();tok=Tokenizer()
    class LLM:
     def __init__(self,**kwargs):
+     assert os.environ['CUDA_VISIBLE_DEVICES']=='0' and os.environ['CUDA_DEVICE_ORDER']=='PCI_BUS_ID'
      self.llm_engine=SimpleNamespace(model_executor=SimpleNamespace(driver_worker=SimpleNamespace(model_runner=SimpleNamespace(model=SimpleNamespace(parameters=lambda:[parameter])))))
     def generate(self,prompt_token_ids,sampling_params,use_tqdm):
      assert sampling_params.temperature==0 and sampling_params.max_tokens==500
@@ -39,7 +40,7 @@ class DriverTests(unittest.TestCase):
    def search(url,q):
     queries.extend(q);return [[{'document':{'contents':'Title\nParis'}}] for _ in q],'hash'
    plan=dict(root=str(root),model='fixture',model_identity='fixture',model_files={},data=str(data),source_commit='fixture',retriever_url='http://fixture')
-   with patch.dict('sys.modules',torch=torch,transformers=transformers,vllm=vllm),patch.object(metadata,'version',return_value='0.6.3'),patch.object(driver,'search',side_effect=search),patch.dict(os.environ,dict(os.environ)):
+   with patch.dict('sys.modules',torch=torch,transformers=transformers,vllm=vllm),patch.object(metadata,'version',return_value='0.6.3'),patch.object(driver,'search',side_effect=search),patch.object(driver,'cuda_runtime_uuid',return_value='GPU-fixture'),patch.dict(os.environ,dict(os.environ)):
     driver.worker(plan,0,'GPU-fixture',24000)
    row=json.loads((root/'output/rank-0.predictions.jsonl').read_text())
    proof=json.loads((root/'output/rank-0.complete.json').read_text())

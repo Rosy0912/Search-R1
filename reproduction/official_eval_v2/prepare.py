@@ -7,7 +7,7 @@ from .driver import once,search
 
 BASE=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-7B-20261018-v1')
 OLD=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1')
-ROOT=BASE/'reevaluation-official-v2b-20261019'
+ROOT=BASE/'reevaluation-official-v2c-20261019'
 
 def retriever_endpoint(base_url):
  from urllib.parse import urlsplit
@@ -21,6 +21,17 @@ def prepare():
  import pyarrow.parquet as pq
  from transformers import AutoConfig,AutoTokenizer
  from vllm.engine.arg_utils import EngineArgs
+ from vllm.platforms.cuda import device_id_to_physical_device_id
+ import os,ctypes
+ old_mask=os.environ.get('CUDA_VISIBLE_DEVICES')
+ try:
+  for index in range(8):
+   os.environ['CUDA_VISIBLE_DEVICES']=str(index)
+   assert device_id_to_physical_device_id(0)==index
+ finally:
+  if old_mask is None:os.environ.pop('CUDA_VISIBLE_DEVICES',None)
+  else:os.environ['CUDA_VISIBLE_DEVICES']=old_mask
+ assert ctypes.CDLL('libcudart.so.12').cudaDeviceGetUuid
  deployment=json.loads((ROOT/'deployment.json').read_text())
  source=Path(deployment['source']);assert source==Path(__file__).resolve().parents[2]
  for name,h in deployment['source_files'].items():assert sha(source/name)==h,name
@@ -64,7 +75,7 @@ def prepare():
   for repeat in [1,2,3]:
    root=ROOT/(kind+'-r'+str(repeat));assert not root.exists();root.mkdir()
    plan=dict(profile=PROFILE,science=SCIENCE,kind=kind,repeat=repeat,repeat_count=3,root=str(root),
-    job='zhangjunming-7b-v2-'+kind+'-r'+str(repeat),source=str(source),source_commit=deployment['commit'],
+    job='zhangjunming-7b-v2c-'+kind+'-r'+str(repeat),source=str(source),source_commit=deployment['commit'],
     source_files=deployment['source_files'],model=str(model),model_revision=models[kind]['revision'],
     model_files=files,model_identity=digest(dict(repo=models[kind]['repo'],revision=models[kind]['revision'],files=files)),
     data=str(data),data_sha256=sha(data),id_gold_identity=identity,original_data_sha256=sha(original),

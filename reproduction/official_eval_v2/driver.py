@@ -24,8 +24,7 @@ def verify(plan):
  assert plan['profile']==PROFILE and plan['science']==SCIENCE
  assert plan['kind'] in ('base','searchr1') and plan['repeat'] in (1,2,3)
  assert Path(plan['root']).name==plan['kind']+'-r'+str(plan['repeat'])
- assert plan['job']=='zhangjunming-7b-v2-'+plan['kind']+'-r'+str(plan['repeat'])
- assert plan['job'].startswith('zhangjunming-7b-v2-')
+ assert plan['job']=='zhangjunming-7b-v2c-'+plan['kind']+'-r'+str(plan['repeat'])
  for n,h in plan['source_files'].items():assert sha(Path(plan['source'])/n)==h,n
  for n,h in plan['model_files'].items():assert sha(Path(plan['model'])/n)==h,n
  assert sha(plan['data'])==plan['data_sha256']
@@ -42,8 +41,23 @@ def search(url,queries):
  data=json.loads(raw)['result'];assert len(data)==len(queries)
  return data,digest(json.loads(raw))
 
-def worker(plan,rank,gpu_uuid,memory_mib):
- os.environ['CUDA_VISIBLE_DEVICES']=gpu_uuid
+def cuda_runtime_uuid():
+ """Read the actual CUDA logical device UUID, independently of the NVML index."""
+ import ctypes,uuid
+ class Uuid(ctypes.Structure):_fields_=[('bytes',ctypes.c_ubyte*16)]
+ runtime=ctypes.CDLL('libcudart.so.12');value=Uuid()
+ runtime.cudaDeviceGetUuid.argtypes=[ctypes.POINTER(Uuid),ctypes.c_int]
+ runtime.cudaDeviceGetUuid.restype=ctypes.c_int
+ assert runtime.cudaDeviceGetUuid(ctypes.byref(value),0)==0
+ return 'GPU-'+str(uuid.UUID(bytes=bytes(value.bytes)))
+
+def worker(plan,rank,gpu_uuid,memory_mib,gpu_index=None):
+ # vLLM0.6.3 parses the mask as integers in its native NVML mapping.
+ # Keep physical UUID evidence and verify it via the CUDA runtime before loading.
+ index=rank if gpu_index is None else int(gpu_index)
+ assert 0<=index<8
+ os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'
+ os.environ['CUDA_VISIBLE_DEVICES']=str(index)
  for name in ['ROCR_VISIBLE_DEVICES','HIP_VISIBLE_DEVICES','RAY_ADDRESS']:
   os.environ.pop(name,None)
  import torch
@@ -51,6 +65,7 @@ def worker(plan,rank,gpu_uuid,memory_mib):
  from vllm import LLM,SamplingParams
  import importlib.metadata as metadata
  assert torch.cuda.device_count()==1
+ assert cuda_runtime_uuid()==gpu_uuid
  assert metadata.version('vllm')=='0.6.3'
  torch.set_grad_enabled(False)
  out=Path(plan['root'])/'output';path=out/f'rank-{rank}.predictions.jsonl'
@@ -77,7 +92,7 @@ def worker(plan,rank,gpu_uuid,memory_mib):
   autograd_enabled=torch.is_grad_enabled(),visible_devices=torch.cuda.device_count(),sampling=sampling,
   runtime=dict(vllm=metadata.version('vllm'),torch=metadata.version('torch'),transformers=metadata.version('transformers'),
    gpu_memory_fraction=memory_fraction,max_model_len=4596,max_num_seqs=128,max_num_batched_tokens=8192),
-  source_commit=plan['source_commit'],no_training_import_or_update=True))
+  source_commit=plan['source_commit'],numeric_gpu_index=index,cuda_runtime_uuid_verified=True,no_training_import_or_update=True))
  completed=raw_total=retained_total=search_total=0
  started=time.time()
  with path.open('x') as output:
@@ -158,7 +173,7 @@ def run(planfile):
   official_legacy_metadata_sampling_loss_not_reproduced='Greedy is explicitly enforced on all five calls.'))
  ctx=mp.get_context('spawn');processes=[]
  for rank,record in enumerate(gpu):
-  proc=ctx.Process(target=worker,args=(plan,rank,record[1].strip(),float(record[-1])));proc.start();processes.append(proc)
+  proc=ctx.Process(target=worker,args=(plan,rank,record[1].strip(),float(record[-1]),int(record[0])));proc.start();processes.append(proc)
  try:
   while any(q.is_alive() for q in processes):
    if any(q.exitcode not in (None,0) for q in processes):raise RuntimeError('A frozen inference worker failed; preserve partial outputs, no automatic retry')
