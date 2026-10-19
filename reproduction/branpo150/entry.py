@@ -19,6 +19,10 @@ def verify(planfile, check_cpu=True):
         for name, digest in plan[fileskey].items():
             assert sha(Path(plan[basekey])/name) == digest, name
     assert sha(plan['native_proof']) == plan['native_proof_sha256']
+    assert sha(plan['local_native_gate']) == plan['local_native_gate_sha256']
+    gate=json.loads(Path(plan['local_native_gate']).read_text())
+    assert gate['local_raw_sha_verified'] is True and gate['size']==plan['size']
+    assert gate['proof_sha256']==plan['native_proof_sha256']
     proof = json.loads(Path(plan['native_proof']).read_text())
     assert proof['size'] == plan['size'] and proof['parent_job_id'] == plan['parent_job_id']
     assert proof['parent_plan_sha256'] == plan['parent_plan_sha256']

@@ -65,8 +65,16 @@ def optimizer_record(optim, actual, count):
         assert value['exp_avg_sq'].ge(0).all().item()
         states[str(key)] = dict(step=int(step), exp_avg=tensor_record(value['exp_avg']),
                                 exp_avg_sq=tensor_record(value['exp_avg_sq']))
+    # The real frozen optimizer retains OmegaConf ListConfig for betas. Resolve
+    # containers only in this observation record, never in the live optimizer.
+    def plain(value):
+        from omegaconf import OmegaConf
+        if OmegaConf.is_config(value):value=OmegaConf.to_container(value,resolve=True)
+        if isinstance(value,dict):return {k:plain(v) for k,v in value.items()}
+        if isinstance(value,(list,tuple)):return [plain(v) for v in value]
+        return value
     # All actual group settings, including epsilon/betas/weight decay, are bound.
-    return json.loads(canonical(dict(param_groups=groups, state=states)))
+    return json.loads(canonical(dict(param_groups=plain(groups), state=states)))
 
 
 def validate_model_records(models, shapes):

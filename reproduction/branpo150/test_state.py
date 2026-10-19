@@ -34,6 +34,14 @@ class StateTests(unittest.TestCase):
     def test_missing_flat_parameter_rejected(self):
         x=self.fixture().state_dict();del x['state'][0]
         with self.assertRaises(AssertionError):optimizer_record(x,140,37)
+    def test_actual_native_style_omegaconf_betas_without_mutation(self):
+        from omegaconf import OmegaConf,ListConfig
+        x=self.fixture().state_dict();x['param_groups'][0]['betas']=OmegaConf.create([0.9,0.999])
+        a=optimizer_record(x,140,37)
+        self.assertEqual(a['param_groups'][0]['betas'],[0.9,0.999])
+        self.assertIsInstance(x['param_groups'][0]['betas'],ListConfig)
+        x['param_groups'][0]['betas'][0]=0.8
+        self.assertNotEqual(a,optimizer_record(x,140,37))
     def test_rng_record_does_not_advance_generators(self):
         rng=dict(cpu=torch.get_rng_state(),cuda=torch.arange(16,dtype=torch.uint8),
                  numpy=np.random.get_state(),random=__import__('random').getstate())

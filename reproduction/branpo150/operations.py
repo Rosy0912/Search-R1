@@ -32,7 +32,7 @@ def prepare(size,deployment):
     from reproduction.official_branpo.entry import build_trainer
     from .entry import verify
     assert not torch.cuda.is_initialized()
-    base=Path(ROOT)/'receipts/branpo150-v1'
+    base=Path(ROOT)/'receipts/branpo150-v2'
     proof=base/(size+'-native140')/'native140-proof.json'
     local_gate=base/(size+'-native140-local-sha.json')
     gate=json.loads(local_gate.read_text())
@@ -89,7 +89,7 @@ def prepare(size,deployment):
 
 def submit(size,deployment):
     from .entry import verify
-    base=Path(ROOT)/'receipts/branpo150-v1';prepared=json.loads((base/(size+'-prepared.json')).read_text())
+    base=Path(ROOT)/'receipts/branpo150-v2';prepared=json.loads((base/(size+'-prepared.json')).read_text())
     plan,parent,proof=verify(prepared['plan']);assert sha(prepared['plan'])==prepared['plan_sha256']
     assert plan['source']==deployment['source'] and plan['size']==size
     zero=exact_zero(size);root=Path(plan['root']);assert not root.exists()
