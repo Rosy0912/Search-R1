@@ -3,11 +3,18 @@ import json
 from pathlib import Path
 import time
 from .protocol import PROFILE,SCIENCE,sha,digest,prompt,question_from_old_prompt,validate_rows
-from .driver import once
+from .driver import once,search
 
 BASE=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-7B-20261018-v1')
 OLD=Path('/home/jmzhang/Workspace/Recursive-Tree-GRPO-20261014-v1')
-ROOT=BASE/'reevaluation-official-v2-20261019'
+ROOT=BASE/'reevaluation-official-v2b-20261019'
+
+def retriever_endpoint(base_url):
+ from urllib.parse import urlsplit
+ parsed=urlsplit(base_url)
+ assert parsed.scheme=='http' and parsed.hostname=='node1' and parsed.port==29147
+ assert parsed.path in ('','/','/retrieve') and not parsed.query and not parsed.fragment
+ return base_url.rstrip('/') if parsed.path=='/retrieve' else base_url.rstrip('/')+'/retrieve'
 
 def prepare():
  import importlib.metadata as metadata
@@ -37,6 +44,9 @@ def prepare():
   for r in rows:f.write(json.dumps(r,ensure_ascii=False)+'\n')
  identity=digest([dict(final_index=r['final_index'],question_id=r['question_id'],source=r['source'],gold_answers=r['gold_answers']) for r in rows])
  receipt=OLD/'receipts/gpu-retriever-ready.json';rr=json.loads(receipt.read_text())
+ endpoint=retriever_endpoint(rr['url']);probe,probe_sha=search(endpoint,['Beijing capital'])
+ assert len(probe)==1 and len(probe[0])==3
+ once(ROOT/'retriever-health-preflight.json',dict(at=time.time(),endpoint=endpoint,response_sha256=probe_sha,documents=3,no_new_gpu_allocation=True))
  models=json.loads((ROOT/'models.json').read_text())['models'];(ROOT/'plans').mkdir();plans=[]
  for kind in ['base','searchr1']:
   model=BASE/'models'/kind/models[kind]['revision'];files={v['file']:v['sha256'] for v in models[kind]['files']}
@@ -58,7 +68,7 @@ def prepare():
     source_files=deployment['source_files'],model=str(model),model_revision=models[kind]['revision'],
     model_files=files,model_identity=digest(dict(repo=models[kind]['repo'],revision=models[kind]['revision'],files=files)),
     data=str(data),data_sha256=sha(data),id_gold_identity=identity,original_data_sha256=sha(original),
-    retriever_receipt=str(receipt),retriever_receipt_sha256=sha(receipt),retriever_url=rr['url'],
+    retriever_receipt=str(receipt),retriever_receipt_sha256=sha(receipt),retriever_url=endpoint,
     gpus=8,cpus=64,memory_gib=600,no_auto_retry=True)
    path=ROOT/'plans'/(kind+'-r'+str(repeat)+'.json');once(path,plan)
    once(root/'preflight.json',dict(at=time.time(),plan_sha256=sha(path),versions=versions,

@@ -4,6 +4,14 @@ import unittest
 from . import protocol as p
 
 class ProtocolTests(unittest.TestCase):
+ def test_retriever_root_and_endpoint(self):
+  from .prepare import retriever_endpoint
+  for url in ['http://node1:29147','http://node1:29147/','http://node1:29147/retrieve']:
+   self.assertEqual(retriever_endpoint(url),'http://node1:29147/retrieve')
+ def test_retriever_rejects_unregistered_destination(self):
+  from .prepare import retriever_endpoint
+  for url in ['http://node2:29147','http://node1:29147/wrong','http://node1:29147/retrieve?topk=1']:
+   with self.assertRaises(AssertionError):retriever_endpoint(url)
  def test_prompt(self):
   self.assertEqual(p.prompt(' who? '),p.PREFIX+'who?\n')
   self.assertEqual(p.prompt(' who '),p.PREFIX+'who?\n')
