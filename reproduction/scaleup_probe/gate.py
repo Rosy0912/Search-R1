@@ -25,7 +25,14 @@ def main():
         assert j['name'] == plan['job'] and j['uid'] == submission['uid']
         state = j['status']['state']
         assert state in ('PENDING', 'RUNNING'), 'Unexpected terminal probe; never retry'
-        if state == 'RUNNING': break
+        entries=[root / ('node-' + str(i)) / 'entry-once.json' for i in range(2)]
+        if state == 'RUNNING' and all(p.exists() for p in entries):
+            records=[json.loads(p.read_text()) for p in entries]
+            assert {r['node'] for r in records} == {0,1}
+            assert len({r['hostname'] for r in records}) == 2
+            assert len({(r['master'],r['port']) for r in records}) == 1
+            assert all(r['plan_sha256']==sha(pp) for r in records)
+            break
         assert time.monotonic() < deadline, 'Bounded CPU gate expired; inspect without replay'
         time.sleep(10)
     tasks = j['spec']['vc_job']['tasks']; validate_actual_tasks(tasks)

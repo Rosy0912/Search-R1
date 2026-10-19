@@ -13,6 +13,8 @@ from .contract import node_coordinates, read_plan, sha, validate_gate
 
 def main():
     pp = Path(sys.argv[1]); plan = read_plan(pp); root = Path(plan['root'])
+    print(json.dumps(dict(hostname=socket.gethostname(), environment={k:os.environ.get(k)
+                         for k in ('RANK','WORLD_SIZE','NODE_RANK','NODE_COUNT','MASTER_ADDR','MASTER_PORT')})), flush=True)
     node, master, port = node_coordinates(os.environ)
     directory = root / ('node-' + str(node)); directory.mkdir(exist_ok=False)
     with (directory / 'entry-once.json').open('x') as f:

@@ -3,8 +3,8 @@ import hashlib
 import json
 from pathlib import Path
 
-JOB = 'zhangjunming-s16-net-v1'
-ROOT = '/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-Scaleup-20261019-v1/probes/nccl16-v1'
+JOB = 'zhangjunming-s16-net-v2'
+ROOT = '/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-Scaleup-20261019-v1/probes/nccl16-v2'
 RUNTIME = '/plm-shared/zhangjunming/Workspace/Search-Self-Evolution-20261006-PJ-runtime-v1/native-env/bin/python'
 
 
@@ -29,9 +29,11 @@ def validate(plan):
 
 def node_coordinates(env):
     # SSP injects one process per node; torchrun later supplies per-GPU ranks.
-    node = int(env['NODE_RANK'])
-    assert int(env['NODE_COUNT']) == 2 and node in (0, 1)
-    assert int(env['WORLD_SIZE']) == 2 and int(env['RANK']) == node
+    node = int(env['RANK'])
+    assert int(env['WORLD_SIZE']) == 2 and node in (0, 1)
+    # Actual SSP exposes RANK/WORLD_SIZE, not the optional aliases below.
+    for name, expected in [('NODE_RANK', node), ('NODE_COUNT', 2)]:
+        if env.get(name) not in (None, ''): assert int(env[name]) == expected
     host = env['MASTER_ADDR']
     assert host and len(host) < 254 and all(c.isalnum() or c in '.-_' for c in host)
     port = int(env['MASTER_PORT'])

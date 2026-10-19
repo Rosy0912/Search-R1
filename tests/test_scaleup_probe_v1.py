@@ -29,6 +29,12 @@ class ContractTests(unittest.TestCase):
             x=dict(e);x[k]=v
             with self.assertRaises(AssertionError):node_coordinates(x)
 
+    def test_actual_ssp_environment_without_node_aliases(self):
+        for rank in ('0','1'):
+            env=dict(RANK=rank,WORLD_SIZE='2',MASTER_ADDR='master.local',MASTER_PORT='23456')
+            self.assertEqual(node_coordinates(env),(int(rank),'master.local',23456))
+        with self.assertRaises(KeyError):node_coordinates(dict(WORLD_SIZE='2'))
+
     def test_uid_and_plan_gate(self):
         s = dict(job=JOB, uid='one', plan_sha256='a')
         g = dict(**s, state='RUNNING', nodes=2, total_gpus=16)
