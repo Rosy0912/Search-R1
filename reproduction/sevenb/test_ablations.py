@@ -2,9 +2,13 @@
 import copy
 import json
 import unittest
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 from omegaconf import OmegaConf
 from .ablations import (ALLOCATION, COMPILER, DATA, GROUPS, HOST, MODEL, ROOT,
-                        VERSIONS, REVISION, derive, job_name, run_root, validate_gate, validate_plan)
+                        VERSIONS, REVISION, derive, job_name, run_root, validate_gate, validate_plan,
+                        FAILED_V1_SOURCE, FAILED_V1_UIDS, output_path, record_for, validate_failed_v1)
 from .contract import model_contract, models, make_config
 from reproduction.recursive_lumia.prepare_ablation import derive as derive_3b
 from release.recursive_bran_a.ablation150_v1.contracts import projected_original, validate_config_dict
@@ -12,8 +16,11 @@ from release.recursive_bran_a.ablation150_v1.contracts import projected_original
 
 def plan(group='budget-5'):
     root = run_root(group)
-    return dict(protocol='sevenb_recursive_ablation150_pj_v1', group=group, job=job_name(group),
-                root=str(root), output=str(root/'output'), allocation=copy.deepcopy(ALLOCATION),
+    return dict(protocol='sevenb_recursive_ablation150_pj_v2', group=group, job=job_name(group),
+                root=str(root), output=str(root/'output'/('attempt-'+'b'*32)), allocation=copy.deepcopy(ALLOCATION),
+                namespace_recovery=dict(prior_uid=FAILED_V1_UIDS[group],prior_source=FAILED_V1_SOURCE,
+                    receipt=str(ROOT/'receipts/v1-failure-independent-acceptance.json'),sha256='c'*64,
+                    fresh_after_independent_zero_actor_update=True),
                 model=str(MODEL), model_revision=REVISION,
                 model_files={v['file']: v['sha256'] for v in models()['base']['files']},
                 data_root=str(DATA), condition=derive(group)['baselines']['recursive_ablation'],
@@ -89,6 +96,51 @@ class Ablations(unittest.TestCase):
         self.assertTrue(all(len(job_name(g)) <= 32 for g in GROUPS))
         self.assertEqual(len({str(run_root(g)) for g in GROUPS}), 5)
         self.assertTrue(all(str(run_root(g)).startswith(str(ROOT)+'/runs/') for g in GROUPS))
+
+    def test_old_flat_output_reproduces_native_guard_failure_and_bound_attempt_passes(self):
+        from reproduction.recursive_lumia.ablation_entry import runtime_environment
+        from release.recursive_bran_a.ablation150_guard_recovery_v1.bootstrap import checkpoint_root
+        from . import ablations
+        with tempfile.TemporaryDirectory() as directory, patch.object(ablations, 'ROOT', Path(directory)):
+            for group in GROUPS:
+                root=run_root(group);(root/'receipts').mkdir(parents=True)
+                p=dict(group=group,run_id='b'*32,source_commit='a'*40,data_identity='d'*64,
+                       job=job_name(group),retriever_receipt='/fixture',retriever_receipt_sha256='e'*64,
+                       condition=derive(group)['baselines']['recursive_ablation'])
+                record,receipt=record_for(p,'fixture-host')
+                cfg=OmegaConf.to_container(OmegaConf.load(record['config']),resolve=True)
+                env=runtime_environment(record,output_path(p),receipt)
+                self.assertEqual(checkpoint_root(record,cfg,env),root/'checkpoints')
+                env['SEARCH_R1_BASELINE_OUTPUT']=str(root/'output')
+                with self.assertRaisesRegex(ValueError,'output/checkpoint namespaces differ'):
+                    checkpoint_root(record,cfg,env)
+
+    def test_output_attempt_and_old_failure_binding_cannot_drift(self):
+        for mutate in ['flat','other_run','other_old_uid','other_old_source']:
+            p=plan()
+            if mutate=='flat':p['output']=str(run_root(p['group'])/'output')
+            elif mutate=='other_run':p['run_id']='z'*32
+            elif mutate=='other_old_uid':p['namespace_recovery']['prior_uid']='wrong'
+            else:p['namespace_recovery']['prior_source']='wrong'
+            with self.subTest(mutate=mutate),self.assertRaises(AssertionError):validate_plan(p)
+
+    def test_all_five_old_failures_need_empty_actual_rank_adam_and_full_local_backup(self):
+        proof=dict(local_backups_complete=True,no_retry_or_job_mutation=True,groups={})
+        for group,uid in FAILED_V1_UIDS.items():
+            proof['groups'][group]=dict(uid=uid,source=FAILED_V1_SOURCE,state='FAILED',
+                zero_actor_update_proved_by_exact_failure_site_before_single_update_actor_call=True,
+                native_checkpoint_directory_absent=True,complete_iteration_receipt_absent=True,
+                optimizer_step_journal_count=0,archive=dict(local_actual_sha_verified=True,
+                    every_local_raw_member_sha_independently_verified=True),
+                actual_rank_initialization=[dict(rank=r,optimizer_state_entries=0,
+                    optimizer_committed=0,scheduler_step=0) for r in range(8)])
+        validate_failed_v1(proof)
+        for field,value in [('state','RUNNING'),('native_checkpoint_directory_absent',False),
+                             ('optimizer_step_journal_count',1)]:
+            bad=copy.deepcopy(proof);bad['groups']['budget-5'][field]=value
+            with self.subTest(field=field),self.assertRaises(AssertionError):validate_failed_v1(bad)
+        bad=copy.deepcopy(proof);bad['groups']['budget-5']['actual_rank_initialization'][0]['optimizer_state_entries']=1
+        with self.assertRaises(AssertionError):validate_failed_v1(bad)
 
 
 if __name__ == '__main__': unittest.main()

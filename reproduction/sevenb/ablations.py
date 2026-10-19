@@ -14,7 +14,7 @@ from reproduction.recursive_lumia.prepare_ablation import derive as derive_3b, c
 from release.recursive_bran_a.ablation150_v1.contracts import sha, projected_original, validate_config_dict
 from release.recursive_bran_a.ablation150_v1 import PROTOCOL, EVALUATION_STEPS
 
-ROOT = Path('/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-7B-Ablations-20261019-v1')
+ROOT = Path('/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-7B-Ablations-20261019-v2')
 COMMON = Path('/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-20261015-v1')
 MODEL = Path('/plm-shared/zhangjunming/Workspace/Recursive-Tree-GRPO-7B-20261019-v1/models/base') / REVISION
 DATA = COMMON / 'common-data'
@@ -25,6 +25,14 @@ COMPILER = dict(path='/plm-shared/zhangjunming/Workspace/Search-Self-Evolution-2
                 sha256='94dda54a1673940d56d3072c64ef7aacb125a1e64394586e10f77a7a5ff0ff87')
 VERSIONS = {'torch': '2.4.0', 'vllm': '0.6.3', 'transformers': '4.46.3', 'ray': '2.51.2', 'flash-attn': '2.6.3', 'triton': '3.0.0'}
 HOST = '__ALLOCATED_PJ_HOST__'
+FAILED_V1_SOURCE = '04f1564c80a862f86225531a1c0df2070a5037d4'
+FAILED_V1_UIDS = {
+    'C1-root-only': '85beb096-6758-48eb-9f98-96579d48b1d0',
+    'C2-random-final': '77a04891-28e0-43ae-a572-7f2f004ba021',
+    'budget-5': '74a67796-d4b5-44fb-bd92-5eb68e3f9f55',
+    'budget-20': '6253fec9-9bf6-400a-b321-800c2f3f82d5',
+    'generation-2': '413daa82-a52e-426a-8e89-4c3d504dce7e',
+}
 
 
 def run_root(group):
@@ -35,7 +43,7 @@ def run_root(group):
 
 def job_name(group):
     run_root(group)
-    name = 'zhangjunming-7b-abl-' + GROUPS[group] + '-v1'
+    name = 'zhangjunming-7b-abl-' + GROUPS[group] + '-v2'
     assert len(name) <= 32
     return name
 
@@ -55,12 +63,37 @@ def derive(group, host=HOST):
     return cfg
 
 
+def output_path(plan):
+    value = plan['run_id']
+    assert len(value) == 32 and all(c in '0123456789abcdef' for c in value)
+    return run_root(plan['group']) / 'output' / ('attempt-' + value)
+
+
+def validate_failed_v1(proof):
+    assert proof['local_backups_complete'] and proof['no_retry_or_job_mutation']
+    assert set(proof['groups']) == set(GROUPS)
+    for group, uid in FAILED_V1_UIDS.items():
+        row = proof['groups'][group]
+        assert row['uid'] == uid and row['source'] == FAILED_V1_SOURCE and row['state'] == 'FAILED'
+        assert row['zero_actor_update_proved_by_exact_failure_site_before_single_update_actor_call']
+        assert row['native_checkpoint_directory_absent'] and row['complete_iteration_receipt_absent']
+        assert row['optimizer_step_journal_count'] == 0
+        assert row['archive']['local_actual_sha_verified'] and row['archive']['every_local_raw_member_sha_independently_verified']
+        ranks = row['actual_rank_initialization']
+        assert len(ranks) == 8 and {r['rank'] for r in ranks} == set(range(8))
+        assert all(r['optimizer_state_entries'] == r['optimizer_committed'] == r['scheduler_step'] == 0 for r in ranks)
+
+
 def validate_plan(plan):
     from omegaconf import OmegaConf
     group = plan['group']; root = run_root(group)
-    assert plan['protocol'] == 'sevenb_recursive_ablation150_pj_v1'
+    assert plan['protocol'] == 'sevenb_recursive_ablation150_pj_v2'
     assert plan['job'] == job_name(group) and plan['root'] == str(root)
-    assert plan['output'] == str(root / 'output') and plan['allocation'] == ALLOCATION
+    assert plan['output'] == str(output_path(plan)) and plan['allocation'] == ALLOCATION
+    recovery = plan['namespace_recovery']
+    assert recovery['prior_uid'] == FAILED_V1_UIDS[group] and recovery['prior_source'] == FAILED_V1_SOURCE
+    assert recovery['receipt'] == str(ROOT / 'receipts/v1-failure-independent-acceptance.json')
+    assert len(recovery['sha256']) == 64 and recovery['fresh_after_independent_zero_actor_update']
     assert plan['model'] == str(MODEL) and plan['model_revision'] == REVISION
     assert plan['model_files'] == {v['file']: v['sha256'] for v in models()['base']['files']}
     assert plan['data_root'] == str(DATA) and plan['condition'] == condition_for(group)
@@ -76,6 +109,9 @@ def validate_plan(plan):
 
 def verify(plan):
     root = validate_plan(plan)
+    recovery = plan['namespace_recovery']
+    assert sha(recovery['receipt']) == recovery['sha256']
+    validate_failed_v1(json.loads(Path(recovery['receipt']).read_text()))
     for name, expected in plan['wrapper_files'].items():
         assert sha(Path(plan['source']) / name) == expected, name
     from reproduction.seven_dataset.contracts import DATA_SHA, validate_model_files
@@ -115,7 +151,7 @@ def record_for(plan, host):
         f.write(text)
     record = dict(protocol=PROTOCOL, group=plan['group'], run_id=plan['run_id'], config=str(path), config_sha256=sha(path),
                   source_commit=plan['source_commit'], model=str(MODEL), data=str(DATA), data_identity=plan['data_identity'],
-                  base=str(root), output=str(root / 'output'), fresh_authorized=True, parent_checkpoint=None,
+                  base=str(root), output=str(output_path(plan)), fresh_authorized=True, parent_checkpoint=None,
                   execution_backend='pj_pt', allocation=plan['job'], scheduler_node=host, host=host,
                   condition=plan['condition'], actual_update_limit=150, evaluation_steps=list(EVALUATION_STEPS),
                   scheduler_scale=200, warmup_rounds=57, model_size='7B', model_revision=REVISION,
@@ -130,7 +166,7 @@ def train(planfile):
     plan = json.loads(Path(planfile).read_text()); root = verify(plan)
     host = socket.gethostname().split('.')[0]
     record, receipt = record_for(plan, host)
-    output = root / 'output'; output.mkdir(exist_ok=False)
+    output = output_path(plan); output.mkdir(parents=True, exist_ok=False)
     from reproduction.recursive_lumia.ablation_entry import runtime_environment
     env = runtime_environment(record, output, receipt)
     env.pop('RECURSIVE_A_LUMIA_FRESH_PROFILE')
