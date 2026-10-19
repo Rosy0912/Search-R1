@@ -42,6 +42,14 @@ class StateTests(unittest.TestCase):
         self.assertIsInstance(x['param_groups'][0]['betas'],ListConfig)
         x['param_groups'][0]['betas'][0]=0.8
         self.assertNotEqual(a,optimizer_record(x,140,37))
+    def test_measured_adam_calls_are_not_inferred_from_iterations(self):
+        x=self.fixture().state_dict()
+        for value in x['state'].values():value['step'].fill_(151)
+        record=optimizer_record(x,None,37)
+        self.assertEqual({v['step'] for v in record['state'].values()},{151})
+    def test_measured_zero_adam_calls_rejected(self):
+        x=self.fixture().state_dict();x['state'][0]['step'].fill_(0)
+        with self.assertRaises(AssertionError):optimizer_record(x,None,37)
     def test_rng_record_does_not_advance_generators(self):
         rng=dict(cpu=torch.get_rng_state(),cuda=torch.arange(16,dtype=torch.uint8),
                  numpy=np.random.get_state(),random=__import__('random').getstate())

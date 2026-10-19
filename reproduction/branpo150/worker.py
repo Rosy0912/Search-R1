@@ -24,7 +24,7 @@ def verify_loaded_manager(manager, proof, audit_dir):
                            ShardedOptimStateDictConfig(offload_to_cpu=True)):
         actual_model = {k:tensor_record(v) for k,v in manager.model.state_dict().items()}
     assert actual_model == expected['model_shards'][rank], 'Actual loaded model differs from native'
-    actual_optim = optimizer_record(manager.optimizer.state_dict(), 140, 37 if proof['size']=='3b' else 29)
+    actual_optim = optimizer_record(manager.optimizer.state_dict(), None, 37 if proof['size']=='3b' else 29)
     assert actual_optim == expected['workers'][rank]['optimizer'], 'Actual Adam state differs from native'
     assert rng_record(manager.get_rng_state()) == before, 'Restore observation changed RNG'
     p = Path(audit_dir)/f'cold-restore-rank-{rank:02d}.json'

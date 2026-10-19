@@ -59,7 +59,8 @@ def optimizer_record(optim, actual, count):
     for key, value in optim['state'].items():
         assert set(value) == {'step', 'exp_avg', 'exp_avg_sq'}
         step = value['step'].item() if torch.is_tensor(value['step']) else value['step']
-        assert float(step) == actual, 'Adam counter mismatch'
+        assert math.isfinite(float(step)) and float(step)==int(step) and step>0
+        if actual is not None:assert float(step) == actual, 'Adam counter mismatch'
         assert value['exp_avg'].shape == value['exp_avg_sq'].shape
         assert value['exp_avg'].ndim == 1, 'Frozen FSDP flat optimizer layout changed'
         assert value['exp_avg_sq'].ge(0).all().item()
@@ -116,17 +117,23 @@ def audit_native(actor, shapes, physical_numel, actual, size):
         models.append({k:tensor_record(v) for k,v in model.items()})
         del model;gc.collect()
         optim = torch.load(paths_rank['optim'], map_location='cpu', weights_only=False)
-        optimizer = optimizer_record(optim, actual, 37 if size=='3b' else 29)
+        optimizer = optimizer_record(optim, None, 37 if size=='3b' else 29)
+        # Scheduler/progress counts iterations. Adam calls are measured from the
+        # real native state and must not be inferred from that iteration count.
+        measured_steps={v['step'] for v in optimizer['state'].values()}
+        assert len(measured_steps)==1
         del optim;gc.collect()
         extra = torch.load(paths_rank['extra_state'], map_location='cpu', weights_only=False)
         assert set(extra) == {'lr_scheduler','rng'}
         scheduler = extra['lr_scheduler']
         assert scheduler['last_epoch'] == actual and scheduler['_step_count'] == actual+1
         assert scheduler['_last_lr'] == [1e-6] and scheduler['base_lrs'] == [1e-6]
-        workers.append(dict(rank=rank, optimizer=optimizer, scheduler=scheduler, rng=rng_record(extra['rng'])))
+        workers.append(dict(rank=rank, optimizer=optimizer, actual_adam_calls=next(iter(measured_steps)),
+                            scheduler=scheduler, rng=rng_record(extra['rng'])))
         del extra;gc.collect()
         assert not torch.cuda.is_initialized()
     validate_model_records(models, shapes)
+    assert len({w['actual_adam_calls'] for w in workers})==1
     flat_numel = sum(s['exp_avg']['numel'] for w in workers for s in w['optimizer']['state'].values())
     flat_count = 37 if size=='3b' else 29
     assert physical_numel <= flat_numel <= physical_numel+7*flat_count, 'Incomplete optimizer coverage'
