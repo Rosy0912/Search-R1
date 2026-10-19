@@ -41,15 +41,22 @@ def search(url,queries):
  data=json.loads(raw)['result'];assert len(data)==len(queries)
  return data,digest(json.loads(raw))
 
+def pci_identity(value):
+ domain,bus,device=value.strip().split(':');slot,function=device.split('.')
+ return tuple(int(v,16) for v in [domain,bus,slot,function])
+
 def cuda_runtime_uuid():
- """Read the actual CUDA logical device UUID, independently of the NVML index."""
- import ctypes,uuid
- class Uuid(ctypes.Structure):_fields_=[('bytes',ctypes.c_ubyte*16)]
- runtime=ctypes.CDLL('libcudart.so.12');value=Uuid()
- runtime.cudaDeviceGetUuid.argtypes=[ctypes.POINTER(Uuid),ctypes.c_int]
- runtime.cudaDeviceGetUuid.restype=ctypes.c_int
- assert runtime.cudaDeviceGetUuid(ctypes.byref(value),0)==0
- return 'GPU-'+str(uuid.UUID(bytes=bytes(value.bytes)))
+ """Match CUDA logical0's actual PCI address to the recorded NVML UUID."""
+ import ctypes
+ runtime=ctypes.CDLL('libcudart.so.12');value=ctypes.create_string_buffer(32)
+ runtime.cudaDeviceGetPCIBusId.argtypes=[ctypes.c_char_p,ctypes.c_int,ctypes.c_int]
+ runtime.cudaDeviceGetPCIBusId.restype=ctypes.c_int
+ assert runtime.cudaDeviceGetPCIBusId(value,len(value),0)==0
+ bus=pci_identity(value.value.decode())
+ lines=subprocess.check_output(['nvidia-smi','--query-gpu=pci.bus_id,uuid','--format=csv,noheader'],text=True).splitlines()
+ matches=[line.split(',')[1].strip() for line in lines if pci_identity(line.split(',')[0])==bus]
+ assert len(matches)==1
+ return matches[0]
 
 def worker(plan,rank,gpu_uuid,memory_mib,gpu_index=None):
  # vLLM0.6.3 parses the mask as integers in its native NVML mapping.

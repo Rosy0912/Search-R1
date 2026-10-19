@@ -21,6 +21,9 @@ class Parameter:
  def numel(self):return 1
 
 class DriverTests(unittest.TestCase):
+ def test_cuda_nvml_pci_domain_width_and_case(self):
+  self.assertEqual(driver.pci_identity('0000:AF:00.0'),driver.pci_identity('00000000:af:00.0'))
+  self.assertNotEqual(driver.pci_identity('0000:AF:00.0'),driver.pci_identity('0000:B0:00.0'))
  def exercise(self,texts):
   with tempfile.TemporaryDirectory() as tmp:
    root=Path(tmp);(root/'output').mkdir();data=root/'data.jsonl'

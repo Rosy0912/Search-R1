@@ -36,7 +36,7 @@ def prepare():
  finally:
   if old_mask is None:os.environ.pop('CUDA_VISIBLE_DEVICES',None)
   else:os.environ['CUDA_VISIBLE_DEVICES']=old_mask
- assert ctypes.CDLL('libcudart.so.12').cudaDeviceGetUuid
+ assert ctypes.CDLL('libcudart.so.12').cudaDeviceGetPCIBusId
  deployment=json.loads((ROOT/'deployment.json').read_text())
  source=Path(deployment['source']);assert source==Path(__file__).resolve().parents[2]
  for name,h in deployment['source_files'].items():assert sha(source/name)==h,name
