@@ -1,13 +1,16 @@
 """Scoped task layout and deterministic launch command; no implicit submission."""
 from pathlib import Path
 import shlex
+import copy
 from .contract import read_plan,validate_tasks
 
 def bind_layout(cluster):
  assert not getattr(cluster,'_cgrts32_layout_bound',False)
  original=cluster._build_tasks
  def build(*args,**kwargs):
-  tasks=original(*args,**kwargs)
+  # The SDK shares the same resource dict across roles. Copy each task
+  # independently so changing worker RAM cannot also change the master.
+  tasks=[copy.deepcopy(t) for t in original(*args,**kwargs)]
   assert [(t['role'],t['replicas']) for t in tasks]==[('PYTORCH_MASTER',1),('PYTORCH_WORKER',3)]
   for i,t in enumerate(tasks):
    t['resource_spec']['cpu_count']=64 if i==0 else 48
