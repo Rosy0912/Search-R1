@@ -18,6 +18,9 @@ def stop_owned(proc):
  except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait(timeout=10)
 def launch(pp):
  p=read_plan(pp);root=Path(p['root']);n,master=node_coordinates(os.environ);d=root/f'node-{n}';d.mkdir()
+ for name,expected in p['all_source_files'].items():assert sha(Path(p['source'])/name)==expected,name
+ assert sha(p['compiler']['path'])==p['compiler']['sha256']
+ os.environ['TRITON_PTXAS_PATH']=p['compiler']['path']
  ip=socket.gethostbyname(socket.gethostname());assert not ip.startswith('127.')
  save(d/'entry-once.json',dict(at=time.time(),node=n,hostname=socket.gethostname(),ip=ip,master=master,master_port=int(os.environ['MASTER_PORT']),plan_sha256=sha(pp)))
  gate=wait_for(root/'scheduler-release-once.json',600,root);sub=json.loads((root/'submission.json').read_text());validate_gate(p,sub,gate)
