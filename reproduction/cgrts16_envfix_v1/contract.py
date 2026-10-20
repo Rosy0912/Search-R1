@@ -4,7 +4,7 @@ import copy,hashlib,json,os
 WORLD=16
 NODES=2
 GPUS=8
-JOB='zhangjunming-cgrts7-main16-envfix-v1'
+JOB='zhangjunming-cgrts7-m16-fix1'
 ENV='CGRTS16_PARALLEL_PLAN'
 PARENT='92942a32161071b85cc70906050143ed58244eb1'
 BASE=Path('/plm-dhw/zhangjunming/Workspace/Recursive-Tree-GRPO-CGRTS7B-Main16-EnvFix-20261020-v1')
