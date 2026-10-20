@@ -93,4 +93,13 @@ class LayoutTests(unittest.TestCase):
   with self.assertRaises(AssertionError):validate_tasks(bad)
   bad=copy.deepcopy(gate);bad['uid']='wrong'
   with self.assertRaises(AssertionError):validate_gate(p,sub,bad)
+ def test_shared_SDK_resource_objects_are_separated(self):
+  from .operations import bind_layout
+  resource=dict(accelerate_device_count=8,cpu_count=64,memory_gib=900,machine_types=['n2ls.ie.i60b'],rdma_name='ib-cluster-01')
+  tasks=[dict(role='PYTORCH_MASTER',replicas=1,resource_spec=resource),dict(role='PYTORCH_WORKER',replicas=3,resource_spec=resource)]
+  class Cluster:
+   def _build_tasks(self,*args):return tasks
+  c=Cluster();bind_layout(c);actual=c._build_tasks();validate_tasks(actual)
+  self.assertIsNot(actual[0]['resource_spec'],actual[1]['resource_spec'])
+  self.assertEqual(resource['memory_gib'],900)
 if __name__=='__main__':unittest.main()
